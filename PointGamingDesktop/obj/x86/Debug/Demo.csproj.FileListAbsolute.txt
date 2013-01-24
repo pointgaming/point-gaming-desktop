@@ -1,0 +1,20 @@
+c:\documents and settings\bd\my documents\visual studio 2010\Projects\Demo\Demo\bin\Debug\Demo.exe
+c:\documents and settings\bd\my documents\visual studio 2010\Projects\Demo\Demo\bin\Debug\Demo.pdb
+c:\documents and settings\bd\my documents\visual studio 2010\Projects\Demo\Demo\obj\x86\Debug\ResolveAssemblyReference.cache
+c:\documents and settings\bd\my documents\visual studio 2010\Projects\Demo\Demo\obj\x86\Debug\Demo.Form1.resources
+c:\documents and settings\bd\my documents\visual studio 2010\Projects\Demo\Demo\obj\x86\Debug\Demo.Properties.Resources.resources
+c:\documents and settings\bd\my documents\visual studio 2010\Projects\Demo\Demo\obj\x86\Debug\GenerateResource.read.1.tlog
+c:\documents and settings\bd\my documents\visual studio 2010\Projects\Demo\Demo\obj\x86\Debug\GenerateResource.write.1.tlog
+c:\documents and settings\bd\my documents\visual studio 2010\Projects\Demo\Demo\obj\x86\Debug\Demo.exe
+c:\documents and settings\bd\my documents\visual studio 2010\Projects\Demo\Demo\obj\x86\Debug\Demo.pdb
+c:\documents and settings\bd\my documents\visual studio 2010\Projects\Demo\Demo\obj\x86\Debug\Demo.ucChat.resources
+F:\Professional Material\Projects\BitCoin\Documents\Demo\Demo\obj\x86\Debug\Demo.exe
+F:\Professional Material\Projects\BitCoin\Documents\Demo\Demo\obj\x86\Debug\Demo.pdb
+F:\Professional Material\Projects\BitCoin\Documents\Demo\Demo\bin\Debug\Demo.exe
+F:\Professional Material\Projects\BitCoin\Documents\Demo\Demo\bin\Debug\Demo.pdb
+F:\Professional Material\Projects\BitCoin\Documents\Demo\Demo\obj\x86\Debug\ResolveAssemblyReference.cache
+F:\Professional Material\Projects\BitCoin\Documents\Demo\Demo\obj\x86\Debug\Demo.Form1.resources
+F:\Professional Material\Projects\BitCoin\Documents\Demo\Demo\obj\x86\Debug\Demo.Properties.Resources.resources
+F:\Professional Material\Projects\BitCoin\Documents\Demo\Demo\obj\x86\Debug\Demo.ucChat.resources
+F:\Professional Material\Projects\BitCoin\Documents\Demo\Demo\obj\x86\Debug\GenerateResource.read.1.tlog
+F:\Professional Material\Projects\BitCoin\Documents\Demo\Demo\obj\x86\Debug\GenerateResource.write.1.tlog
