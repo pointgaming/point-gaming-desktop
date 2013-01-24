@@ -20,12 +20,15 @@ namespace Demo
 		{
 			var client = new RestClient("http://dev.pointgaming.net:3000/api/v1/");
 
+
+
 			var request = new RestRequest("sessions", Method.POST);
-			request.AddParameter("username", "sultansaadat"); 
-				request.AddParameter("password", "sultan123"); 
+
+			request.RequestFormat = DataFormat.Json;
+			request.AddBody(new RootLoginObject { new UserLogin { username = "sultansaadat", password = "sultan123" } });
 
 
-			RestResponse response = (RestSharp.RestResponse) client.Execute(request);
+			RestResponse response = (RestSharp.RestResponse)client.Execute(request);
 			var content = response.Content; // raw content as string
 
 			MessageBox.Show(content);

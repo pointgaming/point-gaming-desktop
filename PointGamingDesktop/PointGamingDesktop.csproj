@@ -73,7 +73,7 @@
     <Compile Include="ucChat.Designer.cs">
       <DependentUpon>ucChat.cs</DependentUpon>
     </Compile>
-    <Compile Include="POCO\UserLogin.cs" />
+    <Compile Include="POCO\user_login.cs" />
     <EmbeddedResource Include="frmHome.resx">
       <DependentUpon>frmHome.cs</DependentUpon>
     </EmbeddedResource>
