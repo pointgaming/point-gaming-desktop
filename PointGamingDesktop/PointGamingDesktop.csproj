@@ -8,8 +8,8 @@
     <ProjectGuid>{DAD7A437-25B6-46EF-A3D7-3ED8665B0857}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Demo</RootNamespace>
-    <AssemblyName>Demo</AssemblyName>
+    <RootNamespace>PointGaming</RootNamespace>
+    <AssemblyName>PointGaming</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -73,7 +73,7 @@
     <Compile Include="ucChat.Designer.cs">
       <DependentUpon>ucChat.cs</DependentUpon>
     </Compile>
-    <Compile Include="POCO\user_login.cs" />
+    <Compile Include="POCO\Login.cs" />
     <EmbeddedResource Include="frmHome.resx">
       <DependentUpon>frmHome.cs</DependentUpon>
     </EmbeddedResource>
@@ -88,6 +88,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="ucChat.resx">
       <DependentUpon>ucChat.cs</DependentUpon>

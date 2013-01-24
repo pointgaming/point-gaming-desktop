@@ -25,7 +25,7 @@ namespace Demo
 			var request = new RestRequest("sessions", Method.POST);
 
 			request.RequestFormat = DataFormat.Json;
-			request.AddBody(new RootLoginObject { new UserLogin { username = "sultansaadat", password = "sultan123" } });
+			
 
 
 			RestResponse response = (RestSharp.RestResponse)client.Execute(request);
