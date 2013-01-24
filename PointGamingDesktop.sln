@@ -1,7 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{DAD7A437-25B6-46EF-A3D7-3ED8665B0857}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PointGamingDesktop", "PointGamingDesktop\PointGamingDesktop.csproj", "{DAD7A437-25B6-46EF-A3D7-3ED8665B0857}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
