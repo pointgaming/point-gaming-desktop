@@ -18,34 +18,37 @@ namespace Demo
 
 		private void btnLogin_Click(object sender, EventArgs e)
 		{
-			var client = new RestClient("http://dev.pointgaming.net:3000/api/v1/sessions");
+			var client = new RestClient("http://dev.pointgaming.net:3000/api/v1/");
 
-			var request = new RestRequest("resource/{id}", Method.POST);
-			request.AddParameter("name", "value"); // adds to POST or URL querystring based on Method
+			var request = new RestRequest("sessions", Method.POST);
+			request.AddParameter("username", "sultansaadat"); 
+				request.AddParameter("password", "sultan123"); 
 
-			// execute the request
-			RestResponse response = client.Execute(request);
+
+			RestResponse response = (RestSharp.RestResponse) client.Execute(request);
 			var content = response.Content; // raw content as string
 
-			// or automatically deserialize result
-			// return content type is sniffed but can be explicitly set via RestClient.AddHandler();
-			RestResponse<> response2 = client.Execute<Person>(request);
-			var name = response2.Data.Name;
+			MessageBox.Show(content);
 
-			// easy async support
-			client.ExecuteAsync(request, response =>
-			{
-				Console.WriteLine(response.Content);
-			});
+			//// or automatically deserialize result
+			//// return content type is sniffed but can be explicitly set via RestClient.AddHandler();
+			//RestResponse<> response2 = client.Execute<Person>(request);
+			//var name = response2.Data.Name;
 
-			// async with deserialization
-			var asyncHandle = client.ExecuteAsync<Person>(request, response =>
-			{
-				Console.WriteLine(response.Data.Name);
-			});
+			//// easy async support
+			//client.ExecuteAsync(request, response =>
+			//{
+			//	Console.WriteLine(response.Content);
+			//});
 
-			// abort the request on demand
-			asyncHandle.Abort();
+			//// async with deserialization
+			//var asyncHandle = client.ExecuteAsync<Person>(request, response =>
+			//{
+			//	Console.WriteLine(response.Data.Name);
+			//});
+
+			//// abort the request on demand
+			//asyncHandle.Abort();
 
 
 		}

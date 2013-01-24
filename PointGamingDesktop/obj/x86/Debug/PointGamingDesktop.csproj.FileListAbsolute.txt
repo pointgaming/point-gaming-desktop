@@ -1,0 +1,14 @@
+C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\obj\x86\Debug\PointGamingDesktop.csprojResolveAssemblyReference.cache
+C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\obj\x86\Debug\Demo.frmHome.resources
+C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\obj\x86\Debug\Demo.frmLogin.resources
+C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\obj\x86\Debug\Demo.Properties.Resources.resources
+C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\obj\x86\Debug\Demo.ucChat.resources
+C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\obj\x86\Debug\PointGamingDesktop.csproj.GenerateResource.Cache
+C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\bin\Debug\Demo.exe
+C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\bin\Debug\Demo.pdb
+C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\bin\Debug\RestSharp.dll
+C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\bin\Debug\RestSharp.xml
+C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\obj\x86\Debug\Demo.exe
+C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\obj\x86\Debug\Demo.pdb

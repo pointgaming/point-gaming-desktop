@@ -67,7 +67,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="POCO\SuccessResponse.cs" />
     <Compile Include="ucChat.cs">
       <SubType>UserControl</SubType>
     </Compile>
