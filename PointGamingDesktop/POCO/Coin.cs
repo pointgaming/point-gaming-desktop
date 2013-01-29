@@ -8,7 +8,7 @@ namespace PointGaming.POCO
 	public class Coin
 	{
 		public string wallet_id { get; set; }
-		public int number_of_coins { get; set; }
+		public float number_of_coins { get; set; }
 	}
 
 	public class RootObject
