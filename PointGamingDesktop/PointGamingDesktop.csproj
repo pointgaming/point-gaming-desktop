@@ -88,6 +88,7 @@
     </Compile>
     <Compile Include="POCO\Coin.cs" />
     <Compile Include="POCO\CoinResponse.cs" />
+    <Compile Include="POCO\User.cs" />
     <Compile Include="POCO\Games.cs" />
     <Compile Include="POCO\AuthTokenStatic.cs" />
     <Compile Include="Program.cs" />

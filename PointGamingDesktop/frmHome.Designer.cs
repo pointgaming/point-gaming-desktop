@@ -37,12 +37,18 @@
 			this.tpGames = new System.Windows.Forms.TabPage();
 			this.tpBitCoin = new System.Windows.Forms.TabPage();
 			this.pnlChat = new System.Windows.Forms.Panel();
+			this.tpAddFriend = new System.Windows.Forms.TabPage();
+			this.tpSettings = new System.Windows.Forms.TabPage();
+			this.txtFriendName = new System.Windows.Forms.TextBox();
+			this.btnAddFriend = new System.Windows.Forms.Button();
+			this.label1 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
 			this.tcOptions.SuspendLayout();
 			this.tpFriends.SuspendLayout();
+			this.tpAddFriend.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// splitContainer1
@@ -59,6 +65,7 @@
 			// splitContainer1.Panel2
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.pnlChat);
+			this.splitContainer1.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Panel2_Paint);
 			this.splitContainer1.Size = new System.Drawing.Size(940, 660);
 			this.splitContainer1.SplitterDistance = 234;
 			this.splitContainer1.TabIndex = 1;
@@ -68,6 +75,8 @@
 			this.tcOptions.Controls.Add(this.tpFriends);
 			this.tcOptions.Controls.Add(this.tpGames);
 			this.tcOptions.Controls.Add(this.tpBitCoin);
+			this.tcOptions.Controls.Add(this.tpAddFriend);
+			this.tcOptions.Controls.Add(this.tpSettings);
 			this.tcOptions.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tcOptions.Location = new System.Drawing.Point(0, 0);
 			this.tcOptions.Name = "tcOptions";
@@ -104,7 +113,7 @@
 			// 
 			// colMember
 			// 
-			this.colMember.Text = "Member";
+			this.colMember.Text = "Username";
 			this.colMember.Width = 150;
 			// 
 			// colStatus
@@ -139,6 +148,53 @@
 			this.pnlChat.TabIndex = 0;
 			this.pnlChat.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlChat_Paint);
 			// 
+			// tpAddFriend
+			// 
+			this.tpAddFriend.Controls.Add(this.label1);
+			this.tpAddFriend.Controls.Add(this.btnAddFriend);
+			this.tpAddFriend.Controls.Add(this.txtFriendName);
+			this.tpAddFriend.Location = new System.Drawing.Point(4, 22);
+			this.tpAddFriend.Name = "tpAddFriend";
+			this.tpAddFriend.Size = new System.Drawing.Size(224, 632);
+			this.tpAddFriend.TabIndex = 3;
+			this.tpAddFriend.Text = "+";
+			this.tpAddFriend.UseVisualStyleBackColor = true;
+			// 
+			// tpSettings
+			// 
+			this.tpSettings.Location = new System.Drawing.Point(4, 22);
+			this.tpSettings.Name = "tpSettings";
+			this.tpSettings.Size = new System.Drawing.Size(224, 632);
+			this.tpSettings.TabIndex = 4;
+			this.tpSettings.Text = "Settings";
+			this.tpSettings.UseVisualStyleBackColor = true;
+			// 
+			// txtFriendName
+			// 
+			this.txtFriendName.Location = new System.Drawing.Point(65, 20);
+			this.txtFriendName.Name = "txtFriendName";
+			this.txtFriendName.Size = new System.Drawing.Size(127, 20);
+			this.txtFriendName.TabIndex = 0;
+			// 
+			// btnAddFriend
+			// 
+			this.btnAddFriend.Location = new System.Drawing.Point(116, 47);
+			this.btnAddFriend.Name = "btnAddFriend";
+			this.btnAddFriend.Size = new System.Drawing.Size(75, 23);
+			this.btnAddFriend.TabIndex = 1;
+			this.btnAddFriend.Text = "Add Friend";
+			this.btnAddFriend.UseVisualStyleBackColor = true;
+			this.btnAddFriend.Click += new System.EventHandler(this.btnAddFriend_Click);
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(4, 23);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(55, 13);
+			this.label1.TabIndex = 2;
+			this.label1.Text = "Username";
+			// 
 			// frmHome
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -154,6 +210,8 @@
 			this.splitContainer1.ResumeLayout(false);
 			this.tcOptions.ResumeLayout(false);
 			this.tpFriends.ResumeLayout(false);
+			this.tpAddFriend.ResumeLayout(false);
+			this.tpAddFriend.PerformLayout();
 			this.ResumeLayout(false);
 
         }
@@ -169,6 +227,11 @@
         private System.Windows.Forms.ColumnHeader colMember;
         private System.Windows.Forms.ColumnHeader colStatus;
         private System.Windows.Forms.Panel pnlChat;
+		private System.Windows.Forms.TabPage tpAddFriend;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Button btnAddFriend;
+		private System.Windows.Forms.TextBox txtFriendName;
+		private System.Windows.Forms.TabPage tpSettings;
     }
 }
 

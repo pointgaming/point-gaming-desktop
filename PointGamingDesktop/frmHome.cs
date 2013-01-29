@@ -1,6 +1,8 @@
-﻿using System;
+﻿using RestSharp;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -9,14 +11,14 @@ using System.Windows.Forms;
 
 namespace PointGaming
 {
-    public partial class frmHome : Form
-    {
-        Random rndTop, rndLeft;
+	public partial class frmHome : Form
+	{
 
-        public frmHome()
-        {
-            InitializeComponent();
-        }
+
+		public frmHome()
+		{
+			InitializeComponent();
+		}
 
 		//private void Form1_Load(object sender, EventArgs e)
 		//{
@@ -86,8 +88,44 @@ namespace PointGaming
 
 		private void frmHome_Load(object sender, EventArgs e)
 		{
-			//get a list of all friends
-			MessageBox.Show(AuthTokenStatic.GlobalVar);
+
+
+
 		}
-    }
+
+		private void btnAddFriend_Click(object sender, EventArgs e)
+		{
+
+			User u = new User();
+			u.username = txtFriendName.Text;
+			UserRootObject uRoot = new UserRootObject();
+			uRoot.user = u;
+
+			var friendsApiCall = ConfigurationSettings.AppSettings["friends"].ToString() + AuthTokenStatic.GlobalVar;
+			var client = new RestClient(friendsApiCall);
+
+			var request = new RestRequest(Method.POST);
+			request.RequestFormat = DataFormat.Json;
+			request.AddBody(uRoot);
+
+			request.AddBody(new User { username = txtFriendName.Text });
+
+			RestResponse<ApiResponse> apiResponse = (RestSharp.RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
+			var status = apiResponse.Data.success;
+			if (status)
+			{
+				MessageBox.Show("Friend SuccessFully Added!");
+			}
+			else
+			{
+				MessageBox.Show(apiResponse.Data.message);
+			}
+
+		}
+
+		private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
+		{
+
+		}
+	}
 }
