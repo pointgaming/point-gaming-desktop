@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using RestSharp;
 using System.Configuration;
 
-namespace Demo
+namespace PointGaming
 {
 	public partial class frmLogin : Form
 	{
@@ -31,6 +31,9 @@ namespace Demo
 			
 			if (status == true)
 			{
+
+				AuthTokenStatic.GlobalVar = apiResponse.Data.auth_token;
+
 				frmHome home = new frmHome();
 				home.StartPosition = FormStartPosition.CenterScreen;
 				home.Show();

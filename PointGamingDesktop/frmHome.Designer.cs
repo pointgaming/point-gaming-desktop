@@ -1,4 +1,4 @@
-﻿namespace Demo
+﻿namespace PointGaming
 {
     partial class frmHome
     {

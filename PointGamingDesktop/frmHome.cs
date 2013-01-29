@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Demo
+namespace PointGaming
 {
     public partial class frmHome : Form
     {
@@ -86,7 +86,8 @@ namespace Demo
 
 		private void frmHome_Load(object sender, EventArgs e)
 		{
-			
+			//get a list of all friends
+			MessageBox.Show(AuthTokenStatic.GlobalVar);
 		}
     }
 }

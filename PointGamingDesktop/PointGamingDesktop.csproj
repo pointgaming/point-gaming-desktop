@@ -89,7 +89,7 @@
     <Compile Include="POCO\Coin.cs" />
     <Compile Include="POCO\CoinResponse.cs" />
     <Compile Include="POCO\Games.cs" />
-    <Compile Include="POCO\SessionSingleton.cs" />
+    <Compile Include="POCO\AuthTokenStatic.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ucChat.cs">
@@ -99,6 +99,9 @@
       <DependentUpon>ucChat.cs</DependentUpon>
     </Compile>
     <Compile Include="POCO\UserLogin.cs" />
+    <EmbeddedResource Include="frmAddFriends.resx">
+      <DependentUpon>frmAddFriends.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmHome.resx">
       <DependentUpon>frmHome.cs</DependentUpon>
     </EmbeddedResource>

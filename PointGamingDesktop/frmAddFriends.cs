@@ -15,5 +15,10 @@ namespace PointGaming
 		{
 			InitializeComponent();
 		}
+
+		private void frmAddFriends_Load(object sender, EventArgs e)
+		{
+
+		}
 	}
 }
