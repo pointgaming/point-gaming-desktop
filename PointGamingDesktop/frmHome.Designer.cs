@@ -83,6 +83,9 @@
 			this.tcOptions.SelectedIndex = 0;
 			this.tcOptions.Size = new System.Drawing.Size(232, 658);
 			this.tcOptions.TabIndex = 0;
+			this.tcOptions.SelectedIndexChanged += new System.EventHandler(this.tcOptions_SelectedIndexChanged);
+			this.tcOptions.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.tcOptions_Selecting);
+			this.tcOptions.TabIndexChanged += new System.EventHandler(this.tcOptions_TabIndexChanged);
 			// 
 			// tpFriends
 			// 

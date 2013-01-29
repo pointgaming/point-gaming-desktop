@@ -89,7 +89,20 @@ namespace PointGaming
 		private void frmHome_Load(object sender, EventArgs e)
 		{
 
+			var friendsApiCall = ConfigurationSettings.AppSettings["friends"].ToString() + AuthTokenStatic.GlobalVar;
+			var client = new RestClient(friendsApiCall);
+			var request = new RestRequest(Method.GET);
+			RestResponse<FriendResponseRootObject> apiResponse = (RestSharp.RestResponse<FriendResponseRootObject>)client.Execute<FriendResponseRootObject>(request);
 
+			var status = apiResponse.Data.success;
+			var count = apiResponse.Data.friends.Count;
+			lvContacts.Items.Clear();
+			for (int i = 0; i < count; i++)
+			{
+				lvContacts.Items.Add(apiResponse.Data.friends[i].username.ToString());
+
+
+			}
 
 		}
 
@@ -108,23 +121,60 @@ namespace PointGaming
 			request.RequestFormat = DataFormat.Json;
 			request.AddBody(uRoot);
 
-			request.AddBody(new User { username = txtFriendName.Text });
+			//request.AddBody(new User { username = txtFriendName.Text });
 
 			RestResponse<ApiResponse> apiResponse = (RestSharp.RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
 			var status = apiResponse.Data.success;
 			if (status)
 			{
 				MessageBox.Show("Friend SuccessFully Added!");
+				tpFriends.Show();
 			}
 			else
 			{
-				MessageBox.Show(apiResponse.Data.message);
+				MessageBox.Show("Error: " + apiResponse.Data.message);
 			}
 
 		}
 
 		private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
 		{
+
+		}
+
+		private void tcOptions_SelectedIndexChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void tcOptions_TabIndexChanged(object sender, EventArgs e)
+		{
+			if (tcOptions.TabIndex == 0)
+			{
+				MessageBox.Show("1");
+			}
+		}
+
+		private void tcOptions_Selecting(object sender, TabControlCancelEventArgs e)
+		{
+			if (e.TabPageIndex == 0)
+			{
+				var friendsApiCall = ConfigurationSettings.AppSettings["friends"].ToString() + AuthTokenStatic.GlobalVar;
+				var client = new RestClient(friendsApiCall);
+				var request = new RestRequest(Method.GET);
+				RestResponse<FriendResponseRootObject> apiResponse = (RestSharp.RestResponse<FriendResponseRootObject>)client.Execute<FriendResponseRootObject>(request);
+
+				var status = apiResponse.Data.success;
+				var count = apiResponse.Data.friends.Count;
+				lvContacts.Items.Clear();
+				for (int i = 0; i < count; i++)
+				{
+					lvContacts.Items.Add(apiResponse.Data.friends[i].username.ToString());
+
+
+				}
+
+			}
 
 		}
 	}
