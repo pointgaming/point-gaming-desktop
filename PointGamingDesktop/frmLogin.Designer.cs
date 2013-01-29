@@ -90,6 +90,7 @@
 			this.Controls.Add(this.txtUserName);
 			this.Name = "frmLogin";
 			this.Text = "Login to Point Gaming Desktop";
+			this.Load += new System.EventHandler(this.frmLogin_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

@@ -13,9 +13,4 @@ namespace PointGaming.POCO
 		public int player_count { get; set; }
 	}
 
-	public class RootObject
-	{
-		public bool success { get; set; }
-		public List<Game> games { get; set; }
-	}
 }

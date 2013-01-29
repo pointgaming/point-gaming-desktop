@@ -13,9 +13,4 @@ namespace PointGaming.POCO
 		public string wallet_id { get; set; }
 	}
 
-	public class RootObject
-	{
-		public bool success { get; set; }
-		public List<Coin> coins { get; set; }
-	}
 }

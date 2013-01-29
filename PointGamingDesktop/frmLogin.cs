@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using RestSharp;
+using System.Configuration;
+
 namespace Demo
 {
 	public partial class frmLogin : Form
@@ -18,16 +20,27 @@ namespace Demo
 
 		private void btnLogin_Click(object sender, EventArgs e)
 		{
-			var client = new RestClient("http://dev.pointgaming.net:3000/api/v1/");
-
+			var baseUrl=ConfigurationSettings.AppSettings["BaseUrl"].ToString();
+			var client = new RestClient(baseUrl);
 			var request = new RestRequest("sessions", Method.POST);
-
 			request.RequestFormat = DataFormat.Json;
-			request.AddBody(new UserLogin { username = "sultansaadat", password = "sultan123" });
-			RestResponse response = (RestSharp.RestResponse)client.Execute(request);
-			var content = response.Content; // raw content as string
+			request.AddBody(new UserLogin { username = txtUserName.Text, password = txtPassword.Text });
+			RestResponse<ApiResponse> apiResponse = (RestSharp.RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
+			var status = apiResponse.Data.success;
+			if (status == true)
+			{
+				MessageBox.Show("Logged In");
+			}
+			else
+			{
+				MessageBox.Show("Invalid Username or Password");
+			}
+		}
 
-			MessageBox.Show(content);
+		private void frmLogin_Load(object sender, EventArgs e)
+		{
+			this.StartPosition = FormStartPosition.CenterParent;
+
 		}
 	}
 }
