@@ -97,11 +97,13 @@ namespace PointGaming
 			var status = apiResponse.Data.success;
 			var count = apiResponse.Data.friends.Count;
 			lvContacts.Items.Clear();
+			ListViewItem dataItem;
 			for (int i = 0; i < count; i++)
 			{
-				lvContacts.Items.Add(apiResponse.Data.friends[i].username.ToString());
-
-
+				dataItem = new ListViewItem(apiResponse.Data.friends[i].username.ToString());
+				dataItem.SubItems.Add("Online");
+				lvContacts.Items.AddRange(new ListViewItem[] { dataItem });
+				//lvContacts.Items.Add(apiResponse.Data.friends[i].username.ToString());
 			}
 
 		}
@@ -167,11 +169,14 @@ namespace PointGaming
 				var status = apiResponse.Data.success;
 				var count = apiResponse.Data.friends.Count;
 				lvContacts.Items.Clear();
+				ListViewItem dataItem;
+
 				for (int i = 0; i < count; i++)
 				{
-					lvContacts.Items.Add(apiResponse.Data.friends[i].username.ToString());
-
-
+					dataItem = new ListViewItem(apiResponse.Data.friends[i].username.ToString());
+					dataItem.SubItems.Add("Online");
+					lvContacts.Items.AddRange(new ListViewItem[] { dataItem });
+					//lvContacts.Items.Add(apiResponse.Data.friends[i].username.ToString());
 				}
 
 			}
