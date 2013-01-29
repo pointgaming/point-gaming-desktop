@@ -26,9 +26,14 @@ namespace Demo
 			var request = new RestRequest("sessions", Method.POST);
 			request.RequestFormat = DataFormat.Json;
 			request.AddBody(new UserLogin { username = txtUserName.Text, password = txtPassword.Text });
+
+			//RestResponse response = (RestSharp.RestResponse)client.Execute(request);
+			//var content = response.Content; // raw content as string
+
+
 			RestResponse<ApiResponse> apiResponse = (RestSharp.RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
 			var status = apiResponse.Data.success;
-			MessageBox.Show(apiResponse.Data.ToString());
+			
 			if (status == true)
 			{
 				MessageBox.Show("Logged In");
