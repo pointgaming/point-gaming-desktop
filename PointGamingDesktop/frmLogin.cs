@@ -21,22 +21,21 @@ namespace Demo
 		private void btnLogin_Click(object sender, EventArgs e)
 		{
 			var baseUrl=ConfigurationSettings.AppSettings["BaseUrl"].ToString();
-			MessageBox.Show(baseUrl);
 			var client = new RestClient(baseUrl);
 			var request = new RestRequest("sessions", Method.POST);
 			request.RequestFormat = DataFormat.Json;
 			request.AddBody(new UserLogin { username = txtUserName.Text, password = txtPassword.Text });
-
-			//RestResponse response = (RestSharp.RestResponse)client.Execute(request);
-			//var content = response.Content; // raw content as string
-
 
 			RestResponse<ApiResponse> apiResponse = (RestSharp.RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
 			var status = apiResponse.Data.success;
 			
 			if (status == true)
 			{
-				MessageBox.Show("Logged In");
+				frmHome home = new frmHome();
+				home.StartPosition = FormStartPosition.CenterScreen;
+				home.Show();
+				this.Hide();
+				
 			}
 			else
 			{
