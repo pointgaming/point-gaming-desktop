@@ -28,6 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
+            "Test",
+            "Test"}, -1);
+			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Test");
+			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("Test");
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.tcOptions = new System.Windows.Forms.TabControl();
 			this.tpFriends = new System.Windows.Forms.TabPage();
@@ -43,6 +48,8 @@
 			this.lvGames = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -193,7 +200,15 @@
 			// 
 			// lvGames
 			// 
+			this.lvGames.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader3,
+            this.columnHeader4});
 			this.lvGames.FullRowSelect = true;
+			listViewItem1.Tag = "Test";
+			this.lvGames.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem1,
+            listViewItem2,
+            listViewItem3});
 			this.lvGames.Location = new System.Drawing.Point(0, 3);
 			this.lvGames.Name = "lvGames";
 			this.lvGames.Size = new System.Drawing.Size(225, 629);
@@ -210,6 +225,16 @@
 			// 
 			this.columnHeader2.Text = "Status";
 			this.columnHeader2.Width = 88;
+			// 
+			// columnHeader3
+			// 
+			this.columnHeader3.Text = "Game";
+			this.columnHeader3.Width = 114;
+			// 
+			// columnHeader4
+			// 
+			this.columnHeader4.Text = "Status";
+			this.columnHeader4.Width = 115;
 			// 
 			// frmHome
 			// 
@@ -250,6 +275,8 @@
 		private System.Windows.Forms.ListView lvGames;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.ColumnHeader columnHeader2;
+		private System.Windows.Forms.ColumnHeader columnHeader3;
+		private System.Windows.Forms.ColumnHeader columnHeader4;
     }
 }
 

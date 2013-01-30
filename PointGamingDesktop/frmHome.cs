@@ -94,13 +94,6 @@ namespace PointGaming
 			var request = new RestRequest(Method.GET);
 			RestResponse<FriendResponseRootObject> apiResponse = (RestSharp.RestResponse<FriendResponseRootObject>)client.Execute<FriendResponseRootObject>(request);
 
-			// execute the request
-			//RestResponse apiresponse = (RestSharp.RestResponse)client.Execute(request);
-			//var content = response.Content; // raw content as string
-
-
-			MessageBox.Show(apiResponse.Data.success.ToString());
-
 			var status = apiResponse.Data.success;
 			var count = apiResponse.Data.friends.Count;
 			lvContacts.Items.Clear();
@@ -111,14 +104,10 @@ namespace PointGaming
 				dataItem = new ListViewItem(apiResponse.Data.friends[i].username.ToString());
 				dataItem.SubItems.Add("Online");
 				lvContacts.Items.AddRange(new ListViewItem[] { dataItem });
-				//lvContacts.Items.Add(apiResponse.Data.friends[i].username.ToString());
 			}
 
 
-
-			// abort the request on demand
-			//asyncHandle.Abort();s
-
+			var gamesApiCall = ConfigurationSettings.AppSettings["games"].ToString() + AuthTokenStatic.GlobalVar;
 
 		}
 
@@ -136,8 +125,6 @@ namespace PointGaming
 			var request = new RestRequest(Method.POST);
 			request.RequestFormat = DataFormat.Json;
 			request.AddBody(uRoot);
-
-			//request.AddBody(new User { username = txtFriendName.Text });
 
 			RestResponse<ApiResponse> apiResponse = (RestSharp.RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
 			var status = apiResponse.Data.success;
