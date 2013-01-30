@@ -92,22 +92,36 @@ namespace PointGaming
 			var friendsApiCall = ConfigurationSettings.AppSettings["friends"].ToString() + AuthTokenStatic.GlobalVar;
 			var client = new RestClient(friendsApiCall);
 			var request = new RestRequest(Method.GET);
-			RestResponse<FriendResponseRootObject> apiResponse = (RestSharp.RestResponse<FriendResponseRootObject>)client.Execute<FriendResponseRootObject>(request);
+			RestResponse<FriendResponseRootObject> friendsApiResponse = (RestSharp.RestResponse<FriendResponseRootObject>)client.Execute<FriendResponseRootObject>(request);
 
-			var status = apiResponse.Data.success;
-			var count = apiResponse.Data.friends.Count;
+			var status = friendsApiResponse.Data.success;
+			var count = friendsApiResponse.Data.friends.Count;
 			lvContacts.Items.Clear();
 			ListViewItem dataItem;
 
 			for (int i = 0; i < count; i++)
 			{
-				dataItem = new ListViewItem(apiResponse.Data.friends[i].username.ToString());
+				dataItem = new ListViewItem(friendsApiResponse.Data.friends[i].username.ToString());
 				dataItem.SubItems.Add("Online");
 				lvContacts.Items.AddRange(new ListViewItem[] { dataItem });
 			}
 
 
 			var gamesApiCall = ConfigurationSettings.AppSettings["games"].ToString() + AuthTokenStatic.GlobalVar;
+			client = new RestClient(gamesApiCall);
+			request = new RestRequest(Method.GET);
+			RestResponse<GamesRootObject> gamesApiResponse = (RestSharp.RestResponse<GamesRootObject>)client.Execute<GamesRootObject>(request);
+			status = gamesApiResponse.Data.success;
+			count = gamesApiResponse.Data.games.Count;
+			lvGames.Items.Clear();
+
+			for (int i = 0; i < count; i++)
+			{
+				dataItem = new ListViewItem(gamesApiResponse.Data.games[i].name.ToString());
+				dataItem.SubItems.Add(gamesApiResponse.Data.games[i].player_count.ToString());
+				lvContacts.Items.AddRange(new ListViewItem[] { dataItem });
+			}
+
 
 		}
 
