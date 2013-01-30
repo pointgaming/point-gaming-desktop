@@ -28,11 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
+			System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem(new string[] {
             "Test",
             "Test"}, -1);
-			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Test");
-			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("Test");
+			System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem("Test");
+			System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem("Test");
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.tcOptions = new System.Windows.Forms.TabControl();
 			this.tpFriends = new System.Windows.Forms.TabPage();
@@ -121,6 +121,8 @@
 			this.lvContacts.TabIndex = 6;
 			this.lvContacts.UseCompatibleStateImageBehavior = false;
 			this.lvContacts.View = System.Windows.Forms.View.Details;
+			this.lvContacts.SelectedIndexChanged += new System.EventHandler(this.lvContacts_SelectedIndexChanged);
+			this.lvContacts.Click += new System.EventHandler(this.lvContacts_Click);
 			// 
 			// tpGames
 			// 
@@ -204,11 +206,11 @@
             this.columnHeader3,
             this.columnHeader4});
 			this.lvGames.FullRowSelect = true;
-			listViewItem1.Tag = "Test";
+			listViewItem7.Tag = "Test";
 			this.lvGames.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3});
+            listViewItem7,
+            listViewItem8,
+            listViewItem9});
 			this.lvGames.Location = new System.Drawing.Point(0, 3);
 			this.lvGames.Name = "lvGames";
 			this.lvGames.Size = new System.Drawing.Size(225, 629);

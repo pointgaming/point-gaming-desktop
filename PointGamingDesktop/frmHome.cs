@@ -88,7 +88,7 @@ namespace PointGaming
 
 		private void frmHome_Load(object sender, EventArgs e)
 		{
-		
+
 			var friendsApiCall = ConfigurationSettings.AppSettings["friends"].ToString() + AuthTokenStatic.GlobalVar;
 			var client = new RestClient(friendsApiCall);
 			var request = new RestRequest(Method.GET);
@@ -215,6 +215,17 @@ namespace PointGaming
 
 			}
 
+		}
+
+		private void lvContacts_SelectedIndexChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void lvContacts_Click(object sender, EventArgs e)
+		{
+			var firstSelectedItem = lvContacts.SelectedItems[0].Text.ToString();
+			MessageBox.Show(firstSelectedItem);
 		}
 	}
 }
