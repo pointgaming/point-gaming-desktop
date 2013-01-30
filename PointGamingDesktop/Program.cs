@@ -15,7 +15,7 @@ namespace PointGaming
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new TestSockets());
+			Application.Run(new frmLogin());
 		}
 	}
 }
