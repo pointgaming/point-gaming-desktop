@@ -94,10 +94,18 @@ namespace PointGaming
 			var request = new RestRequest(Method.GET);
 			RestResponse<FriendResponseRootObject> apiResponse = (RestSharp.RestResponse<FriendResponseRootObject>)client.Execute<FriendResponseRootObject>(request);
 
+			// execute the request
+			//RestResponse apiresponse = (RestSharp.RestResponse)client.Execute(request);
+			//var content = response.Content; // raw content as string
+
+
+			MessageBox.Show(apiResponse.Data.success.ToString());
+
 			var status = apiResponse.Data.success;
 			var count = apiResponse.Data.friends.Count;
 			lvContacts.Items.Clear();
 			ListViewItem dataItem;
+
 			for (int i = 0; i < count; i++)
 			{
 				dataItem = new ListViewItem(apiResponse.Data.friends[i].username.ToString());
@@ -105,6 +113,12 @@ namespace PointGaming
 				lvContacts.Items.AddRange(new ListViewItem[] { dataItem });
 				//lvContacts.Items.Add(apiResponse.Data.friends[i].username.ToString());
 			}
+
+
+
+			// abort the request on demand
+			//asyncHandle.Abort();s
+
 
 		}
 
