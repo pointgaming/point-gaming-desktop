@@ -119,7 +119,7 @@ namespace PointGaming
 			{
 				dataItem = new ListViewItem(gamesApiResponse.Data.games[i].name.ToString());
 				dataItem.SubItems.Add(gamesApiResponse.Data.games[i].player_count.ToString());
-				lvContacts.Items.AddRange(new ListViewItem[] { dataItem });
+				lvGames.Items.AddRange(new ListViewItem[] { dataItem });
 			}
 
 
@@ -192,6 +192,25 @@ namespace PointGaming
 					dataItem.SubItems.Add("Online");
 					lvContacts.Items.AddRange(new ListViewItem[] { dataItem });
 					//lvContacts.Items.Add(apiResponse.Data.friends[i].username.ToString());
+				}
+
+			}
+
+			if (e.TabPageIndex == 1)
+			{
+				var gamesApiCall = ConfigurationSettings.AppSettings["games"].ToString() + AuthTokenStatic.GlobalVar;
+				var client = new RestClient(gamesApiCall);
+				var request = new RestRequest(Method.GET);
+				RestResponse<GamesRootObject> gamesApiResponse = (RestSharp.RestResponse<GamesRootObject>)client.Execute<GamesRootObject>(request);
+				var status = gamesApiResponse.Data.success;
+				var count = gamesApiResponse.Data.games.Count;
+				lvGames.Items.Clear();
+				ListViewItem dataItem;
+				for (int i = 0; i < count; i++)
+				{
+					dataItem = new ListViewItem(gamesApiResponse.Data.games[i].name.ToString());
+					dataItem.SubItems.Add(gamesApiResponse.Data.games[i].player_count.ToString());
+					lvGames.Items.AddRange(new ListViewItem[] { dataItem });
 				}
 
 			}

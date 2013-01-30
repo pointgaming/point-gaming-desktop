@@ -233,7 +233,7 @@
 			// 
 			// columnHeader4
 			// 
-			this.columnHeader4.Text = "Status";
+			this.columnHeader4.Text = "Players";
 			this.columnHeader4.Width = 115;
 			// 
 			// frmHome
