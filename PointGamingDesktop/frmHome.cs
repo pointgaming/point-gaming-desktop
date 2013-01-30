@@ -88,7 +88,7 @@ namespace PointGaming
 
 		private void frmHome_Load(object sender, EventArgs e)
 		{
-
+		
 			var friendsApiCall = ConfigurationSettings.AppSettings["friends"].ToString() + AuthTokenStatic.GlobalVar;
 			var client = new RestClient(friendsApiCall);
 			var request = new RestRequest(Method.GET);
