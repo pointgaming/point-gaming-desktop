@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+			this.components = new System.ComponentModel.Container();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.tcOptions = new System.Windows.Forms.TabControl();
 			this.tpFriends = new System.Windows.Forms.TabPage();
@@ -45,9 +46,10 @@
 			this.txtFriendName = new System.Windows.Forms.TextBox();
 			this.tpSettings = new System.Windows.Forms.TabPage();
 			this.pnlChat = new System.Windows.Forms.Panel();
-			this.txtChatBox = new System.Windows.Forms.TextBox();
-			this.txtChatText = new System.Windows.Forms.TextBox();
 			this.btnSend = new System.Windows.Forms.Button();
+			this.txtChatText = new System.Windows.Forms.TextBox();
+			this.txtChatBox = new System.Windows.Forms.TextBox();
+			this.tmrUserStatus = new System.Windows.Forms.Timer(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -139,7 +141,7 @@
 			this.tpGames.Location = new System.Drawing.Point(4, 22);
 			this.tpGames.Name = "tpGames";
 			this.tpGames.Padding = new System.Windows.Forms.Padding(3);
-			this.tpGames.Size = new System.Drawing.Size(224, 632);
+			this.tpGames.Size = new System.Drawing.Size(225, 616);
 			this.tpGames.TabIndex = 1;
 			this.tpGames.Text = "Games";
 			this.tpGames.UseVisualStyleBackColor = true;
@@ -171,7 +173,7 @@
 			// 
 			this.tpBitCoin.Location = new System.Drawing.Point(4, 22);
 			this.tpBitCoin.Name = "tpBitCoin";
-			this.tpBitCoin.Size = new System.Drawing.Size(224, 632);
+			this.tpBitCoin.Size = new System.Drawing.Size(225, 616);
 			this.tpBitCoin.TabIndex = 2;
 			this.tpBitCoin.Text = "BitCoin";
 			this.tpBitCoin.UseVisualStyleBackColor = true;
@@ -183,7 +185,7 @@
 			this.tpAddFriend.Controls.Add(this.txtFriendName);
 			this.tpAddFriend.Location = new System.Drawing.Point(4, 22);
 			this.tpAddFriend.Name = "tpAddFriend";
-			this.tpAddFriend.Size = new System.Drawing.Size(224, 632);
+			this.tpAddFriend.Size = new System.Drawing.Size(225, 616);
 			this.tpAddFriend.TabIndex = 3;
 			this.tpAddFriend.Text = "   +";
 			this.tpAddFriend.UseVisualStyleBackColor = true;
@@ -218,7 +220,7 @@
 			// 
 			this.tpSettings.Location = new System.Drawing.Point(4, 22);
 			this.tpSettings.Name = "tpSettings";
-			this.tpSettings.Size = new System.Drawing.Size(224, 632);
+			this.tpSettings.Size = new System.Drawing.Size(225, 616);
 			this.tpSettings.TabIndex = 4;
 			this.tpSettings.Text = "Settings";
 			this.tpSettings.UseVisualStyleBackColor = true;
@@ -235,22 +237,6 @@
 			this.pnlChat.TabIndex = 0;
 			this.pnlChat.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlChat_Paint);
 			// 
-			// txtChatBox
-			// 
-			this.txtChatBox.Location = new System.Drawing.Point(82, 11);
-			this.txtChatBox.Multiline = true;
-			this.txtChatBox.Name = "txtChatBox";
-			this.txtChatBox.Size = new System.Drawing.Size(536, 566);
-			this.txtChatBox.TabIndex = 0;
-			// 
-			// txtChatText
-			// 
-			this.txtChatText.Location = new System.Drawing.Point(82, 582);
-			this.txtChatText.Multiline = true;
-			this.txtChatText.Name = "txtChatText";
-			this.txtChatText.Size = new System.Drawing.Size(444, 53);
-			this.txtChatText.TabIndex = 1;
-			// 
 			// btnSend
 			// 
 			this.btnSend.Location = new System.Drawing.Point(541, 582);
@@ -260,6 +246,28 @@
 			this.btnSend.Text = "Send";
 			this.btnSend.UseVisualStyleBackColor = true;
 			this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
+			// 
+			// txtChatText
+			// 
+			this.txtChatText.Location = new System.Drawing.Point(82, 582);
+			this.txtChatText.Multiline = true;
+			this.txtChatText.Name = "txtChatText";
+			this.txtChatText.Size = new System.Drawing.Size(444, 53);
+			this.txtChatText.TabIndex = 1;
+			// 
+			// txtChatBox
+			// 
+			this.txtChatBox.Location = new System.Drawing.Point(82, 11);
+			this.txtChatBox.Multiline = true;
+			this.txtChatBox.Name = "txtChatBox";
+			this.txtChatBox.Size = new System.Drawing.Size(536, 566);
+			this.txtChatBox.TabIndex = 0;
+			// 
+			// tmrUserStatus
+			// 
+			this.tmrUserStatus.Enabled = true;
+			this.tmrUserStatus.Interval = 5000;
+			this.tmrUserStatus.Tick += new System.EventHandler(this.tmrUserStatus_Tick);
 			// 
 			// frmHome
 			// 
@@ -307,6 +315,7 @@
 		private System.Windows.Forms.TextBox txtChatBox;
 		private System.Windows.Forms.Button btnSend;
 		private System.Windows.Forms.TextBox txtChatText;
+		private System.Windows.Forms.Timer tmrUserStatus;
     }
 }
 
