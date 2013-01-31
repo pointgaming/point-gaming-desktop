@@ -100,8 +100,6 @@ namespace PointGaming
 				});
 			});
 
-
-
 			friendsSocket.Connect();
 		}
 
@@ -236,6 +234,25 @@ namespace PointGaming
 		private void tmrUserStatus_Tick(object sender, EventArgs e)
 		{
 			friendsSocket.Emit("friends", null);
+		}
+
+		private void btnLogOut_Click(object sender, EventArgs e)
+		{
+			var baseUrl = ConfigurationManager.AppSettings["BaseUrl"].ToString() + "sessions/destroy?auth_token=" + AuthTokenStatic.GlobalVar;
+			var client = new RestClient(baseUrl);
+			var request = new RestRequest(Method.DELETE);
+			RestResponse<ApiResponse> apiResponse = (RestSharp.RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
+			var status = apiResponse.Data.success;
+
+			if (status == true)
+			{
+				MessageBox.Show("Logged out Successfully!");
+				this.Hide();
+				AuthTokenStatic.GlobalVar = String.Empty;
+				AuthTokenStatic.loggedInUsername = String.Empty;
+				frmLogin loginForm = new frmLogin();
+				loginForm.Show();
+			}
 		}
 	}
 }

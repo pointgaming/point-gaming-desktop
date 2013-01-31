@@ -20,7 +20,7 @@ namespace PointGaming
 
 		private void btnLogin_Click(object sender, EventArgs e)
 		{
-			var baseUrl=ConfigurationSettings.AppSettings["BaseUrl"].ToString();
+			var baseUrl=ConfigurationManager.AppSettings["BaseUrl"].ToString();
 			var client = new RestClient(baseUrl);
 			var request = new RestRequest("sessions", Method.POST);
 			request.RequestFormat = DataFormat.Json;

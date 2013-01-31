@@ -50,6 +50,7 @@
 			this.txtChatText = new System.Windows.Forms.TextBox();
 			this.txtChatBox = new System.Windows.Forms.TextBox();
 			this.tmrUserStatus = new System.Windows.Forms.Timer(this.components);
+			this.btnLogOut = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -58,6 +59,7 @@
 			this.tpFriends.SuspendLayout();
 			this.tpGames.SuspendLayout();
 			this.tpAddFriend.SuspendLayout();
+			this.tpSettings.SuspendLayout();
 			this.pnlChat.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -218,6 +220,7 @@
 			// 
 			// tpSettings
 			// 
+			this.tpSettings.Controls.Add(this.btnLogOut);
 			this.tpSettings.Location = new System.Drawing.Point(4, 22);
 			this.tpSettings.Name = "tpSettings";
 			this.tpSettings.Size = new System.Drawing.Size(225, 616);
@@ -269,6 +272,16 @@
 			this.tmrUserStatus.Interval = 3000;
 			this.tmrUserStatus.Tick += new System.EventHandler(this.tmrUserStatus_Tick);
 			// 
+			// btnLogOut
+			// 
+			this.btnLogOut.Location = new System.Drawing.Point(65, 23);
+			this.btnLogOut.Name = "btnLogOut";
+			this.btnLogOut.Size = new System.Drawing.Size(75, 23);
+			this.btnLogOut.TabIndex = 0;
+			this.btnLogOut.Text = "Log Out";
+			this.btnLogOut.UseVisualStyleBackColor = true;
+			this.btnLogOut.Click += new System.EventHandler(this.btnLogOut_Click);
+			// 
 			// frmHome
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -287,6 +300,7 @@
 			this.tpGames.ResumeLayout(false);
 			this.tpAddFriend.ResumeLayout(false);
 			this.tpAddFriend.PerformLayout();
+			this.tpSettings.ResumeLayout(false);
 			this.pnlChat.ResumeLayout(false);
 			this.pnlChat.PerformLayout();
 			this.ResumeLayout(false);
@@ -316,6 +330,7 @@
 		private System.Windows.Forms.Button btnSend;
 		private System.Windows.Forms.TextBox txtChatText;
 		private System.Windows.Forms.Timer tmrUserStatus;
+		private System.Windows.Forms.Button btnLogOut;
     }
 }
 
