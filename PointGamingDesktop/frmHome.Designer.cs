@@ -30,36 +30,36 @@
         {
 			this.components = new System.ComponentModel.Container();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-			this.tcOptions = new System.Windows.Forms.TabControl();
-			this.tpFriends = new System.Windows.Forms.TabPage();
-			this.lvContacts = new System.Windows.Forms.ListView();
-			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.tmrUserStatus = new System.Windows.Forms.Timer(this.components);
+			this.tpSettings = new System.Windows.Forms.TabPage();
+			this.btnLogOut = new System.Windows.Forms.Button();
+			this.tpAddFriend = new System.Windows.Forms.TabPage();
+			this.txtFriendName = new System.Windows.Forms.TextBox();
+			this.btnAddFriend = new System.Windows.Forms.Button();
+			this.label1 = new System.Windows.Forms.Label();
+			this.tpBitCoin = new System.Windows.Forms.TabPage();
 			this.tpGames = new System.Windows.Forms.TabPage();
 			this.lvGames = new System.Windows.Forms.ListView();
 			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.tpBitCoin = new System.Windows.Forms.TabPage();
-			this.tpAddFriend = new System.Windows.Forms.TabPage();
-			this.label1 = new System.Windows.Forms.Label();
-			this.btnAddFriend = new System.Windows.Forms.Button();
-			this.txtFriendName = new System.Windows.Forms.TextBox();
-			this.tpSettings = new System.Windows.Forms.TabPage();
+			this.tpFriends = new System.Windows.Forms.TabPage();
+			this.lvContacts = new System.Windows.Forms.ListView();
+			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.tcOptions = new System.Windows.Forms.TabControl();
 			this.pnlChat = new System.Windows.Forms.Panel();
-			this.btnSend = new System.Windows.Forms.Button();
-			this.txtChatText = new System.Windows.Forms.TextBox();
 			this.txtChatBox = new System.Windows.Forms.TextBox();
-			this.tmrUserStatus = new System.Windows.Forms.Timer(this.components);
-			this.btnLogOut = new System.Windows.Forms.Button();
+			this.txtChatText = new System.Windows.Forms.TextBox();
+			this.btnSend = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
-			this.tcOptions.SuspendLayout();
-			this.tpFriends.SuspendLayout();
-			this.tpGames.SuspendLayout();
-			this.tpAddFriend.SuspendLayout();
 			this.tpSettings.SuspendLayout();
+			this.tpAddFriend.SuspendLayout();
+			this.tpGames.SuspendLayout();
+			this.tpFriends.SuspendLayout();
+			this.tcOptions.SuspendLayout();
 			this.pnlChat.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -78,26 +78,116 @@
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.pnlChat);
 			this.splitContainer1.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Panel2_Paint);
-			this.splitContainer1.Size = new System.Drawing.Size(947, 644);
+			this.splitContainer1.Size = new System.Drawing.Size(1002, 644);
 			this.splitContainer1.SplitterDistance = 235;
 			this.splitContainer1.TabIndex = 1;
 			// 
-			// tcOptions
+			// tmrUserStatus
 			// 
-			this.tcOptions.Controls.Add(this.tpFriends);
-			this.tcOptions.Controls.Add(this.tpGames);
-			this.tcOptions.Controls.Add(this.tpBitCoin);
-			this.tcOptions.Controls.Add(this.tpAddFriend);
-			this.tcOptions.Controls.Add(this.tpSettings);
-			this.tcOptions.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tcOptions.Location = new System.Drawing.Point(0, 0);
-			this.tcOptions.Name = "tcOptions";
-			this.tcOptions.SelectedIndex = 0;
-			this.tcOptions.Size = new System.Drawing.Size(233, 642);
-			this.tcOptions.TabIndex = 0;
-			this.tcOptions.SelectedIndexChanged += new System.EventHandler(this.tcOptions_SelectedIndexChanged);
-			this.tcOptions.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.tcOptions_Selecting);
-			this.tcOptions.TabIndexChanged += new System.EventHandler(this.tcOptions_TabIndexChanged);
+			this.tmrUserStatus.Enabled = true;
+			this.tmrUserStatus.Interval = 3000;
+			this.tmrUserStatus.Tick += new System.EventHandler(this.tmrUserStatus_Tick);
+			// 
+			// tpSettings
+			// 
+			this.tpSettings.Controls.Add(this.btnLogOut);
+			this.tpSettings.Location = new System.Drawing.Point(4, 22);
+			this.tpSettings.Name = "tpSettings";
+			this.tpSettings.Size = new System.Drawing.Size(238, 641);
+			this.tpSettings.TabIndex = 4;
+			this.tpSettings.Text = "Settings";
+			this.tpSettings.UseVisualStyleBackColor = true;
+			// 
+			// btnLogOut
+			// 
+			this.btnLogOut.Location = new System.Drawing.Point(65, 23);
+			this.btnLogOut.Name = "btnLogOut";
+			this.btnLogOut.Size = new System.Drawing.Size(75, 23);
+			this.btnLogOut.TabIndex = 0;
+			this.btnLogOut.Text = "Log Out";
+			this.btnLogOut.UseVisualStyleBackColor = true;
+			this.btnLogOut.Click += new System.EventHandler(this.btnLogOut_Click);
+			// 
+			// tpAddFriend
+			// 
+			this.tpAddFriend.Controls.Add(this.label1);
+			this.tpAddFriend.Controls.Add(this.btnAddFriend);
+			this.tpAddFriend.Controls.Add(this.txtFriendName);
+			this.tpAddFriend.Location = new System.Drawing.Point(4, 22);
+			this.tpAddFriend.Name = "tpAddFriend";
+			this.tpAddFriend.Size = new System.Drawing.Size(238, 641);
+			this.tpAddFriend.TabIndex = 3;
+			this.tpAddFriend.Text = "   +";
+			this.tpAddFriend.UseVisualStyleBackColor = true;
+			// 
+			// txtFriendName
+			// 
+			this.txtFriendName.Location = new System.Drawing.Point(65, 20);
+			this.txtFriendName.Name = "txtFriendName";
+			this.txtFriendName.Size = new System.Drawing.Size(127, 20);
+			this.txtFriendName.TabIndex = 0;
+			// 
+			// btnAddFriend
+			// 
+			this.btnAddFriend.Location = new System.Drawing.Point(116, 47);
+			this.btnAddFriend.Name = "btnAddFriend";
+			this.btnAddFriend.Size = new System.Drawing.Size(75, 23);
+			this.btnAddFriend.TabIndex = 1;
+			this.btnAddFriend.Text = "Add Friend";
+			this.btnAddFriend.UseVisualStyleBackColor = true;
+			this.btnAddFriend.Click += new System.EventHandler(this.btnAddFriend_Click);
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(4, 23);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(55, 13);
+			this.label1.TabIndex = 2;
+			this.label1.Text = "Username";
+			// 
+			// tpBitCoin
+			// 
+			this.tpBitCoin.Location = new System.Drawing.Point(4, 22);
+			this.tpBitCoin.Name = "tpBitCoin";
+			this.tpBitCoin.Size = new System.Drawing.Size(238, 641);
+			this.tpBitCoin.TabIndex = 2;
+			this.tpBitCoin.Text = "BitCoin";
+			this.tpBitCoin.UseVisualStyleBackColor = true;
+			// 
+			// tpGames
+			// 
+			this.tpGames.Controls.Add(this.lvGames);
+			this.tpGames.Location = new System.Drawing.Point(4, 22);
+			this.tpGames.Name = "tpGames";
+			this.tpGames.Padding = new System.Windows.Forms.Padding(3);
+			this.tpGames.Size = new System.Drawing.Size(238, 641);
+			this.tpGames.TabIndex = 1;
+			this.tpGames.Text = "Games";
+			this.tpGames.UseVisualStyleBackColor = true;
+			// 
+			// lvGames
+			// 
+			this.lvGames.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader3,
+            this.columnHeader4});
+			this.lvGames.FullRowSelect = true;
+			this.lvGames.Location = new System.Drawing.Point(0, 3);
+			this.lvGames.Name = "lvGames";
+			this.lvGames.Size = new System.Drawing.Size(225, 629);
+			this.lvGames.TabIndex = 0;
+			this.lvGames.UseCompatibleStateImageBehavior = false;
+			this.lvGames.View = System.Windows.Forms.View.Details;
+			// 
+			// columnHeader3
+			// 
+			this.columnHeader3.Text = "Game";
+			this.columnHeader3.Width = 114;
+			// 
+			// columnHeader4
+			// 
+			this.columnHeader4.Text = "Players";
+			this.columnHeader4.Width = 115;
 			// 
 			// tpFriends
 			// 
@@ -137,96 +227,22 @@
 			this.columnHeader2.Text = "Status";
 			this.columnHeader2.Width = 88;
 			// 
-			// tpGames
+			// tcOptions
 			// 
-			this.tpGames.Controls.Add(this.lvGames);
-			this.tpGames.Location = new System.Drawing.Point(4, 22);
-			this.tpGames.Name = "tpGames";
-			this.tpGames.Padding = new System.Windows.Forms.Padding(3);
-			this.tpGames.Size = new System.Drawing.Size(225, 616);
-			this.tpGames.TabIndex = 1;
-			this.tpGames.Text = "Games";
-			this.tpGames.UseVisualStyleBackColor = true;
-			// 
-			// lvGames
-			// 
-			this.lvGames.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader3,
-            this.columnHeader4});
-			this.lvGames.FullRowSelect = true;
-			this.lvGames.Location = new System.Drawing.Point(0, 3);
-			this.lvGames.Name = "lvGames";
-			this.lvGames.Size = new System.Drawing.Size(225, 629);
-			this.lvGames.TabIndex = 0;
-			this.lvGames.UseCompatibleStateImageBehavior = false;
-			this.lvGames.View = System.Windows.Forms.View.Details;
-			// 
-			// columnHeader3
-			// 
-			this.columnHeader3.Text = "Game";
-			this.columnHeader3.Width = 114;
-			// 
-			// columnHeader4
-			// 
-			this.columnHeader4.Text = "Players";
-			this.columnHeader4.Width = 115;
-			// 
-			// tpBitCoin
-			// 
-			this.tpBitCoin.Location = new System.Drawing.Point(4, 22);
-			this.tpBitCoin.Name = "tpBitCoin";
-			this.tpBitCoin.Size = new System.Drawing.Size(225, 616);
-			this.tpBitCoin.TabIndex = 2;
-			this.tpBitCoin.Text = "BitCoin";
-			this.tpBitCoin.UseVisualStyleBackColor = true;
-			// 
-			// tpAddFriend
-			// 
-			this.tpAddFriend.Controls.Add(this.label1);
-			this.tpAddFriend.Controls.Add(this.btnAddFriend);
-			this.tpAddFriend.Controls.Add(this.txtFriendName);
-			this.tpAddFriend.Location = new System.Drawing.Point(4, 22);
-			this.tpAddFriend.Name = "tpAddFriend";
-			this.tpAddFriend.Size = new System.Drawing.Size(225, 616);
-			this.tpAddFriend.TabIndex = 3;
-			this.tpAddFriend.Text = "   +";
-			this.tpAddFriend.UseVisualStyleBackColor = true;
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(4, 23);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(55, 13);
-			this.label1.TabIndex = 2;
-			this.label1.Text = "Username";
-			// 
-			// btnAddFriend
-			// 
-			this.btnAddFriend.Location = new System.Drawing.Point(116, 47);
-			this.btnAddFriend.Name = "btnAddFriend";
-			this.btnAddFriend.Size = new System.Drawing.Size(75, 23);
-			this.btnAddFriend.TabIndex = 1;
-			this.btnAddFriend.Text = "Add Friend";
-			this.btnAddFriend.UseVisualStyleBackColor = true;
-			this.btnAddFriend.Click += new System.EventHandler(this.btnAddFriend_Click);
-			// 
-			// txtFriendName
-			// 
-			this.txtFriendName.Location = new System.Drawing.Point(65, 20);
-			this.txtFriendName.Name = "txtFriendName";
-			this.txtFriendName.Size = new System.Drawing.Size(127, 20);
-			this.txtFriendName.TabIndex = 0;
-			// 
-			// tpSettings
-			// 
-			this.tpSettings.Controls.Add(this.btnLogOut);
-			this.tpSettings.Location = new System.Drawing.Point(4, 22);
-			this.tpSettings.Name = "tpSettings";
-			this.tpSettings.Size = new System.Drawing.Size(225, 616);
-			this.tpSettings.TabIndex = 4;
-			this.tpSettings.Text = "Settings";
-			this.tpSettings.UseVisualStyleBackColor = true;
+			this.tcOptions.Controls.Add(this.tpFriends);
+			this.tcOptions.Controls.Add(this.tpGames);
+			this.tcOptions.Controls.Add(this.tpBitCoin);
+			this.tcOptions.Controls.Add(this.tpAddFriend);
+			this.tcOptions.Controls.Add(this.tpSettings);
+			this.tcOptions.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tcOptions.Location = new System.Drawing.Point(0, 0);
+			this.tcOptions.Name = "tcOptions";
+			this.tcOptions.SelectedIndex = 0;
+			this.tcOptions.Size = new System.Drawing.Size(233, 642);
+			this.tcOptions.TabIndex = 0;
+			this.tcOptions.SelectedIndexChanged += new System.EventHandler(this.tcOptions_SelectedIndexChanged);
+			this.tcOptions.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.tcOptions_Selecting);
+			this.tcOptions.TabIndexChanged += new System.EventHandler(this.tcOptions_TabIndexChanged);
 			// 
 			// pnlChat
 			// 
@@ -236,9 +252,25 @@
 			this.pnlChat.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.pnlChat.Location = new System.Drawing.Point(0, 0);
 			this.pnlChat.Name = "pnlChat";
-			this.pnlChat.Size = new System.Drawing.Size(706, 642);
+			this.pnlChat.Size = new System.Drawing.Size(761, 642);
 			this.pnlChat.TabIndex = 0;
 			this.pnlChat.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlChat_Paint);
+			// 
+			// txtChatBox
+			// 
+			this.txtChatBox.Location = new System.Drawing.Point(82, 11);
+			this.txtChatBox.Multiline = true;
+			this.txtChatBox.Name = "txtChatBox";
+			this.txtChatBox.Size = new System.Drawing.Size(536, 566);
+			this.txtChatBox.TabIndex = 0;
+			// 
+			// txtChatText
+			// 
+			this.txtChatText.Location = new System.Drawing.Point(82, 582);
+			this.txtChatText.Multiline = true;
+			this.txtChatText.Name = "txtChatText";
+			this.txtChatText.Size = new System.Drawing.Size(444, 53);
+			this.txtChatText.TabIndex = 1;
 			// 
 			// btnSend
 			// 
@@ -250,43 +282,11 @@
 			this.btnSend.UseVisualStyleBackColor = true;
 			this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
 			// 
-			// txtChatText
-			// 
-			this.txtChatText.Location = new System.Drawing.Point(82, 582);
-			this.txtChatText.Multiline = true;
-			this.txtChatText.Name = "txtChatText";
-			this.txtChatText.Size = new System.Drawing.Size(444, 53);
-			this.txtChatText.TabIndex = 1;
-			// 
-			// txtChatBox
-			// 
-			this.txtChatBox.Location = new System.Drawing.Point(82, 11);
-			this.txtChatBox.Multiline = true;
-			this.txtChatBox.Name = "txtChatBox";
-			this.txtChatBox.Size = new System.Drawing.Size(536, 566);
-			this.txtChatBox.TabIndex = 0;
-			// 
-			// tmrUserStatus
-			// 
-			this.tmrUserStatus.Enabled = true;
-			this.tmrUserStatus.Interval = 3000;
-			this.tmrUserStatus.Tick += new System.EventHandler(this.tmrUserStatus_Tick);
-			// 
-			// btnLogOut
-			// 
-			this.btnLogOut.Location = new System.Drawing.Point(65, 23);
-			this.btnLogOut.Name = "btnLogOut";
-			this.btnLogOut.Size = new System.Drawing.Size(75, 23);
-			this.btnLogOut.TabIndex = 0;
-			this.btnLogOut.Text = "Log Out";
-			this.btnLogOut.UseVisualStyleBackColor = true;
-			this.btnLogOut.Click += new System.EventHandler(this.btnLogOut_Click);
-			// 
 			// frmHome
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(947, 644);
+			this.ClientSize = new System.Drawing.Size(1002, 644);
 			this.Controls.Add(this.splitContainer1);
 			this.Name = "frmHome";
 			this.Text = "Point Gaming";
@@ -295,12 +295,12 @@
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
-			this.tcOptions.ResumeLayout(false);
-			this.tpFriends.ResumeLayout(false);
-			this.tpGames.ResumeLayout(false);
+			this.tpSettings.ResumeLayout(false);
 			this.tpAddFriend.ResumeLayout(false);
 			this.tpAddFriend.PerformLayout();
-			this.tpSettings.ResumeLayout(false);
+			this.tpGames.ResumeLayout(false);
+			this.tpFriends.ResumeLayout(false);
+			this.tcOptions.ResumeLayout(false);
 			this.pnlChat.ResumeLayout(false);
 			this.pnlChat.PerformLayout();
 			this.ResumeLayout(false);
@@ -309,28 +309,28 @@
 
         #endregion
 
-        private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.TabControl tcOptions;
-        private System.Windows.Forms.TabPage tpFriends;
-        private System.Windows.Forms.TabPage tpGames;
-        private System.Windows.Forms.TabPage tpBitCoin;
+		private System.Windows.Forms.SplitContainer splitContainer1;
+		private System.Windows.Forms.Timer tmrUserStatus;
+		private System.Windows.Forms.TabControl tcOptions;
+		private System.Windows.Forms.TabPage tpFriends;
 		private System.Windows.Forms.ListView lvContacts;
-        private System.Windows.Forms.Panel pnlChat;
+		private System.Windows.Forms.ColumnHeader columnHeader1;
+		private System.Windows.Forms.ColumnHeader columnHeader2;
+		private System.Windows.Forms.TabPage tpGames;
+		private System.Windows.Forms.ListView lvGames;
+		private System.Windows.Forms.ColumnHeader columnHeader3;
+		private System.Windows.Forms.ColumnHeader columnHeader4;
+		private System.Windows.Forms.TabPage tpBitCoin;
 		private System.Windows.Forms.TabPage tpAddFriend;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button btnAddFriend;
 		private System.Windows.Forms.TextBox txtFriendName;
 		private System.Windows.Forms.TabPage tpSettings;
-		private System.Windows.Forms.ListView lvGames;
-		private System.Windows.Forms.ColumnHeader columnHeader1;
-		private System.Windows.Forms.ColumnHeader columnHeader2;
-		private System.Windows.Forms.ColumnHeader columnHeader3;
-		private System.Windows.Forms.ColumnHeader columnHeader4;
-		private System.Windows.Forms.TextBox txtChatBox;
+		private System.Windows.Forms.Button btnLogOut;
+		private System.Windows.Forms.Panel pnlChat;
 		private System.Windows.Forms.Button btnSend;
 		private System.Windows.Forms.TextBox txtChatText;
-		private System.Windows.Forms.Timer tmrUserStatus;
-		private System.Windows.Forms.Button btnLogOut;
+		private System.Windows.Forms.TextBox txtChatBox;
     }
 }
 
