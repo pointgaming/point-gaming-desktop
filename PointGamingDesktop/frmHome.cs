@@ -14,14 +14,12 @@ namespace PointGaming
 {
 	public partial class frmHome : Form
 	{
-
 		Client socket;
 		AuthEmit ae;
 		ApiResponse ar;
 		OutgoingMessages oMsg;
 		ReceivedMessages rMsg;
 		string firstSelectedItem;
-
 
 		public frmHome()
 		{
@@ -44,7 +42,7 @@ namespace PointGaming
 		{
 			showChatView(false);
 
-			var friendsApiCall = ConfigurationSettings.AppSettings["friends"].ToString() + AuthTokenStatic.GlobalVar;
+			var friendsApiCall = ConfigurationManager.AppSettings["friends"].ToString() + AuthTokenStatic.GlobalVar;
 			var client = new RestClient(friendsApiCall);
 			var request = new RestRequest(Method.GET);
 			RestResponse<FriendResponseRootObject> friendsApiResponse = (RestSharp.RestResponse<FriendResponseRootObject>)client.Execute<FriendResponseRootObject>(request);
@@ -61,8 +59,7 @@ namespace PointGaming
 				lvContacts.Items.AddRange(new ListViewItem[] { dataItem });
 			}
 
-
-			var gamesApiCall = ConfigurationSettings.AppSettings["games"].ToString() + AuthTokenStatic.GlobalVar;
+			var gamesApiCall = ConfigurationManager.AppSettings["games"].ToString() + AuthTokenStatic.GlobalVar;
 			client = new RestClient(gamesApiCall);
 			request = new RestRequest(Method.GET);
 			RestResponse<GamesRootObject> gamesApiResponse = (RestSharp.RestResponse<GamesRootObject>)client.Execute<GamesRootObject>(request);
@@ -77,7 +74,6 @@ namespace PointGaming
 				lvGames.Items.AddRange(new ListViewItem[] { dataItem });
 			}
 
-
 		}
 
 		private void btnAddFriend_Click(object sender, EventArgs e)
@@ -88,7 +84,7 @@ namespace PointGaming
 			UserRootObject uRoot = new UserRootObject();
 			uRoot.user = u;
 
-			var friendsApiCall = ConfigurationSettings.AppSettings["friends"].ToString() + AuthTokenStatic.GlobalVar;
+			var friendsApiCall = ConfigurationManager.AppSettings["friends"].ToString() + AuthTokenStatic.GlobalVar;
 			var client = new RestClient(friendsApiCall);
 
 			var request = new RestRequest(Method.POST);
@@ -122,14 +118,14 @@ namespace PointGaming
 
 		private void tcOptions_TabIndexChanged(object sender, EventArgs e)
 		{
-		
+
 		}
 
 		private void tcOptions_Selecting(object sender, TabControlCancelEventArgs e)
 		{
 			if (e.TabPageIndex == 0)
 			{
-				var friendsApiCall = ConfigurationSettings.AppSettings["friends"].ToString() + AuthTokenStatic.GlobalVar;
+				var friendsApiCall = ConfigurationManager.AppSettings["friends"].ToString() + AuthTokenStatic.GlobalVar;
 				var client = new RestClient(friendsApiCall);
 				var request = new RestRequest(Method.GET);
 				RestResponse<FriendResponseRootObject> apiResponse = (RestSharp.RestResponse<FriendResponseRootObject>)client.Execute<FriendResponseRootObject>(request);
@@ -144,14 +140,13 @@ namespace PointGaming
 					dataItem = new ListViewItem(apiResponse.Data.friends[i].username.ToString());
 					dataItem.SubItems.Add("Online");
 					lvContacts.Items.AddRange(new ListViewItem[] { dataItem });
-					//lvContacts.Items.Add(apiResponse.Data.friends[i].username.ToString());
 				}
 
 			}
 
 			if (e.TabPageIndex == 1)
 			{
-				var gamesApiCall = ConfigurationSettings.AppSettings["games"].ToString() + AuthTokenStatic.GlobalVar;
+				var gamesApiCall = ConfigurationManager.AppSettings["games"].ToString() + AuthTokenStatic.GlobalVar;
 				var client = new RestClient(gamesApiCall);
 				var request = new RestRequest(Method.GET);
 				RestResponse<GamesRootObject> gamesApiResponse = (RestSharp.RestResponse<GamesRootObject>)client.Execute<GamesRootObject>(request);
@@ -200,6 +195,7 @@ namespace PointGaming
 				{
 					MessageBox.Show(ex.Message.ToString());
 				}
+
 			});
 
 
