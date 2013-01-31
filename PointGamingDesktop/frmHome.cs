@@ -18,72 +18,12 @@ namespace PointGaming
 		Client socket;
 		AuthEmit ae;
 		ApiResponse ar;
-
+		Messages msg;
+		string firstSelectedItem;
 		public frmHome()
 		{
 			InitializeComponent();
 		}
-
-		//private void Form1_Load(object sender, EventArgs e)
-		//{
-		//	// Create three items and three sets of subitems for each item.
-		//	ListViewItem item1 = new ListViewItem("David Booth", 0);
-		//	ListViewItem item2 = new ListViewItem("Kavin", 1);
-		//	ListViewItem item3 = new ListViewItem("Nathon Astle", 2);
-		//	ListViewItem item4 = new ListViewItem("Jeff Brown", 3);
-
-		//	item1.SubItems.Add("Online");
-		//	item2.SubItems.Add("Offline");
-		//	item3.SubItems.Add("Online");
-		//	item4.SubItems.Add("Online");
-
-		//	////Add the items to the ListView.
-		//	lvContacts.Items.AddRange(new ListViewItem[] { item1, item2, item3, item4 });
-
-		//	// Create two ImageList objects.
-
-		//	//ImageList imageListLarge = new ImageList();
-
-		//	// Initialize the ImageList objects with bitmaps.
-
-		//	//imageListLarge.Images.Add(Bitmap.FromFile("C:\\1.jpg"));
-		//	//imageListLarge.Images.Add(Bitmap.FromFile("C:\\1.jpg"));
-
-		//	ImageList imageListSmall = new ImageList();
-		//	imageListSmall.Images.Add(Bitmap.FromFile(Application.StartupPath + "\\Images\\1.jpg"));
-		//	imageListSmall.Images.Add(Bitmap.FromFile(Application.StartupPath + "\\Images\\2.jpg"));
-		//	imageListSmall.Images.Add(Bitmap.FromFile(Application.StartupPath + "\\Images\\3.jpg"));
-		//	imageListSmall.Images.Add(Bitmap.FromFile(Application.StartupPath + "\\Images\\4.jpg"));
-
-		//	lvContacts.SmallImageList = imageListSmall;
-		//	rndLeft = new Random(10);
-		//	rndTop = new Random(10);            
-		//}
-
-		//private void lvContacts_DoubleClick(object sender, EventArgs e)
-		//{
-		//	if (lvContacts.SelectedItems != null)
-		//	{
-		//		ListViewItem lvContact = lvContacts.SelectedItems[0];
-
-		//		Control[] ctlChat = pnlChat.Controls.Find(lvContact.Text.Replace(" ", ""), true);
-
-		//		if (ctlChat.Length == 0)
-		//		{
-		//			ucChat frmChat = new ucChat(lvContact.Text);
-		//			frmChat.Name = lvContact.Text.Replace(" ", "");
-		//			//frmChat.Left = rndLeft.Next(100);
-		//			//frmChat.Top = rndTop.Next(100);
-		//			pnlChat.Controls.Add(frmChat);
-		//			frmChat.Show();
-		//		}
-		//		else
-		//		{
-		//			ucChat frmChat = (ucChat)ctlChat[0];
-		//			frmChat.BringToFront();
-		//		}
-		//	}
-		//}
 
 		private void pnlChat_Paint(object sender, PaintEventArgs e)
 		{
@@ -236,7 +176,7 @@ namespace PointGaming
 
 		private void lvContacts_Click(object sender, EventArgs e)
 		{
-			var firstSelectedItem = lvContacts.SelectedItems[0].Text.ToString();
+			firstSelectedItem = lvContacts.SelectedItems[0].Text.ToString();
 			showChatView(true);
 			socket = new Client("http://dev.pointgaming.net:4000/");
 
@@ -260,13 +200,34 @@ namespace PointGaming
 			});
 
 
+			socket.On("message", (data) =>
+			{
+				this.Invoke((MethodInvoker)delegate()
+					{
+						msg = new Messages();
+						msg = data.Json.GetFirstArgAs<Messages>();
+						txtChatBox.Text = msg.username + ": " + msg.message;
+					});
+			});
+
 			socket.On("auth_resp", (data) =>
 			{
-					ar = new ApiResponse();
-					ar=data.Json.GetFirstArgAs<ApiResponse>();
+				ar = new ApiResponse();
+				ar = data.Json.GetFirstArgAs<ApiResponse>();
 			});
 
 			socket.Connect();
+		}
+
+		private void btnSend_Click(object sender, EventArgs e)
+		{	
+			this.Invoke((MethodInvoker)delegate()
+				{
+
+						msg = new Messages() { username = firstSelectedItem, message = txtChatText.Text + Environment.NewLine };
+						txtChatBox.Text = msg.username + ": " + msg.message;
+						socket.Emit("message", msg);
+				});
 		}
 	}
 }

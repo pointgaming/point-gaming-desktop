@@ -74,8 +74,8 @@
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.pnlChat);
 			this.splitContainer1.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Panel2_Paint);
-			this.splitContainer1.Size = new System.Drawing.Size(940, 660);
-			this.splitContainer1.SplitterDistance = 234;
+			this.splitContainer1.Size = new System.Drawing.Size(947, 644);
+			this.splitContainer1.SplitterDistance = 235;
 			this.splitContainer1.TabIndex = 1;
 			// 
 			// tcOptions
@@ -89,7 +89,7 @@
 			this.tcOptions.Location = new System.Drawing.Point(0, 0);
 			this.tcOptions.Name = "tcOptions";
 			this.tcOptions.SelectedIndex = 0;
-			this.tcOptions.Size = new System.Drawing.Size(232, 658);
+			this.tcOptions.Size = new System.Drawing.Size(233, 642);
 			this.tcOptions.TabIndex = 0;
 			this.tcOptions.SelectedIndexChanged += new System.EventHandler(this.tcOptions_SelectedIndexChanged);
 			this.tcOptions.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.tcOptions_Selecting);
@@ -101,7 +101,7 @@
 			this.tpFriends.Location = new System.Drawing.Point(4, 22);
 			this.tpFriends.Name = "tpFriends";
 			this.tpFriends.Padding = new System.Windows.Forms.Padding(3);
-			this.tpFriends.Size = new System.Drawing.Size(224, 632);
+			this.tpFriends.Size = new System.Drawing.Size(225, 616);
 			this.tpFriends.TabIndex = 0;
 			this.tpFriends.Text = "Friends";
 			this.tpFriends.UseVisualStyleBackColor = true;
@@ -116,7 +116,7 @@
 			this.lvContacts.Location = new System.Drawing.Point(3, 3);
 			this.lvContacts.MultiSelect = false;
 			this.lvContacts.Name = "lvContacts";
-			this.lvContacts.Size = new System.Drawing.Size(218, 626);
+			this.lvContacts.Size = new System.Drawing.Size(219, 610);
 			this.lvContacts.TabIndex = 6;
 			this.lvContacts.UseCompatibleStateImageBehavior = false;
 			this.lvContacts.View = System.Windows.Forms.View.Details;
@@ -231,40 +231,41 @@
 			this.pnlChat.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.pnlChat.Location = new System.Drawing.Point(0, 0);
 			this.pnlChat.Name = "pnlChat";
-			this.pnlChat.Size = new System.Drawing.Size(700, 658);
+			this.pnlChat.Size = new System.Drawing.Size(706, 642);
 			this.pnlChat.TabIndex = 0;
 			this.pnlChat.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlChat_Paint);
 			// 
 			// txtChatBox
 			// 
-			this.txtChatBox.Location = new System.Drawing.Point(20, 11);
+			this.txtChatBox.Location = new System.Drawing.Point(82, 11);
 			this.txtChatBox.Multiline = true;
 			this.txtChatBox.Name = "txtChatBox";
-			this.txtChatBox.Size = new System.Drawing.Size(669, 566);
+			this.txtChatBox.Size = new System.Drawing.Size(536, 566);
 			this.txtChatBox.TabIndex = 0;
 			// 
 			// txtChatText
 			// 
-			this.txtChatText.Location = new System.Drawing.Point(20, 583);
+			this.txtChatText.Location = new System.Drawing.Point(82, 582);
 			this.txtChatText.Multiline = true;
 			this.txtChatText.Name = "txtChatText";
-			this.txtChatText.Size = new System.Drawing.Size(586, 53);
+			this.txtChatText.Size = new System.Drawing.Size(444, 53);
 			this.txtChatText.TabIndex = 1;
 			// 
 			// btnSend
 			// 
-			this.btnSend.Location = new System.Drawing.Point(612, 583);
+			this.btnSend.Location = new System.Drawing.Point(541, 582);
 			this.btnSend.Name = "btnSend";
 			this.btnSend.Size = new System.Drawing.Size(77, 53);
 			this.btnSend.TabIndex = 2;
 			this.btnSend.Text = "Send";
 			this.btnSend.UseVisualStyleBackColor = true;
+			this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
 			// 
 			// frmHome
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(940, 660);
+			this.ClientSize = new System.Drawing.Size(947, 644);
 			this.Controls.Add(this.splitContainer1);
 			this.Name = "frmHome";
 			this.Text = "Point Gaming";

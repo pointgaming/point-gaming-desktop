@@ -96,17 +96,12 @@
     <Compile Include="POCO\Coin.cs" />
     <Compile Include="POCO\CoinResponse.cs" />
     <Compile Include="POCO\FriendResponse.cs" />
+    <Compile Include="POCO\Messages.cs" />
     <Compile Include="POCO\User.cs" />
     <Compile Include="POCO\Games.cs" />
     <Compile Include="POCO\AuthTokenStatic.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ucChat.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ucChat.Designer.cs">
-      <DependentUpon>ucChat.cs</DependentUpon>
-    </Compile>
     <Compile Include="POCO\UserLogin.cs" />
     <EmbeddedResource Include="frmAddFriends.resx">
       <DependentUpon>frmAddFriends.cs</DependentUpon>
@@ -127,9 +122,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="ucChat.resx">
-      <DependentUpon>ucChat.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
