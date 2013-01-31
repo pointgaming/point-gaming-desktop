@@ -96,7 +96,8 @@
     <Compile Include="POCO\Coin.cs" />
     <Compile Include="POCO\CoinResponse.cs" />
     <Compile Include="POCO\FriendResponse.cs" />
-    <Compile Include="POCO\Messages.cs" />
+    <Compile Include="POCO\OutgoingMessages.cs" />
+    <Compile Include="POCO\ReceivedMessages.cs" />
     <Compile Include="POCO\User.cs" />
     <Compile Include="POCO\Games.cs" />
     <Compile Include="POCO\AuthTokenStatic.cs" />

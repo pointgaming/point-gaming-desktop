@@ -18,7 +18,8 @@ namespace PointGaming
 		Client socket;
 		AuthEmit ae;
 		ApiResponse ar;
-		Messages msg;
+		OutgoingMessages oMsg;
+		ReceivedMessages rMsg;
 		string firstSelectedItem;
 		public frmHome()
 		{
@@ -94,6 +95,7 @@ namespace PointGaming
 
 			RestResponse<ApiResponse> apiResponse = (RestSharp.RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
 			var status = apiResponse.Data.success;
+
 			if (status)
 			{
 				MessageBox.Show("Friend SuccessFully Added!");
@@ -204,9 +206,9 @@ namespace PointGaming
 			{
 				this.Invoke((MethodInvoker)delegate()
 					{
-						msg = new Messages();
-						msg = data.Json.GetFirstArgAs<Messages>();
-						txtChatBox.Text = msg.username + ": " + msg.message;
+						rMsg = new ReceivedMessages();
+						rMsg = data.Json.GetFirstArgAs<ReceivedMessages>();
+						txtChatBox.Text += rMsg.username + ": " + rMsg.message + Environment.NewLine;
 					});
 			});
 
@@ -220,14 +222,13 @@ namespace PointGaming
 		}
 
 		private void btnSend_Click(object sender, EventArgs e)
-		{	
-			this.Invoke((MethodInvoker)delegate()
-				{
+		{
 
-						msg = new Messages() { username = firstSelectedItem, message = txtChatText.Text + Environment.NewLine };
-						txtChatBox.Text = msg.username + ": " + msg.message;
-						socket.Emit("message", msg);
-				});
+			oMsg = new OutgoingMessages() { user = firstSelectedItem, message = txtChatText.Text + Environment.NewLine };
+			txtChatBox.Text += AuthTokenStatic.loggedInUsername + ": " + oMsg.message + Environment.NewLine;
+			socket.Emit("message", oMsg);
+			txtChatText.Clear();
+
 		}
 	}
 }

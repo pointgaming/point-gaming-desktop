@@ -33,6 +33,7 @@ namespace PointGaming
 			{
 
 				AuthTokenStatic.GlobalVar = apiResponse.Data.auth_token;
+				AuthTokenStatic.loggedInUsername = txtUserName.Text;
 
 				frmHome home = new frmHome();
 				home.StartPosition = FormStartPosition.CenterScreen;
