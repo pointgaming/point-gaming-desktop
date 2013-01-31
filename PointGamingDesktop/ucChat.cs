@@ -17,5 +17,10 @@ namespace Demo
 
             lblName.Text = sContactName;
         }
+
+		private void button1_Click(object sender, EventArgs e)
+		{
+
+		}
     }
 }

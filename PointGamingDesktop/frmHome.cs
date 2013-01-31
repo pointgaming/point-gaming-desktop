@@ -86,8 +86,16 @@ namespace PointGaming
 
 		}
 
+		private void showChatView(bool val)
+		{
+			txtChatBox.Visible = val;
+			txtChatText.Visible = val;
+			btnSend.Visible = val;
+		}
+
 		private void frmHome_Load(object sender, EventArgs e)
 		{
+			showChatView(false);
 
 			var friendsApiCall = ConfigurationSettings.AppSettings["friends"].ToString() + AuthTokenStatic.GlobalVar;
 			var client = new RestClient(friendsApiCall);
