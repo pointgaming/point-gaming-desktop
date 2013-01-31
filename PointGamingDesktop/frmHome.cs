@@ -250,6 +250,9 @@ namespace PointGaming
 				this.Hide();
 				AuthTokenStatic.GlobalVar = String.Empty;
 				AuthTokenStatic.loggedInUsername = String.Empty;
+				chatSocket.Close();
+				friendsSocket.Close();
+				tmrUserStatus.Stop();
 				frmLogin loginForm = new frmLogin();
 				loginForm.Show();
 			}
