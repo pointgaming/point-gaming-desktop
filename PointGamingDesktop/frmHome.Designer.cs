@@ -51,6 +51,11 @@
 			this.txtChatBox = new System.Windows.Forms.TextBox();
 			this.txtChatText = new System.Windows.Forms.TextBox();
 			this.btnSend = new System.Windows.Forms.Button();
+			this.button1 = new System.Windows.Forms.Button();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label3 = new System.Windows.Forms.Label();
+			this.checkBox1 = new System.Windows.Forms.CheckBox();
+			this.checkBox2 = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -90,17 +95,22 @@
 			// 
 			// tpSettings
 			// 
+			this.tpSettings.Controls.Add(this.checkBox2);
+			this.tpSettings.Controls.Add(this.checkBox1);
+			this.tpSettings.Controls.Add(this.label3);
+			this.tpSettings.Controls.Add(this.label2);
+			this.tpSettings.Controls.Add(this.button1);
 			this.tpSettings.Controls.Add(this.btnLogOut);
 			this.tpSettings.Location = new System.Drawing.Point(4, 22);
 			this.tpSettings.Name = "tpSettings";
-			this.tpSettings.Size = new System.Drawing.Size(238, 641);
+			this.tpSettings.Size = new System.Drawing.Size(225, 616);
 			this.tpSettings.TabIndex = 4;
 			this.tpSettings.Text = "Settings";
 			this.tpSettings.UseVisualStyleBackColor = true;
 			// 
 			// btnLogOut
 			// 
-			this.btnLogOut.Location = new System.Drawing.Point(65, 23);
+			this.btnLogOut.Location = new System.Drawing.Point(66, 586);
 			this.btnLogOut.Name = "btnLogOut";
 			this.btnLogOut.Size = new System.Drawing.Size(75, 23);
 			this.btnLogOut.TabIndex = 0;
@@ -115,7 +125,7 @@
 			this.tpAddFriend.Controls.Add(this.txtFriendName);
 			this.tpAddFriend.Location = new System.Drawing.Point(4, 22);
 			this.tpAddFriend.Name = "tpAddFriend";
-			this.tpAddFriend.Size = new System.Drawing.Size(238, 641);
+			this.tpAddFriend.Size = new System.Drawing.Size(225, 616);
 			this.tpAddFriend.TabIndex = 3;
 			this.tpAddFriend.Text = "   +";
 			this.tpAddFriend.UseVisualStyleBackColor = true;
@@ -282,6 +292,55 @@
 			this.btnSend.UseVisualStyleBackColor = true;
 			this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
 			// 
+			// button1
+			// 
+			this.button1.Location = new System.Drawing.Point(38, 13);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(121, 23);
+			this.button1.TabIndex = 1;
+			this.button1.Text = "Scan for Games";
+			this.button1.UseVisualStyleBackColor = true;
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(25, 62);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(67, 13);
+			this.label2.TabIndex = 2;
+			this.label2.Text = "Toggle HUD";
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(110, 62);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(73, 13);
+			this.label3.TabIndex = 3;
+			this.label3.Text = "Ctrl + Shift + h";
+			// 
+			// checkBox1
+			// 
+			this.checkBox1.AutoSize = true;
+			this.checkBox1.Checked = true;
+			this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.checkBox1.Location = new System.Drawing.Point(54, 90);
+			this.checkBox1.Name = "checkBox1";
+			this.checkBox1.Size = new System.Drawing.Size(119, 17);
+			this.checkBox1.TabIndex = 4;
+			this.checkBox1.Text = "Sync Game Configs";
+			this.checkBox1.UseVisualStyleBackColor = true;
+			// 
+			// checkBox2
+			// 
+			this.checkBox2.AutoSize = true;
+			this.checkBox2.Location = new System.Drawing.Point(54, 113);
+			this.checkBox2.Name = "checkBox2";
+			this.checkBox2.Size = new System.Drawing.Size(117, 17);
+			this.checkBox2.TabIndex = 5;
+			this.checkBox2.Text = "Hide Game Configs";
+			this.checkBox2.UseVisualStyleBackColor = true;
+			// 
 			// frmHome
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -296,6 +355,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
 			this.tpSettings.ResumeLayout(false);
+			this.tpSettings.PerformLayout();
 			this.tpAddFriend.ResumeLayout(false);
 			this.tpAddFriend.PerformLayout();
 			this.tpGames.ResumeLayout(false);
@@ -331,6 +391,11 @@
 		private System.Windows.Forms.Button btnSend;
 		private System.Windows.Forms.TextBox txtChatText;
 		private System.Windows.Forms.TextBox txtChatBox;
+		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.CheckBox checkBox2;
+		private System.Windows.Forms.CheckBox checkBox1;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Label label2;
     }
 }
 

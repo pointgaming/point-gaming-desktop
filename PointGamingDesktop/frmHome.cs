@@ -123,7 +123,7 @@ namespace PointGaming
 
 			if (status)
 			{
-				MessageBox.Show("Friend SuccessFully Added!");
+				MessageBox.Show("Friend Successfully Added!");
 			}
 			else
 			{
