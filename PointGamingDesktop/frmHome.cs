@@ -241,11 +241,22 @@ namespace PointGaming
 			socket = new Client("http://dev.pointgaming.net:4000/");
 			//MessageBox.Show(firstSelectedItem);
 
-			socket.On("ready", (fn) =>
+			socket.On("connect", (fn) =>
 			{
-				//MessageBox.Show("connected");
-				txtChatBox.Text = "Connected" + Environment.NewLine;
-				txtChatBox.Text = "Chat with " + firstSelectedItem + "started!" + Environment.NewLine;
+				try
+				{
+					this.Invoke((MethodInvoker)delegate()
+					{
+						txtChatBox.Text = "Connected" + Environment.NewLine;
+						txtChatBox.Text= "Chat with " + firstSelectedItem + "started!" + Environment.NewLine;
+					});
+
+				}
+				catch (Exception ex)
+				{
+					MessageBox.Show(ex.Message.ToString());
+
+				}
 			});
 
 			socket.Connect();
