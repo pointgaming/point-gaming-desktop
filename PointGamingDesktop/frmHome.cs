@@ -236,17 +236,19 @@ namespace PointGaming
 			var firstSelectedItem = lvContacts.SelectedItems[0].Text.ToString();
 
 			Client socket;
+			showChatView(true);
 
 			socket = new Client("http://dev.pointgaming.net:4000/");
+			//MessageBox.Show(firstSelectedItem);
 
-			socket.On("connect", (fn) =>
-
+			socket.On("ready", (fn) =>
 			{
-				MessageBox.Show("connected");
-				showChatView(true);
+				//MessageBox.Show("connected");
 				txtChatBox.Text = "Connected" + Environment.NewLine;
 				txtChatBox.Text = "Chat with " + firstSelectedItem + "started!" + Environment.NewLine;
 			});
+
+			socket.Connect();
 		}
 	}
 }
