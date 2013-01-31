@@ -17,6 +17,7 @@ namespace PointGaming
 
 		Client socket;
 		AuthEmit ae;
+		ApiResponse ar;
 
 		public frmHome()
 		{
@@ -246,11 +247,9 @@ namespace PointGaming
 					this.Invoke((MethodInvoker)delegate()
 					{
 						ae = new AuthEmit() { auth_token = AuthTokenStatic.GlobalVar };
-
 						txtChatBox.Text = "Connected" + Environment.NewLine;
 						txtChatBox.Text = "Chat with " + firstSelectedItem + " started!" + Environment.NewLine;
 						socket.Emit("auth", ae);
-
 					});
 
 				}
@@ -262,13 +261,10 @@ namespace PointGaming
 
 
 			socket.On("auth_resp", (data) =>
-				{
-					ApiResponse ar = new ApiResponse();
+			{
+					ar = new ApiResponse();
 					ar=data.Json.GetFirstArgAs<ApiResponse>();
-					MessageBox.Show(ar.success.ToString());
-
-				});
-
+			});
 
 			socket.Connect();
 		}

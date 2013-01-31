@@ -28,11 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Test",
-            "Test"}, -1);
-			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Test");
-			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("Test");
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.tcOptions = new System.Windows.Forms.TabControl();
 			this.tpFriends = new System.Windows.Forms.TabPage();
@@ -155,11 +150,6 @@
             this.columnHeader3,
             this.columnHeader4});
 			this.lvGames.FullRowSelect = true;
-			listViewItem1.Tag = "Test";
-			this.lvGames.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3});
 			this.lvGames.Location = new System.Drawing.Point(0, 3);
 			this.lvGames.Name = "lvGames";
 			this.lvGames.Size = new System.Drawing.Size(225, 629);
@@ -195,7 +185,7 @@
 			this.tpAddFriend.Name = "tpAddFriend";
 			this.tpAddFriend.Size = new System.Drawing.Size(224, 632);
 			this.tpAddFriend.TabIndex = 3;
-			this.tpAddFriend.Text = "+";
+			this.tpAddFriend.Text = "   +";
 			this.tpAddFriend.UseVisualStyleBackColor = true;
 			// 
 			// label1
@@ -247,23 +237,23 @@
 			// 
 			// txtChatBox
 			// 
-			this.txtChatBox.Location = new System.Drawing.Point(50, 36);
+			this.txtChatBox.Location = new System.Drawing.Point(20, 11);
 			this.txtChatBox.Multiline = true;
 			this.txtChatBox.Name = "txtChatBox";
-			this.txtChatBox.Size = new System.Drawing.Size(608, 426);
+			this.txtChatBox.Size = new System.Drawing.Size(669, 566);
 			this.txtChatBox.TabIndex = 0;
 			// 
 			// txtChatText
 			// 
-			this.txtChatText.Location = new System.Drawing.Point(50, 479);
+			this.txtChatText.Location = new System.Drawing.Point(20, 583);
 			this.txtChatText.Multiline = true;
 			this.txtChatText.Name = "txtChatText";
-			this.txtChatText.Size = new System.Drawing.Size(524, 53);
+			this.txtChatText.Size = new System.Drawing.Size(586, 53);
 			this.txtChatText.TabIndex = 1;
 			// 
 			// btnSend
 			// 
-			this.btnSend.Location = new System.Drawing.Point(581, 479);
+			this.btnSend.Location = new System.Drawing.Point(612, 583);
 			this.btnSend.Name = "btnSend";
 			this.btnSend.Size = new System.Drawing.Size(77, 53);
 			this.btnSend.TabIndex = 2;
