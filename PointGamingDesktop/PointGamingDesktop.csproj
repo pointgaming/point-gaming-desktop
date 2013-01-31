@@ -92,6 +92,7 @@
     <Compile Include="frmHome.Designer.cs">
       <DependentUpon>frmHome.cs</DependentUpon>
     </Compile>
+    <Compile Include="POCO\AuthEmit.cs" />
     <Compile Include="POCO\Coin.cs" />
     <Compile Include="POCO\CoinResponse.cs" />
     <Compile Include="POCO\FriendResponse.cs" />

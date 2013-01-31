@@ -15,6 +15,8 @@ namespace PointGaming
 	public partial class frmHome : Form
 	{
 
+		Client socket;
+		AuthEmit ae;
 
 		public frmHome()
 		{
@@ -234,12 +236,8 @@ namespace PointGaming
 		private void lvContacts_Click(object sender, EventArgs e)
 		{
 			var firstSelectedItem = lvContacts.SelectedItems[0].Text.ToString();
-
-			Client socket;
 			showChatView(true);
-
 			socket = new Client("http://dev.pointgaming.net:4000/");
-			//MessageBox.Show(firstSelectedItem);
 
 			socket.On("connect", (fn) =>
 			{
@@ -247,17 +245,30 @@ namespace PointGaming
 				{
 					this.Invoke((MethodInvoker)delegate()
 					{
+						ae = new AuthEmit() { auth_token = AuthTokenStatic.GlobalVar };
+
 						txtChatBox.Text = "Connected" + Environment.NewLine;
-						txtChatBox.Text= "Chat with " + firstSelectedItem + "started!" + Environment.NewLine;
+						txtChatBox.Text = "Chat with " + firstSelectedItem + " started!" + Environment.NewLine;
+						socket.Emit("auth", ae);
+
 					});
 
 				}
 				catch (Exception ex)
 				{
 					MessageBox.Show(ex.Message.ToString());
-
 				}
 			});
+
+
+			socket.On("auth_resp", (data) =>
+				{
+					ApiResponse ar = new ApiResponse();
+					ar=data.Json.GetFirstArgAs<ApiResponse>();
+					MessageBox.Show(ar.success.ToString());
+
+				});
+
 
 			socket.Connect();
 		}
