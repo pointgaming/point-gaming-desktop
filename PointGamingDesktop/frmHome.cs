@@ -51,12 +51,10 @@ namespace PointGaming
 			{
 				try
 				{
-					//MessageBox.Show("connected");
 					this.Invoke((MethodInvoker)delegate()
 					{
 						ae = new AuthEmit() { auth_token = AuthTokenStatic.GlobalVar };
 						friendsSocket.Emit("auth", ae);
-						//socket.Emit("friends", null);
 					});
 
 				}
@@ -73,8 +71,6 @@ namespace PointGaming
 				{
 					ar = new ApiResponse();
 					ar = data.Json.GetFirstArgAs<ApiResponse>();
-					MessageBox.Show(ar.success.ToString());
-
 					tmrUserStatus.Start();
 				}
 				catch (Exception ex)
@@ -82,11 +78,7 @@ namespace PointGaming
 					MessageBox.Show(ex.Message.ToString());
 				}
 
-
-				//socket.Emit("friends", null);
 			});
-
-
 
 			friendsSocket.On("friends", (data) =>
 			{
@@ -134,7 +126,6 @@ namespace PointGaming
 			if (status)
 			{
 				MessageBox.Show("Friend SuccessFully Added!");
-				//tpFriends.Show();
 			}
 			else
 			{
@@ -160,27 +151,6 @@ namespace PointGaming
 
 		private void tcOptions_Selecting(object sender, TabControlCancelEventArgs e)
 		{
-			if (e.TabPageIndex == 0)
-			{
-				//var friendsApiCall = ConfigurationManager.AppSettings["friends"].ToString() + AuthTokenStatic.GlobalVar;
-				//var client = new RestClient(friendsApiCall);
-				//var request = new RestRequest(Method.GET);
-				//RestResponse<FriendResponseRootObject> apiResponse = (RestSharp.RestResponse<FriendResponseRootObject>)client.Execute<FriendResponseRootObject>(request);
-
-				//var status = apiResponse.Data.success;
-				//var count = apiResponse.Data.friends.Count;
-				//lvContacts.Items.Clear();
-				//ListViewItem dataItem;
-
-				//for (int i = 0; i < count; i++)
-				//{
-				//	dataItem = new ListViewItem(apiResponse.Data.friends[i].username.ToString());
-				//	dataItem.SubItems.Add("Online");
-				//	lvContacts.Items.AddRange(new ListViewItem[] { dataItem });
-				//}
-
-			}
-
 			if (e.TabPageIndex == 1)
 			{
 				var gamesApiCall = ConfigurationManager.AppSettings["games"].ToString() + AuthTokenStatic.GlobalVar;
@@ -198,9 +168,7 @@ namespace PointGaming
 					dataItem.SubItems.Add(gamesApiResponse.Data.games[i].player_count.ToString());
 					lvGames.Items.AddRange(new ListViewItem[] { dataItem });
 				}
-
 			}
-
 		}
 
 		private void lvContacts_SelectedIndexChanged(object sender, EventArgs e)
@@ -267,7 +235,6 @@ namespace PointGaming
 
 		private void tmrUserStatus_Tick(object sender, EventArgs e)
 		{
-			//MessageBox.Show("executed");
 			friendsSocket.Emit("friends", null);
 		}
 	}

@@ -266,7 +266,7 @@
 			// tmrUserStatus
 			// 
 			this.tmrUserStatus.Enabled = true;
-			this.tmrUserStatus.Interval = 5000;
+			this.tmrUserStatus.Interval = 3000;
 			this.tmrUserStatus.Tick += new System.EventHandler(this.tmrUserStatus_Tick);
 			// 
 			// frmHome
