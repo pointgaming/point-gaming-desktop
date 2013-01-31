@@ -21,6 +21,8 @@ namespace PointGaming
 		OutgoingMessages oMsg;
 		ReceivedMessages rMsg;
 		string firstSelectedItem;
+
+
 		public frmHome()
 		{
 			InitializeComponent();
@@ -99,7 +101,7 @@ namespace PointGaming
 			if (status)
 			{
 				MessageBox.Show("Friend SuccessFully Added!");
-				tpFriends.Show();
+				//tpFriends.Show();
 			}
 			else
 			{
@@ -120,10 +122,7 @@ namespace PointGaming
 
 		private void tcOptions_TabIndexChanged(object sender, EventArgs e)
 		{
-			if (tcOptions.TabIndex == 0)
-			{
-				MessageBox.Show("1");
-			}
+		
 		}
 
 		private void tcOptions_Selecting(object sender, TabControlCancelEventArgs e)
@@ -160,6 +159,7 @@ namespace PointGaming
 				var count = gamesApiResponse.Data.games.Count;
 				lvGames.Items.Clear();
 				ListViewItem dataItem;
+
 				for (int i = 0; i < count; i++)
 				{
 					dataItem = new ListViewItem(gamesApiResponse.Data.games[i].name.ToString());
@@ -180,6 +180,7 @@ namespace PointGaming
 		{
 			firstSelectedItem = lvContacts.SelectedItems[0].Text.ToString();
 			showChatView(true);
+
 			socket = new Client("http://dev.pointgaming.net:4000/");
 
 			socket.On("connect", (fn) =>
