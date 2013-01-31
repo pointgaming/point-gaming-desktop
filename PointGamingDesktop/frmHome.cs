@@ -1,4 +1,5 @@
 ﻿using RestSharp;
+using SocketIOClient;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -233,7 +234,19 @@ namespace PointGaming
 		private void lvContacts_Click(object sender, EventArgs e)
 		{
 			var firstSelectedItem = lvContacts.SelectedItems[0].Text.ToString();
-			MessageBox.Show(firstSelectedItem);
+
+			Client socket;
+
+			socket = new Client("http://dev.pointgaming.net:4000/");
+
+			socket.On("connect", (fn) =>
+
+			{
+				MessageBox.Show("connected");
+				showChatView(true);
+				txtChatBox.Text = "Connected" + Environment.NewLine;
+				txtChatBox.Text = "Chat with " + firstSelectedItem + "started!" + Environment.NewLine;
+			});
 		}
 	}
 }
