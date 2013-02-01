@@ -99,6 +99,7 @@
 			this.lvContacts.View = System.Windows.Forms.View.Details;
 			this.lvContacts.SelectedIndexChanged += new System.EventHandler(this.lvContacts_SelectedIndexChanged);
 			this.lvContacts.Click += new System.EventHandler(this.lvContacts_Click);
+			this.lvContacts.DoubleClick += new System.EventHandler(this.lvContacts_DoubleClick);
 			// 
 			// columnHeader1
 			// 
@@ -148,7 +149,7 @@
 			// 
 			this.tpBitCoin.Location = new System.Drawing.Point(4, 22);
 			this.tpBitCoin.Name = "tpBitCoin";
-			this.tpBitCoin.Size = new System.Drawing.Size(225, 616);
+			this.tpBitCoin.Size = new System.Drawing.Size(232, 632);
 			this.tpBitCoin.TabIndex = 2;
 			this.tpBitCoin.Text = "BitCoin";
 			this.tpBitCoin.UseVisualStyleBackColor = true;
@@ -160,7 +161,7 @@
 			this.tpAddFriend.Controls.Add(this.txtFriendName);
 			this.tpAddFriend.Location = new System.Drawing.Point(4, 22);
 			this.tpAddFriend.Name = "tpAddFriend";
-			this.tpAddFriend.Size = new System.Drawing.Size(224, 650);
+			this.tpAddFriend.Size = new System.Drawing.Size(232, 632);
 			this.tpAddFriend.TabIndex = 3;
 			this.tpAddFriend.Text = "   +";
 			this.tpAddFriend.UseVisualStyleBackColor = true;

@@ -14,15 +14,10 @@ namespace PointGaming
 {
 	public partial class frmHome : Form
 	{
-
-		
 		Client friendsSocket;
-
 		AuthEmit ae;
 		ApiResponse ar;
-		
 		string firstSelectedItem;
-
 		public frmHome()
 		{
 			InitializeComponent();
@@ -153,6 +148,11 @@ namespace PointGaming
 
 		
 		private void lvContacts_Click(object sender, EventArgs e)
+		{
+			
+		}
+
+		private void lvContacts_DoubleClick(object sender, EventArgs e)
 		{
 			firstSelectedItem = lvContacts.SelectedItems[0].Text.ToString();
 			frmChatWindow chatWindow = new frmChatWindow();

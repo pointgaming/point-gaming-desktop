@@ -25,6 +25,7 @@ namespace PointGaming
 
 		private void frmChatWindow_Load(object sender, EventArgs e)
 		{
+			
 			chatSocket = new Client("http://dev.pointgaming.net:4000/");
 
 			chatSocket.On("connect", (fn) =>
@@ -68,10 +69,21 @@ namespace PointGaming
 
 		private void btnSend_Click(object sender, EventArgs e)
 		{
-			oMsg = new OutgoingMessages() { user = this.Text, message = txtChatText.Text + Environment.NewLine };
+			oMsg = new OutgoingMessages() { user = this.Text, message = txtChatText.Text };
 			txtChatBox.Text += Persistence.loggedInUsername + ": " + oMsg.message + Environment.NewLine;
 			chatSocket.Emit("message", oMsg);
 			txtChatText.Clear();
+		}
+
+		private void txtChatText_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+			{
+				oMsg = new OutgoingMessages() { user = this.Text, message = txtChatText.Text };
+				txtChatBox.Text += Persistence.loggedInUsername + ": " + oMsg.message + Environment.NewLine;
+				chatSocket.Emit("message", oMsg);
+				txtChatText.Clear();
+			}
 		}
 	}
 }
