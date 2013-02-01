@@ -74,17 +74,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="frmAddFriends.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmAddFriends.Designer.cs">
-      <DependentUpon>frmAddFriends.cs</DependentUpon>
-    </Compile>
     <Compile Include="frmChatWindow.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmChatWindow.Designer.cs">
       <DependentUpon>frmChatWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmHome.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmHome.Designer.cs">
+      <DependentUpon>frmHome.cs</DependentUpon>
     </Compile>
     <Compile Include="frmLogin.cs">
       <SubType>Form</SubType>
@@ -93,12 +93,6 @@
       <DependentUpon>frmLogin.cs</DependentUpon>
     </Compile>
     <Compile Include="POCO\ApiResponse.cs" />
-    <Compile Include="frmHome.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmHome.Designer.cs">
-      <DependentUpon>frmHome.cs</DependentUpon>
-    </Compile>
     <Compile Include="POCO\AuthEmit.cs" />
     <Compile Include="POCO\Coin.cs" />
     <Compile Include="POCO\CoinResponse.cs" />
@@ -111,9 +105,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="POCO\UserLogin.cs" />
-    <EmbeddedResource Include="frmAddFriends.resx">
-      <DependentUpon>frmAddFriends.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="frmChatWindow.resx">
       <DependentUpon>frmChatWindow.cs</DependentUpon>
     </EmbeddedResource>

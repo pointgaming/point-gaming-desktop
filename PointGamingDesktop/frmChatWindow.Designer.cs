@@ -35,9 +35,9 @@
 			// 
 			// btnSend
 			// 
-			this.btnSend.Location = new System.Drawing.Point(471, 584);
+			this.btnSend.Location = new System.Drawing.Point(462, 584);
 			this.btnSend.Name = "btnSend";
-			this.btnSend.Size = new System.Drawing.Size(77, 53);
+			this.btnSend.Size = new System.Drawing.Size(86, 53);
 			this.btnSend.TabIndex = 5;
 			this.btnSend.Text = "Send";
 			this.btnSend.UseVisualStyleBackColor = true;
@@ -62,12 +62,12 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(576, 650);
+			this.ClientSize = new System.Drawing.Size(560, 650);
 			this.Controls.Add(this.btnSend);
 			this.Controls.Add(this.txtChatText);
 			this.Controls.Add(this.txtChatBox);
 			this.Name = "frmChatWindow";
-			this.Text = "frmChatWindow";
+			this.Text = "Chat";
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

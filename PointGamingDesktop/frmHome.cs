@@ -14,12 +14,15 @@ namespace PointGaming
 {
 	public partial class frmHome : Form
 	{
+
 		Client chatSocket;
 		Client friendsSocket;
+
 		AuthEmit ae;
 		ApiResponse ar;
 		OutgoingMessages oMsg;
 		ReceivedMessages rMsg;
+
 		string firstSelectedItem;
 
 		public frmHome()
@@ -27,23 +30,9 @@ namespace PointGaming
 			InitializeComponent();
 		}
 
-		private void pnlChat_Paint(object sender, PaintEventArgs e)
-		{
-
-		}
-
-		private void showChatView(bool val)
-		{
-			txtChatBox.Visible = val;
-			txtChatText.Visible = val;
-			btnSend.Visible = val;
-		}
-
 		private void frmHome_Load(object sender, EventArgs e)
 		{
 			FriendResponseRootObject fro;
-
-			showChatView(false);
 
 			friendsSocket = new Client("http://dev.pointgaming.net:4000/");
 
@@ -56,7 +45,6 @@ namespace PointGaming
 						ae = new AuthEmit() { auth_token = AuthTokenStatic.GlobalVar };
 						friendsSocket.Emit("auth", ae);
 					});
-
 				}
 				catch (Exception ex)
 				{
@@ -83,6 +71,7 @@ namespace PointGaming
 			friendsSocket.On("friends", (data) =>
 			{
 				ListViewItem dataItem;
+
 				this.Invoke((MethodInvoker)delegate()
 				{
 					fro = new FriendResponseRootObject();
@@ -105,7 +94,6 @@ namespace PointGaming
 
 		private void btnAddFriend_Click(object sender, EventArgs e)
 		{
-
 			User u = new User();
 			u.username = txtFriendName.Text;
 			UserRootObject uRoot = new UserRootObject();
@@ -129,105 +117,6 @@ namespace PointGaming
 			{
 				MessageBox.Show("Error: " + apiResponse.Data.message);
 			}
-
-		}
-
-		private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
-		{
-
-		}
-
-		private void tcOptions_SelectedIndexChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		private void tcOptions_TabIndexChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		private void tcOptions_Selecting(object sender, TabControlCancelEventArgs e)
-		{
-			if (e.TabPageIndex == 1)
-			{
-				var gamesApiCall = ConfigurationManager.AppSettings["games"].ToString() + AuthTokenStatic.GlobalVar;
-				var client = new RestClient(gamesApiCall);
-				var request = new RestRequest(Method.GET);
-				RestResponse<GamesRootObject> gamesApiResponse = (RestSharp.RestResponse<GamesRootObject>)client.Execute<GamesRootObject>(request);
-				var status = gamesApiResponse.Data.success;
-				var count = gamesApiResponse.Data.games.Count;
-				lvGames.Items.Clear();
-				ListViewItem dataItem;
-
-				for (int i = 0; i < count; i++)
-				{
-					dataItem = new ListViewItem(gamesApiResponse.Data.games[i].name.ToString());
-					dataItem.SubItems.Add(gamesApiResponse.Data.games[i].player_count.ToString());
-					lvGames.Items.AddRange(new ListViewItem[] { dataItem });
-				}
-			}
-		}
-
-		private void lvContacts_SelectedIndexChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		private void lvContacts_Click(object sender, EventArgs e)
-		{
-			firstSelectedItem = lvContacts.SelectedItems[0].Text.ToString();
-
-			showChatView(true);
-
-			chatSocket = new Client("http://dev.pointgaming.net:4000/");
-
-			chatSocket.On("connect", (fn) =>
-			{
-				try
-				{
-					this.Invoke((MethodInvoker)delegate()
-					{
-						ae = new AuthEmit() { auth_token = AuthTokenStatic.GlobalVar };
-						txtChatBox.Text = "Connected" + Environment.NewLine;
-						txtChatBox.Text = "Chat with " + firstSelectedItem + " started!" + Environment.NewLine;
-						chatSocket.Emit("auth", ae);
-					});
-
-				}
-				catch (Exception ex)
-				{
-					MessageBox.Show(ex.Message.ToString());
-				}
-
-			});
-
-			chatSocket.On("message", (data) =>
-			{
-				this.Invoke((MethodInvoker)delegate()
-					{
-						rMsg = new ReceivedMessages();
-						rMsg = data.Json.GetFirstArgAs<ReceivedMessages>();
-						txtChatBox.Text += rMsg.username + ": " + rMsg.message + Environment.NewLine;
-					});
-			});
-
-			chatSocket.On("auth_resp", (data) =>
-			{
-				ar = new ApiResponse();
-				ar = data.Json.GetFirstArgAs<ApiResponse>();
-			});
-
-			chatSocket.Connect();
-		}
-
-		private void btnSend_Click(object sender, EventArgs e)
-		{
-
-			oMsg = new OutgoingMessages() { user = firstSelectedItem, message = txtChatText.Text + Environment.NewLine };
-			txtChatBox.Text += AuthTokenStatic.loggedInUsername + ": " + oMsg.message + Environment.NewLine;
-			chatSocket.Emit("message", oMsg);
-			txtChatText.Clear();
 
 		}
 
@@ -256,6 +145,65 @@ namespace PointGaming
 				frmLogin loginForm = new frmLogin();
 				loginForm.Show();
 			}
+
+		}
+
+		private void lvContacts_SelectedIndexChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		//public void sendMessage()
+		//{
+		//	oMsg = new OutgoingMessages() { user = firstSelectedItem, message = txtChatText.Text + Environment.NewLine };
+		//	txtChatBox.Text += AuthTokenStatic.loggedInUsername + ": " + oMsg.message + Environment.NewLine;
+		//	chatSocket.Emit("message", oMsg);
+		//	txtChatText.Clear();
+		//}
+
+		private void lvContacts_Click(object sender, EventArgs e)
+		{
+			firstSelectedItem = lvContacts.SelectedItems[0].Text.ToString();
+
+			chatSocket = new Client("http://dev.pointgaming.net:4000/");
+
+			chatSocket.On("connect", (fn) =>
+			{
+				try
+				{
+					this.Invoke((MethodInvoker)delegate()
+					{
+						ae = new AuthEmit() { auth_token = AuthTokenStatic.GlobalVar };
+						//txtChatBox.Text = "Connected" + Environment.NewLine;
+						//txtChatBox.Text = "Chat with " + firstSelectedItem + " started!" + Environment.NewLine;
+						chatSocket.Emit("auth", ae);
+					});
+
+				}
+				catch (Exception ex)
+				{
+					MessageBox.Show(ex.Message.ToString());
+				}
+
+			});
+
+			chatSocket.On("message", (data) =>
+			{
+				this.Invoke((MethodInvoker)delegate()
+				{
+					rMsg = new ReceivedMessages();
+					rMsg = data.Json.GetFirstArgAs<ReceivedMessages>();
+					//txtChatBox.Text += rMsg.username + ": " + rMsg.message + Environment.NewLine;
+				});
+			});
+
+			chatSocket.On("auth_resp", (data) =>
+			{
+				ar = new ApiResponse();
+				ar = data.Json.GetFirstArgAs<ApiResponse>();
+			});
+
+			chatSocket.Connect();
 		}
 	}
 }
