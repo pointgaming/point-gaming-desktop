@@ -90,7 +90,11 @@ namespace PointGaming
 			{
 				fr = new FriendStatus();
 				fr = data.Json.GetFirstArgAs<FriendStatus>();
-				MessageBox.Show(fr.action.ToString());
+				if (MessageBox.Show("New Friend Request From " + fr.username.ToString(), "Friend Request", MessageBoxButtons.OKCancel) == DialogResult.OK)
+				{
+
+					friendsSocket.Emit("friends", null);
+				}
 			});
 
 			friendsSocket.On("new_friend", (data) =>
@@ -98,6 +102,7 @@ namespace PointGaming
 				fr = new FriendStatus();
 				fr = data.Json.GetFirstArgAs<FriendStatus>();
 				MessageBox.Show("You have a new friend, " + fr.username);
+				friendsSocket.Emit("friends", null);
 
 			});
 
