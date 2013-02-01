@@ -155,10 +155,18 @@ namespace PointGaming
 
 		private void lvContacts_DoubleClick(object sender, EventArgs e)
 		{
-			firstSelectedItem = lvContacts.SelectedItems[0].Text.ToString();
-			frmChatWindow chatWindow = new frmChatWindow();
-			chatWindow.Text = firstSelectedItem;
-			chatWindow.Show();
+			try
+			{
+
+				firstSelectedItem = lvContacts.SelectedItems[0].Text.ToString();
+				frmChatWindow chatWindow = new frmChatWindow();
+				chatWindow.Text = firstSelectedItem;
+				chatWindow.Show();
+			}
+			catch (Exception ex)
+			{
+
+			}
 		}
 	}
 }
