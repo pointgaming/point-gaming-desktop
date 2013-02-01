@@ -153,7 +153,6 @@ namespace PointGaming
 				Persistence.loggedInUsername = String.Empty;
 				//chatSocket.Close();
 				friendsSocket.Close();
-				tmrUserStatus.Stop();
 				frmLogin loginForm = new frmLogin();
 				loginForm.Show();
 			}

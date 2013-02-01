@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
 			this.tcOptions = new System.Windows.Forms.TabControl();
 			this.tpFriends = new System.Windows.Forms.TabPage();
 			this.lvContacts = new System.Windows.Forms.ListView();
@@ -50,7 +49,6 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.button1 = new System.Windows.Forms.Button();
 			this.btnLogOut = new System.Windows.Forms.Button();
-			this.tmrUserStatus = new System.Windows.Forms.Timer(this.components);
 			this.tcOptions.SuspendLayout();
 			this.tpFriends.SuspendLayout();
 			this.tpGames.SuspendLayout();
@@ -266,12 +264,6 @@
 			this.btnLogOut.UseVisualStyleBackColor = true;
 			this.btnLogOut.Click += new System.EventHandler(this.btnLogOut_Click);
 			// 
-			// tmrUserStatus
-			// 
-			this.tmrUserStatus.Enabled = true;
-			this.tmrUserStatus.Interval = 3000;
-			this.tmrUserStatus.Tick += new System.EventHandler(this.tmrUserStatus_Tick);
-			// 
 			// frmHome
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -316,6 +308,5 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.Button btnLogOut;
-		private System.Windows.Forms.Timer tmrUserStatus;
 	}
 }
