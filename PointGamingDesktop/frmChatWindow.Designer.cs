@@ -56,6 +56,7 @@
 			this.txtChatBox.Location = new System.Drawing.Point(12, 12);
 			this.txtChatBox.Multiline = true;
 			this.txtChatBox.Name = "txtChatBox";
+			this.txtChatBox.ReadOnly = true;
 			this.txtChatBox.Size = new System.Drawing.Size(536, 566);
 			this.txtChatBox.TabIndex = 3;
 			// 
