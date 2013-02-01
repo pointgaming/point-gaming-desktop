@@ -51,6 +51,7 @@
 			this.txtChatText.Size = new System.Drawing.Size(444, 53);
 			this.txtChatText.TabIndex = 4;
 			this.txtChatText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtChatText_KeyDown);
+			this.txtChatText.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtChatText_KeyPress);
 			// 
 			// txtChatBox
 			// 

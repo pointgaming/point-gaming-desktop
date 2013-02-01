@@ -77,7 +77,12 @@ namespace PointGaming
 
 		private void txtChatText_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.Enter)
+
+		}
+
+		private void txtChatText_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			if (e.KeyChar == 13)
 			{
 				btnSend.PerformClick();
 				e.Handled = true;

@@ -32,12 +32,14 @@ namespace PointGaming
 
 			friendsSocket.On("connect", (fn) =>
 			{
+			
 				try
 				{
 					this.Invoke((MethodInvoker)delegate()
 					{
 						ae = new AuthEmit() { auth_token = Persistence.AuthToken };
 						friendsSocket.Emit("auth", ae);
+						friendsSocket.Emit("friends", null);
 					});
 				}
 				catch (Exception ex)
@@ -47,13 +49,14 @@ namespace PointGaming
 
 			});
 
+
 			friendsSocket.On("auth_resp", (data) =>
 			{
 				try
 				{
 					ar = new ApiResponse();
 					ar = data.Json.GetFirstArgAs<ApiResponse>();
-					tmrUserStatus.Start();
+					//tmrUserStatus.Start();
 				}
 				catch (Exception ex)
 				{
@@ -61,6 +64,9 @@ namespace PointGaming
 				}
 
 			});
+
+
+			
 
 			friendsSocket.On("friends", (data) =>
 			{
@@ -126,7 +132,7 @@ namespace PointGaming
 
 		private void tmrUserStatus_Tick(object sender, EventArgs e)
 		{
-			friendsSocket.Emit("friends", null);
+			//friendsSocket.Emit("friends", null);
 		}
 
 		private void btnLogOut_Click(object sender, EventArgs e)
