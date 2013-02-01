@@ -20,7 +20,7 @@ namespace PointGaming
 
 		AuthEmit ae;
 		ApiResponse ar;
-		OutgoingMessages oMsg;
+		//OutgoingMessages oMsg;
 		ReceivedMessages rMsg;
 
 		string firstSelectedItem;
@@ -165,45 +165,45 @@ namespace PointGaming
 		{
 			firstSelectedItem = lvContacts.SelectedItems[0].Text.ToString();
 
-			chatSocket = new Client("http://dev.pointgaming.net:4000/");
+			//chatSocket = new Client("http://dev.pointgaming.net:4000/");
 
-			chatSocket.On("connect", (fn) =>
-			{
-				try
-				{
-					this.Invoke((MethodInvoker)delegate()
-					{
-						ae = new AuthEmit() { auth_token = AuthTokenStatic.GlobalVar };
-						//txtChatBox.Text = "Connected" + Environment.NewLine;
-						//txtChatBox.Text = "Chat with " + firstSelectedItem + " started!" + Environment.NewLine;
-						chatSocket.Emit("auth", ae);
-					});
+			//chatSocket.On("connect", (fn) =>
+			//{
+			//	try
+			//	{
+			//		this.Invoke((MethodInvoker)delegate()
+			//		{
+			//			ae = new AuthEmit() { auth_token = AuthTokenStatic.GlobalVar };
+			//			//txtChatBox.Text = "Connected" + Environment.NewLine;
+			//			//txtChatBox.Text = "Chat with " + firstSelectedItem + " started!" + Environment.NewLine;
+			//			chatSocket.Emit("auth", ae);
+			//		});
 
-				}
-				catch (Exception ex)
-				{
-					MessageBox.Show(ex.Message.ToString());
-				}
+			//	}
+			//	catch (Exception ex)
+			//	{
+			//		MessageBox.Show(ex.Message.ToString());
+			//	}
 
-			});
+			//});
 
-			chatSocket.On("message", (data) =>
-			{
-				this.Invoke((MethodInvoker)delegate()
-				{
-					rMsg = new ReceivedMessages();
-					rMsg = data.Json.GetFirstArgAs<ReceivedMessages>();
-					//txtChatBox.Text += rMsg.username + ": " + rMsg.message + Environment.NewLine;
-				});
-			});
+			//chatSocket.On("message", (data) =>
+			//{
+			//	this.Invoke((MethodInvoker)delegate()
+			//	{
+			//		rMsg = new ReceivedMessages();
+			//		rMsg = data.Json.GetFirstArgAs<ReceivedMessages>();
+			//		//txtChatBox.Text += rMsg.username + ": " + rMsg.message + Environment.NewLine;
+			//	});
+			//});
 
-			chatSocket.On("auth_resp", (data) =>
-			{
-				ar = new ApiResponse();
-				ar = data.Json.GetFirstArgAs<ApiResponse>();
-			});
+			//chatSocket.On("auth_resp", (data) =>
+			//{
+			//	ar = new ApiResponse();
+			//	ar = data.Json.GetFirstArgAs<ApiResponse>();
+			//});
 
-			chatSocket.Connect();
+			//chatSocket.Connect();
 		}
 	}
 }
