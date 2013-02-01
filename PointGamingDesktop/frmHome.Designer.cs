@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.tcOptions = new System.Windows.Forms.TabControl();
 			this.tpFriends = new System.Windows.Forms.TabPage();
 			this.lvContacts = new System.Windows.Forms.ListView();
@@ -49,11 +50,14 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.button1 = new System.Windows.Forms.Button();
 			this.btnLogOut = new System.Windows.Forms.Button();
+			this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.mnuDeleteFriend = new System.Windows.Forms.ToolStripMenuItem();
 			this.tcOptions.SuspendLayout();
 			this.tpFriends.SuspendLayout();
 			this.tpGames.SuspendLayout();
 			this.tpAddFriend.SuspendLayout();
 			this.tpSettings.SuspendLayout();
+			this.contextMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tcOptions
@@ -98,6 +102,7 @@
 			this.lvContacts.SelectedIndexChanged += new System.EventHandler(this.lvContacts_SelectedIndexChanged);
 			this.lvContacts.Click += new System.EventHandler(this.lvContacts_Click);
 			this.lvContacts.DoubleClick += new System.EventHandler(this.lvContacts_DoubleClick);
+			this.lvContacts.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lvContacts_MouseClick);
 			// 
 			// columnHeader1
 			// 
@@ -264,6 +269,20 @@
 			this.btnLogOut.UseVisualStyleBackColor = true;
 			this.btnLogOut.Click += new System.EventHandler(this.btnLogOut_Click);
 			// 
+			// contextMenu
+			// 
+			this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuDeleteFriend});
+			this.contextMenu.Name = "contextMenu";
+			this.contextMenu.Size = new System.Drawing.Size(153, 48);
+			// 
+			// mnuDeleteFriend
+			// 
+			this.mnuDeleteFriend.Name = "mnuDeleteFriend";
+			this.mnuDeleteFriend.Size = new System.Drawing.Size(152, 22);
+			this.mnuDeleteFriend.Text = "Delete Friend";
+			this.mnuDeleteFriend.Click += new System.EventHandler(this.mnuDeleteFriend_Click);
+			// 
 			// frmHome
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -281,6 +300,7 @@
 			this.tpAddFriend.PerformLayout();
 			this.tpSettings.ResumeLayout(false);
 			this.tpSettings.PerformLayout();
+			this.contextMenu.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -308,5 +328,7 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.Button btnLogOut;
+		private System.Windows.Forms.ContextMenuStrip contextMenu;
+		private System.Windows.Forms.ToolStripMenuItem mnuDeleteFriend;
 	}
 }

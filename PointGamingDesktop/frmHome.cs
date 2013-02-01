@@ -114,6 +114,7 @@ namespace PointGaming
 
 					RestResponse<ApiResponse> acceptResponse = (RestSharp.RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
 					status = acceptResponse.Data.success;
+
 					if (status)
 					{
 						friendsSocket.Emit("friends", null);
@@ -242,6 +243,23 @@ namespace PointGaming
 			{
 
 			}
+		}
+
+		private void lvContacts_MouseClick(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Right)
+			{
+				if (lvContacts.FocusedItem.Bounds.Contains(e.Location) == true)
+				{
+					contextMenu.Show(Cursor.Position);
+				}
+			} 
+		}
+
+		private void mnuDeleteFriend_Click(object sender, EventArgs e)
+		{
+			var itemToDelete=lvContacts.FocusedItem.Text.ToString();
+
 		}
 	}
 }
