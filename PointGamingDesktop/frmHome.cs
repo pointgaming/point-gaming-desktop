@@ -131,6 +131,7 @@ namespace PointGaming
 			{
 				MessageBox.Show("Logged out Successfully!");
 				this.Hide();
+				frmChatWindow.ActiveForm.Hide();
 				Persistence.AuthToken = String.Empty;
 				Persistence.loggedInUsername = String.Empty;
 				//chatSocket.Close();
