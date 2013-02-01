@@ -18,6 +18,8 @@ namespace PointGaming
 		AuthEmit ae;
 		ApiResponse ar;
 		string firstSelectedItem;
+		FriendStatus fr;
+
 		public frmHome()
 		{
 			InitializeComponent();
@@ -26,13 +28,14 @@ namespace PointGaming
 		private void frmHome_Load(object sender, EventArgs e)
 		{
 			this.FormBorderStyle = FormBorderStyle.FixedSingle;
+
 			FriendResponseRootObject fro;
 
 			friendsSocket = new Client("http://dev.pointgaming.net:4000/");
 
 			friendsSocket.On("connect", (fn) =>
 			{
-			
+
 				try
 				{
 					this.Invoke((MethodInvoker)delegate()
@@ -66,7 +69,37 @@ namespace PointGaming
 			});
 
 
-			
+
+			friendsSocket.On("friend_signed_out", (data) =>
+			{
+				try
+				{
+					fr = new FriendStatus();
+					fr = data.Json.GetFirstArgAs<FriendStatus>();
+					MessageBox.Show(fr.username);
+
+				}
+				catch (Exception ex)
+				{
+					MessageBox.Show(ex.Message.ToString());
+				}
+
+			});
+
+			friendsSocket.On("new_friend_request", (data) =>
+			{
+				fr = new FriendStatus();
+				fr = data.Json.GetFirstArgAs<FriendStatus>();
+				MessageBox.Show(fr.action.ToString());
+			});
+
+			friendsSocket.On("new_friend", (data) =>
+			{
+				fr = new FriendStatus();
+				fr = data.Json.GetFirstArgAs<FriendStatus>();
+				MessageBox.Show("You have a new friend, " + fr.username);
+
+			});
 
 			friendsSocket.On("friends", (data) =>
 			{
@@ -104,35 +137,31 @@ namespace PointGaming
 
 		private void btnAddFriend_Click(object sender, EventArgs e)
 		{
-			User u = new User();
-			u.username = txtFriendName.Text;
-			UserRootObject uRoot = new UserRootObject();
-			uRoot.user = u;
+			FriendRequest fr = new FriendRequest();
+			fr.username = txtFriendName.Text;
+			FriendRequestRootObject fRoot = new FriendRequestRootObject();
+			fRoot.friend_request = fr;
 
-			var friendsApiCall = ConfigurationManager.AppSettings["friends"].ToString() + Persistence.AuthToken;
-			var client = new RestClient(friendsApiCall);
+
+			var friendsRequestApiCall = ConfigurationManager.AppSettings["FriendRequest"].ToString() + Persistence.AuthToken;
+			var client = new RestClient(friendsRequestApiCall);
 
 			var request = new RestRequest(Method.POST);
 			request.RequestFormat = DataFormat.Json;
-			request.AddBody(uRoot);
+			request.AddBody(fRoot);
 
 			RestResponse<ApiResponse> apiResponse = (RestSharp.RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
 			var status = apiResponse.Data.success;
 
 			if (status)
 			{
-				MessageBox.Show("Friend Successfully Added!");
+				MessageBox.Show("Friend Request Sent!");
 			}
 			else
 			{
 				MessageBox.Show("Error: " + apiResponse.Data.message);
 			}
 
-		}
-
-		private void tmrUserStatus_Tick(object sender, EventArgs e)
-		{
-			//friendsSocket.Emit("friends", null);
 		}
 
 		private void btnLogOut_Click(object sender, EventArgs e)
