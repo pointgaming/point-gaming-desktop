@@ -25,6 +25,7 @@ namespace PointGaming
 
 		private void frmHome_Load(object sender, EventArgs e)
 		{
+			this.FormBorderStyle = FormBorderStyle.FixedSingle;
 			FriendResponseRootObject fro;
 
 			friendsSocket = new Client("http://dev.pointgaming.net:4000/");

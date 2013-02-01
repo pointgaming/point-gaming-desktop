@@ -69,6 +69,7 @@
 			this.Controls.Add(this.btnSend);
 			this.Controls.Add(this.txtChatText);
 			this.Controls.Add(this.txtChatBox);
+			this.MaximizeBox = false;
 			this.Name = "frmChatWindow";
 			this.Text = "Chat";
 			this.Load += new System.EventHandler(this.frmChatWindow_Load);

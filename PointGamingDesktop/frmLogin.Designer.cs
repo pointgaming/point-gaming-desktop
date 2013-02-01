@@ -88,6 +88,7 @@
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.txtUserName);
+			this.MaximizeBox = false;
 			this.Name = "frmLogin";
 			this.Text = "Login to Point Gaming Desktop";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmLogin_FormClosed);

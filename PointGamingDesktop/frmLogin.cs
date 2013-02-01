@@ -49,6 +49,7 @@ namespace PointGaming
 
 		private void frmLogin_Load(object sender, EventArgs e)
 		{
+			this.FormBorderStyle = FormBorderStyle.FixedSingle;
 			this.StartPosition = FormStartPosition.CenterParent;
 
 		}

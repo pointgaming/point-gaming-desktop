@@ -278,6 +278,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(240, 658);
 			this.Controls.Add(this.tcOptions);
+			this.MaximizeBox = false;
 			this.Name = "frmHome";
 			this.Text = "Home";
 			this.Load += new System.EventHandler(this.frmHome_Load);
