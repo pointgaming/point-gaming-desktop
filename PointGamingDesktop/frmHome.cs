@@ -207,7 +207,7 @@ namespace PointGaming
 				MessageBox.Show("Logged out Successfully!");
 				this.Hide();
 				frmChatWindow chatWindow = new frmChatWindow();
-
+				chatWindow.Close();
 				Persistence.AuthToken = String.Empty;
 				Persistence.loggedInUsername = String.Empty;
 				//chatSocket.Close();
@@ -259,6 +259,33 @@ namespace PointGaming
 		private void mnuDeleteFriend_Click(object sender, EventArgs e)
 		{
 			var itemToDelete=lvContacts.FocusedItem.Text.ToString();
+
+			var baseUrl = ConfigurationManager.AppSettings["Friends"].ToString() +  Persistence.AuthToken;
+			var client = new RestClient(baseUrl);
+			var request = new RestRequest(Method.DELETE);
+			request.RequestFormat = DataFormat.Json;
+
+			User u=new User();
+			u.username=itemToDelete;
+
+			UserRootObject uRoot= new UserRootObject();
+			uRoot.user=u;
+
+			request.AddBody(uRoot);
+
+			RestResponse<ApiResponse> apiResponse = (RestSharp.RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
+			var status = apiResponse.Data.success;
+
+			if (status)
+			{
+				MessageBox.Show("Friend Deleted Successfully!");
+			}
+			else
+			{
+				MessageBox.Show(apiResponse.Data.message);
+			}
+			friendsSocket.Emit("friends", null);
+
 
 		}
 	}
