@@ -15,13 +15,13 @@ namespace PointGaming
 	public partial class frmHome : Form
 	{
 
-		Client chatSocket;
+		//Client chatSocket;
 		Client friendsSocket;
 
 		AuthEmit ae;
 		ApiResponse ar;
 		//OutgoingMessages oMsg;
-		ReceivedMessages rMsg;
+		//ReceivedMessages rMsg;
 
 		string firstSelectedItem;
 
@@ -42,7 +42,7 @@ namespace PointGaming
 				{
 					this.Invoke((MethodInvoker)delegate()
 					{
-						ae = new AuthEmit() { auth_token = AuthTokenStatic.GlobalVar };
+						ae = new AuthEmit() { auth_token = Persistence.AuthToken };
 						friendsSocket.Emit("auth", ae);
 					});
 				}
@@ -99,7 +99,7 @@ namespace PointGaming
 			UserRootObject uRoot = new UserRootObject();
 			uRoot.user = u;
 
-			var friendsApiCall = ConfigurationManager.AppSettings["friends"].ToString() + AuthTokenStatic.GlobalVar;
+			var friendsApiCall = ConfigurationManager.AppSettings["friends"].ToString() + Persistence.AuthToken;
 			var client = new RestClient(friendsApiCall);
 
 			var request = new RestRequest(Method.POST);
@@ -127,7 +127,7 @@ namespace PointGaming
 
 		private void btnLogOut_Click(object sender, EventArgs e)
 		{
-			var baseUrl = ConfigurationManager.AppSettings["BaseUrl"].ToString() + "sessions/destroy?auth_token=" + AuthTokenStatic.GlobalVar;
+			var baseUrl = ConfigurationManager.AppSettings["BaseUrl"].ToString() + "sessions/destroy?auth_token=" + Persistence.AuthToken;
 			var client = new RestClient(baseUrl);
 			var request = new RestRequest(Method.DELETE);
 			RestResponse<ApiResponse> apiResponse = (RestSharp.RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
@@ -137,9 +137,9 @@ namespace PointGaming
 			{
 				MessageBox.Show("Logged out Successfully!");
 				this.Hide();
-				AuthTokenStatic.GlobalVar = String.Empty;
-				AuthTokenStatic.loggedInUsername = String.Empty;
-				chatSocket.Close();
+				Persistence.AuthToken = String.Empty;
+				Persistence.loggedInUsername = String.Empty;
+				//chatSocket.Close();
 				friendsSocket.Close();
 				tmrUserStatus.Stop();
 				frmLogin loginForm = new frmLogin();
@@ -164,7 +164,7 @@ namespace PointGaming
 		private void lvContacts_Click(object sender, EventArgs e)
 		{
 			firstSelectedItem = lvContacts.SelectedItems[0].Text.ToString();
-
+			MessageBox.Show(firstSelectedItem);
 			//chatSocket = new Client("http://dev.pointgaming.net:4000/");
 
 			//chatSocket.On("connect", (fn) =>

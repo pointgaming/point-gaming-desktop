@@ -32,8 +32,8 @@ namespace PointGaming
 			if (status == true)
 			{
 
-				AuthTokenStatic.GlobalVar = apiResponse.Data.auth_token;
-				AuthTokenStatic.loggedInUsername = txtUserName.Text;
+				Persistence.AuthToken = apiResponse.Data.auth_token;
+				Persistence.loggedInUsername = txtUserName.Text;
 
 				frmHome home = new frmHome();
 				home.StartPosition = FormStartPosition.CenterScreen;
