@@ -52,5 +52,10 @@ namespace PointGaming
 			this.StartPosition = FormStartPosition.CenterParent;
 
 		}
+
+		private void frmLogin_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			System.Diagnostics.Process.GetCurrentProcess().Close();
+		}
 	}
 }
