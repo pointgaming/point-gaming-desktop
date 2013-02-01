@@ -41,6 +41,7 @@
 			this.btnSend.TabIndex = 5;
 			this.btnSend.Text = "Send";
 			this.btnSend.UseVisualStyleBackColor = true;
+			this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
 			// 
 			// txtChatText
 			// 
@@ -68,6 +69,7 @@
 			this.Controls.Add(this.txtChatBox);
 			this.Name = "frmChatWindow";
 			this.Text = "Chat";
+			this.Load += new System.EventHandler(this.frmChatWindow_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
