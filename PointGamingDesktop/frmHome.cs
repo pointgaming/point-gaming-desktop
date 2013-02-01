@@ -92,8 +92,32 @@ namespace PointGaming
 				fr = data.Json.GetFirstArgAs<FriendStatus>();
 				if (MessageBox.Show("New Friend Request From " + fr.username.ToString(), "Friend Request", MessageBoxButtons.OKCancel) == DialogResult.OK)
 				{
+					var friendsRequestApiCall = ConfigurationManager.AppSettings["FriendRequest"].ToString() + Persistence.AuthToken;
+					var client = new RestClient(friendsRequestApiCall);
 
-					friendsSocket.Emit("friends", null);
+					var request = new RestRequest(Method.GET);
+
+					RestResponse<FriendRequestsCollectionRootObject> apiResponse = (RestSharp.RestResponse<FriendRequestsCollectionRootObject>)client.Execute<FriendRequestsCollectionRootObject>(request);
+					var status = apiResponse.Data.success;
+
+					var apiCall = ConfigurationManager.AppSettings["FriendRequestsBaseUrl"].ToString() + apiResponse.Data.friend_requests[0]._id + "?auth_token=" + Persistence.AuthToken;
+					client = new RestClient(apiCall);
+					request = new RestRequest(Method.PUT);
+
+					request.RequestFormat = DataFormat.Json;
+
+					FriendPutRequest fpr = new FriendPutRequest();
+					fpr.action = "accept";
+					FriendPutRootObject fpRoot = new FriendPutRootObject();
+					fpRoot.friend_request = fpr;
+					request.AddBody(fpRoot);
+
+					RestResponse<ApiResponse> acceptResponse = (RestSharp.RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
+					status = acceptResponse.Data.success;
+					if (status)
+					{
+						friendsSocket.Emit("friends", null);
+					}
 				}
 			});
 

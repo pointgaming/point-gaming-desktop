@@ -96,7 +96,9 @@
     <Compile Include="POCO\AuthEmit.cs" />
     <Compile Include="POCO\Coin.cs" />
     <Compile Include="POCO\CoinResponse.cs" />
+    <Compile Include="POCO\FriendPutRequest.cs" />
     <Compile Include="POCO\FriendRequest.cs" />
+    <Compile Include="POCO\FriendRequestsCollection.cs" />
     <Compile Include="POCO\FriendResponse.cs" />
     <Compile Include="POCO\FriendStatus.cs" />
     <Compile Include="POCO\OutgoingMessages.cs" />
