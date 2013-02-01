@@ -79,10 +79,8 @@ namespace PointGaming
 		{
 			if (e.KeyCode == Keys.Enter)
 			{
-				oMsg = new OutgoingMessages() { user = this.Text, message = txtChatText.Text };
-				txtChatBox.Text += Persistence.loggedInUsername + ": " + oMsg.message + Environment.NewLine;
-				chatSocket.Emit("message", oMsg);
-				txtChatText.Clear();
+				btnSend.PerformClick();
+				e.Handled = true;
 			}
 		}
 	}

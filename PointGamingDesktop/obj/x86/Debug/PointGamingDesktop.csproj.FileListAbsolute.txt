@@ -17,4 +17,3 @@ C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\obj\x
 C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\obj\x86\Debug\PointGamingDesktop.csproj.GenerateResource.Cache
 C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\obj\x86\Debug\PointGaming.exe
 C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\obj\x86\Debug\PointGaming.pdb
-C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\obj\x86\Debug\PointGamingDesktop.csprojResolveAssemblyReference.cache

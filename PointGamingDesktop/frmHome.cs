@@ -72,13 +72,23 @@ namespace PointGaming
 					fro = data.Json.GetFirstArgAs<FriendResponseRootObject>();
 					var status = fro.success;
 					var count = fro.friends.Count;
-					lvContacts.Items.Clear();
-					for (int i = 0; i < count; i++)
+
+					lvContacts.BeginUpdate();
+					try
 					{
-						dataItem = new ListViewItem(fro.friends[i].username.ToString());
-						dataItem.SubItems.Add(fro.friends[i].status);
-						lvContacts.Items.AddRange(new ListViewItem[] { dataItem });
+						lvContacts.Items.Clear();
+						for (int i = 0; i < count; i++)
+						{
+							dataItem = new ListViewItem(fro.friends[i].username.ToString());
+							dataItem.SubItems.Add(fro.friends[i].status);
+							lvContacts.Items.AddRange(new ListViewItem[] { dataItem });
+						}
 					}
+					finally
+					{
+						lvContacts.EndUpdate();
+					}
+
 
 				});
 			});
@@ -131,7 +141,8 @@ namespace PointGaming
 			{
 				MessageBox.Show("Logged out Successfully!");
 				this.Hide();
-				frmChatWindow.ActiveForm.Hide();
+				frmChatWindow chatWindow = new frmChatWindow();
+
 				Persistence.AuthToken = String.Empty;
 				Persistence.loggedInUsername = String.Empty;
 				//chatSocket.Close();
@@ -148,10 +159,10 @@ namespace PointGaming
 
 		}
 
-		
+
 		private void lvContacts_Click(object sender, EventArgs e)
 		{
-			
+
 		}
 
 		private void lvContacts_DoubleClick(object sender, EventArgs e)
