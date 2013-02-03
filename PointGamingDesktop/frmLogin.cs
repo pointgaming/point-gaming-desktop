@@ -58,5 +58,28 @@ namespace PointGaming
 		{
 			System.Diagnostics.Process.GetCurrentProcess().Close();
 		}
+
+		private void txtUserName_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			if (e.KeyChar == 13)
+			{
+				btnLogin.PerformClick();
+				e.Handled = true;
+			}
+		}
+
+		private void txtPassword_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void txtPassword_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			if (e.KeyChar == 13)
+			{
+				btnLogin.PerformClick();
+				e.Handled = true;
+			}
+		}
 	}
 }
