@@ -31,7 +31,7 @@ namespace PointGaming
 
 			FriendResponseRootObject fro;
 
-			friendsSocket = new Client("http://dev.pointgaming.net:4000/");
+			friendsSocket = new Client("http://dev.pointgaming.com:4000/");
 
 			friendsSocket.On("connect", (fn) =>
 			{
@@ -253,23 +253,23 @@ namespace PointGaming
 				{
 					contextMenu.Show(Cursor.Position);
 				}
-			} 
+			}
 		}
 
 		private void mnuDeleteFriend_Click(object sender, EventArgs e)
 		{
-			var itemToDelete=lvContacts.FocusedItem.Text.ToString();
+			var itemToDelete = lvContacts.FocusedItem.Text.ToString();
 
-			var baseUrl = ConfigurationManager.AppSettings["Friends"].ToString() +  Persistence.AuthToken;
+			var baseUrl = ConfigurationManager.AppSettings["Friends"].ToString() + Persistence.AuthToken;
 			var client = new RestClient(baseUrl);
 			var request = new RestRequest(Method.DELETE);
 			request.RequestFormat = DataFormat.Json;
 
-			User u=new User();
-			u.username=itemToDelete;
+			User u = new User();
+			u.username = itemToDelete;
 
-			UserRootObject uRoot= new UserRootObject();
-			uRoot.user=u;
+			UserRootObject uRoot = new UserRootObject();
+			uRoot.user = u;
 
 			request.AddBody(uRoot);
 
@@ -284,6 +284,7 @@ namespace PointGaming
 			{
 				MessageBox.Show(apiResponse.Data.message);
 			}
+
 			friendsSocket.Emit("friends", null);
 
 

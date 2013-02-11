@@ -88,5 +88,10 @@ namespace PointGaming
 				e.Handled = true;
 			}
 		}
+
+		private void txtChatText_TextChanged(object sender, EventArgs e)
+		{
+
+		}
 	}
 }
