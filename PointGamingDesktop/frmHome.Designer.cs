@@ -52,9 +52,18 @@
 			this.btnLogOut = new System.Windows.Forms.Button();
 			this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.mnuDeleteFriend = new System.Windows.Forms.ToolStripMenuItem();
+			this.btnRunTest = new System.Windows.Forms.Button();
+			this.chkMineBitcoins = new System.Windows.Forms.CheckBox();
+			this.chkIdolMine = new System.Windows.Forms.CheckBox();
+			this.label4 = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
+			this.label7 = new System.Windows.Forms.Label();
+			this.chkFreeProAccount = new System.Windows.Forms.CheckBox();
 			this.tcOptions.SuspendLayout();
 			this.tpFriends.SuspendLayout();
 			this.tpGames.SuspendLayout();
+			this.tpBitCoin.SuspendLayout();
 			this.tpAddFriend.SuspendLayout();
 			this.tpSettings.SuspendLayout();
 			this.contextMenu.SuspendLayout();
@@ -71,7 +80,7 @@
 			this.tcOptions.Location = new System.Drawing.Point(0, 0);
 			this.tcOptions.Name = "tcOptions";
 			this.tcOptions.SelectedIndex = 0;
-			this.tcOptions.Size = new System.Drawing.Size(240, 658);
+			this.tcOptions.Size = new System.Drawing.Size(248, 658);
 			this.tcOptions.TabIndex = 1;
 			// 
 			// tpFriends
@@ -150,9 +159,17 @@
 			// 
 			// tpBitCoin
 			// 
+			this.tpBitCoin.Controls.Add(this.chkFreeProAccount);
+			this.tpBitCoin.Controls.Add(this.label7);
+			this.tpBitCoin.Controls.Add(this.label6);
+			this.tpBitCoin.Controls.Add(this.label5);
+			this.tpBitCoin.Controls.Add(this.label4);
+			this.tpBitCoin.Controls.Add(this.chkIdolMine);
+			this.tpBitCoin.Controls.Add(this.chkMineBitcoins);
+			this.tpBitCoin.Controls.Add(this.btnRunTest);
 			this.tpBitCoin.Location = new System.Drawing.Point(4, 22);
 			this.tpBitCoin.Name = "tpBitCoin";
-			this.tpBitCoin.Size = new System.Drawing.Size(232, 632);
+			this.tpBitCoin.Size = new System.Drawing.Size(240, 632);
 			this.tpBitCoin.TabIndex = 2;
 			this.tpBitCoin.Text = "BitCoin";
 			this.tpBitCoin.UseVisualStyleBackColor = true;
@@ -274,20 +291,97 @@
 			this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuDeleteFriend});
 			this.contextMenu.Name = "contextMenu";
-			this.contextMenu.Size = new System.Drawing.Size(153, 48);
+			this.contextMenu.Size = new System.Drawing.Size(144, 26);
 			// 
 			// mnuDeleteFriend
 			// 
 			this.mnuDeleteFriend.Name = "mnuDeleteFriend";
-			this.mnuDeleteFriend.Size = new System.Drawing.Size(152, 22);
+			this.mnuDeleteFriend.Size = new System.Drawing.Size(143, 22);
 			this.mnuDeleteFriend.Text = "Delete Friend";
 			this.mnuDeleteFriend.Click += new System.EventHandler(this.mnuDeleteFriend_Click);
+			// 
+			// btnRunTest
+			// 
+			this.btnRunTest.Location = new System.Drawing.Point(54, 48);
+			this.btnRunTest.Name = "btnRunTest";
+			this.btnRunTest.Size = new System.Drawing.Size(119, 23);
+			this.btnRunTest.TabIndex = 0;
+			this.btnRunTest.Text = "Run 30 Second Test";
+			this.btnRunTest.UseVisualStyleBackColor = true;
+			// 
+			// chkMineBitcoins
+			// 
+			this.chkMineBitcoins.AutoSize = true;
+			this.chkMineBitcoins.Location = new System.Drawing.Point(69, 88);
+			this.chkMineBitcoins.Name = "chkMineBitcoins";
+			this.chkMineBitcoins.Size = new System.Drawing.Size(89, 17);
+			this.chkMineBitcoins.TabIndex = 1;
+			this.chkMineBitcoins.Text = "Mine Bitcoins";
+			this.chkMineBitcoins.UseVisualStyleBackColor = true;
+			// 
+			// chkIdolMine
+			// 
+			this.chkIdolMine.AutoSize = true;
+			this.chkIdolMine.Checked = true;
+			this.chkIdolMine.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.chkIdolMine.Location = new System.Drawing.Point(69, 122);
+			this.chkIdolMine.Name = "chkIdolMine";
+			this.chkIdolMine.Size = new System.Drawing.Size(122, 17);
+			this.chkIdolMine.TabIndex = 2;
+			this.chkIdolMine.Text = "Only Mine when Idol";
+			this.chkIdolMine.UseVisualStyleBackColor = true;
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(34, 201);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(67, 13);
+			this.label4.TabIndex = 3;
+			this.label4.Text = "Nvidia 650M";
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(34, 226);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(125, 13);
+			this.label5.TabIndex = 4;
+			this.label5.Text = "Average Hash Rate: 369";
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(34, 250);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(90, 13);
+			this.label6.TabIndex = 5;
+			this.label6.Text = "Free Pro Account";
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(34, 274);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(80, 13);
+			this.label7.TabIndex = 6;
+			this.label7.Text = "Points Mined: 0";
+			// 
+			// chkFreeProAccount
+			// 
+			this.chkFreeProAccount.AutoSize = true;
+			this.chkFreeProAccount.Location = new System.Drawing.Point(123, 250);
+			this.chkFreeProAccount.Name = "chkFreeProAccount";
+			this.chkFreeProAccount.Size = new System.Drawing.Size(109, 17);
+			this.chkFreeProAccount.TabIndex = 7;
+			this.chkFreeProAccount.Text = "Free Pro Account";
+			this.chkFreeProAccount.UseVisualStyleBackColor = true;
 			// 
 			// frmHome
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(240, 658);
+			this.ClientSize = new System.Drawing.Size(248, 658);
 			this.Controls.Add(this.tcOptions);
 			this.MaximizeBox = false;
 			this.Name = "frmHome";
@@ -296,6 +390,8 @@
 			this.tcOptions.ResumeLayout(false);
 			this.tpFriends.ResumeLayout(false);
 			this.tpGames.ResumeLayout(false);
+			this.tpBitCoin.ResumeLayout(false);
+			this.tpBitCoin.PerformLayout();
 			this.tpAddFriend.ResumeLayout(false);
 			this.tpAddFriend.PerformLayout();
 			this.tpSettings.ResumeLayout(false);
@@ -330,5 +426,13 @@
 		private System.Windows.Forms.Button btnLogOut;
 		private System.Windows.Forms.ContextMenuStrip contextMenu;
 		private System.Windows.Forms.ToolStripMenuItem mnuDeleteFriend;
+		private System.Windows.Forms.CheckBox chkFreeProAccount;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.CheckBox chkIdolMine;
+		private System.Windows.Forms.CheckBox chkMineBitcoins;
+		private System.Windows.Forms.Button btnRunTest;
 	}
 }
