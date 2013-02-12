@@ -60,6 +60,7 @@
 			this.label6 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
 			this.chkFreeProAccount = new System.Windows.Forms.CheckBox();
+			this.button2 = new System.Windows.Forms.Button();
 			this.tcOptions.SuspendLayout();
 			this.tpFriends.SuspendLayout();
 			this.tpGames.SuspendLayout();
@@ -159,6 +160,7 @@
 			// 
 			// tpBitCoin
 			// 
+			this.tpBitCoin.Controls.Add(this.button2);
 			this.tpBitCoin.Controls.Add(this.chkFreeProAccount);
 			this.tpBitCoin.Controls.Add(this.label7);
 			this.tpBitCoin.Controls.Add(this.label6);
@@ -377,6 +379,16 @@
 			this.chkFreeProAccount.Text = "Free Pro Account";
 			this.chkFreeProAccount.UseVisualStyleBackColor = true;
 			// 
+			// button2
+			// 
+			this.button2.Location = new System.Drawing.Point(69, 325);
+			this.button2.Name = "button2";
+			this.button2.Size = new System.Drawing.Size(75, 23);
+			this.button2.TabIndex = 8;
+			this.button2.Text = "Start";
+			this.button2.UseVisualStyleBackColor = true;
+			this.button2.Click += new System.EventHandler(this.button2_Click);
+			// 
 			// frmHome
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -434,5 +446,6 @@
 		private System.Windows.Forms.CheckBox chkIdolMine;
 		private System.Windows.Forms.CheckBox chkMineBitcoins;
 		private System.Windows.Forms.Button btnRunTest;
+		private System.Windows.Forms.Button button2;
 	}
 }

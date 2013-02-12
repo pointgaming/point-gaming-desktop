@@ -5,10 +5,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Management;
+using System.Security.Cryptography;
 
 namespace PointGaming
 {
@@ -19,10 +24,69 @@ namespace PointGaming
 		ApiResponse ar;
 		string firstSelectedItem;
 		FriendStatus fr;
+		[DllImport("User32.dll")]
+		private static extern bool GetLastInputInfo(ref LastInputInfo plii);
+
+		[DllImport("User32.dll")]
+		private static extern int DestroyIcon(IntPtr hIcon);
+
+		internal struct LastInputInfo
+		{
+			public uint cbSize;
+			public uint dwTime;
+		}
+
+		private const int WITHIN_ALLOWED_INACTIVITY_PERIOD = -1;
+		private const int OUTSIDE_ALLOWED_INACTIVITY_PERIOD = 1;
+		private const string POCLBM_DEVICE_MATCH_PATTERN = @"^\[(?<id>\d+)\]\s+(?<device>.*)\b(?:.*)?$";
+
+		private readonly Regex _poclbmOutputHashesPerSecondRegex = new Regex(@"^.*\s\[(?<hps>\d+\.\d+)\s[MmKkTt]H/s.*$");
+
+		private Process _miningProcess;
+		private TimeSpan _startAfterDelay = new TimeSpan(0, 10, 0);
+		private readonly Dictionary<int, string> _openCLDevices;
+		private int _selectedDevice = 0;
+		private bool _dismissedBaloonTip = false;
+		private string _username;
+		private string _password;
+		private Uri _poolAddress;
+		private readonly string _encryptionKey = GetMachineIdentifierForEncryptionKey();
+
+		private Bitmap _trayBitmap = new Bitmap(16, 16);
+		private Graphics _trayGraphic;
+
+
 
 		public frmHome()
 		{
 			InitializeComponent();
+		}
+
+		private static string GetMachineIdentifierForEncryptionKey()
+		{
+			string cpuInfo = string.Empty;
+			var mc = new ManagementClass("win32_processor");
+			var moc = mc.GetInstances();
+			foreach (var mo in moc)
+			{
+				if (cpuInfo == "")
+				{
+					cpuInfo = mo.Properties["processorID"].Value.ToString();
+				}
+			}
+			var dsk = new ManagementObject(@"win32_logicaldisk.deviceid=""C:""");
+			dsk.Get();
+			var volumeSerial = dsk["VolumeSerialNumber"].ToString();
+			var md5 = MD5.Create();
+			var inputBytes = Encoding.ASCII.GetBytes(cpuInfo + volumeSerial);
+			var hash = md5.ComputeHash(inputBytes);
+			var sb = new StringBuilder();
+			for (int i = 0; i < hash.Length; i++)
+			{
+				sb.Append(hash[i].ToString("X2"));
+			}
+
+			return sb.ToString();
 		}
 
 		private void frmHome_Load(object sender, EventArgs e)
@@ -287,6 +351,11 @@ namespace PointGaming
 
 			friendsSocket.Emit("friends", null);
 
+
+		}
+
+		private void button2_Click(object sender, EventArgs e)
+		{
 
 		}
 	}

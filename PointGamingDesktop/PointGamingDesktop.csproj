@@ -61,6 +61,7 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -74,6 +75,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TimeSpanParser.cs" />
     <Compile Include="frmChatWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -109,6 +111,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="POCO\UserLogin.cs" />
+    <Compile Include="TripleDESStringEncryptor.cs" />
     <EmbeddedResource Include="frmChatWindow.resx">
       <DependentUpon>frmChatWindow.cs</DependentUpon>
     </EmbeddedResource>
