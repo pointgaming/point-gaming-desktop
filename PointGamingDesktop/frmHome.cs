@@ -326,12 +326,14 @@ namespace PointGaming
 		private void button2_Click(object sender, EventArgs e)
 		{
 			Process poclbm = new Process();
-			poclbm.StartInfo.FileName = "poclbm.exe";
+			poclbm.StartInfo.FileName = @"C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\bin\Debug\poclbm.exe";
 			poclbm.StartInfo.Arguments = @"http://pointgaming:po\!ntgam\!ng@96.126.125.144:8332 --device=0 --platform=0 --verbose";
 			poclbm.StartInfo.UseShellExecute = false;
 			poclbm.StartInfo.RedirectStandardOutput = true;
 			poclbm.Start();
 			poclbm.OutputDataReceived += new DataReceivedEventHandler(OnDataReceived);
+			poclbm.ErrorDataReceived += new DataReceivedEventHandler(OnDataReceived);
+
 			Console.WriteLine(poclbm.StandardOutput.ReadToEnd());
 
 			poclbm.WaitForExit();
