@@ -335,7 +335,7 @@ namespace PointGaming
 			poclbm.ErrorDataReceived += new DataReceivedEventHandler(OnDataReceived);
 
 			MessageBox.Show(poclbm.StandardOutput.ReadToEnd());
-			//poclbm.WaitForExit();
+			poclbm.WaitForExit();
 		}
 
 		public void OnDataReceived(object sender, DataReceivedEventArgs e)
