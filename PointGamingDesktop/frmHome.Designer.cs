@@ -176,7 +176,7 @@
 			// 
 			// button2
 			// 
-			this.button2.Location = new System.Drawing.Point(69, 244);
+			this.button2.Location = new System.Drawing.Point(69, 256);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(75, 23);
 			this.button2.TabIndex = 8;
@@ -215,7 +215,7 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(51, 131);
+			this.label4.Location = new System.Drawing.Point(51, 128);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(67, 13);
 			this.label4.TabIndex = 3;
@@ -226,7 +226,7 @@
 			this.chkIdolMine.AutoSize = true;
 			this.chkIdolMine.Checked = true;
 			this.chkIdolMine.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkIdolMine.Location = new System.Drawing.Point(69, 73);
+			this.chkIdolMine.Location = new System.Drawing.Point(54, 73);
 			this.chkIdolMine.Name = "chkIdolMine";
 			this.chkIdolMine.Size = new System.Drawing.Size(122, 17);
 			this.chkIdolMine.TabIndex = 2;
@@ -236,7 +236,7 @@
 			// chkMineBitcoins
 			// 
 			this.chkMineBitcoins.AutoSize = true;
-			this.chkMineBitcoins.Location = new System.Drawing.Point(69, 50);
+			this.chkMineBitcoins.Location = new System.Drawing.Point(55, 50);
 			this.chkMineBitcoins.Name = "chkMineBitcoins";
 			this.chkMineBitcoins.Size = new System.Drawing.Size(89, 17);
 			this.chkMineBitcoins.TabIndex = 1;
@@ -308,7 +308,7 @@
 			// checkBox2
 			// 
 			this.checkBox2.AutoSize = true;
-			this.checkBox2.Location = new System.Drawing.Point(54, 113);
+			this.checkBox2.Location = new System.Drawing.Point(54, 137);
 			this.checkBox2.Name = "checkBox2";
 			this.checkBox2.Size = new System.Drawing.Size(117, 17);
 			this.checkBox2.TabIndex = 5;
@@ -320,7 +320,7 @@
 			this.checkBox1.AutoSize = true;
 			this.checkBox1.Checked = true;
 			this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkBox1.Location = new System.Drawing.Point(54, 90);
+			this.checkBox1.Location = new System.Drawing.Point(54, 114);
 			this.checkBox1.Name = "checkBox1";
 			this.checkBox1.Size = new System.Drawing.Size(119, 17);
 			this.checkBox1.TabIndex = 4;
@@ -330,7 +330,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(110, 62);
+			this.label3.Location = new System.Drawing.Point(124, 62);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(73, 13);
 			this.label3.TabIndex = 3;
@@ -339,7 +339,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(25, 62);
+			this.label2.Location = new System.Drawing.Point(51, 62);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(67, 13);
 			this.label2.TabIndex = 2;
@@ -347,7 +347,7 @@
 			// 
 			// button1
 			// 
-			this.button1.Location = new System.Drawing.Point(38, 13);
+			this.button1.Location = new System.Drawing.Point(54, 16);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(121, 23);
 			this.button1.TabIndex = 1;
@@ -356,7 +356,7 @@
 			// 
 			// btnLogOut
 			// 
-			this.btnLogOut.Location = new System.Drawing.Point(66, 586);
+			this.btnLogOut.Location = new System.Drawing.Point(78, 601);
 			this.btnLogOut.Name = "btnLogOut";
 			this.btnLogOut.Size = new System.Drawing.Size(75, 23);
 			this.btnLogOut.TabIndex = 0;
