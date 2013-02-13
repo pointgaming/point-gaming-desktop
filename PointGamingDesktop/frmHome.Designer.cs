@@ -39,6 +39,14 @@
 			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.tpBitCoin = new System.Windows.Forms.TabPage();
+			this.button2 = new System.Windows.Forms.Button();
+			this.chkFreeProAccount = new System.Windows.Forms.CheckBox();
+			this.label7 = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.label4 = new System.Windows.Forms.Label();
+			this.chkIdolMine = new System.Windows.Forms.CheckBox();
+			this.chkMineBitcoins = new System.Windows.Forms.CheckBox();
+			this.btnRunTest = new System.Windows.Forms.Button();
 			this.tpAddFriend = new System.Windows.Forms.TabPage();
 			this.label1 = new System.Windows.Forms.Label();
 			this.btnAddFriend = new System.Windows.Forms.Button();
@@ -52,15 +60,6 @@
 			this.btnLogOut = new System.Windows.Forms.Button();
 			this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.mnuDeleteFriend = new System.Windows.Forms.ToolStripMenuItem();
-			this.btnRunTest = new System.Windows.Forms.Button();
-			this.chkMineBitcoins = new System.Windows.Forms.CheckBox();
-			this.chkIdolMine = new System.Windows.Forms.CheckBox();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
-			this.label7 = new System.Windows.Forms.Label();
-			this.chkFreeProAccount = new System.Windows.Forms.CheckBox();
-			this.button2 = new System.Windows.Forms.Button();
 			this.tcOptions.SuspendLayout();
 			this.tpFriends.SuspendLayout();
 			this.tpGames.SuspendLayout();
@@ -90,7 +89,7 @@
 			this.tpFriends.Location = new System.Drawing.Point(4, 22);
 			this.tpFriends.Name = "tpFriends";
 			this.tpFriends.Padding = new System.Windows.Forms.Padding(3);
-			this.tpFriends.Size = new System.Drawing.Size(232, 632);
+			this.tpFriends.Size = new System.Drawing.Size(240, 632);
 			this.tpFriends.TabIndex = 0;
 			this.tpFriends.Text = "Friends";
 			this.tpFriends.UseVisualStyleBackColor = true;
@@ -105,7 +104,7 @@
 			this.lvContacts.Location = new System.Drawing.Point(3, 3);
 			this.lvContacts.MultiSelect = false;
 			this.lvContacts.Name = "lvContacts";
-			this.lvContacts.Size = new System.Drawing.Size(226, 626);
+			this.lvContacts.Size = new System.Drawing.Size(234, 626);
 			this.lvContacts.TabIndex = 6;
 			this.lvContacts.UseCompatibleStateImageBehavior = false;
 			this.lvContacts.View = System.Windows.Forms.View.Details;
@@ -116,7 +115,7 @@
 			// 
 			// columnHeader1
 			// 
-			this.columnHeader1.Text = "Username";
+			this.columnHeader1.Text = "UserName";
 			this.columnHeader1.Width = 125;
 			// 
 			// columnHeader2
@@ -130,7 +129,7 @@
 			this.tpGames.Location = new System.Drawing.Point(4, 22);
 			this.tpGames.Name = "tpGames";
 			this.tpGames.Padding = new System.Windows.Forms.Padding(3);
-			this.tpGames.Size = new System.Drawing.Size(232, 632);
+			this.tpGames.Size = new System.Drawing.Size(240, 632);
 			this.tpGames.TabIndex = 1;
 			this.tpGames.Text = "Games";
 			this.tpGames.UseVisualStyleBackColor = true;
@@ -163,7 +162,6 @@
 			this.tpBitCoin.Controls.Add(this.button2);
 			this.tpBitCoin.Controls.Add(this.chkFreeProAccount);
 			this.tpBitCoin.Controls.Add(this.label7);
-			this.tpBitCoin.Controls.Add(this.label6);
 			this.tpBitCoin.Controls.Add(this.label5);
 			this.tpBitCoin.Controls.Add(this.label4);
 			this.tpBitCoin.Controls.Add(this.chkIdolMine);
@@ -176,6 +174,84 @@
 			this.tpBitCoin.Text = "BitCoin";
 			this.tpBitCoin.UseVisualStyleBackColor = true;
 			// 
+			// button2
+			// 
+			this.button2.Location = new System.Drawing.Point(69, 244);
+			this.button2.Name = "button2";
+			this.button2.Size = new System.Drawing.Size(75, 23);
+			this.button2.TabIndex = 8;
+			this.button2.Text = "Start";
+			this.button2.UseVisualStyleBackColor = true;
+			this.button2.Click += new System.EventHandler(this.button2_Click);
+			// 
+			// chkFreeProAccount
+			// 
+			this.chkFreeProAccount.AutoSize = true;
+			this.chkFreeProAccount.Location = new System.Drawing.Point(54, 182);
+			this.chkFreeProAccount.Name = "chkFreeProAccount";
+			this.chkFreeProAccount.Size = new System.Drawing.Size(109, 17);
+			this.chkFreeProAccount.TabIndex = 7;
+			this.chkFreeProAccount.Text = "Free Pro Account";
+			this.chkFreeProAccount.UseVisualStyleBackColor = true;
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(51, 213);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(80, 13);
+			this.label7.TabIndex = 6;
+			this.label7.Text = "Points Mined: 0";
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(51, 156);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(125, 13);
+			this.label5.TabIndex = 4;
+			this.label5.Text = "Average Hash Rate: 369";
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(51, 131);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(67, 13);
+			this.label4.TabIndex = 3;
+			this.label4.Text = "Nvidia 650M";
+			// 
+			// chkIdolMine
+			// 
+			this.chkIdolMine.AutoSize = true;
+			this.chkIdolMine.Checked = true;
+			this.chkIdolMine.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.chkIdolMine.Location = new System.Drawing.Point(69, 73);
+			this.chkIdolMine.Name = "chkIdolMine";
+			this.chkIdolMine.Size = new System.Drawing.Size(122, 17);
+			this.chkIdolMine.TabIndex = 2;
+			this.chkIdolMine.Text = "Only Mine when Idol";
+			this.chkIdolMine.UseVisualStyleBackColor = true;
+			// 
+			// chkMineBitcoins
+			// 
+			this.chkMineBitcoins.AutoSize = true;
+			this.chkMineBitcoins.Location = new System.Drawing.Point(69, 50);
+			this.chkMineBitcoins.Name = "chkMineBitcoins";
+			this.chkMineBitcoins.Size = new System.Drawing.Size(89, 17);
+			this.chkMineBitcoins.TabIndex = 1;
+			this.chkMineBitcoins.Text = "Mine Bitcoins";
+			this.chkMineBitcoins.UseVisualStyleBackColor = true;
+			// 
+			// btnRunTest
+			// 
+			this.btnRunTest.Location = new System.Drawing.Point(54, 21);
+			this.btnRunTest.Name = "btnRunTest";
+			this.btnRunTest.Size = new System.Drawing.Size(119, 23);
+			this.btnRunTest.TabIndex = 0;
+			this.btnRunTest.Text = "Run 30 Second Test";
+			this.btnRunTest.UseVisualStyleBackColor = true;
+			// 
 			// tpAddFriend
 			// 
 			this.tpAddFriend.Controls.Add(this.label1);
@@ -183,7 +259,7 @@
 			this.tpAddFriend.Controls.Add(this.txtFriendName);
 			this.tpAddFriend.Location = new System.Drawing.Point(4, 22);
 			this.tpAddFriend.Name = "tpAddFriend";
-			this.tpAddFriend.Size = new System.Drawing.Size(232, 632);
+			this.tpAddFriend.Size = new System.Drawing.Size(240, 632);
 			this.tpAddFriend.TabIndex = 3;
 			this.tpAddFriend.Text = "   +";
 			this.tpAddFriend.UseVisualStyleBackColor = true;
@@ -224,7 +300,7 @@
 			this.tpSettings.Controls.Add(this.btnLogOut);
 			this.tpSettings.Location = new System.Drawing.Point(4, 22);
 			this.tpSettings.Name = "tpSettings";
-			this.tpSettings.Size = new System.Drawing.Size(232, 632);
+			this.tpSettings.Size = new System.Drawing.Size(240, 632);
 			this.tpSettings.TabIndex = 4;
 			this.tpSettings.Text = "Settings";
 			this.tpSettings.UseVisualStyleBackColor = true;
@@ -302,93 +378,6 @@
 			this.mnuDeleteFriend.Text = "Delete Friend";
 			this.mnuDeleteFriend.Click += new System.EventHandler(this.mnuDeleteFriend_Click);
 			// 
-			// btnRunTest
-			// 
-			this.btnRunTest.Location = new System.Drawing.Point(54, 48);
-			this.btnRunTest.Name = "btnRunTest";
-			this.btnRunTest.Size = new System.Drawing.Size(119, 23);
-			this.btnRunTest.TabIndex = 0;
-			this.btnRunTest.Text = "Run 30 Second Test";
-			this.btnRunTest.UseVisualStyleBackColor = true;
-			// 
-			// chkMineBitcoins
-			// 
-			this.chkMineBitcoins.AutoSize = true;
-			this.chkMineBitcoins.Location = new System.Drawing.Point(69, 88);
-			this.chkMineBitcoins.Name = "chkMineBitcoins";
-			this.chkMineBitcoins.Size = new System.Drawing.Size(89, 17);
-			this.chkMineBitcoins.TabIndex = 1;
-			this.chkMineBitcoins.Text = "Mine Bitcoins";
-			this.chkMineBitcoins.UseVisualStyleBackColor = true;
-			// 
-			// chkIdolMine
-			// 
-			this.chkIdolMine.AutoSize = true;
-			this.chkIdolMine.Checked = true;
-			this.chkIdolMine.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkIdolMine.Location = new System.Drawing.Point(69, 122);
-			this.chkIdolMine.Name = "chkIdolMine";
-			this.chkIdolMine.Size = new System.Drawing.Size(122, 17);
-			this.chkIdolMine.TabIndex = 2;
-			this.chkIdolMine.Text = "Only Mine when Idol";
-			this.chkIdolMine.UseVisualStyleBackColor = true;
-			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(34, 201);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(67, 13);
-			this.label4.TabIndex = 3;
-			this.label4.Text = "Nvidia 650M";
-			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(34, 226);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(125, 13);
-			this.label5.TabIndex = 4;
-			this.label5.Text = "Average Hash Rate: 369";
-			// 
-			// label6
-			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(34, 250);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(90, 13);
-			this.label6.TabIndex = 5;
-			this.label6.Text = "Free Pro Account";
-			// 
-			// label7
-			// 
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(34, 274);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(80, 13);
-			this.label7.TabIndex = 6;
-			this.label7.Text = "Points Mined: 0";
-			// 
-			// chkFreeProAccount
-			// 
-			this.chkFreeProAccount.AutoSize = true;
-			this.chkFreeProAccount.Location = new System.Drawing.Point(123, 250);
-			this.chkFreeProAccount.Name = "chkFreeProAccount";
-			this.chkFreeProAccount.Size = new System.Drawing.Size(109, 17);
-			this.chkFreeProAccount.TabIndex = 7;
-			this.chkFreeProAccount.Text = "Free Pro Account";
-			this.chkFreeProAccount.UseVisualStyleBackColor = true;
-			// 
-			// button2
-			// 
-			this.button2.Location = new System.Drawing.Point(69, 325);
-			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(75, 23);
-			this.button2.TabIndex = 8;
-			this.button2.Text = "Start";
-			this.button2.UseVisualStyleBackColor = true;
-			this.button2.Click += new System.EventHandler(this.button2_Click);
-			// 
 			// frmHome
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -440,7 +429,6 @@
 		private System.Windows.Forms.ToolStripMenuItem mnuDeleteFriend;
 		private System.Windows.Forms.CheckBox chkFreeProAccount;
 		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.CheckBox chkIdolMine;
