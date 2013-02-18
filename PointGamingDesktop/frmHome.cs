@@ -57,7 +57,7 @@ namespace PointGaming
 
 			if (checkPendingRequests())
 			{
-				MessageBox.Show("You Have Pending Friend Requests");
+				MessageBox.Show("You Have Pending Friend Requests. Please Press OK to Accept/Reject Requests.");
 			}
 			//checkPendingRequests();
 
