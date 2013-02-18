@@ -60,6 +60,8 @@ namespace PointGaming
 
 		private void frmHome_Load(object sender, EventArgs e)
 		{
+			MessageBox.Show(GetMachineIdentifierForEncryptionKey());
+
 			this.FormBorderStyle = FormBorderStyle.FixedSingle;
 
 			FriendResponseRootObject fro;

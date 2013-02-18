@@ -116,12 +116,12 @@
 			// columnHeader1
 			// 
 			this.columnHeader1.Text = "UserName";
-			this.columnHeader1.Width = 125;
+			this.columnHeader1.Width = 118;
 			// 
 			// columnHeader2
 			// 
 			this.columnHeader2.Text = "Status";
-			this.columnHeader2.Width = 88;
+			this.columnHeader2.Width = 111;
 			// 
 			// tpGames
 			// 
