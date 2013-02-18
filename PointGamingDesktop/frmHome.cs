@@ -30,9 +30,36 @@ namespace PointGaming
 			InitializeComponent();
 		}
 
+		private bool checkPendingRequests()
+		{
+			//get pending friend requests and redirect to the accept/reject requests form
+			var friendsRequestCall = ConfigurationManager.AppSettings["FriendRequest"].ToString() + Persistence.AuthToken;
+			var friendClient = new RestClient(friendsRequestCall);
+
+			var fRequest = new RestRequest(Method.GET);
+
+			RestResponse<FriendRequestsCollectionRootObject> friendRequestApiResponse = (RestSharp.RestResponse<FriendRequestsCollectionRootObject>)friendClient.Execute<FriendRequestsCollectionRootObject>(fRequest);
+			var status = friendRequestApiResponse.Data.success;
+
+			if (status == true)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
 		private void frmHome_Load(object sender, EventArgs e)
 		{
 			//MessageBox.Show(GetMachineIdentifierForEncryptionKey());
+
+			if (checkPendingRequests())
+			{
+				MessageBox.Show("You Have Pending Friend Requests");
+			}
+			//checkPendingRequests();
 
 			this.FormBorderStyle = FormBorderStyle.FixedSingle;
 
