@@ -9,7 +9,7 @@ namespace PointGaming
 	{
 		private static string _authToken = "";
 		private static string _loggedInUsername = "";
-
+		private static FriendRequestsCollectionRootObject frcRootObject = new FriendRequestsCollectionRootObject();
 
 		public static string AuthToken
 		{
@@ -23,6 +23,10 @@ namespace PointGaming
 			set { _loggedInUsername = value; }
 		}
 
-
+		public static FriendRequestsCollectionRootObject friendRequests
+		{
+			get { return frcRootObject; }
+			set { frcRootObject = value; }
+		}
 	}
 }

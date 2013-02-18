@@ -10,6 +10,7 @@ namespace PointGaming
 		public string _id { get; set; }
 		public string friend_request_user_id { get; set; }
 		public string user_id { get; set; }
+		public string username { get; set; }
 	}
 
 	public class FriendRequestsCollectionRootObject

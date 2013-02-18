@@ -40,6 +40,7 @@ namespace PointGaming
 
 			RestResponse<FriendRequestsCollectionRootObject> friendRequestApiResponse = (RestSharp.RestResponse<FriendRequestsCollectionRootObject>)friendClient.Execute<FriendRequestsCollectionRootObject>(fRequest);
 			var status = friendRequestApiResponse.Data.success;
+			Persistence.friendRequests = friendRequestApiResponse.Data;
 
 			if (status == true)
 			{
