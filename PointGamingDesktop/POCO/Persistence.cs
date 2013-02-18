@@ -9,7 +9,7 @@ namespace PointGaming
 	{
 		private static string _authToken = "";
 		private static string _loggedInUsername = "";
-		
+
 
 		public static string AuthToken
 		{
@@ -22,5 +22,7 @@ namespace PointGaming
 			get { return _loggedInUsername; }
 			set { _loggedInUsername = value; }
 		}
+
+
 	}
 }
