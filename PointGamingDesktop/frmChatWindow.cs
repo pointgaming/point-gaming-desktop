@@ -26,7 +26,7 @@ namespace PointGaming
 		private void frmChatWindow_Load(object sender, EventArgs e)
 		{
 			this.FormBorderStyle = FormBorderStyle.FixedSingle;
-			chatSocket = new Client("http://dev.pointgaming.net:4000/");
+			chatSocket = new Client("https://dev.pointgaming.net:4000/");
 
 			chatSocket.On("connect", (fn) =>
 			{
