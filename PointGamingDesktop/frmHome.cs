@@ -53,13 +53,14 @@ namespace PointGaming
 
 		private void frmHome_Load(object sender, EventArgs e)
 		{
-			//MessageBox.Show(GetMachineIdentifierForEncryptionKey());
-
 			if (checkPendingRequests())
 			{
-				MessageBox.Show("You Have Pending Friend Requests. Please Press OK to Accept/Reject Requests.");
+				DialogResult result = MessageBox.Show("You have pending Friend Requests, Please Press OK to Accept/Reject Requests.", "Pending Requests", MessageBoxButtons.OKCancel);
+				if (result == DialogResult.Yes)
+				{
+
+				}
 			}
-			//checkPendingRequests();
 
 			this.FormBorderStyle = FormBorderStyle.FixedSingle;
 
