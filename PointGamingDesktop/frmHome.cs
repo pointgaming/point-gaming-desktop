@@ -56,9 +56,10 @@ namespace PointGaming
 			if (checkPendingRequests())
 			{
 				DialogResult result = MessageBox.Show("You have pending Friend Requests, Please Press OK to Accept/Reject Requests.", "Pending Requests", MessageBoxButtons.OKCancel);
-				if (result == DialogResult.Yes)
+				if (result == DialogResult.OK)
 				{
-
+					frmPendingRequests pendingRequests = new frmPendingRequests();
+					pendingRequests.Show();
 				}
 			}
 
