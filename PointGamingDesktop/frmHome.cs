@@ -25,48 +25,20 @@ namespace PointGaming
 		string firstSelectedItem;
 		FriendStatus fr;
 
-
 		public frmHome()
 		{
 			InitializeComponent();
 		}
 
-		private static string GetMachineIdentifierForEncryptionKey()
-		{
-			string cpuInfo = string.Empty;
-			var mc = new ManagementClass("win32_processor");
-			var moc = mc.GetInstances();
-			foreach (var mo in moc)
-			{
-				if (cpuInfo == "")
-				{
-					cpuInfo = mo.Properties["processorID"].Value.ToString();
-				}
-			}
-			var dsk = new ManagementObject(@"win32_logicaldisk.deviceid=""C:""");
-			dsk.Get();
-			var volumeSerial = dsk["VolumeSerialNumber"].ToString();
-			var md5 = MD5.Create();
-			var inputBytes = Encoding.ASCII.GetBytes(cpuInfo + volumeSerial);
-			var hash = md5.ComputeHash(inputBytes);
-			var sb = new StringBuilder();
-			for (int i = 0; i < hash.Length; i++)
-			{
-				sb.Append(hash[i].ToString("X2"));
-			}
-
-			return sb.ToString();
-		}
-
 		private void frmHome_Load(object sender, EventArgs e)
 		{
-			MessageBox.Show(GetMachineIdentifierForEncryptionKey());
+			//MessageBox.Show(GetMachineIdentifierForEncryptionKey());
 
 			this.FormBorderStyle = FormBorderStyle.FixedSingle;
 
 			FriendResponseRootObject fro;
 
-			friendsSocket = new Client("http://dev.pointgaming.com:4000/");
+			friendsSocket = new Client("https://dev.pointgaming.com:4000/");
 
 			friendsSocket.On("connect", (fn) =>
 			{
@@ -346,7 +318,6 @@ namespace PointGaming
 			if (e.Data != null)
 			{
 				string temp = (e.Data) + Environment.NewLine;
-				MessageBox.Show(temp);
 
 			}
 		}
