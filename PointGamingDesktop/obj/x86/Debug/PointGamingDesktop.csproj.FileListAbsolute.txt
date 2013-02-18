@@ -22,3 +22,4 @@ C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\obj\x
 C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\obj\x86\Debug\PointGaming.pdb
 C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\bin\Debug\PointGaming.pdb
 C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\obj\x86\Debug\PointGamingDesktop.csprojResolveAssemblyReference.cache
+C:\Users\Sultan\Documents\projects\point-gaming-desktop\PointGamingDesktop\obj\x86\Debug\PointGaming.frmPendingRequests.resources

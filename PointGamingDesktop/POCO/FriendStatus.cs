@@ -9,6 +9,5 @@ namespace PointGaming
 	{
 		public string action { get; set; }
 		public string username { get; set; }
-
 	}
 }

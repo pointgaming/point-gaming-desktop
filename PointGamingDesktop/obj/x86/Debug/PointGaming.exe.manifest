@@ -54,14 +54,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="PointGaming.exe" size="38400">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="PointGaming.exe" size="36352">
       <assemblyIdentity name="PointGaming" version="1.0.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>BaJEw5OoQq+mXlhdcnG+bD9B4cg=</dsig:DigestValue>
+        <dsig:DigestValue>1pp/9Ebkbj1M6kSJmGNmlG0e4cg=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
