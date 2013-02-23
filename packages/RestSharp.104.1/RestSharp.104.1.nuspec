@@ -13,5 +13,10 @@
     <releaseNotes>For full release notes see https://github.com/restsharp/RestSharp/blob/master/releasenotes.markdown</releaseNotes>
     <language>en-US</language>
     <tags>REST HTTP API JSON XML</tags>
+    <references>
+      <reference file="RestSharp.dll" />
+      <reference file="RestSharp.WindowsPhone.dll" />
+      <reference file="RestSharp.Silverlight.dll" />
+    </references>
   </metadata>
 </package>
