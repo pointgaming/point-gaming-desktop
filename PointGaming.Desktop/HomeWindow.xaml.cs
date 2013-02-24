@@ -4,6 +4,9 @@ using System.ComponentModel;
 using System.Threading;
 using System.Windows;
 using PointGaming.Desktop.POCO;
+using SocketIOClient;
+using SocketIOClient.Messages;
+using RestSharp;
 
 namespace PointGaming.Desktop
 {
@@ -14,6 +17,9 @@ namespace PointGaming.Desktop
 
         private bool _isClosing;
         private readonly List<Window> _childWindows = new List<Window>();
+
+        private SocketSession _socketSession;
+        private Chat.ChatManager _chatManager;
 
         public HomeWindow()
         {
@@ -33,7 +39,8 @@ namespace PointGaming.Desktop
             foreach (var window in _childWindows)
                 window.Close();
 
-            Close();
+            if (!_windowClosing)
+                Close();
         }
 
         private bool _once;
@@ -57,7 +64,7 @@ namespace PointGaming.Desktop
 
             if (lw.IsLoggedIn)
             {
-                LoggedIn();
+                LoggedIn(lw.SocketSession);
             }
             else
             {
@@ -65,28 +72,63 @@ namespace PointGaming.Desktop
             }
         }
 
-        private void LoggedIn()
+        private void LoggedIn(SocketSession session)
         {
-            friendTabInstance.LoggedIn();
+            _socketSession = session;
+            session.ConnectSocket(OnAuthorized);
         }
 
-        public void LoggedOut()
+        private void OnAuthorized()
         {
-            foreach (var window in _childWindows)
+            this.BeginInvokeUI(delegate
+            {
+                friendTabInstance.OnAuthorized(_socketSession.MyClient);
+                _chatManager = new Chat.ChatManager();
+                _chatManager.OnAuthorized(_socketSession.MyClient);
+            }, true);
+        }
+
+        public void LogOut()
+        {
+            if (_socketSession == null)
+                return;
+
+            var childWindows = new List<Window>(_childWindows);
+            foreach (var window in childWindows)
                 window.Close();
             _childWindows.Clear();
 
-            Persistence.AuthToken = String.Empty;
-            Persistence.loggedInUsername = String.Empty;
-            
             friendTabInstance.LoggedOut();
+            _chatManager = null;
 
-            ShowLogInWindow();
+            _socketSession.Logout();
+            _socketSession = null;
+
+            if (!_windowClosing)
+                ShowLogInWindow();
         }
 
         public void AddChildWindow(Window window)
         {
             _childWindows.Add(window);
         }
+        public void RemoveChildWindow(Window window)
+        {
+            _childWindows.Remove(window);
+        }
+
+        private bool _windowClosing;
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            _windowClosing = true;
+            LogOut();
+        }
+
+        public void ChatWith(string username)
+        {
+            _chatManager.ChatWith(username);
+        }
     }
+
 }

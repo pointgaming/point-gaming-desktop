@@ -8,6 +8,7 @@ namespace PointGaming.Desktop
     public partial class LoginWindow : Window
     {
         public bool IsLoggedIn;
+        public SocketSession SocketSession;
 
         public LoginWindow()
         {
@@ -32,25 +33,12 @@ namespace PointGaming.Desktop
 
         private void LogIn()
         {
-            var baseUrl = Properties.Settings.Default.BaseUrl; 
-            var client = new RestClient(baseUrl);
-            
-            var request = new RestRequest("sessions", Method.POST);
-            request.RequestFormat = RestSharp.DataFormat.Json;
-            string password = passwordBoxPassword.Password;
-            string username = textBoxUsername.Text;
-            request.AddBody(new UserLogin { username = username, password = password });
-
-            var apiResponse = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
-            var status = apiResponse.Data.success;
-
-            if (status)
+            SocketSession session = new SocketSession();
+            bool isSuccess = session.Login(textBoxUsername.Text, passwordBoxPassword.Password);
+            if (isSuccess)
             {
-                Persistence.AuthToken = apiResponse.Data.auth_token;
-                Persistence.loggedInUsername = username;
-                Properties.Settings.Default.Username = username;
-                Properties.Settings.Default.Save();
                 IsLoggedIn = true;
+                SocketSession = session;
                 Close();
             }
             else

@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.Windows.Media;
 
 namespace PointGaming.Desktop
 {
@@ -122,9 +123,37 @@ namespace PointGaming.Desktop
                     row = (DataGridRow)element;
                     return true;
                 }
-                element = System.Windows.Media.VisualTreeHelper.GetParent(element);
+                element = VisualTreeHelper.GetParent(element);
             }
             return false;
+        }
+        
+        public static T FindDescendant<T>(this DependencyObject obj) where T : DependencyObject
+        {
+            if (obj == null) return default(T);
+            int numberChildren = VisualTreeHelper.GetChildrenCount(obj);
+            if (numberChildren == 0) return default(T);
+
+            for (int i = 0; i < numberChildren; i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
+                if (child is T)
+                {
+                    return (T)(object)child;
+                }
+            }
+
+            for (int i = 0; i < numberChildren; i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
+                var potentialMatch = FindDescendant<T>(child);
+                if (potentialMatch != default(T))
+                {
+                    return potentialMatch;
+                }
+            }
+
+            return default(T);
         }
     }
 }

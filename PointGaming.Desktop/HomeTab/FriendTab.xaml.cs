@@ -21,11 +21,6 @@ namespace PointGaming.Desktop.HomeTab
         private const string FriendStatusOnline = "Online";
         private static readonly List<string> ChatAvailableStatuses = new List<string>(new[] { FriendStatusOnline });
 
-
-        private Client _friendsSocket;
-        private AuthEmit _authEmit;
-        private ApiResponse _apiResponse;
-
         private readonly ObservableCollection<FriendUiData> _friends = new ObservableCollection<FriendUiData>();
         public ObservableCollection<FriendUiData> Friends { get { return _friends; } }
         private Dictionary<string, FriendUiData> _friendLookup = new Dictionary<string, FriendUiData>();
@@ -165,7 +160,7 @@ namespace PointGaming.Desktop.HomeTab
 
             if (isSuccess && isAccepted)
             {
-                _friendsSocket.Emit("friends", null);
+                _client.Emit("friends", null);
             }
         }
 
@@ -246,7 +241,7 @@ namespace PointGaming.Desktop.HomeTab
                 MessageBox.Show(apiResponse.Data.message);
             }
 
-            _friendsSocket.Emit("friends", null);
+            _client.Emit("friends", null);
         }
 
         private void dataGridFriends_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -256,11 +251,7 @@ namespace PointGaming.Desktop.HomeTab
             {
                 if (CanChatWith(friend))
                 {
-                    var chatWindow = new ChatWindow();
-                    var username = friend.Username;
-                    chatWindow.Init(username);
-                    HomeWindow.Home.AddChildWindow(chatWindow);
-                    chatWindow.Show();
+                    HomeWindow.Home.ChatWith(friend.Username);
                 }
             }
         }
@@ -272,32 +263,27 @@ namespace PointGaming.Desktop.HomeTab
             return ChatAvailableStatuses.Contains(status);
         }
 
-        public void LoggedIn()
+        
+        private Client _client;
+
+        public void OnAuthorized(Client client)
         {
-            _friendsSocket = new Client(Properties.Settings.Default.SocketIoUrl);
-            
-            _friendsSocket.On("connect", new UIInvoker(this, OnConnect).Invoke);
-            _friendsSocket.On("auth_resp", new UIInvoker(this, OnAuthResponse).Invoke);
-            _friendsSocket.On("friend_signed_out", new UIInvoker(this, OnFriendSignedOut).Invoke);
-            _friendsSocket.On("new_friend_request", new UIInvoker(this, OnNewFriendRequest).Invoke);
-            _friendsSocket.On("new_friend", new UIInvoker(this, OnNewFriend).Invoke);
-            _friendsSocket.On("friends", new UIInvoker(this, OnFriends).Invoke);
+            _client = client;
 
-            _friendsSocket.Opened += _friendsSocket_Opened;
+            _client.On("friend_signed_out", new UIInvoker(this, OnFriendSignedOut).Invoke);
+            _client.On("friend_signed_in", new UIInvoker(this, OnFriendSignedIn).Invoke);
+            _client.On("new_friend_request", new UIInvoker(this, OnNewFriendRequest).Invoke);
+            _client.On("new_friend", new UIInvoker(this, OnNewFriend).Invoke);
+            _client.On("friends", new UIInvoker(this, OnFriends).Invoke);
 
-            _friendsSocket.Connect();
+            _client.Emit("friends", null);
+            CheckPendingFriendRequest();
         }
-
-        void _friendsSocket_Opened(object sender, EventArgs e)
-        {
-            App.LogLine("friends socket opened!");
-        }
-
+        
         public void LoggedOut()
         {
-            _friendsSocket.Close();
-            _friendsSocket = null;
-    
+            _client = null;
+
             _friends.Clear();
             _friendLookup.Clear();
         }
@@ -373,7 +359,7 @@ namespace PointGaming.Desktop.HomeTab
         {
             var friendStatus = data.Json.GetFirstArgAs<FriendStatus>();
             MessageBox.Show("You have a new friend '" + friendStatus.username + "'.");
-            _friendsSocket.Emit("friends", null);
+            _client.Emit("friends", null);
         }
 
         private void OnNewFriendRequest(IMessage data)
@@ -399,33 +385,20 @@ namespace PointGaming.Desktop.HomeTab
                 MessageBox.Show(ex.Message);
             }
         }
-
-        private void OnAuthResponse(IMessage data)
+        private void OnFriendSignedIn(IMessage data)
         {
             try
             {
-                _apiResponse = new ApiResponse();
-                _apiResponse = data.Json.GetFirstArgAs<ApiResponse>();
-
-                _friendsSocket.Emit("friends", null);
-                CheckPendingFriendRequest();
+                var friendStatus = data.Json.GetFirstArgAs<FriendStatus>();
+                FriendUiData friendData;
+                if (_friendLookup.TryGetValue(friendStatus.username, out friendData))
+                {
+                    friendData.Status = FriendStatusOffline;
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void OnConnect(IMessage message)
-        {
-            try
-            {
-                _authEmit = new AuthEmit {auth_token = Persistence.AuthToken};
-                _friendsSocket.Emit("auth", _authEmit);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
             }
         }
 

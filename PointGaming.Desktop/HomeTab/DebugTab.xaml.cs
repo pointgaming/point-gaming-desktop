@@ -86,7 +86,7 @@ namespace PointGaming.Desktop.HomeTab
                         text = Encoding.UTF8.GetString(ms.GetBuffer(), 0, (int)end);
                     }
 
-                    if (text.Length > 0)
+                    if (text.Length > 0 && fw != null)
                     {
                         fw.Write(text);
                         fw.Flush();

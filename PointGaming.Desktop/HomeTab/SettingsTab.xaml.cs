@@ -24,20 +24,7 @@ namespace PointGaming.Desktop.HomeTab
         
         private void buttonLogOut_Click(object sender, RoutedEventArgs e)
         {
-            var baseUrl = Properties.Settings.Default.BaseUrl + "sessions/destroy?auth_token=" + Persistence.AuthToken;
-            var client = new RestClient(baseUrl);
-            var request = new RestRequest(Method.DELETE);
-            var apiResponse = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
-            var isSuccess = apiResponse.Data.success;
-
-            if (isSuccess)
-            {
-                HomeWindow.Home.LoggedOut();
-            }
-            else
-            {
-                MessageBox.Show("Log out failed.");
-            }
+            HomeWindow.Home.LogOut();
         }
 
         private void checkBoxSynchGameConfigs_Checked(object sender, RoutedEventArgs e)
