@@ -204,11 +204,11 @@ namespace PointGaming.Desktop.HomeTab
 
             if (isSuccess)
             {
-                MessageBox.Show("Friend Request Sent!");
+                MessageBox.Show(HomeWindow.Home, "Friend Request Sent!");
             }
             else
             {
-                MessageBox.Show("Error: " + apiResponse.Data.message);
+                MessageBox.Show(HomeWindow.Home, "Error: " + apiResponse.Data.message);
             }
         }
 
@@ -247,7 +247,7 @@ namespace PointGaming.Desktop.HomeTab
             var status = apiResponse.Data.success;
 
             if (!status)
-                MessageBox.Show(apiResponse.Data.message);
+                MessageBox.Show(HomeWindow.Home, apiResponse.Data.message);
 
             _client.Emit("friends", null);
         }
@@ -300,7 +300,7 @@ namespace PointGaming.Desktop.HomeTab
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(HomeWindow.Home, ex.Message);
             }
         }
 

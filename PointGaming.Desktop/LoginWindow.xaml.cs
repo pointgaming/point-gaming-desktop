@@ -47,7 +47,7 @@ namespace PointGaming.Desktop
             }
             else
             {
-                MessageBox.Show("Invalid username or password");
+                MessageBox.Show(this, "Invalid username or password");
             }
         }
         
