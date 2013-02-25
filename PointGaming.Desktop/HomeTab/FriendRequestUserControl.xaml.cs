@@ -25,6 +25,19 @@ namespace PointGaming.Desktop.HomeTab
             InitializeComponent();
         }
 
+        private string _id;
+        public string Id
+        {
+            get { return _id; }
+            set
+            {
+                if (value == _id)
+                    return;
+                _id = value;
+                NotifyChanged("Id");
+            }
+        }
+
         private string _username;
         public string Username
         {

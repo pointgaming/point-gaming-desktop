@@ -12,13 +12,14 @@ using SocketIOClient.Messages;
 
 namespace PointGaming.Desktop.HomeTab
 {
-    /// <summary>
-    /// Interaction logic for FriendTab.xaml
-    /// </summary>
     public partial class FriendTab : UserControl
     {
         private const string FriendStatusOffline = "offline";
         private const string FriendStatusOnline = "online";
+        private const string FriendStatusAdded = "added";
+        private const string FriendStatusRemoved = "removed";
+        private const string FriendStatusInvited = "invited";
+
         private static readonly List<string> ChatAvailableStatuses = new List<string>(new[] { FriendStatusOnline });
 
         private readonly ObservableCollection<FriendUiData> _friends = new ObservableCollection<FriendUiData>();
@@ -95,7 +96,7 @@ namespace PointGaming.Desktop.HomeTab
                         continue;
                     }
 
-                    IncomingFriendRequest(item.user.username);
+                    IncomingFriendRequest(item.user._id, item.user.username);
                 }
             }
         }
@@ -117,12 +118,13 @@ namespace PointGaming.Desktop.HomeTab
             return status;
         }
 
-        private void IncomingFriendRequest(string username)
+        private void IncomingFriendRequest(string id, string username)
         {
             if (AlreadyHaveRequest(username))
                 return;
 
             var control = new FriendRequestUserControl();
+            control.Id = id;
             control.Username = username;
             control.FriendRequestAnswered += UserAnsweredFriendRequest;
             stackPanelFriendRequests.Children.Add(control);
@@ -145,6 +147,7 @@ namespace PointGaming.Desktop.HomeTab
         private void UserAnsweredFriendRequest(FriendRequestUserControl source, bool isAccepted)
         {
             stackPanelFriendRequests.Children.Remove(source);
+            //RespondToFriendRequest(source.Id, isAccepted);
 
             List<FriendRequestResponse> friendRequestApiResponse;
             if (TryFriendRequestApiResponse(out friendRequestApiResponse))
@@ -157,13 +160,12 @@ namespace PointGaming.Desktop.HomeTab
             }
         }
 
-        private void RespondToFriendRequest(FriendRequestResponse friendRequest, bool isAccepted)
+        private void RespondToFriendRequest(FriendRequestResponse frr, bool isAccepted)
         {
-            var apiCall = Properties.Settings.Default.FriendRequestsBaseUrl + friendRequest._id + "?auth_token=" + Persistence.AuthToken;
+            var apiCall = Properties.Settings.Default.FriendRequestsBaseUrl + frr._id + "?auth_token=" + Persistence.AuthToken;
             var client = new RestClient(apiCall);
             var request = new RestRequest(Method.PUT) { RequestFormat = RestSharp.DataFormat.Json };
             
-            // todo dean gores 2013-02: notify server developer that I added the reject action
             var friendPutRequest = new FriendPutRequest { action = isAccepted ? "accept" : "reject" };
             var friendPutRootObject = new FriendPutRootObject { friend_request = friendPutRequest };
             request.AddBody(friendPutRootObject);
@@ -232,15 +234,8 @@ namespace PointGaming.Desktop.HomeTab
 
         private void DeleteFriend(FriendUiData friend)
         {
-            //var user = new User {username = friend.Username, _id = friend.Id, };
-
-            //var userRootObject = new UserRootObject();
-            //userRootObject.user = user;
-
             var request = new RestRequest(Method.DELETE);
-            //request.RequestFormat = RestSharp.DataFormat.Json;
-            //request.AddBody(userRootObject);
-
+            
             var baseUrl = Properties.Settings.Default.Unfriend + friend.Id + "?auth_token=" + Persistence.AuthToken;
             var client = new RestClient(baseUrl);
             var apiResponse = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
@@ -277,8 +272,6 @@ namespace PointGaming.Desktop.HomeTab
         {
             _client = client;
 
-            _client.On("new_friend_request", new UIInvoker(this, OnNewFriendRequest).Invoke);
-            _client.On("new_friend", new UIInvoker(this, OnNewFriend).Invoke);
             _client.On("friends", new UIInvoker(this, OnFriends).Invoke);
             _client.On("friend_status_changed", new UIInvoker(this, OnFriendStatusChanged).Invoke);
 
@@ -291,16 +284,59 @@ namespace PointGaming.Desktop.HomeTab
             try
             {
                 var friendStatus = data.Json.GetFirstArgAs<FriendStatus>();
-                FriendUiData friendData;
-                if (_friendLookup.TryGetValue(friendStatus._id, out friendData))
+                switch(friendStatus.status)
                 {
-                    friendData.Status = friendStatus.status;
+                    case FriendStatusAdded:
+                        FriendAdded(friendStatus);
+                        break;
+                    case FriendStatusRemoved:
+                        FriendRemoved(friendStatus);
+                        break;
+                    case FriendStatusInvited:
+                        FriendInviteReceived(friendStatus);
+                        break;
+                    default:
+                        FriendStatusChanged(friendStatus);
+                        break;
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(HomeWindow.Home, ex.Message);
             }
+        }
+
+        private void FriendStatusChanged(FriendStatus friendStatus)
+        {
+            FriendUiData friendData;
+            if (_friendLookup.TryGetValue(friendStatus._id, out friendData))
+            {
+                friendData.Status = friendStatus.status;
+            }
+        }
+
+        private void FriendInviteReceived(FriendStatus friendStatus)
+        {
+            var id = friendStatus._id;
+            var username = friendStatus.username;
+            IncomingFriendRequest(id, username);
+        }
+
+        private void FriendRemoved(FriendStatus friendStatus)
+        {
+            FriendUiData friendUiData;
+            if (_friendLookup.TryGetValue(friendStatus._id, out friendUiData))
+                RemoveFriendFromList(friendUiData);
+        }
+
+        private void FriendAdded(FriendStatus friendStatus)
+        {
+            Friend friend = new Friend();
+            friend._id = friendStatus._id;
+            friend.username = friendStatus.username;
+            friend.status = FriendStatusOffline;
+            AddOrUpdateFriend(friend);
+            // todo dean gores 2013-02-25 maybe I should call something to get detailed friend info? (if we ever use that stuff)
         }
 
         public void LoggedOut()
@@ -372,26 +408,16 @@ namespace PointGaming.Desktop.HomeTab
                 if (!newData.ContainsKey(item.Username))
                     removes.Add(item);
             foreach (var item in removes)
-            {
-                _friends.Remove(item);
-                _friendLookup.Remove(item.Id);
-            }
+                RemoveFriendFromList(item);
         }
 
-        private void OnNewFriend(IMessage data)
+        private void RemoveFriendFromList(FriendUiData item)
         {
-            var friendStatus = data.Json.GetFirstArgAs<NewFriend>();
-            _client.Emit("friends", null);
+            _friends.Remove(item);
+            _friendLookup.Remove(item.Id);
         }
 
-        private void OnNewFriendRequest(IMessage data)
-        {
-            var friendStatus = data.Json.GetFirstArgAs<NewFriend>();
-            var username = friendStatus.username;
-            IncomingFriendRequest(username);
-        }
-
-        private void buttonAddFriend_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void textBoxAddFriendUsername_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
