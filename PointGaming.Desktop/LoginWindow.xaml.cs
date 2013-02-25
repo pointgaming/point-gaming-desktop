@@ -33,22 +33,32 @@ namespace PointGaming.Desktop
 
         private void LogIn()
         {
+            textBoxResult.Text = "";
+            gridControls.IsEnabled = false;
             SocketSession session = new SocketSession();
             var password = passwordBoxPassword.Password;
             var username = textBoxUsername.Text;
             passwordBoxPassword.Clear();
 
-            bool isSuccess = session.Login(username, password);
-            if (isSuccess)
+            session.BeginLogin(username, password, LogInCompleted);
+        }
+
+        private void LogInCompleted(SocketSession session, bool isSuccess)
+        {
+            this.InvokeUI(delegate
             {
-                IsLoggedIn = true;
-                SocketSession = session;
-                Close();
-            }
-            else
-            {
-                MessageBox.Show(this, "Invalid username or password");
-            }
+                if (isSuccess)
+                {
+                    IsLoggedIn = true;
+                    SocketSession = session;
+                    Close();
+                }
+                else
+                {
+                    textBoxResult.Text = "Invalid username or password";
+                    gridControls.IsEnabled = true;
+                }
+            });
         }
         
         private void textBoxUsername_PreviewKeyDown(object sender, KeyEventArgs e)

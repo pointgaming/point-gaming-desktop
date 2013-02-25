@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using PointGaming.Desktop.POCO;
 using SocketIOClient;
 using SocketIOClient.Messages;
 using RestSharp;
 
 namespace PointGaming.Desktop
-{    
+{
+    public delegate void LogInCompleted(SocketSession caller, bool isSuccess);
+
     public class SocketSession
     {
         public Client MyClient;
@@ -17,8 +20,34 @@ namespace PointGaming.Desktop
 
         private Action OnAuthorizedCallback;
 
-        public bool Login(string username, string password)
+        private class LoginInfo
         {
+            public readonly string Username;
+            public readonly string Password;
+            public readonly LogInCompleted TryAction;
+
+            public LoginInfo(string username, string password, LogInCompleted tryAction)
+            {
+                Username = username;
+                Password = password;
+                TryAction = tryAction;
+            }
+        }
+
+        public void BeginLogin(string username, string password, LogInCompleted tryAction)
+        {
+            var t = new Thread(Login);
+            t.IsBackground = true;
+            t.Name = "Login";
+            t.Start(new LoginInfo(username, password, tryAction));
+        }
+
+        private void Login(object parameter)
+        {
+            var loginInfo = (LoginInfo)parameter;
+            var username = loginInfo.Username;
+            var password = loginInfo.Password;
+
             bool isSuccess = false;
             try
             {
@@ -45,7 +74,7 @@ namespace PointGaming.Desktop
                 App.LogLine(e.Message);
             }
 
-            return isSuccess;
+            loginInfo.TryAction(this, isSuccess);
         }
 
         public void Logout()
