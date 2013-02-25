@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using PointGaming.Desktop.POCO;
 using RestSharp;
 
@@ -33,7 +34,8 @@ namespace PointGaming.Desktop
 
         private void LogIn()
         {
-            textBoxResult.Text = "";
+            textBoxResult.Foreground = Brushes.Black;
+            textBoxResult.Text = "Logging in...";
             gridControls.IsEnabled = false;
             SocketSession session = new SocketSession();
             var password = passwordBoxPassword.Password;
@@ -55,8 +57,10 @@ namespace PointGaming.Desktop
                 }
                 else
                 {
+                    textBoxResult.Foreground = Brushes.Red;
                     textBoxResult.Text = "Invalid username or password";
                     gridControls.IsEnabled = true;
+                    passwordBoxPassword.Focus();
                 }
             });
         }
