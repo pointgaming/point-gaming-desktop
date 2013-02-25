@@ -34,7 +34,11 @@ namespace PointGaming.Desktop
         private void LogIn()
         {
             SocketSession session = new SocketSession();
-            bool isSuccess = session.Login(textBoxUsername.Text, passwordBoxPassword.Password);
+            var password = passwordBoxPassword.Password;
+            var username = textBoxUsername.Text;
+            passwordBoxPassword.Clear();
+
+            bool isSuccess = session.Login(username, password);
             if (isSuccess)
             {
                 IsLoggedIn = true;
@@ -43,7 +47,7 @@ namespace PointGaming.Desktop
             }
             else
             {
-                MessageBox.Show("Invalid Username or Password");
+                MessageBox.Show("Invalid username or password");
             }
         }
         
