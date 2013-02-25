@@ -26,61 +26,47 @@ namespace PointGaming.Desktop.HomeTab
         public ObservableCollection<FriendUiData> Friends { get { return _friends; } }
         private Dictionary<string, FriendUiData> _friendLookup = new Dictionary<string, FriendUiData>();
 
-        public class FriendUiData : INotifyPropertyChanged
-        {
-            public event PropertyChangedEventHandler PropertyChanged;
-            private void NotifyChanged(string propertyName)
-            {
-                var changedCallback = PropertyChanged;
-                if (changedCallback == null)
-                    return;
-                var args = new PropertyChangedEventArgs(propertyName);
-                changedCallback(this, args);
-            }
-
-            private string _id;
-            public string Id
-            {
-                get { return _id; }
-                set
-                {
-                    if (value == _id)
-                        return;
-                    _id = value;
-                    NotifyChanged("Id");
-                }
-            }
-
-            private string _username;
-            public string Username
-            {
-                get { return _username; }
-                set
-                {
-                    if (value == _username)
-                        return;
-                    _username = value;
-                    NotifyChanged("Username");
-                }
-            }
-            private string _status;
-            public string Status
-            {
-                get { return _status; }
-                set
-                {
-                    if (value == _status)
-                        return;
-                    _status = value;
-                    NotifyChanged("Status");
-                }
-            }
-        }
-
+        private Client _client;
 
         public FriendTab()
         {
             InitializeComponent();
+        }
+
+        public void OnAuthorized(Client client)
+        {
+            _client = client;
+
+            _client.On("friends", new UIInvoker(this, OnFriends).Invoke);
+            _client.On("friend_status_changed", new UIInvoker(this, OnFriendStatusChanged).Invoke);
+
+            _client.Emit("friends", null);
+            CheckPendingFriendRequest();
+        }
+
+        public void LoggedOut()
+        {
+            _client = null;
+
+            _friends.Clear();
+            _friendLookup.Clear();
+        }
+
+        private class UIInvoker
+        {
+            private readonly Control _control;
+            private readonly Action<IMessage> _action;
+
+            public UIInvoker(Control control, Action<IMessage> action)
+            {
+                _control = control;
+                _action = action;
+            }
+
+            public void Invoke(IMessage message)
+            {
+                _control.InvokeUI(() => _action(message));
+            }
         }
 
         public void CheckPendingFriendRequest()
@@ -265,20 +251,6 @@ namespace PointGaming.Desktop.HomeTab
             return ChatAvailableStatuses.Contains(status);
         }
 
-        
-        private Client _client;
-
-        public void OnAuthorized(Client client)
-        {
-            _client = client;
-
-            _client.On("friends", new UIInvoker(this, OnFriends).Invoke);
-            _client.On("friend_status_changed", new UIInvoker(this, OnFriendStatusChanged).Invoke);
-
-            _client.Emit("friends", null);
-            CheckPendingFriendRequest();
-        }
-
         private void OnFriendStatusChanged(IMessage data)
         {
             try
@@ -339,31 +311,6 @@ namespace PointGaming.Desktop.HomeTab
             // todo dean gores 2013-02-25 maybe I should call something to get detailed friend info? (if we ever use that stuff)
         }
 
-        public void LoggedOut()
-        {
-            _client = null;
-
-            _friends.Clear();
-            _friendLookup.Clear();
-        }
-
-        private class UIInvoker
-        {
-            private readonly Control _control;
-            private readonly Action<IMessage> _action;
-
-            public UIInvoker(Control control, Action<IMessage> action)
-            {
-                _control = control;
-                _action = action;
-            }
-
-            public void Invoke(IMessage message)
-            {
-                _control.InvokeUI(() => _action(message));
-            }
-        }
-        
         private void OnFriends(IMessage data)
         {
             var fro = data.Json.GetFirstArgAs<FriendResponseRootObject>();

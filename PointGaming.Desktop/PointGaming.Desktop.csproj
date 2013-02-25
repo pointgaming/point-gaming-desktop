@@ -92,6 +92,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Chat\ChatManager.cs" />
+    <Compile Include="HomeTab\FriendUiData.cs" />
     <Compile Include="SocketSession.cs" />
     <Page Include="Chat\ChatWindow.xaml">
       <SubType>Designer</SubType>
