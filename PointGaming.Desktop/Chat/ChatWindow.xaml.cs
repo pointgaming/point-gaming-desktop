@@ -21,6 +21,7 @@ namespace PointGaming.Desktop.Chat
 
         public void Init(ChatManager manager)
         {
+            Owner = HomeWindow.Home;
             this._manager = manager;
         }
 
