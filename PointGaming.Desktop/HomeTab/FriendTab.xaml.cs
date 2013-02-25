@@ -267,7 +267,6 @@ namespace PointGaming.Desktop.HomeTab
         private bool CanChatWith(FriendUiData friend)
         {
             var status = friend.Status;
-            return true;
             return ChatAvailableStatuses.Contains(status);
         }
 
