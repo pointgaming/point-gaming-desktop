@@ -37,6 +37,19 @@ namespace PointGaming.Desktop.HomeTab
                 changedCallback(this, args);
             }
 
+            private string _id;
+            public string Id
+            {
+                get { return _id; }
+                set
+                {
+                    if (value == _id)
+                        return;
+                    _id = value;
+                    NotifyChanged("Id");
+                }
+            }
+
             private string _username;
             public string Username
             {
@@ -199,7 +212,7 @@ namespace PointGaming.Desktop.HomeTab
             }
         }
 
-        private string _clickedFriendUsername;
+        private FriendUiData _rightClickedFriend;
 
         private void dataGridFriends_MouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -208,38 +221,33 @@ namespace PointGaming.Desktop.HomeTab
                 FriendUiData friend;
                 if (dataGridFriends.TryGetRowItem(e, out friend))
                 {
-                    var username = friend.Username;
-                    _clickedFriendUsername = username;
-                    // todo dean gores 2013-02: show menu to delete friend
-                    DeleteFriend(_clickedFriendUsername);
+                    _rightClickedFriend = friend;
                 }
             }
         }
-
-        private void DeleteFriend(string username)
+        private void UnfriendClick(object sender, RoutedEventArgs e)
         {
-            var user = new User {username = username};
+            DeleteFriend(_rightClickedFriend);
+        }
 
-            var userRootObject = new UserRootObject();
-            userRootObject.user = user;
+        private void DeleteFriend(FriendUiData friend)
+        {
+            //var user = new User {username = friend.Username, _id = friend.Id, };
+
+            //var userRootObject = new UserRootObject();
+            //userRootObject.user = user;
 
             var request = new RestRequest(Method.DELETE);
-            request.RequestFormat = RestSharp.DataFormat.Json;
-            request.AddBody(userRootObject);
+            //request.RequestFormat = RestSharp.DataFormat.Json;
+            //request.AddBody(userRootObject);
 
-            var baseUrl = Properties.Settings.Default.Friends + Persistence.AuthToken;
+            var baseUrl = Properties.Settings.Default.Unfriend + friend.Id + "?auth_token=" + Persistence.AuthToken;
             var client = new RestClient(baseUrl);
             var apiResponse = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
             var status = apiResponse.Data.success;
 
-            if (status)
-            {
-                MessageBox.Show("Friend Deleted Successfully!");
-            }
-            else
-            {
+            if (!status)
                 MessageBox.Show(apiResponse.Data.message);
-            }
 
             _client.Emit("friends", null);
         }
@@ -285,7 +293,7 @@ namespace PointGaming.Desktop.HomeTab
             {
                 var friendStatus = data.Json.GetFirstArgAs<FriendStatus>();
                 FriendUiData friendData;
-                if (_friendLookup.TryGetValue(friendStatus.username, out friendData))
+                if (_friendLookup.TryGetValue(friendStatus._id, out friendData))
                 {
                     friendData.Status = friendStatus.status;
                 }
@@ -335,21 +343,21 @@ namespace PointGaming.Desktop.HomeTab
 
         private void AddOrUpdateFriend(Friend friend)
         {
-            var username = friend.username;
-            var status = friend.status;
             FriendUiData old;
-            if (_friendLookup.TryGetValue(username, out old))
+            if (_friendLookup.TryGetValue(friend._id, out old))
             {
-                old.Status = status;
+                old.Status = friend.status;
+                old.Username = friend.username;
             }
             else
             {
                 var newFriend = new FriendUiData
                 {
-                    Username = username,
-                    Status = status
+                    Username = friend.username,
+                    Status = friend.status,
+                    Id = friend._id,
                 };
-                _friendLookup[username] = newFriend;
+                _friendLookup[friend._id] = newFriend;
                 _friends.Add(newFriend);
             }
         }
@@ -367,14 +375,13 @@ namespace PointGaming.Desktop.HomeTab
             foreach (var item in removes)
             {
                 _friends.Remove(item);
-                _friendLookup.Remove(item.Username);
+                _friendLookup.Remove(item.Id);
             }
         }
 
         private void OnNewFriend(IMessage data)
         {
             var friendStatus = data.Json.GetFirstArgAs<NewFriend>();
-            MessageBox.Show("You have a new friend '" + friendStatus.username + "'.");
             _client.Emit("friends", null);
         }
 
@@ -394,5 +401,6 @@ namespace PointGaming.Desktop.HomeTab
                 return;
             }
         }
+
     }
 }

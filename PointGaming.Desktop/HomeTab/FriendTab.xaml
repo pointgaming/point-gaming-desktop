@@ -20,6 +20,18 @@
                 <DataGridTextColumn Binding="{Binding Username}" Header="Username" Width="*" IsReadOnly="True" />
                 <DataGridTextColumn Binding="{Binding Status}" Header="Status" Width="100" IsReadOnly="True" />
             </DataGrid.Columns>
+
+            <DataGrid.Resources>
+                <ContextMenu x:Key="DataRowContextMenu">
+                    <MenuItem Header="Unfriend" Click="UnfriendClick" />
+                </ContextMenu>
+            </DataGrid.Resources>
+
+            <DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}" x:Name="styleForDataRow">
+                    <Setter Property="ContextMenu" Value="{StaticResource DataRowContextMenu}" />
+                </Style>
+            </DataGrid.RowStyle>
         </DataGrid>
 
         <StackPanel Grid.Row="1" Name="stackPanelFriendRequests" Orientation="Vertical" >

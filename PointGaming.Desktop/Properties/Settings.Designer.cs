@@ -88,10 +88,10 @@ namespace PointGaming.Desktop.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/api/v1/friends/dummy?auth_token=")]
-        public string Friends {
+        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/api/v1/friends/")]
+        public string Unfriend {
             get {
-                return ((string)(this["Friends"]));
+                return ((string)(this["Unfriend"]));
             }
         }
         
