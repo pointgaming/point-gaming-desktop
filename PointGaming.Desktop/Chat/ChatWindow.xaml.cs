@@ -64,5 +64,10 @@ namespace PointGaming.Desktop.Chat
             }
             return tabItem;
         }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            _manager.ChatWindowClosed();
+        }
     }
 }
