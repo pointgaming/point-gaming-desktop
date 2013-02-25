@@ -17,8 +17,8 @@ namespace PointGaming.Desktop.HomeTab
     /// </summary>
     public partial class FriendTab : UserControl
     {
-        private const string FriendStatusOffline = "Offline";
-        private const string FriendStatusOnline = "Online";
+        private const string FriendStatusOffline = "offline";
+        private const string FriendStatusOnline = "online";
         private static readonly List<string> ChatAvailableStatuses = new List<string>(new[] { FriendStatusOnline });
 
         private readonly ObservableCollection<FriendUiData> _friends = new ObservableCollection<FriendUiData>();
@@ -270,16 +270,32 @@ namespace PointGaming.Desktop.HomeTab
         {
             _client = client;
 
-            _client.On("friend_signed_out", new UIInvoker(this, OnFriendSignedOut).Invoke);
-            _client.On("friend_signed_in", new UIInvoker(this, OnFriendSignedIn).Invoke);
             _client.On("new_friend_request", new UIInvoker(this, OnNewFriendRequest).Invoke);
             _client.On("new_friend", new UIInvoker(this, OnNewFriend).Invoke);
             _client.On("friends", new UIInvoker(this, OnFriends).Invoke);
+            _client.On("friend_status_changed", new UIInvoker(this, OnFriendStatusChanged).Invoke);
 
             _client.Emit("friends", null);
             CheckPendingFriendRequest();
         }
-        
+
+        private void OnFriendStatusChanged(IMessage data)
+        {
+            try
+            {
+                var friendStatus = data.Json.GetFirstArgAs<FriendStatus>();
+                FriendUiData friendData;
+                if (_friendLookup.TryGetValue(friendStatus.username, out friendData))
+                {
+                    friendData.Status = friendStatus.status;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
         public void LoggedOut()
         {
             _client = null;
@@ -357,49 +373,16 @@ namespace PointGaming.Desktop.HomeTab
 
         private void OnNewFriend(IMessage data)
         {
-            var friendStatus = data.Json.GetFirstArgAs<FriendStatus>();
+            var friendStatus = data.Json.GetFirstArgAs<NewFriend>();
             MessageBox.Show("You have a new friend '" + friendStatus.username + "'.");
             _client.Emit("friends", null);
         }
 
         private void OnNewFriendRequest(IMessage data)
         {
-            var friendStatus = data.Json.GetFirstArgAs<FriendStatus>();
+            var friendStatus = data.Json.GetFirstArgAs<NewFriend>();
             var username = friendStatus.username;
             IncomingFriendRequest(username);
-        }
-
-        private void OnFriendSignedOut(IMessage data)
-        {
-            try
-            {
-                var friendStatus = data.Json.GetFirstArgAs<FriendStatus>();
-                FriendUiData friendData;
-                if (_friendLookup.TryGetValue(friendStatus.username, out friendData))
-                {
-                    friendData.Status = FriendStatusOffline;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-        private void OnFriendSignedIn(IMessage data)
-        {
-            try
-            {
-                var friendStatus = data.Json.GetFirstArgAs<FriendStatus>();
-                FriendUiData friendData;
-                if (_friendLookup.TryGetValue(friendStatus.username, out friendData))
-                {
-                    friendData.Status = FriendStatusOffline;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
         }
 
         private void buttonAddFriend_PreviewKeyDown(object sender, KeyEventArgs e)
