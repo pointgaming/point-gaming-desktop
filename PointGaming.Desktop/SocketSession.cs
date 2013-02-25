@@ -20,6 +20,132 @@ namespace PointGaming.Desktop
 
         private Action OnAuthorizedCallback;
 
+        private AutoResetEvent socketWorker = new AutoResetEvent(false);
+
+        private class CallbackAction
+        {
+            public int ThreadId;
+            public Action Action;
+            public Action Callback;
+        }
+
+        private Dictionary<int, Action<Action>> _threadQueuers = new Dictionary<int, Action<Action>>();
+        private readonly List<CallbackAction> _workQueue = new List<CallbackAction>();
+
+        public SocketSession()
+        {
+            var t = new Thread(DoWork);
+            t.IsBackground = true;
+            t.Name = "socket.io worker";
+            t.Start();
+        }
+
+        public void AddThreadQueuerForCurrentThread(Action<Action> queuer)
+        {
+            var threadId = Thread.CurrentThread.ManagedThreadId;
+            lock (_threadQueuers)
+            {
+                _threadQueuers[threadId] = queuer;
+            }
+        }
+
+        public void EmitLater(string eventName, dynamic parameter)
+        {
+            Begin(delegate { MyClient.Emit(eventName, parameter); });
+        }
+
+        public void Emit(string eventName, dynamic parameter)
+        {
+            MyClient.Emit(eventName, parameter);
+        }
+
+        public void Begin(Action action)
+        {
+            var threadId = Thread.CurrentThread.ManagedThreadId;
+            var ca = new CallbackAction { Action = action, Callback = null, ThreadId = threadId, };
+            lock (_workQueue)
+            {
+                _workQueue.Add(ca);
+            }
+            socketWorker.Set();
+        }
+
+        public void BeginAndCallback(Action action, Action callback)
+        {
+            var threadId = Thread.CurrentThread.ManagedThreadId;
+            var ca = new CallbackAction { Action = action, Callback = callback, ThreadId = threadId,};
+            lock (_workQueue)
+            {
+                _workQueue.Add(ca);
+            }
+            socketWorker.Set();
+        }
+
+        public void OnThread(string eventName, Action<IMessage> action)
+        {
+            var threadId = Thread.CurrentThread.ManagedThreadId;
+            Action<Action> queuer;
+            lock (_threadQueuers)
+            {
+                queuer = _threadQueuers[threadId];
+            }
+
+            MyClient.On(eventName, new QueueInvoker(queuer, action).Invoke);
+        }
+
+        public class QueueInvoker
+        {
+            private readonly Action<Action> _queuer;
+            private readonly Action<IMessage> _action;
+
+            public QueueInvoker(Action<Action> queuer, Action<IMessage> action)
+            {
+                _queuer = queuer;
+                _action = action;
+            }
+
+            public void Invoke(IMessage message)
+            {
+                _queuer(() => _action(message));
+            }
+        }
+
+        private void DoWork()
+        {
+            while (!App.IsShuttingDown)
+            {
+                socketWorker.WaitOne();
+
+                List<CallbackAction> newWork;
+                lock (_workQueue)
+                {
+                    newWork = new List<CallbackAction>(_workQueue);
+                    _workQueue.Clear();
+                }
+
+                foreach (var item in newWork)
+                {
+                    try
+                    {
+                        item.Action();
+                        if (item.Callback != null)
+                        {
+                            Action<Action> queuer;
+                            lock (_threadQueuers)
+                            {
+                                queuer = _threadQueuers[item.ThreadId];
+                            }
+                            queuer(item.Callback);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        App.LogLine(e.Message);
+                    }
+                }
+            }
+        }
+
         private class LoginInfo
         {
             public readonly string Username;
@@ -34,20 +160,8 @@ namespace PointGaming.Desktop
             }
         }
 
-        public void BeginLogin(string username, string password, LogInCompleted tryAction)
+        public bool Login(string username, string password)
         {
-            var t = new Thread(Login);
-            t.IsBackground = true;
-            t.Name = "Login";
-            t.Start(new LoginInfo(username, password, tryAction));
-        }
-
-        private void Login(object parameter)
-        {
-            var loginInfo = (LoginInfo)parameter;
-            var username = loginInfo.Username;
-            var password = loginInfo.Password;
-
             bool isSuccess = false;
             try
             {
@@ -74,7 +188,7 @@ namespace PointGaming.Desktop
                 App.LogLine(e.Message);
             }
 
-            loginInfo.TryAction(this, isSuccess);
+            return isSuccess;
         }
 
         public void Logout()

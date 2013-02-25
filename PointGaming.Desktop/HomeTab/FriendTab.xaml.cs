@@ -26,65 +26,49 @@ namespace PointGaming.Desktop.HomeTab
         public ObservableCollection<FriendUiData> Friends { get { return _friends; } }
         private Dictionary<string, FriendUiData> _friendLookup = new Dictionary<string, FriendUiData>();
 
-        private Client _client;
+        private SocketSession _session;
 
         public FriendTab()
         {
             InitializeComponent();
         }
 
-        public void OnAuthorized(Client client)
+        public void OnAuthorized(SocketSession session)
         {
-            _client = client;
+            _session = session;
 
-            _client.On("friends", new UIInvoker(this, OnFriends).Invoke);
-            _client.On("friend_status_changed", new UIInvoker(this, OnFriendStatusChanged).Invoke);
+            session.OnThread("friends", OnFriends);
+            session.OnThread("friend_status_changed", OnFriendStatusChanged);
 
-            _client.Emit("friends", null);
+            session.EmitLater("friends", null);
             CheckPendingFriendRequest();
         }
 
         public void LoggedOut()
         {
-            _client = null;
+            _session = null;
 
             _friends.Clear();
             _friendLookup.Clear();
         }
 
-        private class UIInvoker
-        {
-            private readonly Control _control;
-            private readonly Action<IMessage> _action;
-
-            public UIInvoker(Control control, Action<IMessage> action)
-            {
-                _control = control;
-                _action = action;
-            }
-
-            public void Invoke(IMessage message)
-            {
-                _control.InvokeUI(() => _action(message));
-            }
-        }
-
         public void CheckPendingFriendRequest()
         {
-            List<FriendRequestResponse> friendRequestApiResponse;
-            if (TryFriendRequestApiResponse(out friendRequestApiResponse))
+            List<FriendRequestResponse> friendRequestApiResponse = null;
+            bool isSuccess = false;
+            _session.BeginAndCallback(delegate
             {
-                foreach (var item in friendRequestApiResponse)
+                isSuccess = TryFriendRequestApiResponse(out friendRequestApiResponse);
+            }, delegate
+            {
+                if (isSuccess)
                 {
-                    if (item.user.username == null)
+                    foreach (var item in friendRequestApiResponse)
                     {
-                        LogError("CheckPendingFriendRequest: item.username is null");
-                        continue;
+                        IncomingFriendRequest(item.user._id, item.user.username);
                     }
-
-                    IncomingFriendRequest(item.user._id, item.user.username);
                 }
-            }
+            });
         }
 
         private void LogError(string checkpendingfriendrequestItemUsernameIsNull)
@@ -133,17 +117,22 @@ namespace PointGaming.Desktop.HomeTab
         private void UserAnsweredFriendRequest(FriendRequestUserControl source, bool isAccepted)
         {
             stackPanelFriendRequests.Children.Remove(source);
-            //RespondToFriendRequest(source.Id, isAccepted);
-
-            List<FriendRequestResponse> friendRequestApiResponse;
-            if (TryFriendRequestApiResponse(out friendRequestApiResponse))
+            
+            _session.Begin(delegate
             {
-                foreach (var item in friendRequestApiResponse)
+                List<FriendRequestResponse> friendRequestApiResponse;
+                if (TryFriendRequestApiResponse(out friendRequestApiResponse))
                 {
-                    if (item.user.username == source.Username)
-                        RespondToFriendRequest(item, isAccepted);
+                    foreach (var item in friendRequestApiResponse)
+                    {
+                        if (item.user.username == source.Username)
+                        {
+                            RespondToFriendRequest(item, isAccepted);
+                            break;
+                        }
+                    }
                 }
-            }
+            });
         }
 
         private void RespondToFriendRequest(FriendRequestResponse frr, bool isAccepted)
@@ -160,17 +149,15 @@ namespace PointGaming.Desktop.HomeTab
             var isSuccess = acceptResponse.Data.success;
 
             if (isSuccess && isAccepted)
-            {
-                _client.Emit("friends", null);
-            }
+                _session.Emit("friends", null);
         }
 
         private void buttonAddFriend_Click(object sender, RoutedEventArgs e)
         {
-            AddFriend();
+            RequestFriend();
         }
 
-        private void AddFriend()
+        private void RequestFriend()
         {
             var username = textBoxAddFriendUsername.Text.Trim();
             if (string.IsNullOrWhiteSpace(username))
@@ -187,17 +174,31 @@ namespace PointGaming.Desktop.HomeTab
 
             var friendsRequestApiCall = Properties.Settings.Default.FriendRequest + Persistence.AuthToken;
             var client = new RestClient(friendsRequestApiCall);
-            var apiResponse = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
-            var isSuccess = apiResponse.Data.success;
 
-            if (isSuccess)
+            _session.Begin(delegate
             {
-                MessageBox.Show(HomeWindow.Home, "Friend Request Sent!");
-            }
-            else
-            {
-                MessageBox.Show(HomeWindow.Home, "Error: " + apiResponse.Data.message);
-            }
+                var apiResponse = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
+                var isSuccess = apiResponse.Data.success;
+
+                if (!isSuccess)
+                {
+                    App.LogLine("Error requesting friend: " + apiResponse.Data.message);
+                    if (apiResponse.Data.message == "User not found")
+                    {
+                        this.BeginInvokeUI(delegate
+                        {
+                            MessageDialog.Show(HomeWindow.Home, "User not found", "User '" + username + "' not found");
+                        });
+                    }
+                    else if (apiResponse.Data.message == "You are already friends with that user")
+                    {
+                        this.BeginInvokeUI(delegate
+                        {
+                            MessageDialog.Show(HomeWindow.Home, "Already friends", "Already friends with '" + username + "'");
+                        });
+                    }
+                }
+            });
         }
 
         private FriendUiData _rightClickedFriend;
@@ -215,10 +216,10 @@ namespace PointGaming.Desktop.HomeTab
         }
         private void UnfriendClick(object sender, RoutedEventArgs e)
         {
-            DeleteFriend(_rightClickedFriend);
+            _session.Begin(delegate { DeleteFriend(_session, _rightClickedFriend);});
         }
 
-        private void DeleteFriend(FriendUiData friend)
+        private static void DeleteFriend(SocketSession session, FriendUiData friend)
         {
             var request = new RestRequest(Method.DELETE);
             
@@ -228,9 +229,9 @@ namespace PointGaming.Desktop.HomeTab
             var status = apiResponse.Data.success;
 
             if (!status)
-                MessageBox.Show(HomeWindow.Home, apiResponse.Data.message);
+                App.LogLine("Failed to delete friend: " + apiResponse.Data.message);
 
-            _client.Emit("friends", null);
+            session.EmitLater("friends", null);
         }
 
         private void dataGridFriends_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -274,7 +275,7 @@ namespace PointGaming.Desktop.HomeTab
             }
             catch (Exception ex)
             {
-                MessageBox.Show(HomeWindow.Home, ex.Message);
+                App.LogLine(ex.Message);
             }
         }
 
@@ -368,7 +369,7 @@ namespace PointGaming.Desktop.HomeTab
         {
             if (e.Key == Key.Enter)
             {
-                AddFriend();
+                RequestFriend();
                 e.Handled = true;
                 return;
             }

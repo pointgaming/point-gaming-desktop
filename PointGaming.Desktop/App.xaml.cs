@@ -41,24 +41,17 @@ namespace PointGaming.Desktop
 
     static class UIExtensionMethods
     {
-        public static void BeginInvokeUI(this Control c, Action a, bool shouldCallLater = false)
+        public static void BeginInvokeUI(this Control c, Action a)
         {
-            if (Thread.CurrentThread.ManagedThreadId == HomeWindow.GuiThreadId && !shouldCallLater)
+            try
             {
-                a();
-            }
-            else
-            {
-                try
+                c.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)delegate()
                 {
-                    c.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)delegate()
-                    {
-                        if (App.IsShuttingDown) return;
-                        a();
-                    });
-                }
-                catch { }
+                    if (App.IsShuttingDown) return;
+                    a();
+                });
             }
+            catch { }
         }
         public static void InvokeUI(this Control c, Action a)
         {

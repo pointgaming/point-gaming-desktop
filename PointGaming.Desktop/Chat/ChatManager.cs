@@ -11,13 +11,13 @@ namespace PointGaming.Desktop.Chat
 {
     public class ChatManager
     {
-        private Client _client;
+        private SocketSession _session;
         private ChatWindow _chatWindow;
 
-        public void OnAuthorized(Client client)
+        public void OnAuthorized(SocketSession session)
         {
-            _client = client;
-            client.On("message", OnMessage);
+            _session = session;
+            session.OnThread("message", OnMessage);
         }
 
         private void OnMessage(IMessage message)
@@ -34,7 +34,7 @@ namespace PointGaming.Desktop.Chat
         public void SendMessage(string usernameTo, string message)
         {
             var outgoing = new OutgoingMessages { user = usernameTo, message = message };
-            _client.Emit("message", outgoing);
+            _session.EmitLater("message", outgoing);
         }
 
         public ChatWindow GetOrCreateChatWindow()

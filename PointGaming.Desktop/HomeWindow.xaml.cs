@@ -52,7 +52,7 @@ namespace PointGaming.Desktop
             if (!_once)
             {
                 _once = true;
-                this.BeginInvokeUI(ShowLogInWindow, true);
+                this.BeginInvokeUI(ShowLogInWindow);
             }
         }
 
@@ -82,10 +82,10 @@ namespace PointGaming.Desktop
         {
             this.BeginInvokeUI(delegate
             {
-                friendTabInstance.OnAuthorized(_socketSession.MyClient);
+                friendTabInstance.OnAuthorized(_socketSession);
                 _chatManager = new Chat.ChatManager();
-                _chatManager.OnAuthorized(_socketSession.MyClient);
-            }, true);
+                _chatManager.OnAuthorized(_socketSession);
+            });
         }
 
         public void LogOut()
@@ -101,7 +101,7 @@ namespace PointGaming.Desktop
             friendTabInstance.LoggedOut();
             _chatManager = null;
 
-            _socketSession.Logout();
+            _socketSession.Begin(_socketSession.Logout);
             _socketSession = null;
 
             if (!_windowClosing)

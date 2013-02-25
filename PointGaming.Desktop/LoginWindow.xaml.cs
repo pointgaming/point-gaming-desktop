@@ -38,11 +38,17 @@ namespace PointGaming.Desktop
             textBoxResult.Text = "Logging in...";
             gridControls.IsEnabled = false;
             SocketSession session = new SocketSession();
+            session.AddThreadQueuerForCurrentThread(HomeWindow.Home.BeginInvokeUI);
             var password = passwordBoxPassword.Password;
             var username = textBoxUsername.Text;
             passwordBoxPassword.Clear();
 
-            session.BeginLogin(username, password, LogInCompleted);
+            bool isSuccess = false;
+            session.BeginAndCallback(delegate {
+                isSuccess = session.Login(username, password);
+            }, delegate {
+                LogInCompleted(session, isSuccess);
+            });
         }
 
         private void LogInCompleted(SocketSession session, bool isSuccess)

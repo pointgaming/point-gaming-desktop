@@ -93,6 +93,9 @@
     </ApplicationDefinition>
     <Compile Include="Chat\ChatManager.cs" />
     <Compile Include="HomeTab\FriendUiData.cs" />
+    <Compile Include="MessageDialog.xaml.cs">
+      <DependentUpon>MessageDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SocketSession.cs" />
     <Page Include="Chat\ChatWindow.xaml">
       <SubType>Designer</SubType>
@@ -163,6 +166,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="LoginWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MessageDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
