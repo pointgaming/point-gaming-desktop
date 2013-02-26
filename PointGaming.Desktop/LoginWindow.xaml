@@ -1,7 +1,9 @@
 ﻿<Window x:Class="PointGaming.Desktop.LoginWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Log into PointGaming" Height="220" Width="350" WindowStartupLocation="CenterOwner" Loaded="Window_Loaded" Name="windowLogin">
+        Title="Log into PointGaming" Height="220" Width="350"
+        WindowStartupLocation="CenterOwner" Loaded="Window_Loaded" Name="windowLogin"
+        ResizeMode="NoResize" WindowStyle="ToolWindow">
     <Grid VerticalAlignment="Center" Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

@@ -1,7 +1,7 @@
 ﻿<Window x:Class="PointGaming.Desktop.Chat.ChatWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Chat" Height="300" Width="300" WindowStartupLocation="CenterOwner" Closing="Window_Closing" ShowActivated="False" Activated="Window_Activated">
+        Title="Chat" Height="300" Width="300" WindowStartupLocation="CenterOwner" Closing="Window_Closing" ShowActivated="False" Activated="Window_Activated" Icon="/PointGaming.Desktop;component/PointGaming.ico">
     <Window.Resources>
         <Style x:Key="FlashingHeader" TargetType="TabItem">
             <Setter Property="TabItem.HeaderTemplate">
