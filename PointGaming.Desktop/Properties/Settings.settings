@@ -5,25 +5,10 @@
     <Setting Name="BaseUrl" Type="System.String" Scope="Application">
       <Value Profile="(Default)">https://dev.pointgaming.com/api/v1/</Value>
     </Setting>
-    <Setting Name="FriendRequestsBaseUrl" Type="System.String" Scope="Application">
+    <Setting Name="FriendRequests" Type="System.String" Scope="Application">
       <Value Profile="(Default)">https://dev.pointgaming.com/api/v1/friend_requests/</Value>
     </Setting>
-    <Setting Name="FriendRequest" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">https://dev.pointgaming.com/api/v1/friend_requests?auth_token=</Value>
-    </Setting>
-    <Setting Name="AddCoins" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">https://dev.pointgaming.com/api/v1/coins?auth_token=</Value>
-    </Setting>
-    <Setting Name="ListCoins" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">https://dev.pointgaming.com/api/v1/coins?auth_token=</Value>
-    </Setting>
-    <Setting Name="ShowCoin" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">https://dev.pointgaming.com/api/v1/coins/</Value>
-    </Setting>
-    <Setting Name="Games" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">https://dev.pointgaming.com/api/v1/games?auth_token=</Value>
-    </Setting>
-    <Setting Name="Unfriend" Type="System.String" Scope="Application">
+    <Setting Name="Friends" Type="System.String" Scope="Application">
       <Value Profile="(Default)">https://dev.pointgaming.com/api/v1/friends/</Value>
     </Setting>
     <Setting Name="UserFolder" Type="System.String" Scope="User">

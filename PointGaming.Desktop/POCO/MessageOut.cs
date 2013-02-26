@@ -1,8 +1,8 @@
 ﻿namespace PointGaming.Desktop.POCO
 {
-	public class ReceivedMessages
+	public class MessageOut
 	{
-		public string username { get; set; }
+		public string user { get; set;}
 		public string message { get; set; }
 	}
 }

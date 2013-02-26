@@ -22,7 +22,7 @@ namespace PointGaming.Desktop.Chat
 
         private void OnMessage(IMessage message)
         {
-            var received = message.Json.GetFirstArgAs<ReceivedMessages>();
+            var received = message.Json.GetFirstArgAs<MessageIn>();
 
             HomeWindow.Home.InvokeUI(delegate
             {
@@ -33,7 +33,7 @@ namespace PointGaming.Desktop.Chat
 
         public void SendMessage(string usernameTo, string message)
         {
-            var outgoing = new OutgoingMessages { user = usernameTo, message = message };
+            var outgoing = new MessageOut { user = usernameTo, message = message };
             _session.EmitLater("message", outgoing);
         }
 

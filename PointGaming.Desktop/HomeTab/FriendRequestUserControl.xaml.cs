@@ -25,16 +25,16 @@ namespace PointGaming.Desktop.HomeTab
             InitializeComponent();
         }
 
-        private string _id;
-        public string Id
+        private string _friendRequestId;
+        public string FriendRequestId
         {
-            get { return _id; }
+            get { return _friendRequestId; }
             set
             {
-                if (value == _id)
+                if (value == _friendRequestId)
                     return;
-                _id = value;
-                NotifyChanged("Id");
+                _friendRequestId = value;
+                NotifyChanged("FriendRequestId");
             }
         }
 

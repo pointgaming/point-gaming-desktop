@@ -4,7 +4,7 @@
 	{
 		private static string _authToken = "";
 		private static string _loggedInUsername = "";
-		private static FriendRequestsCollectionRootObject frcRootObject = new FriendRequestsCollectionRootObject();
+		private static FriendInviteRoot frcRootObject = new FriendInviteRoot();
 
 		public static string AuthToken
 		{
@@ -18,7 +18,7 @@
 			set { _loggedInUsername = value; }
 		}
 
-		public static FriendRequestsCollectionRootObject friendRequests
+		public static FriendInviteRoot friendRequests
 		{
 			get { return frcRootObject; }
 			set { frcRootObject = value; }

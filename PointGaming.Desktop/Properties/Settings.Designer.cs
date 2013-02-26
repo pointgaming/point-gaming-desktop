@@ -35,63 +35,18 @@ namespace PointGaming.Desktop.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/api/v1/friend_requests/")]
-        public string FriendRequestsBaseUrl {
+        public string FriendRequests {
             get {
-                return ((string)(this["FriendRequestsBaseUrl"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/api/v1/friend_requests?auth_token=")]
-        public string FriendRequest {
-            get {
-                return ((string)(this["FriendRequest"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/api/v1/coins?auth_token=")]
-        public string AddCoins {
-            get {
-                return ((string)(this["AddCoins"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/api/v1/coins?auth_token=")]
-        public string ListCoins {
-            get {
-                return ((string)(this["ListCoins"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/api/v1/coins/")]
-        public string ShowCoin {
-            get {
-                return ((string)(this["ShowCoin"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/api/v1/games?auth_token=")]
-        public string Games {
-            get {
-                return ((string)(this["Games"]));
+                return ((string)(this["FriendRequests"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/api/v1/friends/")]
-        public string Unfriend {
+        public string Friends {
             get {
-                return ((string)(this["Unfriend"]));
+                return ((string)(this["Friends"]));
             }
         }
         

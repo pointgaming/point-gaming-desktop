@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using System.Windows.Media;
+using RestSharp;
 
 namespace PointGaming.Desktop
 {
@@ -147,6 +148,12 @@ namespace PointGaming.Desktop
             }
 
             return default(T);
+        }
+
+
+        public static bool IsOk(this RestResponseBase response)
+        {
+            return response.StatusCode >= System.Net.HttpStatusCode.OK && (int)response.StatusCode <= 209;
         }
     }
 }

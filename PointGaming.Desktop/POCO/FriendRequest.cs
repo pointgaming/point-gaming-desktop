@@ -5,7 +5,7 @@
 		public string username { get; set; }
 	}
 
-	public class FriendRequestRootObject
+	public class FriendRequestRoot
 	{
 		public FriendRequest friend_request { get; set; }
 	}
