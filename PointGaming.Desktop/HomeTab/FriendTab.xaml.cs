@@ -102,11 +102,6 @@ namespace PointGaming.Desktop.HomeTab
             });
         }
 
-        private void LogError(string checkpendingfriendrequestItemUsernameIsNull)
-        {
-            App.LogLine(checkpendingfriendrequestItemUsernameIsNull);
-        }
-
         private void FriendRequestToReceived(FriendRequest friendRequest)
         {
             if (AlreadyHaveFriendRequestTo(friendRequest._id))
@@ -262,17 +257,16 @@ namespace PointGaming.Desktop.HomeTab
         }
         private void UnfriendClick(object sender, RoutedEventArgs e)
         {
-            _session.Begin(delegate { DeleteFriend(_session, _rightClickedFriend);});
+            FriendUiData friend = _rightClickedFriend;
+            _session.Begin(delegate
+            {
+                var request = new RestRequest(Method.DELETE);
+                var baseUrl = Properties.Settings.Default.Friends + friend.Id + "?auth_token=" + Persistence.AuthToken;
+                var client = new RestClient(baseUrl);
+                client.Execute<ApiResponse>(request);
+            });
         }
-
-        private static void DeleteFriend(SocketSession session, FriendUiData friend)
-        {
-            var request = new RestRequest(Method.DELETE);
-            var baseUrl = Properties.Settings.Default.Friends + friend.Id + "?auth_token=" + Persistence.AuthToken;
-            var client = new RestClient(baseUrl);
-            client.Execute<ApiResponse>(request);
-        }
-
+        
         private void dataGridFriends_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             FriendUiData friend;
