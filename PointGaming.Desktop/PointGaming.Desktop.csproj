@@ -194,7 +194,7 @@
     <Compile Include="POCO\FriendRequest.cs" />
     <Compile Include="POCO\User.cs" />
     <Compile Include="POCO\FriendStatus.cs" />
-    <Compile Include="POCO\MessageOut.cs" />
+    <Compile Include="POCO\PrivateMessage.cs" />
     <Compile Include="POCO\Persistence.cs" />
     <Compile Include="POCO\UserLogin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
