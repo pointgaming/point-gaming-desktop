@@ -58,6 +58,28 @@ namespace PointGaming.Desktop
             }
         }
 
+        protected override void OnStateChanged(EventArgs e)
+        {
+            if (WindowState == WindowState.Minimized)
+                this.Hide();
+
+            base.OnStateChanged(e);
+        }
+
+        private void TaskbarIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
+        {
+            if (!this.IsVisible)
+            {
+                this.Show();
+                this.WindowState = WindowState.Normal;
+            }
+            else
+            {
+                this.Hide();
+            }
+        }
+
+
         private void ShowLogInWindow()
         {
             var lw = new LoginWindow();
