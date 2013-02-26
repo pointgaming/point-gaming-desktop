@@ -69,9 +69,16 @@ namespace PointGaming.Desktop.Chat
         private void SendInput()
         {
             var message = textBoxInput.Text;
+            message = message.Trim();
             textBoxInput.Text = "";
-            if (string.IsNullOrWhiteSpace(message))
+            if (message == "")
                 return;
+
+            if (message.Length > 1024)
+            {
+                message = message.Substring(0, 1024);
+                message = message.Trim();
+            }
 
             AppendUserMessage(Persistence.loggedInUsername, message);
             _chatWindow.SendMessage(OtherUsername, message);
@@ -86,9 +93,14 @@ namespace PointGaming.Desktop.Chat
 
         private void AppendUserMessage(string username, string message)
         {
+            var time = DateTime.Now;
+
+            string timeString = time.ToString("HH:mm");
+
             bool isAtEnd = _isAtEnd;
 
             var p = new Paragraph();
+            p.Inlines.Add(new Run(timeString + " "));
             p.Inlines.Add(new Bold(new Run(username + ": ")));
             p.Inlines.Add(new Run(message));
             richTextBoxLog.Document.Blocks.Add(p);
