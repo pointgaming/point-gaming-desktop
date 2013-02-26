@@ -33,6 +33,7 @@ namespace PointGaming.Desktop.Chat
             {
                 s.ScrollChanged += ScrollChanged;
             }
+            textBoxInput.Focus();
         }
 
         private bool _isAtEnd = true;
@@ -69,14 +70,17 @@ namespace PointGaming.Desktop.Chat
         {
             var message = textBoxInput.Text;
             textBoxInput.Text = "";
+            if (string.IsNullOrWhiteSpace(message))
+                return;
 
             AppendUserMessage(Persistence.loggedInUsername, message);
-
             _chatWindow.SendMessage(OtherUsername, message);
         }
 
         public void MessageReceived(string usernameFrom, string message)
         {
+            _chatWindow.StartFlashingTab(OtherUsername);
+
             AppendUserMessage(usernameFrom, message);
         }
 

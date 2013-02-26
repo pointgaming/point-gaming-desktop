@@ -82,5 +82,17 @@ namespace PointGaming.Desktop.Properties {
                 return ((string)(this["SocketIoUrl"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShouldFlashChatWindow {
+            get {
+                return ((bool)(this["ShouldFlashChatWindow"]));
+            }
+            set {
+                this["ShouldFlashChatWindow"] = value;
+            }
+        }
     }
 }
