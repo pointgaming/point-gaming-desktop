@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Log into PointGaming" Height="220" Width="350"
         WindowStartupLocation="CenterOwner" Loaded="Window_Loaded" Name="windowLogin"
-        ResizeMode="NoResize" WindowStyle="ToolWindow">
+        ResizeMode="NoResize" WindowStyle="ToolWindow" Icon="/PointGaming.Desktop;component/PointGaming.ico">
     <Grid VerticalAlignment="Center" Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

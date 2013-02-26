@@ -68,6 +68,7 @@ namespace PointGaming.Desktop
                 this.WindowState = WindowState.Normal;
             }
             taskbarIcon.Visibility = isEnabled ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+            ShowInTaskbar = !isEnabled;
         }
 
         protected override void OnStateChanged(EventArgs e)
