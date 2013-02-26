@@ -6,7 +6,7 @@ namespace PointGaming.Desktop.HomeTab
 {
     public delegate void FriendRequestCanceled(FriendRequestFromUserControl source);
 
-    public partial class FriendRequestFromUserControl : UserControl, INotifyPropertyChanged
+    public partial class FriendRequestFromUserControl : UserControl, INotifyPropertyChanged, IFriendRequestUserControl
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public event FriendRequestCanceled FriendRequestCanceled;

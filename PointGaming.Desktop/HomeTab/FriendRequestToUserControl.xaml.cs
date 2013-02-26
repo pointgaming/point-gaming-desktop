@@ -4,9 +4,16 @@ using System.Windows.Controls;
 
 namespace PointGaming.Desktop.HomeTab
 {
+    public interface IFriendRequestUserControl
+    {
+        string FriendRequestId { get; set; }
+        string Username { get; set; }
+        string UserId { get; set; }
+    }
+
     public delegate void FriendRequestToAnswered(FriendRequestToUserControl source, bool isAccepted);
 
-    public partial class FriendRequestToUserControl : UserControl, INotifyPropertyChanged
+    public partial class FriendRequestToUserControl : UserControl, INotifyPropertyChanged, IFriendRequestUserControl
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public event FriendRequestToAnswered FriendRequestToAnswered;
