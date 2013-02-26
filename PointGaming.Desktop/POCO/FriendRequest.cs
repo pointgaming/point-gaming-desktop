@@ -1,12 +1,16 @@
-﻿namespace PointGaming.Desktop.POCO
-{
-	public class FriendRequest
-	{
-		public string username { get; set; }
-	}
+﻿using System.Collections.Generic;
 
-	public class FriendRequestRoot
+namespace PointGaming.Desktop.POCO
+{
+    public class FriendRequest
+    {
+        public string _id { get; set; }
+        public User from_user { get; set; }
+        public User to_user { get; set; }
+    }
+
+    public class FriendRequestRoot
 	{
-		public FriendRequest friend_request { get; set; }
+        public List<FriendRequest> friend_requests { get; set; }
 	}
 }

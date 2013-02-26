@@ -4,12 +4,12 @@ using System.Windows.Controls;
 
 namespace PointGaming.Desktop.HomeTab
 {
-    public delegate void FriendRequestAnswered(FriendRequestUserControl source, bool isAccepted);
+    public delegate void FriendRequestCanceled(FriendRequestFromUserControl source);
 
-    public partial class FriendRequestUserControl : UserControl, INotifyPropertyChanged
+    public partial class FriendRequestFromUserControl : UserControl, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public event FriendRequestAnswered FriendRequestAnswered;
+        public event FriendRequestCanceled FriendRequestCanceled;
 
         private void NotifyChanged(string propertyName)
         {
@@ -20,7 +20,7 @@ namespace PointGaming.Desktop.HomeTab
             changedCallback(this, args);
         }
 
-        public FriendRequestUserControl()
+        public FriendRequestFromUserControl()
         {
             InitializeComponent();
         }
@@ -51,22 +51,25 @@ namespace PointGaming.Desktop.HomeTab
             }
         }
 
-        private void buttonAccept_Click(object sender, RoutedEventArgs e)
+        private string _userId;
+        public string UserId
         {
-            Answered(true);
+            get { return _userId; }
+            set
+            {
+                if (value == _userId)
+                    return;
+                _userId = value;
+                NotifyChanged("UserId");
+            }
         }
 
-        private void buttonReject_Click(object sender, RoutedEventArgs e)
+        private void buttonCancel_Click(object sender, RoutedEventArgs e)
         {
-            Answered(false);
-        }
-
-        private void Answered(bool isAccepted)
-        {
-            var answeredCallback = FriendRequestAnswered;
+            var answeredCallback = FriendRequestCanceled;
             if (answeredCallback == null)
                 return;
-            answeredCallback(this, isAccepted);
+            answeredCallback(this);
         }
     }
 }

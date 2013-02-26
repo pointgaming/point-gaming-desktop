@@ -11,6 +11,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         
         <DataGrid Grid.Row="0" AutoGenerateColumns="False" HorizontalAlignment="Stretch" Name="dataGridFriends" VerticalAlignment="Stretch"
@@ -34,10 +35,10 @@
             </DataGrid.RowStyle>
         </DataGrid>
 
-        <StackPanel Grid.Row="1" Name="stackPanelFriendRequests" Orientation="Vertical" >
-        </StackPanel>
+        <StackPanel Grid.Row="1" Name="stackPanelFriendRequestsFrom" Orientation="Vertical" />
+        <StackPanel Grid.Row="2" Name="stackPanelFriendRequestsTo" Orientation="Vertical" />
 
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>

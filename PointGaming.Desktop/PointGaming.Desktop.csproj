@@ -92,10 +92,14 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Chat\ChatManager.cs" />
+    <Compile Include="HomeTab\FriendRequestFromUserControl.xaml.cs">
+      <DependentUpon>FriendRequestFromUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HomeTab\FriendUiData.cs" />
     <Compile Include="MessageDialog.xaml.cs">
       <DependentUpon>MessageDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="POCO\FriendList.cs" />
     <Compile Include="SocketSession.cs" />
     <Page Include="Chat\ChatWindow.xaml">
       <SubType>Designer</SubType>
@@ -105,11 +109,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="HomeTab\FriendRequestFromUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="HomeTab\DebugTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="HomeTab\FriendRequestUserControl.xaml">
+    <Page Include="HomeTab\FriendRequestToUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -146,8 +154,8 @@
     <Compile Include="HomeTab\DebugTab.xaml.cs">
       <DependentUpon>DebugTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="HomeTab\FriendRequestUserControl.xaml.cs">
-      <DependentUpon>FriendRequestUserControl.xaml</DependentUpon>
+    <Compile Include="HomeTab\FriendRequestToUserControl.xaml.cs">
+      <DependentUpon>FriendRequestToUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="HomeTab\FriendTab.xaml.cs">
       <DependentUpon>FriendTab.xaml</DependentUpon>
@@ -180,10 +188,10 @@
     </Compile>
     <Compile Include="POCO\ApiResponse.cs" />
     <Compile Include="POCO\AuthEmit.cs" />
-    <Compile Include="POCO\FriendInviteResponse.cs" />
+    <Compile Include="POCO\FriendRequestResponse.cs" />
+    <Compile Include="POCO\InitialFriendRequest.cs" />
     <Compile Include="POCO\FriendRequest.cs" />
-    <Compile Include="POCO\FriendInvite.cs" />
-    <Compile Include="POCO\Friend.cs" />
+    <Compile Include="POCO\User.cs" />
     <Compile Include="POCO\FriendStatus.cs" />
     <Compile Include="POCO\MessageOut.cs" />
     <Compile Include="POCO\Persistence.cs" />

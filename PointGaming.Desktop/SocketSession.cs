@@ -16,7 +16,6 @@ namespace PointGaming.Desktop
     {
         public Client MyClient;
         private AuthEmit _authEmit;
-        private ApiResponse _apiResponse;
 
         private Action OnAuthorizedCallback;
 
@@ -173,12 +172,13 @@ namespace PointGaming.Desktop
                 request.AddBody(new UserLogin { username = username, password = password });
 
                 var apiResponse = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
-                isSuccess = apiResponse.Data.success;
+                isSuccess = apiResponse.IsOk();
 
                 if (isSuccess)
                 {
                     Persistence.AuthToken = apiResponse.Data.auth_token;
                     Persistence.loggedInUsername = username;
+                    Persistence.loggedInUserId = apiResponse.Data._id;
                     Properties.Settings.Default.Username = username;
                     Properties.Settings.Default.Save();
                 }
@@ -204,8 +204,7 @@ namespace PointGaming.Desktop
                 var baseUrl = Properties.Settings.Default.BaseUrl + "sessions/destroy?auth_token=" + Persistence.AuthToken;
                 var client = new RestClient(baseUrl);
                 var request = new RestRequest(Method.DELETE);
-                var apiResponse = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
-                var isSuccess = apiResponse.Data.success;
+                client.Execute<ApiResponse>(request);
             }
             catch (Exception e)
             {
@@ -262,18 +261,26 @@ namespace PointGaming.Desktop
         
         private void OnAuthResponse(IMessage data)
         {
+            bool isSuccess = false;
             try
             {
-                _apiResponse = data.Json.GetFirstArgAs<ApiResponse>();
+                var response = data.Json.GetFirstArgAs<ApiResponse>();
+                isSuccess = response.success;
             }
             catch (Exception ex)
             {
                 App.LogLine(ex.Message);
             }
 
-            App.LogLine("Client socket authorized.");
-
-            OnAuthorizedCallback();
+            if (isSuccess)
+            {
+                App.LogLine("Client socket authorized.");
+                OnAuthorizedCallback();
+            }
+            else
+            {
+                App.LogLine("Error: client socket is not authorized.");
+            }
         }
     }
 }

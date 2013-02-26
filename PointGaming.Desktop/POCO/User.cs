@@ -2,7 +2,7 @@
 
 namespace PointGaming.Desktop.POCO
 {
-	public class Friend
+	public class User
 	{
 		public string _id { get; set; }
         //public string email { get; set; }
@@ -32,11 +32,5 @@ namespace PointGaming.Desktop.POCO
       //"profile_url": "/users/4f1ddce7-a62f-4cd9-9593-1c6e160cd85b/profile",
       //"age": ""
 
-	}
-
-	public class FriendRoot
-	{
-		public bool success { get; set; }
-		public List<Friend> friends { get; set; }
 	}
 }
