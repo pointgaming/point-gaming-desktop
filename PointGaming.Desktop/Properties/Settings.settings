@@ -23,5 +23,8 @@
     <Setting Name="ShouldFlashChatWindow" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="LogInTimeout" Type="System.TimeSpan" Scope="Application">
+      <Value Profile="(Default)">00:00:05</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -94,5 +94,14 @@ namespace PointGaming.Desktop.Properties {
                 this["ShouldFlashChatWindow"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("00:00:05")]
+        public global::System.TimeSpan LogInTimeout {
+            get {
+                return ((global::System.TimeSpan)(this["LogInTimeout"]));
+            }
+        }
     }
 }

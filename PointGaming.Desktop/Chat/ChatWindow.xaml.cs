@@ -6,6 +6,8 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Collections.Generic;
 using System.Linq;
+using PointGaming.Desktop.POCO;
+using PointGaming.Desktop.HomeTab;
 
 namespace PointGaming.Desktop.Chat
 {
@@ -26,42 +28,43 @@ namespace PointGaming.Desktop.Chat
             this._manager = manager;
         }
 
-        public void SendMessage(string usernameTo, string message)
+        public void SendMessage(PrivateMessage message)
         {
-            _manager.SendMessage(usernameTo, message);
+            _manager.SendMessage(message);
         }
 
-        public void MessageReceived(string usernameFrom, string message)
+        public void MessageReceived(PrivateMessage message)
         {
-            TabItem tabItem = GetOrCreateTab(usernameFrom);
+            var data = HomeWindow.UserDataManager.GetUserData(message.user_id);
+            TabItem tabItem = GetOrCreateTab(data);
             var chatTab = (Chat.ChatTab)tabItem.Content;
-            chatTab.MessageReceived(usernameFrom, message);
+            chatTab.MessageReceived(message);
         }
 
-        public void ChatWith(string username)
+        public void ChatWith(FriendUiData data)
         {
-            TabItem tabItem = GetOrCreateTab(username);
+            TabItem tabItem = GetOrCreateTab(data);
             tabControlChats.SelectedItem = tabItem;
         }
 
-        private TabItem GetOrCreateTab(string username)
+        private TabItem GetOrCreateTab(FriendUiData data)
         {
             TabItem tabItem;
-            if (!_chatTabs.TryGetValue(username, out tabItem))
+            if (!_chatTabs.TryGetValue(data.Id, out tabItem))
             {
                 var chatTab = new Chat.ChatTab();
-                chatTab.Init(this, username);
+                chatTab.Init(this, data);
 
                 tabItem = new TabItem();
                 tabItem.Content = chatTab;
-                tabItem.Header = username;
+                tabItem.Header = data.Username;
 
                 tabControlChats.Items.Add(tabItem);
 
                 if (tabControlChats.Items.Count == 1)
                     tabControlChats.SelectedIndex = 0;
 
-                _chatTabs[username] = tabItem;
+                _chatTabs[data.Id] = tabItem;
             }
             return tabItem;
         }
@@ -90,13 +93,13 @@ namespace PointGaming.Desktop.Chat
             StopFlashingTab(tabItem);
         }
 
-        public void StartFlashingTab(string username)
+        public void StartFlashingTab(string userId)
         {
             if (!IsActive && Properties.Settings.Default.ShouldFlashChatWindow)
                 this.FlashWindow();
 
             TabItem tabItem;
-            if (!_chatTabs.TryGetValue(username, out tabItem))
+            if (!_chatTabs.TryGetValue(userId, out tabItem))
                 return;
             if (!IsActive || !tabItem.IsSelected)
                 tabItem.SetValue(Control.StyleProperty, (Style)this.Resources["FlashingHeader"]);

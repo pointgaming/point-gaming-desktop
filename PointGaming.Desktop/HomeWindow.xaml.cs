@@ -21,6 +21,8 @@ namespace PointGaming.Desktop
         private SocketSession _socketSession;
         private Chat.ChatManager _chatManager;
 
+        public static UserDataManager UserDataManager = new UserDataManager();
+
         public HomeWindow()
         {
             Home = this;
@@ -64,7 +66,10 @@ namespace PointGaming.Desktop
 
             if (lw.IsLoggedIn)
             {
-                LoggedIn(lw.SocketSession);
+                _socketSession = lw.SocketSession;
+                friendTabInstance.OnAuthorized(_socketSession);
+                _chatManager = new Chat.ChatManager();
+                _chatManager.OnAuthorized(_socketSession);
             }
             else
             {
@@ -72,26 +77,12 @@ namespace PointGaming.Desktop
             }
         }
 
-        private void LoggedIn(SocketSession session)
-        {
-            _socketSession = session;
-            session.ConnectSocket(OnAuthorized);
-        }
-
-        private void OnAuthorized()
-        {
-            this.BeginInvokeUI(delegate
-            {
-                friendTabInstance.OnAuthorized(_socketSession);
-                _chatManager = new Chat.ChatManager();
-                _chatManager.OnAuthorized(_socketSession);
-            });
-        }
-
         public void LogOut()
         {
             if (_socketSession == null)
                 return;
+
+            UserDataManager.LoggedOut();
 
             var childWindows = new List<Window>(_childWindows);
             foreach (var window in childWindows)
@@ -125,9 +116,9 @@ namespace PointGaming.Desktop
             LogOut();
         }
 
-        public void ChatWith(string username)
+        public void ChatWith(HomeTab.FriendUiData friend)
         {
-            _chatManager.ChatWith(username);
+            _chatManager.ChatWith(friend);
         }
     }
 

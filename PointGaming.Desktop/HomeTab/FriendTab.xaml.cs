@@ -21,9 +21,7 @@ namespace PointGaming.Desktop.HomeTab
 
         private static readonly List<string> ChatAvailableStatuses = new List<string>(new[] { FriendStatusOnline });
 
-        private readonly ObservableCollection<FriendUiData> _friends = new ObservableCollection<FriendUiData>();
-        public ObservableCollection<FriendUiData> Friends { get { return _friends; } }
-        private Dictionary<string, FriendUiData> _friendLookup = new Dictionary<string, FriendUiData>();
+        public ObservableCollection<FriendUiData> Friends { get { return HomeWindow.UserDataManager.Friends; } }
 
         private SocketSession _session;
 
@@ -49,8 +47,6 @@ namespace PointGaming.Desktop.HomeTab
         {
             _session = null;
 
-            _friends.Clear();
-            _friendLookup.Clear();
             stackPanelFriendRequestsTo.Children.Clear();
             stackPanelFriendRequestsFrom.Children.Clear();
         }
@@ -83,7 +79,7 @@ namespace PointGaming.Desktop.HomeTab
             {
                 if (CanChatWith(friend))
                 {
-                    HomeWindow.Home.ChatWith(friend.Username);
+                    HomeWindow.Home.ChatWith(friend);
                 }
             }
         }
@@ -122,7 +118,7 @@ namespace PointGaming.Desktop.HomeTab
         private void FriendStatusChanged(FriendStatus friendStatus)
         {
             FriendUiData friendData;
-            if (_friendLookup.TryGetValue(friendStatus._id, out friendData))
+            if (HomeWindow.UserDataManager.TryGetFriend(friendStatus._id, out friendData))
             {
                 friendData.Status = friendStatus.status;
             }
@@ -131,8 +127,8 @@ namespace PointGaming.Desktop.HomeTab
         private void FriendRemoved(FriendStatus friendStatus)
         {
             FriendUiData friendUiData;
-            if (_friendLookup.TryGetValue(friendStatus._id, out friendUiData))
-                RemoveFriendFromList(friendUiData);
+            if (HomeWindow.UserDataManager.TryGetFriend(friendStatus._id, out friendUiData))
+                HomeWindow.UserDataManager.RemoveFriend(friendUiData);
         }
 
         private void FriendAdded(FriendStatus friendStatus)
@@ -178,7 +174,7 @@ namespace PointGaming.Desktop.HomeTab
         private void AddOrUpdateFriend(User friend)
         {
             FriendUiData old;
-            if (_friendLookup.TryGetValue(friend._id, out old))
+            if (HomeWindow.UserDataManager.TryGetFriend(friend._id, out old))
             {
                 old.Status = friend.status;
                 old.Username = friend.username;
@@ -191,8 +187,7 @@ namespace PointGaming.Desktop.HomeTab
                     Status = friend.status,
                     Id = friend._id,
                 };
-                _friendLookup[friend._id] = newFriend;
-                _friends.Add(newFriend);
+                HomeWindow.UserDataManager.AddFriend(newFriend);
             }
         }
 
@@ -203,17 +198,11 @@ namespace PointGaming.Desktop.HomeTab
                 newData.Add(item.username, null);
 
             var removes = new List<FriendUiData>();
-            foreach (var item in _friends)
+            foreach (var item in Friends)
                 if (!newData.ContainsKey(item.Username))
                     removes.Add(item);
             foreach (var item in removes)
-                RemoveFriendFromList(item);
-        }
-
-        private void RemoveFriendFromList(FriendUiData item)
-        {
-            _friends.Remove(item);
-            _friendLookup.Remove(item.Id);
+                HomeWindow.UserDataManager.RemoveFriend(item);
         }
         #endregion
 

@@ -17,8 +17,6 @@ namespace PointGaming.Desktop
         public Client MyClient;
         private AuthEmit _authEmit;
 
-        private Action OnAuthorizedCallback;
-
         private AutoResetEvent socketWorker = new AutoResetEvent(false);
 
         private class CallbackAction
@@ -159,7 +157,10 @@ namespace PointGaming.Desktop
             }
         }
 
-        public bool Login(string username, string password)
+        private bool _isAuthorized;
+        private bool _isAuthResponded;
+
+        public bool Login(string username, string password, DateTime timeout)
         {
             bool isSuccess = false;
             try
@@ -171,16 +172,29 @@ namespace PointGaming.Desktop
                 request.RequestFormat = RestSharp.DataFormat.Json;
                 request.AddBody(new UserLogin { username = username, password = password });
 
+                var oldTimeout = client.Timeout;
+                client.Timeout = (int)((DateTime.Now - timeout).TotalMilliseconds);
                 var apiResponse = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
                 isSuccess = apiResponse.IsOk();
+                client.Timeout = oldTimeout;
 
                 if (isSuccess)
                 {
+                    isSuccess = false;
+
                     Persistence.AuthToken = apiResponse.Data.auth_token;
                     Persistence.loggedInUsername = username;
                     Persistence.loggedInUserId = apiResponse.Data._id;
                     Properties.Settings.Default.Username = username;
                     Properties.Settings.Default.Save();
+
+                    ConnectSocket();
+                    while (DateTime.Now < timeout && !_isAuthResponded)
+                        Thread.Sleep(25);
+                    isSuccess = _isAuthorized;
+
+                    if (!isSuccess)
+                        MyClient.Close();
                 }
             }
             catch (Exception e)
@@ -217,10 +231,8 @@ namespace PointGaming.Desktop
             App.LogLine("Logged in session ended.");
         }
 
-        public void ConnectSocket(Action OnAuthorized)
+        public void ConnectSocket()
         {
-            OnAuthorizedCallback = OnAuthorized;
-
             MyClient = new Client(Properties.Settings.Default.SocketIoUrl);
             MyClient.On("connect", OnConnect);
             MyClient.On("auth_resp", OnAuthResponse);
@@ -275,12 +287,13 @@ namespace PointGaming.Desktop
             if (isSuccess)
             {
                 App.LogLine("Client socket authorized.");
-                OnAuthorizedCallback();
+                _isAuthorized = true;
             }
             else
             {
                 App.LogLine("Error: client socket is not authorized.");
             }
+            _isAuthResponded = true;
         }
     }
 }

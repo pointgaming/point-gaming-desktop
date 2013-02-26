@@ -22,19 +22,18 @@ namespace PointGaming.Desktop.Chat
 
         private void OnMessage(IMessage message)
         {
-            var received = message.Json.GetFirstArgAs<MessageIn>();
+            var received = message.Json.GetFirstArgAs<PrivateMessage>();
 
             HomeWindow.Home.InvokeUI(delegate
             {
                 var chatWindow = GetOrCreateChatWindow();
-                chatWindow.MessageReceived(received.username, received.message);
+                chatWindow.MessageReceived(received);
             });
         }
 
-        public void SendMessage(string usernameTo, string message)
+        public void SendMessage(PrivateMessage message)
         {
-            var outgoing = new MessageOut { user = usernameTo, message = message };
-            _session.EmitLater("message", outgoing);
+            _session.EmitLater("message", message);
         }
 
         public ChatWindow GetOrCreateChatWindow()
@@ -55,10 +54,10 @@ namespace PointGaming.Desktop.Chat
             HomeWindow.Home.RemoveChildWindow(_chatWindow);
         }
 
-        public void ChatWith(string username)
+        public void ChatWith(HomeTab.FriendUiData friend)
         {
             var chatWindow = GetOrCreateChatWindow();
-            chatWindow.ChatWith(username);
+            chatWindow.ChatWith(friend);
         }
     }
 }

@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using PointGaming.Desktop.HomeTab;
 using PointGaming.Desktop.POCO;
 
 namespace PointGaming.Desktop.Chat
@@ -18,7 +19,7 @@ namespace PointGaming.Desktop.Chat
     public partial class ChatTab : UserControl
     {
         private ChatWindow _chatWindow;
-        public string OtherUsername;
+        public FriendUiData OtherUser;
 
         public ChatTab()
         {
@@ -42,10 +43,10 @@ namespace PointGaming.Desktop.Chat
             _isAtEnd = e.ExtentHeight - (e.VerticalOffset + e.ViewportHeight) <= 1.0;
         }
 
-        public void Init(ChatWindow window, string otherUsername)
+        public void Init(ChatWindow window, FriendUiData otherUser)
         {
             _chatWindow = window;
-            OtherUsername = otherUsername;
+            OtherUser = otherUser;
         }
 
         private void buttonSendInput_Click(object sender, RoutedEventArgs e)
@@ -81,14 +82,14 @@ namespace PointGaming.Desktop.Chat
             }
 
             AppendUserMessage(Persistence.loggedInUsername, message);
-            _chatWindow.SendMessage(OtherUsername, message);
+            var privateMessage = new PrivateMessage{ user_id = OtherUser.Id, message = message };
+            _chatWindow.SendMessage(privateMessage);
         }
 
-        public void MessageReceived(string usernameFrom, string message)
+        public void MessageReceived(PrivateMessage message)
         {
-            _chatWindow.StartFlashingTab(OtherUsername);
-
-            AppendUserMessage(usernameFrom, message);
+            _chatWindow.StartFlashingTab(OtherUser.Id);
+            AppendUserMessage(OtherUser.Username, message.message);
         }
 
         private void AppendUserMessage(string username, string message)

@@ -101,6 +101,7 @@
     </Compile>
     <Compile Include="POCO\FriendList.cs" />
     <Compile Include="SocketSession.cs" />
+    <Compile Include="UserDataManager.cs" />
     <Page Include="Chat\ChatWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -195,7 +196,6 @@
     <Compile Include="POCO\FriendStatus.cs" />
     <Compile Include="POCO\MessageOut.cs" />
     <Compile Include="POCO\Persistence.cs" />
-    <Compile Include="POCO\MessageIn.cs" />
     <Compile Include="POCO\UserLogin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

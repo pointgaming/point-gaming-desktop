@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using PointGaming.Desktop.POCO;
@@ -43,19 +44,13 @@ namespace PointGaming.Desktop
             var username = textBoxUsername.Text;
             passwordBoxPassword.Clear();
 
+            DateTime timeout = DateTime.Now + Properties.Settings.Default.LogInTimeout;
+
             bool isSuccess = false;
             session.BeginAndCallback(delegate {
-                isSuccess = session.Login(username, password);
+                isSuccess = session.Login(username, password, timeout);
             }, delegate {
-                LogInCompleted(session, isSuccess);
-            });
-        }
-
-        private void LogInCompleted(SocketSession session, bool isSuccess)
-        {
-            this.InvokeUI(delegate
-            {
-                if (isSuccess)
+                if (isSuccess) 
                 {
                     IsLoggedIn = true;
                     SocketSession = session;
@@ -63,13 +58,17 @@ namespace PointGaming.Desktop
                 }
                 else
                 {
+                    var message = "Invalid username or password";
+                    if (DateTime.Now >= timeout)
+                        message = "Try again later.  No response within timeout period.";
                     textBoxResult.Foreground = Brushes.Red;
-                    textBoxResult.Text = "Invalid username or password";
+                    textBoxResult.Text = message;
                     gridControls.IsEnabled = true;
                     passwordBoxPassword.Focus();
                 }
             });
         }
+
         
         private void textBoxUsername_PreviewKeyDown(object sender, KeyEventArgs e)
         {
