@@ -6,9 +6,9 @@
         Title="Point Gaming" Height="350" Width="525"
         Loaded="Window_Loaded" Closing="Window_Closing" Icon="/PointGaming.Desktop;component/PointGaming.ico">
     <Grid>
-        <tb:TaskbarIcon IconSource="/PointGaming.Desktop;component/PointGaming.ico" 
+        <tb:TaskbarIcon Name="taskbarIcon" IconSource="/PointGaming.Desktop;component/PointGaming.ico" 
                         TrayMouseDoubleClick="TaskbarIcon_TrayMouseDoubleClick"
-                        ToolTipText="Poing Gaming" />
+                        ToolTipText="Poing Gaming" Visibility="Collapsed" />
         
         <TabControl HorizontalAlignment="Stretch" Name="tabControl1" VerticalAlignment="Stretch">
             <TabItem Header="Friends">

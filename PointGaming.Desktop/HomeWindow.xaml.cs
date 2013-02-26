@@ -56,12 +56,27 @@ namespace PointGaming.Desktop
                 _once = true;
                 this.BeginInvokeUI(ShowLogInWindow);
             }
+            UpdateMinimizeToTray();
+        }
+
+        public void UpdateMinimizeToTray()
+        {
+            bool isEnabled = Properties.Settings.Default.MinimizeToTray;
+            if (!isEnabled && !IsVisible)
+            {
+                this.Show();
+                this.WindowState = WindowState.Normal;
+            }
+            taskbarIcon.Visibility = isEnabled ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
         }
 
         protected override void OnStateChanged(EventArgs e)
         {
-            if (WindowState == WindowState.Minimized)
-                this.Hide();
+            if (Properties.Settings.Default.MinimizeToTray)
+            {
+                if (WindowState == WindowState.Minimized)
+                    this.Hide();
+            }
 
             base.OnStateChanged(e);
         }

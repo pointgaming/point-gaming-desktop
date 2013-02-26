@@ -10,6 +10,7 @@
         <Label Content="Toggle HUD: Ctrl + Shift + H" Height="28" HorizontalAlignment="Left" Name="labelToggleHud" VerticalAlignment="Top" />
         <CheckBox Content="Synch game configs" Height="16" HorizontalAlignment="Left" Name="checkBoxSynchGameConfigs" VerticalAlignment="Top" Margin="0,6,0,6" Checked="checkBoxSynchGameConfigs_Checked" IsChecked="True" Unchecked="checkBoxSynchGameConfigs_Unchecked" />
         <CheckBox Content="Hide game configs" Height="16" HorizontalAlignment="Left" Name="checkBoxHideGameConfigs" VerticalAlignment="Top" Margin="0,6,0,6" Checked="checkBoxHideGameConfigs_Checked" Unchecked="checkBoxHideGameConfigs_Unchecked" />
+        <CheckBox Content="Minimize to Tray" Height="16" HorizontalAlignment="Left" Name="checkBoxMinimizeToTray" VerticalAlignment="Top" Margin="0,6,0,6" Checked="checkBoxMinimizeToTray_Checked" Unchecked="checkBoxMinimizeToTray_Unchecked" />
         <Button Content="Log out" Height="23" HorizontalAlignment="Left" Name="buttonLogOut" VerticalAlignment="Top" Width="75" Margin="0,2.5,0,2.5" Click="buttonLogOut_Click" />
     </StackPanel>
 </UserControl>

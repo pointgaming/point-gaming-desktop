@@ -15,6 +15,8 @@ namespace PointGaming.Desktop.HomeTab
         public SettingsTab()
         {
             InitializeComponent();
+
+            checkBoxMinimizeToTray.IsChecked = Properties.Settings.Default.MinimizeToTray;
         }
 
         private void buttonScanForGames_Click(object sender, RoutedEventArgs e)
@@ -43,6 +45,19 @@ namespace PointGaming.Desktop.HomeTab
         private void checkBoxHideGameConfigs_Unchecked(object sender, RoutedEventArgs e)
         {
             App.LogLine("Not Implemented");
+        }
+
+        private void checkBoxMinimizeToTray_Checked(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.MinimizeToTray = true;
+            Properties.Settings.Default.Save();
+            HomeWindow.Home.UpdateMinimizeToTray();
+        }
+        private void checkBoxMinimizeToTray_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.MinimizeToTray = false;
+            Properties.Settings.Default.Save();
+            HomeWindow.Home.UpdateMinimizeToTray();
         }
     }
 }
