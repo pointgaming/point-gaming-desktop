@@ -98,6 +98,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Chat\ChatManager.cs" />
+    <Compile Include="Chat\ChatroomTab.xaml.cs">
+      <DependentUpon>ChatroomTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HomeTab\FriendRequestFromUserControl.xaml.cs">
       <DependentUpon>FriendRequestFromUserControl.xaml</DependentUpon>
     </Compile>
@@ -105,6 +108,7 @@
     <Compile Include="MessageDialog.xaml.cs">
       <DependentUpon>MessageDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="POCO\Chatroom.cs" />
     <Compile Include="POCO\FriendList.cs" />
     <Compile Include="SocketSession.cs" />
     <Compile Include="UserDataManager.cs" />
@@ -115,6 +119,10 @@
     <Page Include="Chat\ChatTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Chat\ChatroomTab.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="HomeTab\FriendRequestFromUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>

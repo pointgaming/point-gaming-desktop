@@ -123,7 +123,7 @@ namespace PointGaming.Desktop.HomeTab
 
         private void FriendAdded(FriendStatus friendStatus)
         {
-            User friend = new User();
+            UserWithStatus friend = new UserWithStatus();
             friend._id = friendStatus._id;
             friend.username = friendStatus.username;
             friend.status = FriendStatusOffline;
@@ -161,7 +161,7 @@ namespace PointGaming.Desktop.HomeTab
             });
         }
 
-        private void AddOrUpdateFriend(User friend)
+        private void AddOrUpdateFriend(UserWithStatus friend)
         {
             PgUser old;
             if (_session.Data.TryGetFriend(friend._id, out old))
@@ -181,7 +181,7 @@ namespace PointGaming.Desktop.HomeTab
             }
         }
 
-        private void RemoveOldFriends(List<User> newFriends)
+        private void RemoveOldFriends(List<UserWithStatus> newFriends)
         {
             var newData = new Dictionary<string, PgUser>(newFriends.Count);
             foreach (var item in newFriends)

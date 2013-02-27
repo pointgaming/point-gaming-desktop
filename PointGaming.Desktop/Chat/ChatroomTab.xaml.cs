@@ -16,13 +16,13 @@ using PointGaming.Desktop.POCO;
 
 namespace PointGaming.Desktop.Chat
 {
-    public partial class ChatTab : UserControl
+    public partial class ChatroomTab : UserControl
     {
         private ChatWindow _chatWindow;
         public PgUser OtherUser;
         private SocketSession _session = HomeWindow.Home.SocketSession;
 
-        public ChatTab()
+        public ChatroomTab()
         {
             InitializeComponent();
             richTextBoxLog.Document.Blocks.Clear();

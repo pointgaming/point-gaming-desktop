@@ -42,6 +42,11 @@ namespace PointGaming.Desktop
             _friendLookup.Remove(friend.Id);
             _userLookup.Remove(friend.Id);
         }
+
+        public bool IsFriend(string id)
+        {
+            return _friendLookup.ContainsKey(id);
+        }
         public bool TryGetFriend(string id, out PgUser friend)
         {
             return _friendLookup.TryGetValue(id, out friend);

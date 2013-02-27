@@ -7,6 +7,6 @@ namespace PointGaming.Desktop.POCO
 {
     public class FriendList
     {
-        public List<User> friends { get; set; }
+        public List<UserWithStatus> friends { get; set; }
     }
 }
