@@ -4,6 +4,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using PointGaming.Desktop.POCO;
 using RestSharp;
+using System.Threading;
 
 namespace PointGaming.Desktop
 {
@@ -14,8 +15,11 @@ namespace PointGaming.Desktop
 
         public LoginWindow()
         {
+            HomeWindow.GuiThreadId = Thread.CurrentThread.ManagedThreadId;
+
             InitializeComponent();
-            Owner = HomeWindow.Home;
+
+            App.LoggedOut();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -35,13 +39,29 @@ namespace PointGaming.Desktop
 
         private void LogIn()
         {
-            textBoxResult.Foreground = Brushes.Black;
-            textBoxResult.Text = "Logging in...";
+            var password = passwordBoxPassword.Password.Trim();
+            var username = textBoxUsername.Text.Trim();
+
+            if (username == "")
+            {
+                labelResult.Foreground = Brushes.Red;
+                labelResult.Content = "Enter username";
+                textBoxUsername.Focus();
+                return;
+            }
+            if (password == "")
+            {
+                labelResult.Foreground = Brushes.Red;
+                labelResult.Content = "Enter password";
+                passwordBoxPassword.Focus();
+                return;
+            }
+
+            labelResult.Foreground = Brushes.Black;
+            labelResult.Content = "Logging in...";
             gridControls.IsEnabled = false;
             SocketSession session = new SocketSession();
-            session.AddThreadQueuerForCurrentThread(HomeWindow.Home.BeginInvokeUI);
-            var password = passwordBoxPassword.Password;
-            var username = textBoxUsername.Text;
+            session.SetThreadQueuerForCurrentThread(this.BeginInvokeUI);
             passwordBoxPassword.Clear();
 
             DateTime timeout = DateTime.Now + Properties.Settings.Default.LogInTimeout;
@@ -54,6 +74,14 @@ namespace PointGaming.Desktop
                 {
                     IsLoggedIn = true;
                     SocketSession = session;
+
+                    App.LoggedIn();
+
+                    var homeWindow = new HomeWindow();
+                    session.SetThreadQueuerForCurrentThread(HomeWindow.Home.BeginInvokeUI);
+                    homeWindow.Init(session);
+                    Hide();
+                    homeWindow.Show();
                     Close();
                 }
                 else
@@ -61,8 +89,8 @@ namespace PointGaming.Desktop
                     var message = "Invalid username or password";
                     if (DateTime.Now >= timeout)
                         message = "Try again later.  No response within timeout period.";
-                    textBoxResult.Foreground = Brushes.Red;
-                    textBoxResult.Text = message;
+                    labelResult.Foreground = Brushes.Red;
+                    labelResult.Content = message;
                     gridControls.IsEnabled = true;
                     passwordBoxPassword.Focus();
                 }
@@ -94,6 +122,19 @@ namespace PointGaming.Desktop
         private void buttonLogIn_Click(object sender, RoutedEventArgs e)
         {
             LogIn();
+        }
+
+        private void windowLogin_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!IsLoggedIn)
+            {
+                App.IsShuttingDown = true;
+            }
+        }
+
+        private void buttonQuit_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

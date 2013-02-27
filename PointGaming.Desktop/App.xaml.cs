@@ -7,28 +7,47 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using System.Windows.Media;
 using System.Runtime.InteropServices;
+using System.Reflection;
 using System.Windows.Interop;
+using System.Text;
 using RestSharp;
 
 namespace PointGaming.Desktop
 {
     public partial class App : Application
     {
+        public static TextBox DebugBox;
+
         public const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss zzz";
 
         public static bool IsShuttingDown = false;
 
-        public static readonly string SettingsPath =
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + Path.DirectorySeparatorChar
-            + PointGaming.Desktop.Properties.Settings.Default.UserFolder;
+        private static readonly string ApplicationSettingsPath;
+        public static string LoginSettingsPath {get {
+            return ApplicationSettingsPath
+                + Path.DirectorySeparatorChar
+                + PointGaming.Desktop.Properties.Settings.Default.Username;
+        }}
+
+        private static StreamWriter _logWriter;
 
         static App()
         {
             try
             {
-                var di = new DirectoryInfo(SettingsPath);
-                if (!di.Exists)
-                    di.Create();
+                Assembly currentAssem = typeof(App).Assembly;
+                object[] attribs = currentAssem.GetCustomAttributes(typeof(AssemblyCompanyAttribute), true);
+                string company = ((AssemblyCompanyAttribute)attribs[0]).Company;
+
+                ApplicationSettingsPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
+                    + Path.DirectorySeparatorChar
+                    + company
+                    + Path.DirectorySeparatorChar
+                    + currentAssem.ManifestModule.Name;
+
+                LoggedOut();
+                
+                StartConsole();
             }
             catch (Exception e)
             {
@@ -36,10 +55,123 @@ namespace PointGaming.Desktop
             }
         }
 
+        public static void LoggedOut()
+        {
+            OpenLogFile(ApplicationSettingsPath);
+        }
+
+        public static void LoggedIn()
+        {
+            OpenLogFile(LoginSettingsPath);
+        }
+
+        private static string _lastLogFolder = null;
+
+        private static void OpenLogFile(string folder)
+        {
+            if (folder == _lastLogFolder)
+                return;
+            _lastLogFolder = folder;
+
+            try
+            {
+                var di = new DirectoryInfo(folder);
+                if (!di.Exists)
+                    di.Create();
+
+                var fs = File.Open(folder + "\\debug.log", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
+                fs.Seek(0, SeekOrigin.End);
+                var logWriter = new StreamWriter(fs, Encoding.UTF8);
+
+                var logWriterOld = _logWriter;
+                _logWriter = logWriter;
+                if (logWriterOld != null)
+                    logWriterOld.Close();
+            }
+            catch { }
+        }
+
         public static void LogLine(string message)
         {
             Console.WriteLine(DateTime.Now.ToString(DateTimeFormat) + " " + message);
         }
+
+
+
+        private static void StartConsole()
+        {
+            var t = new Thread(ConsoleThread)
+            {
+                Name = "MainWindow.Console",
+                IsBackground = true,
+                Priority = ThreadPriority.BelowNormal
+            };
+            t.Start();
+        }
+
+        private static void ConsoleThread()
+        {
+            var ms = new SynchronizedMemoryStream();
+            var sw = new StreamWriter(ms);
+
+            Console.SetOut(sw);
+
+            while (!App.IsShuttingDown)
+            {
+
+                Thread.Sleep(250);
+                string text;
+
+                lock (ms.WriteSynch)
+                {
+                    sw.Flush();
+                    long end = ms.Position;
+                    ms.Position = 0;
+
+                    text = Encoding.UTF8.GetString(ms.GetBuffer(), 0, (int)end);
+                }
+
+                if (text.Length > 0 && _logWriter != null)
+                {
+                    _logWriter.Write(text);
+                    _logWriter.Flush();
+                }
+
+                if (DebugBox != null)
+                {
+                    HomeWindow.Home.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action<string>(delegate(string s)
+                    {
+                        if (DebugBox == null)
+                            return;
+                        DebugBox.AppendText(s);
+                        if (!DebugBox.IsKeyboardFocused)
+                            DebugBox.ScrollToEnd();
+                    }), text);
+                }
+            }
+        }
+
+
+        class SynchronizedMemoryStream : MemoryStream
+        {
+            public readonly object WriteSynch = new object();
+            public override void Write(byte[] buffer, int offset, int count)
+            {
+                lock (WriteSynch)
+                {
+                    base.Write(buffer, offset, count);
+                }
+            }
+            public override void WriteByte(byte value)
+            {
+                lock (WriteSynch)
+                {
+                    base.WriteByte(value);
+                }
+            }
+        }
+
+
     }
 
     static class UIExtensionMethods

@@ -21,37 +21,27 @@ namespace PointGaming.Desktop.HomeTab
 
         private static readonly List<string> ChatAvailableStatuses = new List<string>(new[] { FriendStatusOnline });
 
-        public ObservableCollection<PgUser> Friends { get { return HomeWindow.UserDataManager.Friends; } }
-
-        private SocketSession _session;
+        private SocketSession _session = HomeWindow.Home.SocketSession;
+        public ObservableCollection<PgUser> Friends { get { return _session.Data.Friends; } }
 
         public FriendTab()
         {
             InitializeComponent();
         }
-
-        public void OnAuthorized(SocketSession session)
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            _session = session;
+            if (DesignerProperties.GetIsInDesignMode(this))
+                return;
 
-            session.OnThread("friend_status_changed", OnFriendStatusChanged);
-            session.OnThread("friend_request_created", OnFriendRequestCreated);
-            session.OnThread("friend_request_destroyed", OnFriendRequestDestroyed);
+            _session.OnThread("friend_status_changed", OnFriendStatusChanged);
+            _session.OnThread("friend_request_created", OnFriendRequestCreated);
+            _session.OnThread("friend_request_destroyed", OnFriendRequestDestroyed);
 
             GetFriends();
             GetFriendRequestsTo();
             GetFriendRequestsFrom();
         }
-
-        public void LoggedOut()
-        {
-            _session = null;
-
-            stackPanelFriendRequestsTo.Children.Clear();
-            stackPanelFriendRequestsFrom.Children.Clear();
-        }
-
-
+        
         private PgUser _rightClickedFriend;
 
         private void dataGridFriends_MouseUp(object sender, MouseButtonEventArgs e)
@@ -118,7 +108,7 @@ namespace PointGaming.Desktop.HomeTab
         private void FriendStatusChanged(FriendStatus friendStatus)
         {
             PgUser friendData;
-            if (HomeWindow.UserDataManager.TryGetFriend(friendStatus._id, out friendData))
+            if (_session.Data.TryGetFriend(friendStatus._id, out friendData))
             {
                 friendData.Status = friendStatus.status;
             }
@@ -127,8 +117,8 @@ namespace PointGaming.Desktop.HomeTab
         private void FriendRemoved(FriendStatus friendStatus)
         {
             PgUser friendUiData;
-            if (HomeWindow.UserDataManager.TryGetFriend(friendStatus._id, out friendUiData))
-                HomeWindow.UserDataManager.RemoveFriend(friendUiData);
+            if (_session.Data.TryGetFriend(friendStatus._id, out friendUiData))
+                _session.Data.RemoveFriend(friendUiData);
         }
 
         private void FriendAdded(FriendStatus friendStatus)
@@ -154,7 +144,7 @@ namespace PointGaming.Desktop.HomeTab
             RestResponse<FriendList> response = null;
             _session.BeginAndCallback(delegate
             {
-                var friendsRequestCall = Properties.Settings.Default.Friends + "?auth_token=" + HomeWindow.UserDataManager.AuthToken;
+                var friendsRequestCall = Properties.Settings.Default.Friends + "?auth_token=" + _session.AuthToken;
                 var friendClient = new RestClient(friendsRequestCall);
                 var fRequest = new RestRequest(Method.GET);
                 response = (RestResponse<FriendList>)friendClient.Execute<FriendList>(fRequest);
@@ -174,7 +164,7 @@ namespace PointGaming.Desktop.HomeTab
         private void AddOrUpdateFriend(User friend)
         {
             PgUser old;
-            if (HomeWindow.UserDataManager.TryGetFriend(friend._id, out old))
+            if (_session.Data.TryGetFriend(friend._id, out old))
             {
                 old.Status = friend.status;
                 old.Username = friend.username;
@@ -187,7 +177,7 @@ namespace PointGaming.Desktop.HomeTab
                     Status = friend.status,
                     Id = friend._id,
                 };
-                HomeWindow.UserDataManager.AddFriend(newFriend);
+                _session.Data.AddFriend(newFriend);
             }
         }
 
@@ -202,7 +192,7 @@ namespace PointGaming.Desktop.HomeTab
                 if (!newData.ContainsKey(item.Username))
                     removes.Add(item);
             foreach (var item in removes)
-                HomeWindow.UserDataManager.RemoveFriend(item);
+                _session.Data.RemoveFriend(item);
         }
         #endregion
 
@@ -211,11 +201,11 @@ namespace PointGaming.Desktop.HomeTab
         private void OnFriendRequestCreated(IMessage data)
         {
             var friendRequest = data.Json.GetFirstArgAs<FriendRequest>();
-            if (friendRequest.to_user._id == HomeWindow.UserDataManager.User.Id)
+            if (friendRequest.to_user._id == _session.Data.User.Id)
             {
                 FriendRequestToReceived(friendRequest);
             }
-            else if (friendRequest.from_user._id == HomeWindow.UserDataManager.User.Id)
+            else if (friendRequest.from_user._id == _session.Data.User.Id)
             {
                 FriendRequestFromReceived(friendRequest);
             }
@@ -263,7 +253,7 @@ namespace PointGaming.Desktop.HomeTab
             bool isSuccess = false;
             _session.BeginAndCallback(delegate
             {
-                var friendsRequestCall = Properties.Settings.Default.FriendRequests + "?sent=1&auth_token=" + HomeWindow.UserDataManager.AuthToken;
+                var friendsRequestCall = Properties.Settings.Default.FriendRequests + "?sent=1&auth_token=" + _session.AuthToken;
                 var friendClient = new RestClient(friendsRequestCall);
                 var fRequest = new RestRequest(Method.GET);
                 var response = (RestResponse<FriendRequestRoot>)
@@ -297,7 +287,7 @@ namespace PointGaming.Desktop.HomeTab
             string id = source.FriendRequestId;
             _session.Begin(delegate
             {
-                var apiCall = Properties.Settings.Default.FriendRequests + id + "?auth_token=" + HomeWindow.UserDataManager.AuthToken;
+                var apiCall = Properties.Settings.Default.FriendRequests + id + "?auth_token=" + _session.AuthToken;
                 var client = new RestClient(apiCall);
                 var request = new RestRequest(Method.DELETE);
                 client.Execute<ApiResponse>(request);
@@ -312,7 +302,7 @@ namespace PointGaming.Desktop.HomeTab
             bool isSuccess = false;
             _session.BeginAndCallback(delegate
             {
-                var friendsRequestCall = Properties.Settings.Default.FriendRequests + "?auth_token=" + HomeWindow.UserDataManager.AuthToken;
+                var friendsRequestCall = Properties.Settings.Default.FriendRequests + "?auth_token=" + _session.AuthToken;
                 var friendClient = new RestClient(friendsRequestCall);
                 var fRequest = new RestRequest(Method.GET);
                 var response = (RestResponse<FriendRequestRoot>)
@@ -346,7 +336,7 @@ namespace PointGaming.Desktop.HomeTab
             string id = source.FriendRequestId;
             _session.Begin(delegate
             {
-                var apiCall = Properties.Settings.Default.FriendRequests + id + "?auth_token=" + HomeWindow.UserDataManager.AuthToken;
+                var apiCall = Properties.Settings.Default.FriendRequests + id + "?auth_token=" + _session.AuthToken;
                 var client = new RestClient(apiCall);
                 var request = new RestRequest(Method.PUT) { RequestFormat = RestSharp.DataFormat.Json };
 
@@ -391,7 +381,7 @@ namespace PointGaming.Desktop.HomeTab
             request.RequestFormat = RestSharp.DataFormat.Json;
             request.AddBody(friendRequestRootObject);
 
-            var friendsRequestApiCall = Properties.Settings.Default.FriendRequests + "?auth_token=" + HomeWindow.UserDataManager.AuthToken;
+            var friendsRequestApiCall = Properties.Settings.Default.FriendRequests + "?auth_token=" + _session.AuthToken;
             var client = new RestClient(friendsRequestApiCall);
 
             _session.Begin(delegate
@@ -426,7 +416,7 @@ namespace PointGaming.Desktop.HomeTab
             _session.Begin(delegate
             {
                 var request = new RestRequest(Method.DELETE);
-                var baseUrl = Properties.Settings.Default.Friends + friend.Id + "?auth_token=" + HomeWindow.UserDataManager.AuthToken;
+                var baseUrl = Properties.Settings.Default.Friends + friend.Id + "?auth_token=" + _session.AuthToken;
                 var client = new RestClient(baseUrl);
                 client.Execute<ApiResponse>(request);
             });

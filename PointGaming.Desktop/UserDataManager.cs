@@ -15,7 +15,6 @@ namespace PointGaming.Desktop
 {
     public class UserDataManager
     {
-        public string AuthToken { get; set; }
         public PgUser User = new PgUser { Id= "", Status = "", Username = ""};
 
         private readonly ObservableCollection<PgUser> _friends = new ObservableCollection<PgUser>();
@@ -48,7 +47,7 @@ namespace PointGaming.Desktop
             return _friendLookup.TryGetValue(id, out friend);
         }
 
-        public PgUser GetUserData(string userId)
+        public PgUser GetPgUser(string userId)
         {
             PgUser user;
             if (_userLookup.TryGetValue(userId, out user))

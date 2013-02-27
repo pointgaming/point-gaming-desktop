@@ -20,6 +20,7 @@ namespace PointGaming.Desktop.Chat
     {
         private ChatWindow _chatWindow;
         public PgUser OtherUser;
+        private SocketSession _session = HomeWindow.Home.SocketSession;
 
         public ChatTab()
         {
@@ -81,7 +82,7 @@ namespace PointGaming.Desktop.Chat
                 message = message.Trim();
             }
 
-            AppendUserMessage(HomeWindow.UserDataManager.User.Username, message);
+            AppendUserMessage(_session.Data.User.Username, message);
             var privateMessage = new PrivateMessage{ user_id = OtherUser.Id, message = message };
             _chatWindow.SendMessage(privateMessage);
         }

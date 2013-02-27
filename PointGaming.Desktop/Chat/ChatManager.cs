@@ -14,7 +14,7 @@ namespace PointGaming.Desktop.Chat
         private SocketSession _session;
         private ChatWindow _chatWindow;
 
-        public void OnAuthorized(SocketSession session)
+        public void Init(SocketSession session)
         {
             _session = session;
             session.OnThread("message", OnMessage);

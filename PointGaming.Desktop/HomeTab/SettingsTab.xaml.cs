@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using PointGaming.Desktop.POCO;
 using RestSharp;
+using System.ComponentModel;
 
 namespace PointGaming.Desktop.HomeTab
 {
@@ -16,6 +17,9 @@ namespace PointGaming.Desktop.HomeTab
         {
             InitializeComponent();
 
+            if (DesignerProperties.GetIsInDesignMode(this))
+                return;
+
             checkBoxMinimizeToTray.IsChecked = Properties.Settings.Default.MinimizeToTray;
         }
 
@@ -26,7 +30,7 @@ namespace PointGaming.Desktop.HomeTab
         
         private void buttonLogOut_Click(object sender, RoutedEventArgs e)
         {
-            HomeWindow.Home.LogOut();
+            HomeWindow.Home.LogOut(true);
         }
 
         private void checkBoxSynchGameConfigs_Checked(object sender, RoutedEventArgs e)

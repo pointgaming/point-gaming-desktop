@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 using PointGaming.Desktop.POCO;
 using SocketIOClient;
 using SocketIOClient.Messages;
@@ -15,47 +16,65 @@ namespace PointGaming.Desktop
         public static int GuiThreadId;
         public static HomeWindow Home;
 
-        private bool _isClosing;
         private readonly List<Window> _childWindows = new List<Window>();
 
-        private SocketSession _socketSession;
+        public SocketSession SocketSession;
         private Chat.ChatManager _chatManager;
-
-        public static UserDataManager UserDataManager = new UserDataManager();
 
         public HomeWindow()
         {
-            Home = this;
-            GuiThreadId = Thread.CurrentThread.ManagedThreadId;
-
             InitializeComponent();
+            Home = this;
         }
 
-        public void CloseProgram()
+        public void Init(SocketSession session)
         {
-            if (_isClosing)
-                return;
-            _isClosing = true;
-            App.IsShuttingDown = true;
+            SocketSession = session;
+            
+            var tab = new TabItem
+            {
+                Header = "Friends",
+                Content = new HomeTab.FriendTab(),
+            };
+            tabControlMain.Items.Add(tab);
 
-            foreach (var window in _childWindows)
-                window.Close();
+            tab = new TabItem
+            {
+                Header = "Games",
+                Content = new HomeTab.GameLauncherTab(),
+            };
+            tabControlMain.Items.Add(tab);
 
-            if (!_windowClosing)
-                Close();
+            tab = new TabItem
+            {
+                Header = "Bitcoin",
+                Content = new HomeTab.PaymentTab(),
+            };
+            tabControlMain.Items.Add(tab);
+
+            tab = new TabItem
+            {
+                Header = "Settings",
+                Content = new HomeTab.SettingsTab(),
+            };
+            tabControlMain.Items.Add(tab);
+
+            tab = new TabItem
+            {
+                Header = "Debug",
+                Content = new HomeTab.DebugTab(),
+            };
+            tabControlMain.Items.Add(tab);
+
+            _chatManager = new Chat.ChatManager();
+            _chatManager.Init(SocketSession);
         }
-
-        private bool _once;
+        
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             if (DesignerProperties.GetIsInDesignMode(this))
                 return;
 
-            if (!_once)
-            {
-                _once = true;
-                this.BeginInvokeUI(ShowLogInWindow);
-            }
             UpdateMinimizeToTray();
         }
 
@@ -95,48 +114,6 @@ namespace PointGaming.Desktop
             }
         }
 
-
-        private void ShowLogInWindow()
-        {
-            var lw = new LoginWindow();
-            _childWindows.Add(lw);
-            lw.ShowDialog();
-
-            if (lw.IsLoggedIn)
-            {
-                _socketSession = lw.SocketSession;
-                friendTabInstance.OnAuthorized(_socketSession);
-                _chatManager = new Chat.ChatManager();
-                _chatManager.OnAuthorized(_socketSession);
-            }
-            else
-            {
-                CloseProgram();
-            }
-        }
-
-        public void LogOut()
-        {
-            if (_socketSession == null)
-                return;
-
-            UserDataManager.LoggedOut();
-
-            var childWindows = new List<Window>(_childWindows);
-            foreach (var window in childWindows)
-                window.Close();
-            _childWindows.Clear();
-
-            friendTabInstance.LoggedOut();
-            _chatManager = null;
-
-            _socketSession.Begin(_socketSession.Logout);
-            _socketSession = null;
-
-            if (!_windowClosing)
-                ShowLogInWindow();
-        }
-
         public void AddChildWindow(Window window)
         {
             _childWindows.Add(window);
@@ -145,18 +122,51 @@ namespace PointGaming.Desktop
         {
             _childWindows.Remove(window);
         }
-
-        private bool _windowClosing;
-
-        private void Window_Closing(object sender, CancelEventArgs e)
-        {
-            _windowClosing = true;
-            LogOut();
-        }
-
         public void ChatWith(PgUser friend)
         {
             _chatManager.ChatWith(friend);
+        }
+
+        public void LogOut(bool shouldShowLogInWindow)
+        {
+            if (SocketSession == null)
+                return;
+
+            taskbarIcon.Visibility = System.Windows.Visibility.Collapsed;
+            
+            var childWindows = new List<Window>(_childWindows);
+            foreach (var window in childWindows)
+                window.Close();
+            _childWindows.Clear();
+
+            App.DebugBox = null;
+
+            Hide();
+
+            SocketSession.Data.LoggedOut();
+            SocketSession.Begin(SocketSession.Logout);
+
+            SocketSession = null;
+            _chatManager = null;
+
+            if (shouldShowLogInWindow)
+            {
+                var lw = new LoginWindow();
+                lw.Show();
+            }
+            else
+            {
+                App.IsShuttingDown = true;
+            }
+
+            if (!_windowClosing)
+                Close();
+        }
+        private bool _windowClosing;
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            _windowClosing = true;
+            LogOut(false);
         }
     }
 

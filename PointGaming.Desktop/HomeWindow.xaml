@@ -10,22 +10,7 @@
                         TrayMouseDoubleClick="TaskbarIcon_TrayMouseDoubleClick"
                         ToolTipText="Poing Gaming" Visibility="Collapsed" />
         
-        <TabControl HorizontalAlignment="Stretch" Name="tabControl1" VerticalAlignment="Stretch">
-            <TabItem Header="Friends">
-                <HomeTab:FriendTab x:Name="friendTabInstance" />
-            </TabItem>
-            <TabItem Header="Games">
-                <HomeTab:GameLauncherTab x:Name="gameLauncherTabInstance" />
-            </TabItem>
-            <TabItem Header="Bitcoin">
-                <HomeTab:PaymentTab x:Name="paymentTabInstance" />
-            </TabItem>
-            <TabItem Header="Settings">
-                <HomeTab:SettingsTab x:Name="settingsTabInstance" />
-            </TabItem>
-            <TabItem Header="Debug">
-                <HomeTab:DebugTab x:Name="debugTabInstance" />
-            </TabItem>
+        <TabControl HorizontalAlignment="Stretch" Name="tabControlMain" VerticalAlignment="Stretch">
         </TabControl>
     </Grid>
 </Window>

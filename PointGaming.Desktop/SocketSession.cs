@@ -16,8 +16,10 @@ namespace PointGaming.Desktop
     {
         public Client MyClient;
         private AuthEmit _authEmit;
+        public UserDataManager Data = new UserDataManager();
 
         private AutoResetEvent socketWorker = new AutoResetEvent(false);
+        public string AuthToken { get; set; }
 
         private class CallbackAction
         {
@@ -37,7 +39,7 @@ namespace PointGaming.Desktop
             t.Start();
         }
 
-        public void AddThreadQueuerForCurrentThread(Action<Action> queuer)
+        public void SetThreadQueuerForCurrentThread(Action<Action> queuer)
         {
             var threadId = Thread.CurrentThread.ManagedThreadId;
             lock (_threadQueuers)
@@ -182,9 +184,9 @@ namespace PointGaming.Desktop
                 {
                     isSuccess = false;
 
-                    HomeWindow.UserDataManager.AuthToken = apiResponse.Data.auth_token;
-                    HomeWindow.UserDataManager.User.Username = username;
-                    HomeWindow.UserDataManager.User.Id = apiResponse.Data._id;
+                    AuthToken = apiResponse.Data.auth_token;
+                    Data.User.Username = username;
+                    Data.User.Id = apiResponse.Data._id;
                     Properties.Settings.Default.Username = username;
                     Properties.Settings.Default.Save();
 
@@ -211,11 +213,11 @@ namespace PointGaming.Desktop
             DestroySession();
         }
 
-        private static void DestroySession()
+        private void DestroySession()
         {
             try
             {
-                var baseUrl = Properties.Settings.Default.BaseUrl + "sessions/destroy?auth_token=" + HomeWindow.UserDataManager.AuthToken;
+                var baseUrl = Properties.Settings.Default.BaseUrl + "sessions/destroy?auth_token=" + AuthToken;
                 var client = new RestClient(baseUrl);
                 var request = new RestRequest(Method.DELETE);
                 client.Execute<ApiResponse>(request);
@@ -225,9 +227,9 @@ namespace PointGaming.Desktop
                 App.LogLine(e.Message);
             }
 
-            HomeWindow.UserDataManager.AuthToken = "";
-            HomeWindow.UserDataManager.User.Username = "";
-            HomeWindow.UserDataManager.User.Id = "";
+            AuthToken = "";
+            Data.User.Username = "";
+            Data.User.Id = "";
 
             App.LogLine("Logged in session ended.");
         }
@@ -261,7 +263,7 @@ namespace PointGaming.Desktop
         {
             try
             {
-                _authEmit = new AuthEmit { auth_token = HomeWindow.UserDataManager.AuthToken };
+                _authEmit = new AuthEmit { auth_token = AuthToken };
                 MyClient.Emit("auth", _authEmit);
             }
             catch (Exception e)

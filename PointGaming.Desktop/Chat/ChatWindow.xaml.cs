@@ -13,6 +13,7 @@ namespace PointGaming.Desktop.Chat
 {
     public partial class ChatWindow : Window
     {
+        private SocketSession _session = HomeWindow.Home.SocketSession;
         private ChatManager _manager;
 
         private readonly Dictionary<string, TabItem> _chatTabs = new Dictionary<string, TabItem>();
@@ -25,7 +26,7 @@ namespace PointGaming.Desktop.Chat
         public void Init(ChatManager manager)
         {
             Owner = HomeWindow.Home;
-            this._manager = manager;
+            _manager = manager;
         }
 
         public void SendMessage(PrivateMessage message)
@@ -35,7 +36,7 @@ namespace PointGaming.Desktop.Chat
 
         public void MessageReceived(PrivateMessage message)
         {
-            var data = HomeWindow.UserDataManager.GetUserData(message.user_id);
+            var data = _session.Data.GetPgUser(message.user_id);
             TabItem tabItem = GetOrCreateTab(data);
             var chatTab = (Chat.ChatTab)tabItem.Content;
             chatTab.MessageReceived(message);
