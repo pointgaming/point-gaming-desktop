@@ -21,7 +21,7 @@ namespace PointGaming.Desktop.HomeTab
 
         private static readonly List<string> ChatAvailableStatuses = new List<string>(new[] { FriendStatusOnline });
 
-        public ObservableCollection<FriendUiData> Friends { get { return HomeWindow.UserDataManager.Friends; } }
+        public ObservableCollection<PgUser> Friends { get { return HomeWindow.UserDataManager.Friends; } }
 
         private SocketSession _session;
 
@@ -52,13 +52,13 @@ namespace PointGaming.Desktop.HomeTab
         }
 
 
-        private FriendUiData _rightClickedFriend;
+        private PgUser _rightClickedFriend;
 
         private void dataGridFriends_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Right)
             {
-                FriendUiData friend;
+                PgUser friend;
                 if (dataGridFriends.TryGetRowItem(e, out friend))
                 {
                     _rightClickedFriend = friend;
@@ -68,13 +68,13 @@ namespace PointGaming.Desktop.HomeTab
 
         private void UnfriendClick(object sender, RoutedEventArgs e)
         {
-            FriendUiData friend = _rightClickedFriend;
+            PgUser friend = _rightClickedFriend;
             Unfriend(friend);
         }
 
         private void dataGridFriends_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            FriendUiData friend;
+            PgUser friend;
             if (dataGridFriends.TryGetRowItem(e, out friend))
             {
                 if (CanChatWith(friend))
@@ -84,7 +84,7 @@ namespace PointGaming.Desktop.HomeTab
             }
         }
 
-        private bool CanChatWith(FriendUiData friend)
+        private bool CanChatWith(PgUser friend)
         {
             var status = friend.Status;
             return ChatAvailableStatuses.Contains(status);
@@ -117,7 +117,7 @@ namespace PointGaming.Desktop.HomeTab
 
         private void FriendStatusChanged(FriendStatus friendStatus)
         {
-            FriendUiData friendData;
+            PgUser friendData;
             if (HomeWindow.UserDataManager.TryGetFriend(friendStatus._id, out friendData))
             {
                 friendData.Status = friendStatus.status;
@@ -126,7 +126,7 @@ namespace PointGaming.Desktop.HomeTab
 
         private void FriendRemoved(FriendStatus friendStatus)
         {
-            FriendUiData friendUiData;
+            PgUser friendUiData;
             if (HomeWindow.UserDataManager.TryGetFriend(friendStatus._id, out friendUiData))
                 HomeWindow.UserDataManager.RemoveFriend(friendUiData);
         }
@@ -173,7 +173,7 @@ namespace PointGaming.Desktop.HomeTab
 
         private void AddOrUpdateFriend(User friend)
         {
-            FriendUiData old;
+            PgUser old;
             if (HomeWindow.UserDataManager.TryGetFriend(friend._id, out old))
             {
                 old.Status = friend.status;
@@ -181,7 +181,7 @@ namespace PointGaming.Desktop.HomeTab
             }
             else
             {
-                var newFriend = new FriendUiData
+                var newFriend = new PgUser
                 {
                     Username = friend.username,
                     Status = friend.status,
@@ -193,11 +193,11 @@ namespace PointGaming.Desktop.HomeTab
 
         private void RemoveOldFriends(List<User> newFriends)
         {
-            var newData = new Dictionary<string, FriendUiData>(newFriends.Count);
+            var newData = new Dictionary<string, PgUser>(newFriends.Count);
             foreach (var item in newFriends)
                 newData.Add(item.username, null);
 
-            var removes = new List<FriendUiData>();
+            var removes = new List<PgUser>();
             foreach (var item in Friends)
                 if (!newData.ContainsKey(item.Username))
                     removes.Add(item);
@@ -421,7 +421,7 @@ namespace PointGaming.Desktop.HomeTab
         #endregion
 
         #region unfriend
-        private void Unfriend(FriendUiData friend)
+        private void Unfriend(PgUser friend)
         {
             _session.Begin(delegate
             {

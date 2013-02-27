@@ -154,7 +154,7 @@ namespace PointGaming.Desktop
             LogOut();
         }
 
-        public void ChatWith(HomeTab.FriendUiData friend)
+        public void ChatWith(PgUser friend)
         {
             _chatManager.ChatWith(friend);
         }

@@ -54,7 +54,7 @@ namespace PointGaming.Desktop.Chat
             HomeWindow.Home.RemoveChildWindow(_chatWindow);
         }
 
-        public void ChatWith(HomeTab.FriendUiData friend)
+        public void ChatWith(PgUser friend)
         {
             var chatWindow = GetOrCreateChatWindow();
             chatWindow.ChatWith(friend);

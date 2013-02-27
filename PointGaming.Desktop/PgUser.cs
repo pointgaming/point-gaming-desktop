@@ -10,9 +10,9 @@ using RestSharp;
 using SocketIOClient;
 using SocketIOClient.Messages;
 
-namespace PointGaming.Desktop.HomeTab
+namespace PointGaming.Desktop
 {
-    public class FriendUiData : INotifyPropertyChanged
+    public class PgUser : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyChanged(string propertyName)

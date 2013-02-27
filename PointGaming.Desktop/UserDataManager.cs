@@ -16,13 +16,13 @@ namespace PointGaming.Desktop
     public class UserDataManager
     {
         public string AuthToken { get; set; }
-        public FriendUiData User = new FriendUiData { Id= "", Status = "", Username = ""};
+        public PgUser User = new PgUser { Id= "", Status = "", Username = ""};
 
-        private readonly ObservableCollection<FriendUiData> _friends = new ObservableCollection<FriendUiData>();
-        public ObservableCollection<FriendUiData> Friends { get { return _friends; } }
-        private Dictionary<string, FriendUiData> _friendLookup = new Dictionary<string, FriendUiData>();
+        private readonly ObservableCollection<PgUser> _friends = new ObservableCollection<PgUser>();
+        public ObservableCollection<PgUser> Friends { get { return _friends; } }
+        private Dictionary<string, PgUser> _friendLookup = new Dictionary<string, PgUser>();
 
-        private Dictionary<string, FriendUiData> _userLookup = new Dictionary<string, FriendUiData>();
+        private Dictionary<string, PgUser> _userLookup = new Dictionary<string, PgUser>();
         
         public void LoggedOut()
         {
@@ -31,29 +31,29 @@ namespace PointGaming.Desktop
             _friendLookup.Clear();
         }
 
-        public void AddFriend(FriendUiData friend)
+        public void AddFriend(PgUser friend)
         {
             _friends.Add(friend);
             _friendLookup[friend.Id] = friend;
             _userLookup[friend.Id] = friend;
         }
-        public void RemoveFriend(FriendUiData friend)
+        public void RemoveFriend(PgUser friend)
         {
             _friends.Remove(friend);
             _friendLookup.Remove(friend.Id);
             _userLookup.Remove(friend.Id);
         }
-        public bool TryGetFriend(string id, out FriendUiData friend)
+        public bool TryGetFriend(string id, out PgUser friend)
         {
             return _friendLookup.TryGetValue(id, out friend);
         }
 
-        public FriendUiData GetUserData(string userId)
+        public PgUser GetUserData(string userId)
         {
-            FriendUiData user;
+            PgUser user;
             if (_userLookup.TryGetValue(userId, out user))
                 return user;
-            user = new FriendUiData{ Id = userId, Username = "unknown", Status = "unknown" };
+            user = new PgUser{ Id = userId, Username = "unknown", Status = "unknown" };
             // todo dean gores 2013-02-26: should probably look this user up so that real info can be shown
             return user;
         }

@@ -19,7 +19,7 @@ namespace PointGaming.Desktop.Chat
     public partial class ChatTab : UserControl
     {
         private ChatWindow _chatWindow;
-        public FriendUiData OtherUser;
+        public PgUser OtherUser;
 
         public ChatTab()
         {
@@ -43,7 +43,7 @@ namespace PointGaming.Desktop.Chat
             _isAtEnd = e.ExtentHeight - (e.VerticalOffset + e.ViewportHeight) <= 1.0;
         }
 
-        public void Init(ChatWindow window, FriendUiData otherUser)
+        public void Init(ChatWindow window, PgUser otherUser)
         {
             _chatWindow = window;
             OtherUser = otherUser;

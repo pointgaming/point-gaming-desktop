@@ -41,13 +41,13 @@ namespace PointGaming.Desktop.Chat
             chatTab.MessageReceived(message);
         }
 
-        public void ChatWith(FriendUiData data)
+        public void ChatWith(PgUser data)
         {
             TabItem tabItem = GetOrCreateTab(data);
             tabControlChats.SelectedItem = tabItem;
         }
 
-        private TabItem GetOrCreateTab(FriendUiData data)
+        private TabItem GetOrCreateTab(PgUser data)
         {
             TabItem tabItem;
             if (!_chatTabs.TryGetValue(data.Id, out tabItem))

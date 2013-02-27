@@ -101,7 +101,7 @@
     <Compile Include="HomeTab\FriendRequestFromUserControl.xaml.cs">
       <DependentUpon>FriendRequestFromUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="HomeTab\FriendUiData.cs" />
+    <Compile Include="PgUser.cs" />
     <Compile Include="MessageDialog.xaml.cs">
       <DependentUpon>MessageDialog.xaml</DependentUpon>
     </Compile>
