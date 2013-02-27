@@ -15,6 +15,9 @@ namespace PointGaming.Desktop
 {
     public class UserDataManager
     {
+        public string AuthToken { get; set; }
+        public FriendUiData User = new FriendUiData { Id= "", Status = "", Username = ""};
+
         private readonly ObservableCollection<FriendUiData> _friends = new ObservableCollection<FriendUiData>();
         public ObservableCollection<FriendUiData> Friends { get { return _friends; } }
         private Dictionary<string, FriendUiData> _friendLookup = new Dictionary<string, FriendUiData>();

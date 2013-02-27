@@ -154,7 +154,7 @@ namespace PointGaming.Desktop.HomeTab
             RestResponse<FriendList> response = null;
             _session.BeginAndCallback(delegate
             {
-                var friendsRequestCall = Properties.Settings.Default.Friends + "?auth_token=" + Persistence.AuthToken;
+                var friendsRequestCall = Properties.Settings.Default.Friends + "?auth_token=" + HomeWindow.UserDataManager.AuthToken;
                 var friendClient = new RestClient(friendsRequestCall);
                 var fRequest = new RestRequest(Method.GET);
                 response = (RestResponse<FriendList>)friendClient.Execute<FriendList>(fRequest);
@@ -211,11 +211,11 @@ namespace PointGaming.Desktop.HomeTab
         private void OnFriendRequestCreated(IMessage data)
         {
             var friendRequest = data.Json.GetFirstArgAs<FriendRequest>();
-            if (friendRequest.to_user._id == Persistence.loggedInUserId)
+            if (friendRequest.to_user._id == HomeWindow.UserDataManager.User.Id)
             {
                 FriendRequestToReceived(friendRequest);
             }
-            else if (friendRequest.from_user._id == Persistence.loggedInUserId)
+            else if (friendRequest.from_user._id == HomeWindow.UserDataManager.User.Id)
             {
                 FriendRequestFromReceived(friendRequest);
             }
@@ -263,7 +263,7 @@ namespace PointGaming.Desktop.HomeTab
             bool isSuccess = false;
             _session.BeginAndCallback(delegate
             {
-                var friendsRequestCall = Properties.Settings.Default.FriendRequests + "?sent=1&auth_token=" + Persistence.AuthToken;
+                var friendsRequestCall = Properties.Settings.Default.FriendRequests + "?sent=1&auth_token=" + HomeWindow.UserDataManager.AuthToken;
                 var friendClient = new RestClient(friendsRequestCall);
                 var fRequest = new RestRequest(Method.GET);
                 var response = (RestResponse<FriendRequestRoot>)
@@ -297,7 +297,7 @@ namespace PointGaming.Desktop.HomeTab
             string id = source.FriendRequestId;
             _session.Begin(delegate
             {
-                var apiCall = Properties.Settings.Default.FriendRequests + id + "?auth_token=" + Persistence.AuthToken;
+                var apiCall = Properties.Settings.Default.FriendRequests + id + "?auth_token=" + HomeWindow.UserDataManager.AuthToken;
                 var client = new RestClient(apiCall);
                 var request = new RestRequest(Method.DELETE);
                 client.Execute<ApiResponse>(request);
@@ -312,7 +312,7 @@ namespace PointGaming.Desktop.HomeTab
             bool isSuccess = false;
             _session.BeginAndCallback(delegate
             {
-                var friendsRequestCall = Properties.Settings.Default.FriendRequests + "?auth_token=" + Persistence.AuthToken;
+                var friendsRequestCall = Properties.Settings.Default.FriendRequests + "?auth_token=" + HomeWindow.UserDataManager.AuthToken;
                 var friendClient = new RestClient(friendsRequestCall);
                 var fRequest = new RestRequest(Method.GET);
                 var response = (RestResponse<FriendRequestRoot>)
@@ -346,7 +346,7 @@ namespace PointGaming.Desktop.HomeTab
             string id = source.FriendRequestId;
             _session.Begin(delegate
             {
-                var apiCall = Properties.Settings.Default.FriendRequests + id + "?auth_token=" + Persistence.AuthToken;
+                var apiCall = Properties.Settings.Default.FriendRequests + id + "?auth_token=" + HomeWindow.UserDataManager.AuthToken;
                 var client = new RestClient(apiCall);
                 var request = new RestRequest(Method.PUT) { RequestFormat = RestSharp.DataFormat.Json };
 
@@ -391,7 +391,7 @@ namespace PointGaming.Desktop.HomeTab
             request.RequestFormat = RestSharp.DataFormat.Json;
             request.AddBody(friendRequestRootObject);
 
-            var friendsRequestApiCall = Properties.Settings.Default.FriendRequests + "?auth_token=" + Persistence.AuthToken;
+            var friendsRequestApiCall = Properties.Settings.Default.FriendRequests + "?auth_token=" + HomeWindow.UserDataManager.AuthToken;
             var client = new RestClient(friendsRequestApiCall);
 
             _session.Begin(delegate
@@ -426,7 +426,7 @@ namespace PointGaming.Desktop.HomeTab
             _session.Begin(delegate
             {
                 var request = new RestRequest(Method.DELETE);
-                var baseUrl = Properties.Settings.Default.Friends + friend.Id + "?auth_token=" + Persistence.AuthToken;
+                var baseUrl = Properties.Settings.Default.Friends + friend.Id + "?auth_token=" + HomeWindow.UserDataManager.AuthToken;
                 var client = new RestClient(baseUrl);
                 client.Execute<ApiResponse>(request);
             });

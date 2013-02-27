@@ -182,9 +182,9 @@ namespace PointGaming.Desktop
                 {
                     isSuccess = false;
 
-                    Persistence.AuthToken = apiResponse.Data.auth_token;
-                    Persistence.loggedInUsername = username;
-                    Persistence.loggedInUserId = apiResponse.Data._id;
+                    HomeWindow.UserDataManager.AuthToken = apiResponse.Data.auth_token;
+                    HomeWindow.UserDataManager.User.Username = username;
+                    HomeWindow.UserDataManager.User.Id = apiResponse.Data._id;
                     Properties.Settings.Default.Username = username;
                     Properties.Settings.Default.Save();
 
@@ -215,7 +215,7 @@ namespace PointGaming.Desktop
         {
             try
             {
-                var baseUrl = Properties.Settings.Default.BaseUrl + "sessions/destroy?auth_token=" + Persistence.AuthToken;
+                var baseUrl = Properties.Settings.Default.BaseUrl + "sessions/destroy?auth_token=" + HomeWindow.UserDataManager.AuthToken;
                 var client = new RestClient(baseUrl);
                 var request = new RestRequest(Method.DELETE);
                 client.Execute<ApiResponse>(request);
@@ -225,8 +225,9 @@ namespace PointGaming.Desktop
                 App.LogLine(e.Message);
             }
 
-            Persistence.AuthToken = String.Empty;
-            Persistence.loggedInUsername = String.Empty;
+            HomeWindow.UserDataManager.AuthToken = "";
+            HomeWindow.UserDataManager.User.Username = "";
+            HomeWindow.UserDataManager.User.Id = "";
 
             App.LogLine("Logged in session ended.");
         }
@@ -260,7 +261,7 @@ namespace PointGaming.Desktop
         {
             try
             {
-                _authEmit = new AuthEmit { auth_token = Persistence.AuthToken };
+                _authEmit = new AuthEmit { auth_token = HomeWindow.UserDataManager.AuthToken };
                 MyClient.Emit("auth", _authEmit);
             }
             catch (Exception e)

@@ -201,7 +201,6 @@
     <Compile Include="POCO\User.cs" />
     <Compile Include="POCO\FriendStatus.cs" />
     <Compile Include="POCO\PrivateMessage.cs" />
-    <Compile Include="POCO\Persistence.cs" />
     <Compile Include="POCO\UserLogin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

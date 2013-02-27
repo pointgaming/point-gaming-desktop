@@ -81,7 +81,7 @@ namespace PointGaming.Desktop.Chat
                 message = message.Trim();
             }
 
-            AppendUserMessage(Persistence.loggedInUsername, message);
+            AppendUserMessage(HomeWindow.UserDataManager.User.Username, message);
             var privateMessage = new PrivateMessage{ user_id = OtherUser.Id, message = message };
             _chatWindow.SendMessage(privateMessage);
         }
