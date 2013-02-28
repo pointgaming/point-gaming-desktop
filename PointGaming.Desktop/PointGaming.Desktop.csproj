@@ -97,10 +97,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Chat\AutoScroller.cs" />
     <Compile Include="Chat\ChatManager.cs" />
     <Compile Include="Chat\ChatroomTab.xaml.cs">
       <DependentUpon>ChatroomTab.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Chat\ChatTabCommon.cs" />
     <Compile Include="HomeTab\FriendRequestFromUserControl.xaml.cs">
       <DependentUpon>FriendRequestFromUserControl.xaml</DependentUpon>
     </Compile>

@@ -58,6 +58,18 @@ namespace PointGaming.Desktop
             if (_userLookup.TryGetValue(userId, out user))
                 return user;
             user = new PgUser{ Id = userId, Username = "unknown", Status = "unknown" };
+            _userLookup[userId] = user;
+            // todo dean gores 2013-02-26: should probably look this user up so that real info can be shown
+            return user;
+        }
+
+        public PgUser GetPgUser(UserBase userBase)
+        {
+            PgUser user;
+            if (_userLookup.TryGetValue(userBase._id, out user))
+                return user;
+            user = new PgUser { Id = userBase._id, Username = userBase.username, Status = "unknown" };
+            _userLookup[userBase._id] = user;
             // todo dean gores 2013-02-26: should probably look this user up so that real info can be shown
             return user;
         }

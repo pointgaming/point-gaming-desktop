@@ -15,8 +15,13 @@
         </Grid.RowDefinitions>
         
         <DataGrid Grid.Row="0" AutoGenerateColumns="False" HorizontalAlignment="Stretch" Name="dataGridFriends" VerticalAlignment="Stretch"
-                  ItemsSource="{Binding Friends}" SelectionMode="Single" MouseUp="dataGridFriends_MouseUp" MouseDoubleClick="dataGridFriends_MouseDoubleClick"
-                  CanUserAddRows="False" CanUserDeleteRows="False">
+                  ItemsSource="{Binding Friends}" SelectionMode="Single"
+                  MouseUp="dataGridFriends_MouseUp" MouseDoubleClick="dataGridFriends_MouseDoubleClick"
+                  PreviewMouseLeftButtonDown="dataGridFriends_PreviewMouseLeftButtonDown"
+                  PreviewMouseLeftButtonUp="dataGridFriends_PreviewMouseLeftButtonUp"
+                  PreviewMouseMove="dataGridFriends_PreviewMouseMove"
+                  CanUserAddRows="False" CanUserDeleteRows="False"
+                  AllowDrop="True" Drop="dataGridFriends_Drop" DragEnter="dataGridFriends_DragQuery" DragOver="dataGridFriends_DragQuery" DragLeave="dataGridFriends_DragQuery">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Username}" Header="Username" Width="*" IsReadOnly="True" />
                 <DataGridTextColumn Binding="{Binding Status}" Header="Status" Width="100" IsReadOnly="True" />

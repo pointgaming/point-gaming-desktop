@@ -4,13 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" Loaded="UserControl_Loaded">
+             d:DesignHeight="300" d:DesignWidth="400" Loaded="UserControl_Loaded"
+             AllowDrop="True" PreviewDrop="TabPreviewDrop" PreviewDragEnter="TabPreviewDragQuery"
+             PreviewDragOver="TabPreviewDragQuery" PreviewDragLeave="TabPreviewDragQuery">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <RichTextBox Grid.Row="0" HorizontalAlignment="Stretch" Name="richTextBoxLog" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" IsReadOnly="True">
+        <RichTextBox Grid.Row="0" HorizontalAlignment="Stretch" Name="richTextBoxLog" VerticalAlignment="Stretch"
+                     VerticalScrollBarVisibility="Auto" IsReadOnly="True">
             <RichTextBox.Resources>
                 <Style TargetType="{x:Type Paragraph}">
                     <Setter Property="Margin" Value="0"/>

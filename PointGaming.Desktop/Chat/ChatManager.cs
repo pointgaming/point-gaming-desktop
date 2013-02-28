@@ -12,31 +12,52 @@ namespace PointGaming.Desktop.Chat
 {
     public delegate void ReceivedMessage(UserBase fromUser, string message);
 
+
+
     public class ChatManager
     {
         private SocketSession _session;
         private ChatWindow _chatWindow;
 
-        private enum ChatroomState
+        public enum ChatroomState
         {
             New,
             Invited,
             Connected,
             Disconnected,
         }
-
-        private class ChatroomUsage
+        public class ChatroomUsage
         {
             public event ReceivedMessage ReceivedMessage;
             public string ChatroomId;
             public ChatroomState State;
-            public readonly ObservableCollection<UserBase> Membership = new ObservableCollection<UserBase>();
+            public readonly ObservableCollection<PgUser> Membership = new ObservableCollection<PgUser>();
+            private ChatManager _manager;
+
+            public ChatroomUsage(ChatManager manager)
+            {
+                _manager = manager;
+            }
+
 
             public void OnMessageNew(UserBase fromUser, string message)
             {
                 var method = ReceivedMessage;
                 if (method != null)
                     method(fromUser, message);
+            }
+
+            public void SendMessage(string message)
+            {
+                var messageOut = new ChatroomMessageOut { _id = ChatroomId, message = message, };
+                _manager.ChatroomMessageSend(messageOut);
+            }
+
+            public void Invite(PgUser other)
+            {
+                if (Membership.Contains(other))
+                    return;
+                _manager.ChatroomInviteSend(new ChatroomInviteOut { _id = ChatroomId, toUser = other.ToUserBase(), });
             }
         }
 
@@ -131,9 +152,12 @@ namespace PointGaming.Desktop.Chat
 
             usage.State = ChatroomState.Connected;
             foreach (var item in received.membership)
-                usage.Membership.Add(item);
+            {
+                var pgUser = _session.Data.GetPgUser(item);
+                usage.Membership.Add(pgUser);
+            }
 
-            // todo dean 2013-02-17: show this chat in the UI
+            ChatWindow.ShowChatroom(usage);
         }
         private void OnChatroomMemberChange(IMessage message)
         {
@@ -143,10 +167,12 @@ namespace PointGaming.Desktop.Chat
             if (!_chatroomUsage.TryGetValue(id, out usage))
                 return;
 
+            var pgUser = _session.Data.GetPgUser(received.user);
+
             if (received.status == "joined")
-                usage.Membership.Add(received.user);
+                usage.Membership.Add(pgUser);
             else if (received.status == "left")
-                usage.Membership.Remove(received.user);
+                usage.Membership.Remove(pgUser);
         }
         private void OnChatroomMessageNew(IMessage message)
         {
@@ -189,7 +215,7 @@ namespace PointGaming.Desktop.Chat
                     return;
             }
 
-            usage = new ChatroomUsage { ChatroomId = id, State = ChatroomState.New, };
+            usage = new ChatroomUsage(this) { ChatroomId = id, State = ChatroomState.New, };
             _chatroomUsage[id] = usage;
 
             var chatroom = new Chatroom { _id = id };

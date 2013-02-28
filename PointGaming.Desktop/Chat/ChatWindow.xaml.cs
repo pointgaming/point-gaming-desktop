@@ -16,7 +16,7 @@ namespace PointGaming.Desktop.Chat
         private SocketSession _session = HomeWindow.Home.SocketSession;
         private ChatManager _manager;
 
-        private readonly Dictionary<string, TabItem> _chatTabs = new Dictionary<string, TabItem>();
+        private readonly Dictionary<string, TabItem> _chatTabs2 = new Dictionary<string, TabItem>();
 
         public ChatWindow()
         {
@@ -48,25 +48,53 @@ namespace PointGaming.Desktop.Chat
             tabControlChats.SelectedItem = tabItem;
         }
 
+        public void ShowChatroom(ChatManager.ChatroomUsage roomManager)
+        {
+            TabItem tabItem = GetOrCreateTab(roomManager);
+            tabControlChats.SelectedItem = tabItem;
+        }
+
         private TabItem GetOrCreateTab(PgUser data)
         {
+            var tabId = GetTabId(typeof(ChatTab), data.Id);
+
             TabItem tabItem;
-            if (!_chatTabs.TryGetValue(data.Id, out tabItem))
+            if (!_chatTabs2.TryGetValue(tabId, out tabItem))
             {
-                var chatTab = new Chat.ChatTab();
+                var chatTab = new ChatTab();
                 chatTab.Init(this, data);
 
-                tabItem = new TabItem();
-                tabItem.Content = chatTab;
-                tabItem.Header = data.Username;
-
-                tabControlChats.Items.Add(tabItem);
-
-                if (tabControlChats.Items.Count == 1)
-                    tabControlChats.SelectedIndex = 0;
-
-                _chatTabs[data.Id] = tabItem;
+                tabItem = AddTab(data.Username, tabId, chatTab);
             }
+            return tabItem;
+        }
+        private TabItem GetOrCreateTab(ChatManager.ChatroomUsage roomManager)
+        {
+            var tabId = GetTabId(typeof(ChatroomTab), roomManager.ChatroomId);
+
+            TabItem tabItem;
+            if (!_chatTabs2.TryGetValue(tabId, out tabItem))
+            {
+                var chatTab = new ChatroomTab();
+                chatTab.Init(this, roomManager);
+
+                tabItem = AddTab(roomManager.ChatroomId, tabId, chatTab);
+            }
+            return tabItem;
+        }
+
+        private TabItem AddTab(string title, string tabId, object content)
+        {
+            var tabItem = new TabItem();
+            tabItem.Content = content;
+            tabItem.Header = title;
+
+            tabControlChats.Items.Add(tabItem);
+
+            if (tabControlChats.Items.Count == 1)
+                tabControlChats.SelectedIndex = 0;
+
+            _chatTabs2[tabId] = tabItem;
             return tabItem;
         }
 
@@ -94,21 +122,38 @@ namespace PointGaming.Desktop.Chat
             StopFlashingTab(tabItem);
         }
 
-        public void StartFlashingTab(string userId)
+        public void StartFlashingTab(Type tabType, string id)
         {
             if (!IsActive && Properties.Settings.Default.ShouldFlashChatWindow)
                 this.FlashWindow();
 
+            var tabId = GetTabId(tabType, id);
+
             TabItem tabItem;
-            if (!_chatTabs.TryGetValue(userId, out tabItem))
+            if (!_chatTabs2.TryGetValue(tabId, out tabItem))
                 return;
             if (!IsActive || !tabItem.IsSelected)
                 tabItem.SetValue(Control.StyleProperty, (Style)this.Resources["FlashingHeader"]);
         }
 
+        private static string GetTabId(Type tabType, string id)
+        {
+            string tabId = tabType.Name + "_" + id;
+            return tabId;
+        }
+
         private void StopFlashingTab(TabItem tabItem)
         {
             tabItem.Style = null;
+        }
+
+        public void CreateChatroomWith(PgUser a, PgUser b)
+        {
+            Guid g = Guid.NewGuid();
+            var id = "client_" + g;
+            _manager.JoinChatroom(id);
+            _manager.ChatroomInviteSend(new ChatroomInviteOut { _id = id, toUser = a.ToUserBase(), });
+            _manager.ChatroomInviteSend(new ChatroomInviteOut { _id = id, toUser = b.ToUserBase(), });
         }
     }
 }

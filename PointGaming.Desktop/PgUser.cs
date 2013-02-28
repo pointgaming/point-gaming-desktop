@@ -61,6 +61,27 @@ namespace PointGaming.Desktop
                 NotifyChanged("Status");
             }
         }
+
+        public UserBase ToUserBase()
+        {
+            return new UserBase { _id = Id, username = Username, };
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as PgUser;
+            if (other == null)
+                return false;
+            return _id == other._id;
+        }
+        public override int GetHashCode()
+        {
+            return _id.GetHashCode();
+        }
+        public override string ToString()
+        {
+            return Username;
+        }
     }
 
 }

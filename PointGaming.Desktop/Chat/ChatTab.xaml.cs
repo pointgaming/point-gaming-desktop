@@ -19,47 +19,32 @@ namespace PointGaming.Desktop.Chat
     public partial class ChatTab : UserControl
     {
         private ChatWindow _chatWindow;
-        public PgUser OtherUser;
+        private PgUser _otherUser;
         private SocketSession _session = HomeWindow.Home.SocketSession;
+        private AutoScroller _autoScroller;
 
         public ChatTab()
         {
             InitializeComponent();
             richTextBoxLog.Document.Blocks.Clear();
+            _autoScroller = new AutoScroller(richTextBoxLog);
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            ScrollViewer s = richTextBoxLog.FindDescendant<ScrollViewer>();
-            if (s != null)
-            {
-                s.ScrollChanged += ScrollChanged;
-            }
             textBoxInput.Focus();
         }
-
-        private bool _isAtEnd = true;
-        private double lastVerticalOffset = 0;
-        void ScrollChanged(object sender, ScrollChangedEventArgs e)
-        {
-            _isAtEnd = e.ExtentHeight - (e.VerticalOffset + e.ViewportHeight) <= 1.0;
-
-            if (!_isAtEnd && e.VerticalOffset == lastVerticalOffset)
-                richTextBoxLog.ScrollToEnd();
-            lastVerticalOffset = e.VerticalOffset;
-        }
-
+        
         public void Init(ChatWindow window, PgUser otherUser)
         {
             _chatWindow = window;
-            OtherUser = otherUser;
+            _otherUser = otherUser;
         }
 
         private void buttonSendInput_Click(object sender, RoutedEventArgs e)
         {
             SendInput();
         }
-
 
         private void textBoxInput_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -75,27 +60,20 @@ namespace PointGaming.Desktop.Chat
 
         private void SendInput()
         {
-            var message = textBoxInput.Text;
-            message = message.Trim();
-            textBoxInput.Text = "";
-            if (message == "")
+            string send, remain;
+            if (!ChatTabCommon.FilterMessage(textBoxInput.Text, out send, out remain))
                 return;
+            textBoxInput.Text = remain;
 
-            if (message.Length > 1024)
-            {
-                message = message.Substring(0, 1024);
-                message = message.Trim();
-            }
-
-            AppendUserMessage(_session.Data.User.Username, message);
-            var privateMessage = new PrivateMessage{ user_id = OtherUser.Id, message = message };
+            AppendUserMessage(_session.Data.User.Username, send);
+            var privateMessage = new PrivateMessage{ user_id = _otherUser.Id, message = send };
             _chatWindow.SendMessage(privateMessage);
         }
 
         public void MessageReceived(PrivateMessage message)
         {
-            _chatWindow.StartFlashingTab(OtherUser.Id);
-            AppendUserMessage(OtherUser.Username, message.message);
+            _chatWindow.StartFlashingTab(this.GetType(), _otherUser.Id);
+            AppendUserMessage(_otherUser.Username, message.message);
         }
 
         private void AppendUserMessage(string username, string message)
@@ -104,7 +82,7 @@ namespace PointGaming.Desktop.Chat
 
             string timeString = time.ToString("HH:mm");
 
-            bool isAtEnd = _isAtEnd;
+            _autoScroller.PreAppend();
 
             var p = new Paragraph();
             p.Inlines.Add(new Run(timeString + " "));
@@ -112,20 +90,42 @@ namespace PointGaming.Desktop.Chat
             p.Inlines.Add(new Run(message));
             richTextBoxLog.Document.Blocks.Add(p);
 
-            if (isAtEnd)
-                richTextBoxLog.ScrollToEnd();
+            _autoScroller.PostAppend();
         }
 
-        private void AppendLine(string line)
+        #region drag & drop sink
+        private bool CanHandleDrop(DragEventArgs e)
         {
-            bool isAtEnd = _isAtEnd;
-
-            var p = new Paragraph();
-            p.Inlines.Add(new Run(line));
-            richTextBoxLog.Document.Blocks.Add(p);
-
-            if (isAtEnd)
-                richTextBoxLog.ScrollToEnd();
+            if (e.Data.GetDataPresent(typeof(PgUser).FullName))
+            {
+                PgUser anotherUser = e.Data.GetData(typeof(PgUser).FullName) as PgUser;
+                if (anotherUser.Id != _otherUser.Id)
+                    return true;
+            }
+            return false;
         }
+
+        private void TabPreviewDragQuery(object sender, DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.None;
+            if (CanHandleDrop(e))
+            {
+                e.Effects = DragDropEffects.Link;
+                e.Handled = true;
+            }
+        }
+        private void TabPreviewDrop(object sender, DragEventArgs e)
+        {
+            if (!CanHandleDrop(e))
+                return;
+
+            if (e.Data.GetDataPresent(typeof(PgUser).FullName))
+            {
+                PgUser anotherUser = e.Data.GetData(typeof(PgUser).FullName) as PgUser;
+                _chatWindow.CreateChatroomWith(_otherUser, anotherUser);
+                e.Handled = true;
+            }
+        }
+        #endregion
     }
 }

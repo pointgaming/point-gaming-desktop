@@ -3,21 +3,41 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:my="clr-namespace:PointGaming.Desktop"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" Loaded="UserControl_Loaded">
+             d:DesignHeight="300" d:DesignWidth="400" Loaded="UserControl_Loaded"
+             AllowDrop="True" PreviewDrop="TabPreviewDrop" PreviewDragEnter="TabPreviewDragQuery"
+             PreviewDragOver="TabPreviewDragQuery" PreviewDragLeave="TabPreviewDragQuery">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <RichTextBox Grid.Row="0" HorizontalAlignment="Stretch" Name="richTextBoxLog" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" IsReadOnly="True">
-            <RichTextBox.Resources>
-                <Style TargetType="{x:Type Paragraph}">
-                    <Setter Property="Margin" Value="0"/>
-                </Style>
-            </RichTextBox.Resources>
-        </RichTextBox>
-
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="4" />
+                <ColumnDefinition Width="120" />
+            </Grid.ColumnDefinitions>
+            <RichTextBox Grid.Column="0" HorizontalAlignment="Stretch" Name="richTextBoxLog" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" IsReadOnly="True">
+                <RichTextBox.Resources>
+                    <Style TargetType="{x:Type Paragraph}">
+                        <Setter Property="Margin" Value="0"/>
+                    </Style>
+                </RichTextBox.Resources>
+            </RichTextBox>
+            <Separator Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            <ListBox Grid.Column="2" Name="listBoxMembership" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                     PreviewMouseLeftButtonDown="listBoxMembership_PreviewMouseLeftButtonDown"
+                     PreviewMouseLeftButtonUp="listBoxMembership_PreviewMouseLeftButtonUp"
+                     PreviewMouseMove="listBoxMembership_PreviewMouseMove">
+                <ListBox.Resources>
+                    <DataTemplate DataType="{x:Type my:PgUser}">
+                        <Label Content="{Binding Username}" MouseDoubleClick="Label_MouseDoubleClick" />
+                    </DataTemplate>
+                </ListBox.Resources>
+            </ListBox>
+        </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>

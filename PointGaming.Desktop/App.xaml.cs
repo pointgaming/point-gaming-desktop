@@ -225,30 +225,51 @@ namespace PointGaming.Desktop
 
         public static bool TryGetRowItem<T>(this DataGrid d, MouseButtonEventArgs e, out T rowItem)
         {
+            DataGridRow row;
             var element = d.InputHitTest(e.GetPosition(d));
-            return TryGetX(element, out rowItem);
+            return TryGetX(element, out row, out rowItem);
+        }
+        public static bool TryGetRowAndItem<T>(this DataGrid d, MouseButtonEventArgs e, out DataGridRow row, out T rowItem)
+        {
+            var element = d.InputHitTest(e.GetPosition(d));
+            return TryGetX(element, out row, out rowItem);
+        }
+        public static bool TryGetItemAndItem<T>(this ListBox d, MouseButtonEventArgs e, out ListBoxItem item, out T itemItem)
+        {
+            var element = d.InputHitTest(e.GetPosition(d));
+            return TryGetX(element, out item, out itemItem);
         }
 
-        private static bool TryGetX<T>(IInputElement element, out T friend)
+        private static bool TryGetX<T>(IInputElement element, out ListBoxItem item, out T friend)
         {
             friend = default(T);
 
-            DataGridRow row;
-            if (!TryGetRow((DependencyObject)element, out row))
+            if (!TryGetParent((DependencyObject)element, out item))
+                return false;
+
+            friend = (T)item.DataContext;
+            return true;
+        }
+
+        private static bool TryGetX<T>(IInputElement element, out DataGridRow row, out T friend)
+        {
+            friend = default(T);
+
+            if (!TryGetParent((DependencyObject)element, out row))
                 return false;
 
             friend = (T)row.Item;
             return true;
         }
 
-        private static bool TryGetRow(DependencyObject element, out DataGridRow row)
+        public static bool TryGetParent<T>(this DependencyObject element, out T parent) where T : DependencyObject
         {
-            row = null;
+            parent = default(T);
             while (element != null)
             {
-                if (element is DataGridRow)
+                if (element is T)
                 {
-                    row = (DataGridRow)element;
+                    parent = (T)element;
                     return true;
                 }
                 element = VisualTreeHelper.GetParent(element);
