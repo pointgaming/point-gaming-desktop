@@ -139,5 +139,16 @@ namespace PointGaming.Desktop.Properties {
                 this["ChatFontSize"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection LaunchList {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["LaunchList"]));
+            }
+            set {
+                this["LaunchList"] = value;
+            }
+        }
     }
 }

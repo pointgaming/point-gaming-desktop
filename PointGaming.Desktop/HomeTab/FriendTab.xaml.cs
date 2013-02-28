@@ -44,7 +44,7 @@ namespace PointGaming.Desktop.HomeTab
         
         private PgUser _rightClickedFriend;
 
-        private void dataGridFriends_MouseUp(object sender, MouseButtonEventArgs e)
+        private void dataGridFriends_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Right)
             {

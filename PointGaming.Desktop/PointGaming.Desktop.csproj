@@ -77,6 +77,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -103,6 +104,10 @@
       <DependentUpon>ChatroomTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="Chat\ChatTabCommon.cs" />
+    <Compile Include="HomeTab\LauncherEditorDialog.xaml.cs">
+      <DependentUpon>LauncherEditorDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HomeTab\LauncherInfo.cs" />
     <Compile Include="PgFonts\FontChooser.xaml.cs">
       <DependentUpon>FontChooser.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -153,6 +158,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="HomeTab\GameLauncherTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HomeTab\LauncherEditorDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

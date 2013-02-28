@@ -7,13 +7,44 @@
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Grid>
-        <DataGrid AutoGenerateColumns="False" HorizontalAlignment="Stretch" Name="dataGridGames" VerticalAlignment="Stretch"
-                  ItemsSource="{Binding Games}" SelectionMode="Single"
-                  CanUserAddRows="False" CanUserDeleteRows="False">
+        <DataGrid AutoGenerateColumns="False" HorizontalAlignment="Stretch" Name="dataGridLauncher" VerticalAlignment="Stretch"
+                  ItemsSource="{Binding Launchers}" SelectionMode="Single"
+                  CanUserAddRows="False" CanUserDeleteRows="False"
+                  PreviewMouseRightButtonDown="dataGridLauncher_PreviewMouseRightButtonDown" MouseDoubleClick="dataGridLauncher_MouseDoubleClick">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding name}" Header="Game" Width="*" IsReadOnly="True" />
-                <DataGridTextColumn Binding="{Binding players}" Header="Players" Width="100" IsReadOnly="True" />
+                <DataGridTemplateColumn Header="Game" Width="*" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Height="16" Width="16" HorizontalAlignment="Left" Margin="0,0,5,0" Stretch="Fill" VerticalAlignment="Center" Source="{Binding FileIcon, Mode=OneWay}" />
+                                <TextBlock Height="16" HorizontalAlignment="Left" Margin="0" Text="{Binding DisplayName}" VerticalAlignment="Center" Padding="0" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Binding="{Binding PlayerCount}" Header="Players" Width="100" IsReadOnly="True" />
             </DataGrid.Columns>
+            
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Add..." Click="AddLauncherClick" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+
+
+            <DataGrid.Resources>
+                <ContextMenu x:Key="DataRowContextMenu">
+                    <MenuItem Header="Add..." Click="AddLauncherClick" />
+                    <MenuItem Header="Edit..." Click="EditLauncherClick" />
+                    <MenuItem Header="Remove" Click="RemoveLauncherClick" />
+                </ContextMenu>
+            </DataGrid.Resources>
+
+            <DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}" x:Name="styleForDataRow">
+                    <Setter Property="ContextMenu" Value="{StaticResource DataRowContextMenu}" />
+                </Style>
+            </DataGrid.RowStyle>
         </DataGrid>
     </Grid>
 </UserControl>
