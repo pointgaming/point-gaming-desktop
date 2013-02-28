@@ -33,11 +33,11 @@ namespace PointGaming.Desktop.HomeTab
             HomeWindow.Home.LogOut(true);
         }
 
-        private void checkBoxSynchGameConfigs_Checked(object sender, RoutedEventArgs e)
+        private void checkBoxSyncGameConfigs_Checked(object sender, RoutedEventArgs e)
         {
             App.LogLine("Not Implemented");
         }
-        private void checkBoxSynchGameConfigs_Unchecked(object sender, RoutedEventArgs e)
+        private void checkBoxSyncGameConfigs_Unchecked(object sender, RoutedEventArgs e)
         {
             App.LogLine("Not Implemented");
         }
