@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,7 +17,7 @@ using PointGaming.Desktop.POCO;
 
 namespace PointGaming.Desktop.Chat
 {
-    public partial class ChatTab : UserControl
+    public partial class ChatTab : UserControl, IWeakEventListener
     {
         private ChatWindow _chatWindow;
         private PgUser _otherUser;
@@ -29,14 +30,15 @@ namespace PointGaming.Desktop.Chat
             richTextBoxLog.Document = new FlowDocument();
             UpdateChatFont();
             _autoScroller = new AutoScroller(richTextBoxLog);
-            Properties.Settings.Default.SettingsSaving += Default_SettingsSaving;
+            PropertyChangedEventManager.AddListener(Properties.Settings.Default, this, "PropertyChanged");
         }
 
-        void Default_SettingsSaving(object sender, System.ComponentModel.CancelEventArgs e)
+        public bool ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
         {
-            UpdateChatFont();
+            this.BeginInvokeUI(UpdateChatFont);
+            return true;
         }
-
+        
         private void UpdateChatFont()
         {
             richTextBoxLog.Document.Background = Brushes.White;
