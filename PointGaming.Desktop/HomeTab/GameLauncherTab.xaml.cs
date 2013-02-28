@@ -28,16 +28,49 @@ namespace PointGaming.Desktop.HomeTab
 
             foreach (var launcherString in settingsList)
             {
-                var split = launcherString.Split(';');
-                var li = new LauncherInfo(split[0], split[1], split[2]);
+                var launcher = LauncherInfo.FromString(launcherString);
+                launcher.PropertyChanged += launcher_PropertyChanged;
+                _launchers.Add(launcher);
             }
 
             if (_launchers.Count == 0)
             {
-                _launchers.Add(new LauncherInfo("Firefox", "C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe", "http://www.shadowstats.com/charts/monetary-base-money-supply"));
-                _launchers.Add(new LauncherInfo("Windows Registry", "C:\\Windows\\regedit.exe", ""));
-                _launchers.Add(new LauncherInfo("Notepad", "C:\\Windows\\notepad.exe", "C:\\test.txt"));
+                var launcher = new LauncherInfo("Firefox", "C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe", "http://www.shadowstats.com/charts/monetary-base-money-supply");
+                launcher.PropertyChanged += launcher_PropertyChanged;
+                _launchers.Add(launcher);
+                launcher = new LauncherInfo("Internet Explorer", "C:\\Program Files\\Internet Explorer\\iexplore.exe", "http://www.shadowstats.com/charts/monetary-base-money-supply");
+                launcher.PropertyChanged += launcher_PropertyChanged;
+                _launchers.Add(launcher);
+                launcher = new LauncherInfo("Windows Registry", "C:\\Windows\\regedit.exe", "");
+                launcher.PropertyChanged += launcher_PropertyChanged;
+                _launchers.Add(launcher);
+                launcher = new LauncherInfo("Notepad", "C:\\Windows\\notepad.exe", "C:\\test.txt");
+                launcher.PropertyChanged += launcher_PropertyChanged;
+                _launchers.Add(launcher);
             }
+
+            _launchers.CollectionChanged += _launchers_CollectionChanged;
+        }
+
+        void launcher_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            SaveLauncherList();
+        }
+
+        void _launchers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            SaveLauncherList();
+        }
+
+        private void SaveLauncherList()
+        {
+            var settingsList = new System.Collections.Specialized.StringCollection();
+            foreach (var item in _launchers)
+            {
+                settingsList.Add(item.ToString());
+            }
+            Properties.Settings.Default.LaunchList = settingsList;
+            Properties.Settings.Default.Save();
         }
 
         private LauncherInfo _rightClickLauncher;
@@ -60,7 +93,11 @@ namespace PointGaming.Desktop.HomeTab
             editor.Title = "Add Launcher";
             var result = true == editor.ShowDialog();
             if (result)
-                _launchers.Add(editor.Launcher);
+            {
+                var launcher = editor.Launcher;
+                _launchers.Add(launcher);
+                launcher.PropertyChanged += launcher_PropertyChanged;
+            }
         }
         private void EditLauncherClick(object sender, RoutedEventArgs e)
         {

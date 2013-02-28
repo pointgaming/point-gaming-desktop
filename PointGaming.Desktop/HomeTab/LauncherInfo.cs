@@ -132,5 +132,24 @@ namespace PointGaming.Desktop.HomeTab
                 return source;
             }
         }
+
+        public override string ToString()
+        {
+            return DisplayName + "\t" + FilePath + "\t" + Arguments;
+        }
+
+        public static LauncherInfo FromString(string value)
+        {
+            try
+            {
+                var split = value.Split('\t');
+                var li = new LauncherInfo(split[0], split[1], split[2]);
+                return li;
+            }
+            catch
+            {
+                return new LauncherInfo("Failed to Import", "", value);
+            }
+        }
     }
 }
