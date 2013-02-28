@@ -18,16 +18,20 @@ namespace PointGaming.Desktop.Chat
 {
     public class AutoScroller
     {
-        private System.Windows.Controls.Primitives.TextBoxBase _textbox;
+        private System.Windows.Controls.FlowDocumentScrollViewer _textbox;
+        private ScrollViewer _scrollViewer;
 
-        public AutoScroller(System.Windows.Controls.Primitives.TextBoxBase textbox)
+        public AutoScroller(System.Windows.Controls.FlowDocumentScrollViewer textbox)
         {
             _textbox = textbox;
-            ScrollViewer s = textbox.FindDescendant<ScrollViewer>();
-            if (s != null)
-            {
-                s.ScrollChanged += ScrollChanged;
-            }
+            textbox.Loaded += new RoutedEventHandler(textbox_Loaded);
+        }
+
+        void textbox_Loaded(object sender, RoutedEventArgs e)
+        {
+            _scrollViewer = _textbox.FindDescendant<ScrollViewer>();
+            if (_scrollViewer != null)
+                _scrollViewer.ScrollChanged += ScrollChanged;
         }
 
         private bool _isAtEnd = true;
@@ -37,7 +41,7 @@ namespace PointGaming.Desktop.Chat
             _isAtEnd = e.ExtentHeight - (e.VerticalOffset + e.ViewportHeight) <= 1.0;
 
             if (!_isAtEnd && e.VerticalOffset == lastVerticalOffset)
-                _textbox.ScrollToEnd();
+                _scrollViewer.ScrollToEnd();
             lastVerticalOffset = e.VerticalOffset;
         }
 
@@ -49,8 +53,8 @@ namespace PointGaming.Desktop.Chat
 
         public void PostAppend()
         {
-            if (_wasAtEnd)
-                _textbox.ScrollToEnd();
+            if (_wasAtEnd && _scrollViewer!= null)
+                _scrollViewer.ScrollToEnd();
         }
     }
 }

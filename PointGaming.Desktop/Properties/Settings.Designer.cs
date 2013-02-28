@@ -115,5 +115,29 @@ namespace PointGaming.Desktop.Properties {
                 this["MinimizeToTray"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Segoe UI")]
+        public string ChatFontFamily {
+            get {
+                return ((string)(this["ChatFontFamily"]));
+            }
+            set {
+                this["ChatFontFamily"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("12")]
+        public double ChatFontSize {
+            get {
+                return ((double)(this["ChatFontSize"]));
+            }
+            set {
+                this["ChatFontSize"] = value;
+            }
+        }
     }
 }

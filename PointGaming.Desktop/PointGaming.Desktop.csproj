@@ -103,6 +103,15 @@
       <DependentUpon>ChatroomTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="Chat\ChatTabCommon.cs" />
+    <Compile Include="PgFonts\FontChooser.xaml.cs">
+      <DependentUpon>FontChooser.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PgFonts\FontFamilyListItem.cs" />
+    <Compile Include="PgFonts\FontSizeListItem.cs" />
+    <Compile Include="PgFonts\NameDictionaryHelper.cs" />
+    <Compile Include="PgFonts\TypefaceListItem.cs" />
+    <Compile Include="PgFonts\TypographicFeatureListItem.cs" />
     <Compile Include="HomeTab\FriendRequestFromUserControl.xaml.cs">
       <DependentUpon>FriendRequestFromUserControl.xaml</DependentUpon>
     </Compile>
@@ -113,6 +122,7 @@
     <Compile Include="POCO\Chatroom.cs" />
     <Compile Include="POCO\FriendList.cs" />
     <Compile Include="SocketSession.cs" />
+    <Compile Include="UrlMatcher.cs" />
     <Compile Include="UserDataManager.cs" />
     <Page Include="Chat\ChatWindow.xaml">
       <SubType>Designer</SubType>
@@ -195,6 +205,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MessageDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PgFonts\FontChooser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

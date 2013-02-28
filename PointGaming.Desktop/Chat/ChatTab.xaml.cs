@@ -26,8 +26,23 @@ namespace PointGaming.Desktop.Chat
         public ChatTab()
         {
             InitializeComponent();
-            richTextBoxLog.Document.Blocks.Clear();
+            richTextBoxLog.Document = new FlowDocument();
+            UpdateChatFont();
             _autoScroller = new AutoScroller(richTextBoxLog);
+            Properties.Settings.Default.SettingsSaving += Default_SettingsSaving;
+        }
+
+        void Default_SettingsSaving(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            UpdateChatFont();
+        }
+
+        private void UpdateChatFont()
+        {
+            richTextBoxLog.Document.Background = Brushes.White;
+            richTextBoxLog.Document.PagePadding = new Thickness(2);
+            richTextBoxLog.Document.FontFamily = new FontFamily(Properties.Settings.Default.ChatFontFamily + ", " + richTextBoxLog.Document.FontFamily);
+            richTextBoxLog.Document.FontSize = Properties.Settings.Default.ChatFontSize;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -87,7 +102,7 @@ namespace PointGaming.Desktop.Chat
             var p = new Paragraph();
             p.Inlines.Add(new Run(timeString + " "));
             p.Inlines.Add(new Bold(new Run(username + ": ")));
-            p.Inlines.Add(new Run(message));
+            ChatTabCommon.Format(message, p.Inlines);
             richTextBoxLog.Document.Blocks.Add(p);
 
             _autoScroller.PostAppend();

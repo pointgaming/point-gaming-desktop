@@ -7,10 +7,12 @@
              d:DesignHeight="300" d:DesignWidth="300" Padding="10">
     <StackPanel Orientation="Vertical">
         <Button Content="Scan for games" Height="23" HorizontalAlignment="Left" Name="buttonScanForGames" VerticalAlignment="Top" Width="100" Margin="0,2.5,0,2.5" Click="buttonScanForGames_Click" />
+        <Button Content="Choose chat font..." Height="23" HorizontalAlignment="Left" Name="buttonChooseChatFont" VerticalAlignment="Top" Width="120" Margin="0,2.5,0,2.5" Click="buttonChooseChatFont_Click" />
         <Label Content="Toggle HUD: Ctrl + Shift + H" Height="28" HorizontalAlignment="Left" Name="labelToggleHud" VerticalAlignment="Top" />
         <CheckBox Content="Sync game configs" Height="16" HorizontalAlignment="Left" Name="checkBoxSyncGameConfigs" VerticalAlignment="Top" Margin="0,6,0,6" Checked="checkBoxSyncGameConfigs_Checked" IsChecked="True" Unchecked="checkBoxSyncGameConfigs_Unchecked" />
         <CheckBox Content="Hide game configs" Height="16" HorizontalAlignment="Left" Name="checkBoxHideGameConfigs" VerticalAlignment="Top" Margin="0,6,0,6" Checked="checkBoxHideGameConfigs_Checked" Unchecked="checkBoxHideGameConfigs_Unchecked" />
         <CheckBox Content="Minimize to Tray" Height="16" HorizontalAlignment="Left" Name="checkBoxMinimizeToTray" VerticalAlignment="Top" Margin="0,6,0,6" Checked="checkBoxMinimizeToTray_Checked" Unchecked="checkBoxMinimizeToTray_Unchecked" />
         <Button Content="Log out" Height="23" HorizontalAlignment="Left" Name="buttonLogOut" VerticalAlignment="Top" Width="75" Margin="0,2.5,0,2.5" Click="buttonLogOut_Click" />
+        <TextBox Height="23" Name="textBoxFontChoice" Width="120" Visibility="Collapsed" Text="The font chosen will be used for Point Gaming chat windows."/>
     </StackPanel>
 </UserControl>

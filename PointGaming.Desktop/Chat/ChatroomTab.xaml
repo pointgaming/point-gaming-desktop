@@ -19,13 +19,14 @@
                 <ColumnDefinition Width="4" />
                 <ColumnDefinition Width="120" />
             </Grid.ColumnDefinitions>
-            <RichTextBox Grid.Column="0" HorizontalAlignment="Stretch" Name="richTextBoxLog" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" IsReadOnly="True">
-                <RichTextBox.Resources>
+            <FlowDocumentScrollViewer Grid.Column="0" HorizontalAlignment="Stretch" Name="richTextBoxLog" VerticalAlignment="Stretch"
+                    VerticalScrollBarVisibility="Auto" Background="White">
+                <FlowDocumentScrollViewer.Resources>
                     <Style TargetType="{x:Type Paragraph}">
                         <Setter Property="Margin" Value="0"/>
                     </Style>
-                </RichTextBox.Resources>
-            </RichTextBox>
+                </FlowDocumentScrollViewer.Resources>
+            </FlowDocumentScrollViewer>
             <Separator Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
             <ListBox Grid.Column="2" Name="listBoxMembership" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                      PreviewMouseLeftButtonDown="listBoxMembership_PreviewMouseLeftButtonDown"

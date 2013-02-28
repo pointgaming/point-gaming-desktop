@@ -12,14 +12,14 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <RichTextBox Grid.Row="0" HorizontalAlignment="Stretch" Name="richTextBoxLog" VerticalAlignment="Stretch"
-                     VerticalScrollBarVisibility="Auto" IsReadOnly="True">
-            <RichTextBox.Resources>
+        <FlowDocumentScrollViewer Grid.Row="0" HorizontalAlignment="Stretch" Name="richTextBoxLog" VerticalAlignment="Stretch"
+                     VerticalScrollBarVisibility="Auto" Background="White">
+            <FlowDocumentScrollViewer.Resources>
                 <Style TargetType="{x:Type Paragraph}">
                     <Setter Property="Margin" Value="0"/>
                 </Style>
-            </RichTextBox.Resources>
-        </RichTextBox>
+            </FlowDocumentScrollViewer.Resources>
+        </FlowDocumentScrollViewer>
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
