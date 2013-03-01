@@ -67,7 +67,7 @@ namespace PointGaming.Desktop.Chat
         {
             _session = session;
 
-            session.OnThread("message", OnPrivateMessage);
+            session.OnThread("Message.new", OnPrivateMessage);
             session.OnThread("Chatroom.User.list", OnChatroomUserList);
             session.OnThread("Chatroom.Member.list", OnChatroomMemberList);
             session.OnThread("Chatroom.Member.change", OnChatroomMemberChange);
@@ -116,7 +116,7 @@ namespace PointGaming.Desktop.Chat
 
         private void OnPrivateMessage(IMessage message)
         {
-            var received = message.Json.GetFirstArgAs<PrivateMessage>();
+            var received = message.Json.GetFirstArgAs<PrivateMessageIn>();
 
             HomeWindow.Home.InvokeUI(delegate
             {
@@ -124,9 +124,9 @@ namespace PointGaming.Desktop.Chat
                 chatWindow.MessageReceived(received);
             });
         }
-        public void SendMessage(PrivateMessage message)
+        public void SendMessage(PrivateMessageOut message)
         {
-            _session.EmitLater("message", message);
+            _session.EmitLater("Message.send", message);
         }
         #endregion
 

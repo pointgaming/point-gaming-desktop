@@ -29,14 +29,14 @@ namespace PointGaming.Desktop.Chat
             _manager = manager;
         }
 
-        public void SendMessage(PrivateMessage message)
+        public void SendMessage(PrivateMessageOut message)
         {
             _manager.SendMessage(message);
         }
 
-        public void MessageReceived(PrivateMessage message)
+        public void MessageReceived(PrivateMessageIn message)
         {
-            var data = _session.Data.GetPgUser(message.user_id);
+            var data = _session.Data.GetPgUser(message.fromUser);
             TabItem tabItem = GetOrCreateTab(data);
             var chatTab = (Chat.ChatTab)tabItem.Content;
             chatTab.MessageReceived(message);
@@ -150,7 +150,7 @@ namespace PointGaming.Desktop.Chat
         public void CreateChatroomWith(PgUser a, PgUser b)
         {
             Guid g = Guid.NewGuid();
-            var id = "client_" + g;
+            var id = "client_" + g.ToString().Replace("-", "");
             _manager.JoinChatroom(id);
             _manager.ChatroomInviteSend(new ChatroomInviteOut { _id = id, toUser = a.ToUserBase(), });
             _manager.ChatroomInviteSend(new ChatroomInviteOut { _id = id, toUser = b.ToUserBase(), });
