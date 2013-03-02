@@ -85,7 +85,6 @@ namespace PointGaming.Desktop.Chat
                 return;
             textBoxInput.Text = remain;
 
-            AppendUserMessage(_session.Data.User.Username, send);
             _roomManager.SendMessage(send);
         }
 
