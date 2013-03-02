@@ -23,7 +23,7 @@ namespace PointGaming.Desktop.POCO
     public class ChatroomMemberList
     {
         public string _id { get; set; }
-        public List<UserBase> membership { get; set; }
+        public List<UserBase> members { get; set; }
     }
     public class ChatroomMemberChange
     {

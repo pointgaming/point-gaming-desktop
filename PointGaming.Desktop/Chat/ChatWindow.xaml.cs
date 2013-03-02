@@ -41,6 +41,13 @@ namespace PointGaming.Desktop.Chat
             var chatTab = (Chat.ChatTab)tabItem.Content;
             chatTab.MessageReceived(message);
         }
+        public void MessageSent(PrivateMessageSent message)
+        {
+            var data = _session.Data.GetPgUser(message.toUser);
+            TabItem tabItem = GetOrCreateTab(data);
+            var chatTab = (Chat.ChatTab)tabItem.Content;
+            chatTab.MessageSent(message);
+        }
 
         public void ChatWith(PgUser data)
         {

@@ -82,7 +82,6 @@ namespace PointGaming.Desktop.Chat
                 return;
             textBoxInput.Text = remain;
 
-            AppendUserMessage(_session.Data.User.Username, send);
             var privateMessage = new PrivateMessageOut{ _id = _otherUser.Id, message = send };
             _chatWindow.SendMessage(privateMessage);
         }
@@ -91,6 +90,11 @@ namespace PointGaming.Desktop.Chat
         {
             _chatWindow.StartFlashingTab(this.GetType(), _otherUser.Id);
             AppendUserMessage(_otherUser.Username, message.message);
+        }
+        public void MessageSent(PrivateMessageSent message)
+        {
+            _chatWindow.StartFlashingTab(this.GetType(), _otherUser.Id);
+            AppendUserMessage(_session.Data.User.Username, message.message);
         }
 
         private void AppendUserMessage(string username, string message)
