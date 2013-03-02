@@ -126,6 +126,10 @@ namespace PointGaming.Desktop
         {
             _chatManager.ChatWith(friend);
         }
+        public void JoinChat(string id)
+        {
+            _chatManager.JoinChatroom(id);
+        }
 
         public void LogOut(bool shouldShowLogInWindow)
         {

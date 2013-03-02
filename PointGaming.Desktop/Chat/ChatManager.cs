@@ -226,27 +226,32 @@ namespace PointGaming.Desktop.Chat
             ChatroomMemberGetList(chatroom);
         }
 
-        public void ChatroomUserJoin(Chatroom chatroom)
+        private void ChatroomUserJoin(Chatroom chatroom)
         {
             _session.EmitLater("Chatroom.User.join", chatroom);
         }
-        public void ChatroomUserLeave(Chatroom chatroom)
+        private void ChatroomUserLeave(Chatroom chatroom)
         {
             _session.EmitLater("Chatroom.User.leave", chatroom);
         }
-        public void ChatroomUserGetList()
+        private void ChatroomUserGetList()
         {
             _session.EmitLater("Chatroom.User.getList", null);
         }
-        public void ChatroomMemberGetList(Chatroom chatroom)
+        private void ChatroomMemberGetList(Chatroom chatroom)
         {
             _session.EmitLater("Chatroom.Member.getList", chatroom);
         }
-        public void ChatroomMessageSend(ChatroomMessageOut message)
+        private void ChatroomMessageSend(ChatroomMessageOut message)
         {
             _session.EmitLater("Chatroom.Message.send", message);
         }
-        public void ChatroomInviteSend(ChatroomInviteOut invite)
+
+        public void SendChatroomInvite(ChatroomInviteOut invite)
+        {
+            ChatroomInviteSend(invite);
+        }
+        private void ChatroomInviteSend(ChatroomInviteOut invite)
         {
             _session.EmitLater("Chatroom.Invite.send", invite);
         }

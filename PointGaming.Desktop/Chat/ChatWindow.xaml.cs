@@ -159,8 +159,8 @@ namespace PointGaming.Desktop.Chat
             Guid g = Guid.NewGuid();
             var id = "client_" + g.ToString().Replace("-", "");
             _manager.JoinChatroom(id);
-            _manager.ChatroomInviteSend(new ChatroomInviteOut { _id = id, toUser = a.ToUserBase(), });
-            _manager.ChatroomInviteSend(new ChatroomInviteOut { _id = id, toUser = b.ToUserBase(), });
+            _manager.SendChatroomInvite(new ChatroomInviteOut { _id = id, toUser = a.ToUserBase(), });
+            _manager.SendChatroomInvite(new ChatroomInviteOut { _id = id, toUser = b.ToUserBase(), });
         }
     }
 }

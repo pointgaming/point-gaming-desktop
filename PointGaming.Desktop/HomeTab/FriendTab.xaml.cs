@@ -522,5 +522,15 @@ namespace PointGaming.Desktop.HomeTab
         }
         #endregion
 
+
+        private void buttonJoinChat_Click(object sender, RoutedEventArgs e)
+        {
+            HomeWindow.Home.JoinChat(textBoxChatroomId.Text);
+        }
+
+        private void textBoxJoinChat_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            HomeWindow.Home.JoinChat(textBoxChatroomId.Text);
+        }
     }
 }
