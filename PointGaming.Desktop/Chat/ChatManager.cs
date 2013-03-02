@@ -137,9 +137,8 @@ namespace PointGaming.Desktop.Chat
         private void OnChatroomUserList(IMessage message)
         {
             var received = message.Json.GetFirstArgAs<ChatroomUserList>();
-            foreach (var item in received.chatrooms)
+            foreach (var id in received.chatrooms)
             {
-                var id = item._id;
                 ChatroomUsage usage;
                 if (!_chatroomUsage.TryGetValue(id, out usage))
                     JoinChatroom(id);
@@ -228,11 +227,11 @@ namespace PointGaming.Desktop.Chat
 
         private void ChatroomUserJoin(Chatroom chatroom)
         {
-            _session.EmitLater("Chatroom.User.join", chatroom);
+            _session.EmitLater("Chatroom.join", chatroom);
         }
         private void ChatroomUserLeave(Chatroom chatroom)
         {
-            _session.EmitLater("Chatroom.User.leave", chatroom);
+            _session.EmitLater("Chatroom.leave", chatroom);
         }
         private void ChatroomUserGetList()
         {

@@ -97,7 +97,7 @@ namespace PointGaming.Desktop.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("00:00:05")]
+        [global::System.Configuration.DefaultSettingValueAttribute("00:00:10")]
         public global::System.TimeSpan LogInTimeout {
             get {
                 return ((global::System.TimeSpan)(this["LogInTimeout"]));

@@ -18,7 +18,7 @@ namespace PointGaming.Desktop.POCO
     }
     public class ChatroomUserList
     {
-        public List<Chatroom> chatrooms { get; set; }
+        public List<string> chatrooms { get; set; }
     }
     public class ChatroomMemberList
     {

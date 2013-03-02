@@ -530,7 +530,12 @@ namespace PointGaming.Desktop.HomeTab
 
         private void textBoxJoinChat_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            HomeWindow.Home.JoinChat(textBoxChatroomId.Text);
+            if (e.Key == Key.Enter)
+            {
+                HomeWindow.Home.JoinChat(textBoxChatroomId.Text);
+                e.Handled = true;
+                return;
+            }
         }
     }
 }
