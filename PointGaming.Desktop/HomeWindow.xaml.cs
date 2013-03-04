@@ -107,6 +107,7 @@ namespace PointGaming.Desktop
             {
                 this.Show();
                 this.WindowState = WindowState.Normal;
+                this.Activate();
             }
             else
             {
