@@ -48,6 +48,10 @@ namespace PointGaming.Desktop.Chat
             var chatTab = (Chat.ChatTab)tabItem.Content;
             chatTab.MessageSent(message);
         }
+        public void MessageSendFailed()
+        {
+            MessageDialog.Show(this, "Failed to Send Message", "Failed to send message.  User is not online or doesn't exist.");
+        }
 
         public void ChatWith(PgUser data)
         {

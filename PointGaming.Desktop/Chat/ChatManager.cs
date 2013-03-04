@@ -67,8 +67,9 @@ namespace PointGaming.Desktop.Chat
         {
             _session = session;
 
-            session.OnThread("Message.sent", OnPrivateMessageSent);
-            session.OnThread("Message.new", OnPrivateMessage);
+            session.OnThread("Message.Send.new", OnPrivateMessageSent);
+            session.OnThread("Message.Receive.new", OnPrivateMessageReceived);
+            session.OnThread("Message.Send.fail", OnPrivateMessageSendFailed);
             session.OnThread("Chatroom.User.list", OnChatroomUserList);
             session.OnThread("Chatroom.Member.list", OnChatroomMemberList);
             session.OnThread("Chatroom.Member.change", OnChatroomMemberChange);
@@ -121,7 +122,13 @@ namespace PointGaming.Desktop.Chat
             var chatWindow = ChatWindow;
             chatWindow.MessageSent(received);
         }
-        private void OnPrivateMessage(IMessage message)
+        private void OnPrivateMessageSendFailed(IMessage message)
+        {
+            var received = message.Json.GetFirstArgAs<PrivateMessageOut>();
+            var chatWindow = ChatWindow;
+            chatWindow.MessageSendFailed();
+        }
+        private void OnPrivateMessageReceived(IMessage message)
         {
             var received = message.Json.GetFirstArgAs<PrivateMessageIn>();
             var chatWindow = ChatWindow;
