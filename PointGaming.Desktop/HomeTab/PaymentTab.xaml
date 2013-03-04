@@ -6,13 +6,13 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" Padding="5">
     <StackPanel Orientation="Vertical">
-        <Button Content="Run 30 second test" Height="23" HorizontalAlignment="Left" Name="buttonRunTest" VerticalAlignment="Top" Width="130" Margin="0,2.5,0,2.5" Click="buttonRunTest_Click" />
-        <CheckBox Content="Mine bitcoins" Height="16" HorizontalAlignment="Left" Name="checkBoxMineBitcoins" VerticalAlignment="Top" Margin="0,6,0,6" Checked="checkBoxMineBitcoins_Checked" Unchecked="checkBoxMineBitcoins_Unchecked" />
-        <CheckBox Content="Only mine when idle" Height="16" HorizontalAlignment="Left" Name="checkBoxOnlyMineWhenIdle" VerticalAlignment="Top" Margin="0,6,0,6" IsChecked="True" Checked="checkBoxOnlyMineWhenIdle_Checked" Unchecked="checkBoxOnlyMineWhenIdle_Unchecked" />
-        <Label Content="NVidia 650M" Height="28" HorizontalAlignment="Left" Name="labelGraphicsCardName" VerticalAlignment="Top" />
-        <Label Content="Hash Rate: 305 MHash/s" Height="28" HorizontalAlignment="Left" Name="labelHashRate" VerticalAlignment="Top" />
-        <CheckBox Content="Free pro account" Height="16" HorizontalAlignment="Left" Name="checkBoxFreeProAccount" VerticalAlignment="Top" Margin="0,6,0,6" Checked="checkBoxFreeProAccount_Checked" Unchecked="checkBoxFreeProAccount_Unchecked" />
-        <Label Content="Points Mined: 0" Height="28" HorizontalAlignment="Left" Name="labelPointsMined" VerticalAlignment="Top" />
+        <Button Content="Run 30 second test" Height="23" HorizontalAlignment="Left" Name="buttonRunTest" VerticalAlignment="Top" Width="130" Margin="0,2.5,0,2.5" Click="buttonRunTest_Click" IsEnabled="False" />
+        <CheckBox Content="Mine bitcoins" Height="16" HorizontalAlignment="Left" Name="checkBoxMineBitcoins" VerticalAlignment="Top" Margin="0,6,0,6" Checked="checkBoxMineBitcoins_Checked" Unchecked="checkBoxMineBitcoins_Unchecked" IsEnabled="False" />
+        <CheckBox Content="Only mine when idle" Height="16" HorizontalAlignment="Left" Name="checkBoxOnlyMineWhenIdle" VerticalAlignment="Top" Margin="0,6,0,6" IsChecked="True" Checked="checkBoxOnlyMineWhenIdle_Checked" Unchecked="checkBoxOnlyMineWhenIdle_Unchecked" IsEnabled="False" />
+        <Label Content="NVidia 650M" Height="28" HorizontalAlignment="Left" Name="labelGraphicsCardName" VerticalAlignment="Top" IsEnabled="False" />
+        <Label Content="Hash Rate: 305 MHash/s" Height="28" HorizontalAlignment="Left" Name="labelHashRate" VerticalAlignment="Top" IsEnabled="False" />
+        <CheckBox Content="Free pro account" Height="16" HorizontalAlignment="Left" Name="checkBoxFreeProAccount" VerticalAlignment="Top" Margin="0,6,0,6" Checked="checkBoxFreeProAccount_Checked" Unchecked="checkBoxFreeProAccount_Unchecked" IsEnabled="False" />
+        <Label Content="Points Mined: 0" Height="28" HorizontalAlignment="Left" Name="labelPointsMined" VerticalAlignment="Top" IsEnabled="False" />
         <Button Content="Start" Height="23" HorizontalAlignment="Left" Name="buttonStart" VerticalAlignment="Top" Width="75" Margin="0,2.5,0,2.5" Click="buttonStart_Click" />
     </StackPanel>
 </UserControl>

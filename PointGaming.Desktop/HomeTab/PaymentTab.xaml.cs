@@ -22,13 +22,17 @@ namespace PointGaming.Desktop.HomeTab
 
         private void buttonStart_Click(object sender, RoutedEventArgs e)
         {
-            App.LogLine("Not Implemented");
+            RunMiner();
         }
 
         private void RunMiner()
         {
+            var dllLocation = typeof(PaymentTab).Assembly.Location;
+            var dllFileInfo = new System.IO.FileInfo(dllLocation);
+            var executableInfo = dllFileInfo.Directory.GetDirectories("poclbm")[0].GetFiles("poclbm.exe")[0];
+
             Process poclbm = new Process();
-            poclbm.StartInfo.FileName = @"poclbm.exe";
+            poclbm.StartInfo.FileName = executableInfo.FullName;
             poclbm.StartInfo.Arguments = @"http://pointgaming:po!ntgam!ng@96.126.125.144:8332 --device=0 --platform=0 --verbose";
             poclbm.StartInfo.UseShellExecute = false;
             poclbm.StartInfo.RedirectStandardOutput = true;

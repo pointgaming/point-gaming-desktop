@@ -252,6 +252,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="..\libraries\poclbm_py2exe_20120920\phatk.cl">
+      <Link>poclbm\phatk.cl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="PointGaming.Desktop_TemporaryKey.pfx" />
@@ -291,6 +295,24 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\PointGamingLogo256x256.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\libraries\poclbm_py2exe_20120920\msvcp90.dll">
+      <Link>poclbm\msvcp90.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\libraries\poclbm_py2exe_20120920\poclbm.exe">
+      <Link>poclbm\poclbm.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\libraries\poclbm_py2exe_20120920\python26.dll">
+      <Link>poclbm\python26.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\libraries\poclbm_py2exe_20120920\w9xpopen.exe">
+      <Link>poclbm\w9xpopen.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
