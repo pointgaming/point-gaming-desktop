@@ -108,10 +108,14 @@
     <Compile Include="ClosableTabHeader.xaml.cs">
       <DependentUpon>ClosableTabHeader.xaml</DependentUpon>
     </Compile>
+    <Compile Include="HomeTab\ButtonProperties.cs" />
     <Compile Include="HomeTab\LauncherEditorDialog.xaml.cs">
       <DependentUpon>LauncherEditorDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="HomeTab\LauncherInfo.cs" />
+    <Compile Include="HomeTab\LobbyChoice.xaml.cs">
+      <DependentUpon>LobbyChoice.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HomeTab\LobbyListTab.xaml.cs">
       <DependentUpon>LobbyListTab.xaml</DependentUpon>
     </Compile>
@@ -133,6 +137,7 @@
     </Compile>
     <Compile Include="POCO\Chatroom.cs" />
     <Compile Include="POCO\FriendList.cs" />
+    <Compile Include="POCO\GameList.cs" />
     <Compile Include="SocketSession.cs" />
     <Compile Include="UrlMatcher.cs" />
     <Compile Include="UserDataManager.cs" />
@@ -151,6 +156,10 @@
     <Page Include="ClosableTabHeader.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dictionary1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="HomeTab\FriendRequestFromUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -173,6 +182,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="HomeTab\LauncherEditorDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HomeTab\LobbyChoice.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -150,5 +150,14 @@ namespace PointGaming.Desktop.Properties {
                 this["LaunchList"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/api/v1/games/")]
+        public string Games {
+            get {
+                return ((string)(this["Games"]));
+            }
+        }
     }
 }
