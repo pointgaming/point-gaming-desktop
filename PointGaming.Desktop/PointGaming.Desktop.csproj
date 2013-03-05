@@ -108,6 +108,9 @@
       <DependentUpon>LauncherEditorDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="HomeTab\LauncherInfo.cs" />
+    <Compile Include="HomeTab\LobbyListTab.xaml.cs">
+      <DependentUpon>LobbyListTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PgFonts\FontChooser.xaml.cs">
       <DependentUpon>FontChooser.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -162,6 +165,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="HomeTab\LauncherEditorDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HomeTab\LobbyListTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
