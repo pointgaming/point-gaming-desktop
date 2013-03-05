@@ -16,7 +16,7 @@ namespace PointGaming.Desktop.Chat
         private SocketSession _session = HomeWindow.Home.SocketSession;
         private ChatManager _manager;
 
-        private readonly Dictionary<string, TabItem> _chatTabs2 = new Dictionary<string, TabItem>();
+        private readonly Dictionary<string, ClosableTab> _chatTabs2 = new Dictionary<string, ClosableTab>();
 
         public ChatWindow()
         {
@@ -37,14 +37,14 @@ namespace PointGaming.Desktop.Chat
         public void MessageReceived(PrivateMessageIn message)
         {
             var data = _session.Data.GetPgUser(message.fromUser);
-            TabItem tabItem = GetOrCreateTab(data);
+            ClosableTab tabItem = GetOrCreateTab(data);
             var chatTab = (Chat.ChatTab)tabItem.Content;
             chatTab.MessageReceived(message);
         }
         public void MessageSent(PrivateMessageSent message)
         {
             var data = _session.Data.GetPgUser(message.toUser);
-            TabItem tabItem = GetOrCreateTab(data);
+            ClosableTab tabItem = GetOrCreateTab(data);
             var chatTab = (Chat.ChatTab)tabItem.Content;
             chatTab.MessageSent(message);
         }
@@ -55,21 +55,21 @@ namespace PointGaming.Desktop.Chat
 
         public void ChatWith(PgUser data)
         {
-            TabItem tabItem = GetOrCreateTab(data);
+            ClosableTab tabItem = GetOrCreateTab(data);
             tabControlChats.SelectedItem = tabItem;
         }
 
         public void ShowChatroom(ChatManager.ChatroomUsage roomManager)
         {
-            TabItem tabItem = GetOrCreateTab(roomManager);
+            ClosableTab tabItem = GetOrCreateTab(roomManager);
             tabControlChats.SelectedItem = tabItem;
         }
 
-        private TabItem GetOrCreateTab(PgUser data)
+        private ClosableTab GetOrCreateTab(PgUser data)
         {
             var tabId = GetTabId(typeof(ChatTab), data.Id);
 
-            TabItem tabItem;
+            ClosableTab tabItem;
             if (!_chatTabs2.TryGetValue(tabId, out tabItem))
             {
                 var chatTab = new ChatTab();
@@ -79,11 +79,11 @@ namespace PointGaming.Desktop.Chat
             }
             return tabItem;
         }
-        private TabItem GetOrCreateTab(ChatManager.ChatroomUsage roomManager)
+        private ClosableTab GetOrCreateTab(ChatManager.ChatroomUsage roomManager)
         {
             var tabId = GetTabId(typeof(ChatroomTab), roomManager.ChatroomId);
 
-            TabItem tabItem;
+            ClosableTab tabItem;
             if (!_chatTabs2.TryGetValue(tabId, out tabItem))
             {
                 var chatTab = new ChatroomTab();
@@ -94,11 +94,12 @@ namespace PointGaming.Desktop.Chat
             return tabItem;
         }
 
-        private TabItem AddTab(string title, string tabId, object content)
+        private ClosableTab AddTab(string title, string tabId, object content)
         {
-            var tabItem = new TabItem();
+            var tabItem = new ClosableTab();
             tabItem.Content = content;
-            tabItem.Header = title;
+            tabItem.Title = title;
+            tabItem.Closing += tabItem_Closing;
 
             tabControlChats.Items.Add(tabItem);
 
@@ -109,6 +110,17 @@ namespace PointGaming.Desktop.Chat
             return tabItem;
         }
 
+        void tabItem_Closing(object sender, CancelEventArgs e)
+        {
+            var tabItem = (ClosableTab)sender;
+            var idable = tabItem.Content as ITabWithId;
+            if (idable == null)
+                return;
+            _manager.Leave(idable.Id);
+            var tabId = GetTabId(idable.GetType(), idable.Id);
+            _chatTabs2.Remove(tabId);
+        }
+
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             _manager.ChatWindowClosed();
@@ -117,7 +129,7 @@ namespace PointGaming.Desktop.Chat
         private void Window_Activated(object sender, EventArgs e)
         {
             this.StopFlashingWindow();
-            var selectedTab = tabControlChats.SelectedItem as TabItem;
+            var selectedTab = tabControlChats.SelectedItem as ClosableTab;
             if (selectedTab == null)
                 return;
             StopFlashingTab(selectedTab);
@@ -125,9 +137,9 @@ namespace PointGaming.Desktop.Chat
 
         private void tabControlChats_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            TabItem tabItem = null;
+            ClosableTab tabItem = null;
             foreach (var item in e.AddedItems)
-            { tabItem = (TabItem)item; break; }
+            { tabItem = (ClosableTab)item; break; }
             if (tabItem == null)
                 return;
             StopFlashingTab(tabItem);
@@ -140,7 +152,7 @@ namespace PointGaming.Desktop.Chat
 
             var tabId = GetTabId(tabType, id);
 
-            TabItem tabItem;
+            ClosableTab tabItem;
             if (!_chatTabs2.TryGetValue(tabId, out tabItem))
                 return;
             if (!IsActive || !tabItem.IsSelected)
@@ -153,7 +165,7 @@ namespace PointGaming.Desktop.Chat
             return tabId;
         }
 
-        private void StopFlashingTab(TabItem tabItem)
+        private void StopFlashingTab(ClosableTab tabItem)
         {
             tabItem.Style = null;
         }

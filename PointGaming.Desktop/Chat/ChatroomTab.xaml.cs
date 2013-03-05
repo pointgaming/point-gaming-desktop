@@ -18,12 +18,14 @@ using PointGaming.Desktop.POCO;
 
 namespace PointGaming.Desktop.Chat
 {
-    public partial class ChatroomTab : UserControl, IWeakEventListener
+    public partial class ChatroomTab : UserControl, IWeakEventListener, ITabWithId
     {
         private ChatWindow _chatWindow;
         private ChatManager.ChatroomUsage _roomManager;
         private SocketSession _session = HomeWindow.Home.SocketSession;
         private AutoScroller _autoScroller;
+
+        public string Id { get { return _roomManager.ChatroomId; } }
 
         public ChatroomTab()
         {

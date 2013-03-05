@@ -17,12 +17,14 @@ using PointGaming.Desktop.POCO;
 
 namespace PointGaming.Desktop.Chat
 {
-    public partial class ChatTab : UserControl, IWeakEventListener
+    public partial class ChatTab : UserControl, IWeakEventListener, ITabWithId
     {
         private ChatWindow _chatWindow;
         private PgUser _otherUser;
         private SocketSession _session = HomeWindow.Home.SocketSession;
         private AutoScroller _autoScroller;
+
+        public string Id { get { return _otherUser.Id; } }
 
         public ChatTab()
         {

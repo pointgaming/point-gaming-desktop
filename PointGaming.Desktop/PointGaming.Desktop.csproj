@@ -104,6 +104,10 @@
       <DependentUpon>ChatroomTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="Chat\ChatTabCommon.cs" />
+    <Compile Include="Chat\ITabWithId.cs" />
+    <Compile Include="ClosableTabHeader.xaml.cs">
+      <DependentUpon>ClosableTabHeader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HomeTab\LauncherEditorDialog.xaml.cs">
       <DependentUpon>LauncherEditorDialog.xaml</DependentUpon>
     </Compile>
@@ -141,6 +145,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Chat\ChatroomTab.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ClosableTabHeader.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

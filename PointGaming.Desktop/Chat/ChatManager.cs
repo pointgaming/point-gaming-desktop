@@ -39,7 +39,6 @@ namespace PointGaming.Desktop.Chat
                 _manager = manager;
             }
 
-
             public void OnMessageNew(UserBase fromUser, string message)
             {
                 var method = ReceivedMessage;
@@ -99,14 +98,24 @@ namespace PointGaming.Desktop.Chat
             foreach (var item in _chatroomUsage.Values)
             {
                 if (item.State == ChatroomState.Connected)
-                {
-                    item.State = ChatroomState.Disconnected;
-                    ChatroomUserLeave(new Chatroom { _id = item.ChatroomId, });
-                }
+                    Disconnect(item);
             }
 
             _chatWindow = null;
             HomeWindow.Home.RemoveChildWindow(_chatWindow);
+        }
+        public void Leave(string id)
+        {
+            ChatroomUsage chatroomUsage;
+            if (_chatroomUsage.TryGetValue(id, out chatroomUsage))
+            {
+                Disconnect(chatroomUsage);
+            }
+        }
+        private void Disconnect(ChatroomUsage item)
+        {
+            item.State = ChatroomState.Disconnected;
+            ChatroomUserLeave(new Chatroom { _id = item.ChatroomId, });
         }
 
         #region private messages
