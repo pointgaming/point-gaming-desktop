@@ -21,7 +21,7 @@ namespace PointGaming.Desktop.Chat
     public partial class ChatroomTab : UserControl, IWeakEventListener, ITabWithId
     {
         private ChatWindow _chatWindow;
-        private ChatManager.ChatroomUsage _roomManager;
+        private ChatroomInfo _roomManager;
         private SocketSession _session = HomeWindow.Home.SocketSession;
         private AutoScroller _autoScroller;
 
@@ -50,7 +50,7 @@ namespace PointGaming.Desktop.Chat
             richTextBoxLog.Document.FontSize = Properties.Settings.Default.ChatFontSize;
         }
 
-        public void Init(ChatWindow window, ChatManager.ChatroomUsage roomManager)
+        public void Init(ChatWindow window, ChatroomInfo roomManager)
         {
             _chatWindow = window;
             _roomManager = roomManager;

@@ -40,13 +40,6 @@ namespace PointGaming.Desktop
 
             tab = new TabItem
             {
-                Header = "Lobbies",
-                Content = new HomeTab.LobbyListTab(),
-            };
-            tabControlMain.Items.Add(tab);
-
-            tab = new TabItem
-            {
                 Header = "Games",
                 Content = new HomeTab.GameLauncherTab(),
             };

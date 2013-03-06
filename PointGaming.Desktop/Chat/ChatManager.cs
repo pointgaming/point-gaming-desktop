@@ -19,48 +19,7 @@ namespace PointGaming.Desktop.Chat
         private SocketSession _session;
         private ChatWindow _chatWindow;
 
-        public enum ChatroomState
-        {
-            New,
-            Invited,
-            Connected,
-            Disconnected,
-        }
-        public class ChatroomUsage
-        {
-            public event ReceivedMessage ReceivedMessage;
-            public string ChatroomId;
-            public ChatroomState State;
-            public readonly ObservableCollection<PgUser> Membership = new ObservableCollection<PgUser>();
-            private ChatManager _manager;
-
-            public ChatroomUsage(ChatManager manager)
-            {
-                _manager = manager;
-            }
-
-            public void OnMessageNew(UserBase fromUser, string message)
-            {
-                var method = ReceivedMessage;
-                if (method != null)
-                    method(fromUser, message);
-            }
-
-            public void SendMessage(string message)
-            {
-                var messageOut = new ChatroomMessageOut { _id = ChatroomId, message = message, };
-                _manager.ChatroomMessageSend(messageOut);
-            }
-
-            public void Invite(PgUser other)
-            {
-                if (Membership.Contains(other))
-                    return;
-                _manager.ChatroomInviteSend(new ChatroomInviteOut { _id = ChatroomId, toUser = other.ToUserBase(), });
-            }
-        }
-
-        private readonly Dictionary<string, ChatroomUsage> _chatroomUsage = new Dictionary<string, ChatroomUsage>();
+        private readonly Dictionary<string, ChatroomInfo> _chatroomUsage = new Dictionary<string, ChatroomInfo>();
 
         public void Init(SocketSession session)
         {
@@ -106,13 +65,13 @@ namespace PointGaming.Desktop.Chat
         }
         public void Leave(string id)
         {
-            ChatroomUsage chatroomUsage;
+            ChatroomInfo chatroomUsage;
             if (_chatroomUsage.TryGetValue(id, out chatroomUsage))
             {
                 Disconnect(chatroomUsage);
             }
         }
-        private void Disconnect(ChatroomUsage item)
+        private void Disconnect(ChatroomInfo item)
         {
             item.State = ChatroomState.Disconnected;
             ChatroomUserLeave(new Chatroom { _id = item.ChatroomId, });
@@ -155,7 +114,7 @@ namespace PointGaming.Desktop.Chat
             var received = message.Json.GetFirstArgAs<ChatroomUserList>();
             foreach (var id in received.chatrooms)
             {
-                ChatroomUsage usage;
+                ChatroomInfo usage;
                 if (!_chatroomUsage.TryGetValue(id, out usage))
                     JoinChatroom(id);
             }
@@ -164,7 +123,7 @@ namespace PointGaming.Desktop.Chat
         {
             var received = message.Json.GetFirstArgAs<ChatroomMemberList>();
             var id = received._id;
-            ChatroomUsage usage;
+            ChatroomInfo usage;
             if (!_chatroomUsage.TryGetValue(id, out usage))
                 return;
 
@@ -172,7 +131,8 @@ namespace PointGaming.Desktop.Chat
             foreach (var item in received.members)
             {
                 var pgUser = _session.Data.GetPgUser(item);
-                usage.Membership.Add(pgUser);
+                if (!usage.Membership.Contains(pgUser))
+                    usage.Membership.Add(pgUser);
             }
 
             ChatWindow.ShowChatroom(usage);
@@ -181,14 +141,17 @@ namespace PointGaming.Desktop.Chat
         {
             var received = message.Json.GetFirstArgAs<ChatroomMemberChange>();
             var id = received._id;
-            ChatroomUsage usage;
+            ChatroomInfo usage;
             if (!_chatroomUsage.TryGetValue(id, out usage))
                 return;
 
             var pgUser = _session.Data.GetPgUser(received.user);
 
             if (received.status == "joined")
-                usage.Membership.Add(pgUser);
+            {
+                if (!usage.Membership.Contains(pgUser))
+                    usage.Membership.Add(pgUser);
+            }
             else if (received.status == "left")
                 usage.Membership.Remove(pgUser);
         }
@@ -196,7 +159,7 @@ namespace PointGaming.Desktop.Chat
         {
             var received = message.Json.GetFirstArgAs<ChatroomMessageNew>();
             var id = received._id;
-            ChatroomUsage usage;
+            ChatroomInfo usage;
             if (!_chatroomUsage.TryGetValue(id, out usage))
                 return;
             if (usage.State != ChatroomState.Connected)
@@ -210,7 +173,7 @@ namespace PointGaming.Desktop.Chat
             var id = received._id;
             if (_session.Data.IsFriend(received.fromUser._id))
             {
-                ChatroomUsage usage;
+                ChatroomInfo usage;
                 if (!_chatroomUsage.TryGetValue(id, out usage)
                     || usage.State == ChatroomState.Disconnected)
                 {
@@ -225,7 +188,7 @@ namespace PointGaming.Desktop.Chat
 
         public void JoinChatroom(string id)
         {
-            ChatroomUsage usage;
+            ChatroomInfo usage;
             if (_chatroomUsage.TryGetValue(id, out usage))
             {
                 if (usage.State == ChatroomState.Connected
@@ -233,7 +196,7 @@ namespace PointGaming.Desktop.Chat
                     return;
             }
 
-            usage = new ChatroomUsage(this) { ChatroomId = id, State = ChatroomState.New, };
+            usage = new ChatroomInfo(this) { ChatroomId = id, State = ChatroomState.New, };
             _chatroomUsage[id] = usage;
 
             var chatroom = new Chatroom { _id = id };
@@ -257,7 +220,7 @@ namespace PointGaming.Desktop.Chat
         {
             _session.EmitLater("Chatroom.Member.getList", chatroom);
         }
-        private void ChatroomMessageSend(ChatroomMessageOut message)
+        public void ChatroomMessageSend(ChatroomMessageOut message)
         {
             _session.EmitLater("Chatroom.Message.send", message);
         }
@@ -266,7 +229,7 @@ namespace PointGaming.Desktop.Chat
         {
             ChatroomInviteSend(invite);
         }
-        private void ChatroomInviteSend(ChatroomInviteOut invite)
+        public void ChatroomInviteSend(ChatroomInviteOut invite)
         {
             _session.EmitLater("Chatroom.Invite.send", invite);
         }

@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+             DataContext="{Binding RelativeSource={RelativeSource Self}}" Loaded="UserControl_Loaded">
     <Grid>
         <DataGrid AutoGenerateColumns="False" HorizontalAlignment="Stretch" Name="dataGridLauncher" VerticalAlignment="Stretch"
                   ItemsSource="{Binding Launchers}" SelectionMode="Single"
@@ -22,7 +22,21 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Binding="{Binding PlayerCount}" Header="Players" Width="100" IsReadOnly="True" />
+                <DataGridTemplateColumn Header="Actions" Width="100" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid  Margin="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0" Content="Join Lobby" Name="buttonJoinLobby" Click="buttonJoinLobbyClick" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0" />
+                                <Button Grid.Column="1" Content="Launch Game" Name="buttonLaunchExecutable" Click="buttonLaunchExecutableClick" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0" />
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Binding="{Binding PlayerCount}" Header="Players" Width="50" IsReadOnly="True" />
             </DataGrid.Columns>
             
             <DataGrid.ContextMenu>

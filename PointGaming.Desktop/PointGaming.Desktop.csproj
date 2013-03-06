@@ -100,6 +100,7 @@
     </ApplicationDefinition>
     <Compile Include="Chat\AutoScroller.cs" />
     <Compile Include="Chat\ChatManager.cs" />
+    <Compile Include="Chat\ChatroomInfo.cs" />
     <Compile Include="Chat\ChatroomTab.xaml.cs">
       <DependentUpon>ChatroomTab.xaml</DependentUpon>
     </Compile>
@@ -113,11 +114,8 @@
       <DependentUpon>LauncherEditorDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="HomeTab\LauncherInfo.cs" />
-    <Compile Include="HomeTab\LobbyChoice.xaml.cs">
-      <DependentUpon>LobbyChoice.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="HomeTab\LobbyListTab.xaml.cs">
-      <DependentUpon>LobbyListTab.xaml</DependentUpon>
+    <Compile Include="Lobby\LobbyTab.xaml.cs">
+      <DependentUpon>LobbyTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="PgFonts\FontChooser.xaml.cs">
       <DependentUpon>FontChooser.xaml</DependentUpon>
@@ -185,14 +183,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="HomeTab\LobbyChoice.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="HomeTab\LobbyListTab.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="HomeTab\PaymentTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -237,6 +227,10 @@
       <DependentUpon>HomeWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Lobby\LobbyTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="LoginWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -342,6 +336,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -27,7 +27,7 @@
                     </Style>
                 </FlowDocumentScrollViewer.Resources>
             </FlowDocumentScrollViewer>
-            <Separator Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Name="gridSplitter1" VerticalAlignment="Stretch" />
             <ListBox Grid.Column="2" Name="listBoxMembership" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                      PreviewMouseLeftButtonDown="listBoxMembership_PreviewMouseLeftButtonDown"
                      PreviewMouseLeftButtonUp="listBoxMembership_PreviewMouseLeftButtonUp"

@@ -13,6 +13,16 @@ using System.ComponentModel;
 
 namespace PointGaming.Desktop.HomeTab
 {
+    public class LauncherPoco
+    {
+        public string Id { get; set; }
+        public bool IsOfficialGame { get; set; }
+        public string DisplayName { get; set; }
+        public string FilePath { get; set; }
+        public string Arguments { get; set; }
+        public int PlayerCount { get; set; }
+    }
+
     public class LauncherInfo : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -25,6 +35,32 @@ namespace PointGaming.Desktop.HomeTab
             changedCallback(this, args);
         }
 
+        private string _id;
+        public string Id
+        {
+            get { return _id; }
+            set
+            {
+                if (value == _id)
+                    return;
+                _id = value;
+                NotifyChanged("Id");
+            }
+        }
+
+        private bool _isOfficialGame;
+        public bool IsOfficialGame
+        {
+            get { return _isOfficialGame; }
+            set
+            {
+                if (value == _isOfficialGame)
+                    return;
+                _isOfficialGame = value;
+                NotifyChanged("IsOfficialGame");
+            }
+        }
+
         private string _displayName;
         public string DisplayName
         {
@@ -33,6 +69,9 @@ namespace PointGaming.Desktop.HomeTab
             {
                 if (value == _displayName)
                     return;
+                if (_displayName != null && _isOfficialGame)
+                    throw new Exception("Display name is read only");
+
                 _displayName = value;
                 NotifyChanged("DisplayName");
             }
@@ -52,7 +91,6 @@ namespace PointGaming.Desktop.HomeTab
                 NotifyChanged("FileIcon");
             }
         }
-
 
         private string _arguments;
         public string Arguments
@@ -83,24 +121,87 @@ namespace PointGaming.Desktop.HomeTab
         private ImageSource _fileIcon;
         public ImageSource FileIcon { get { return _fileIcon; } }
 
+        public LauncherInfo(POCO.GamePoco poco)
+        {
+            Id = poco._id;
+            DisplayName = poco.name;
+            PlayerCount = poco.player_count;
+
+            IsOfficialGame = true;
+            FilePath = "";
+            Arguments = "";
+        }
+
         public LauncherInfo(string displayName, string filePath, string arguments)
         {
+            Id = "user_" + Guid.NewGuid().ToString().Replace("-", "");
             DisplayName = displayName;
+            PlayerCount = 0;
+
+            IsOfficialGame = false;
             FilePath = filePath;
             Arguments = arguments;
-            PlayerCount = 64;
+        }
+        public LauncherInfo(LauncherPoco poco)
+        {
+            Id = poco.Id;
+            DisplayName = poco.DisplayName;
+            PlayerCount = poco.PlayerCount;
+
+            IsOfficialGame = poco.IsOfficialGame;
+            FilePath = poco.FilePath;
+            Arguments = poco.Arguments;
+        }
+        public LauncherPoco ToPoco()
+        {
+            LauncherPoco poco = new LauncherPoco
+            {
+                Id = Id,
+                DisplayName = DisplayName,
+                PlayerCount = PlayerCount,
+
+                IsOfficialGame = IsOfficialGame,
+                FilePath = FilePath,
+                Arguments = Arguments,
+            };
+            return poco;
         }
 
         public void CopyFrom(LauncherInfo other)
         {
+            Id = other.Id;
             DisplayName = other.DisplayName;
+            PlayerCount = other.PlayerCount;
+
+            IsOfficialGame = other.IsOfficialGame;
             FilePath = other.FilePath;
             Arguments = other.Arguments;
+        }
+
+        public void Update(LauncherInfo other)
+        {
+            if (Id != other.Id)
+                throw new Exception("Ids don't match");
+            if (IsOfficialGame != other.IsOfficialGame)
+                throw new Exception("IsOfficialGame don't match");
+
+            DisplayName = other.DisplayName;
             PlayerCount = other.PlayerCount;
+
+            if (!IsOfficialGame)
+            {
+                FilePath = other.FilePath;
+                Arguments = other.Arguments;
+            }
         }
 
         public void Launch()
         {
+            if (string.IsNullOrWhiteSpace(FilePath))
+            {
+                MessageDialog.Show(HomeWindow.Home, "Launcher not Setup", "Right click on the game and choose edit.  Then set the executable.");
+                return;
+            }
             try
             {
                 ProcessStartInfo info = new ProcessStartInfo(FilePath, Arguments);
@@ -115,6 +216,9 @@ namespace PointGaming.Desktop.HomeTab
 
         public static ImageSource GetIcon(string filePath)
         {
+            if (string.IsNullOrWhiteSpace(filePath))
+                return GetDefaultIcon();
+
             try
             {
                 Icon icon = Icon.ExtractAssociatedIcon(filePath);
@@ -125,31 +229,35 @@ namespace PointGaming.Desktop.HomeTab
             }
             catch
             {
-                var assembly = typeof(LauncherInfo).Assembly;
-                var defaultUri = "pack://application:,,,/" + assembly.GetName().Name + ";component/PointGaming.ico";
-
-                var source = new ImageSourceConverter().ConvertFromString(defaultUri) as ImageSource;
-                return source;
+                return GetDefaultIcon();
             }
+        }
+
+        private static ImageSource GetDefaultIcon()
+        {
+            var assembly = typeof(LauncherInfo).Assembly;
+            var defaultUri = "pack://application:,,,/" + assembly.GetName().Name + ";component/PointGaming.ico";
+
+            var source = new ImageSourceConverter().ConvertFromString(defaultUri) as ImageSource;
+            return source;
         }
 
         public override string ToString()
         {
-            return DisplayName + "\t" + FilePath + "\t" + Arguments;
+            return DisplayName;
         }
 
-        public static LauncherInfo FromString(string value)
+        public static LauncherInfo FromJson(string value)
         {
-            try
-            {
-                var split = value.Split('\t');
-                var li = new LauncherInfo(split[0], split[1], split[2]);
-                return li;
-            }
-            catch
-            {
-                return new LauncherInfo("Failed to Import", "", value);
-            }
+            var poco = Newtonsoft.Json.JsonConvert.DeserializeObject<LauncherPoco>(value);
+
+            return new LauncherInfo(poco);
+        }
+        public string ToJson()
+        {
+            var poco = ToPoco();
+            var value = Newtonsoft.Json.JsonConvert.SerializeObject(poco);
+            return value;
         }
     }
 }
