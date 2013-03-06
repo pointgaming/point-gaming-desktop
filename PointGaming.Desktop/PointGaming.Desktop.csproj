@@ -228,8 +228,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Lobby\LobbyTab.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="LoginWindow.xaml">
       <SubType>Designer</SubType>
