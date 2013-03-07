@@ -178,6 +178,7 @@
     <Compile Include="SocketSession.cs" />
     <Compile Include="UrlMatcher.cs" />
     <Compile Include="UserDataManager.cs" />
+    <Compile Include="WindowBoundsPersistor.cs" />
     <Page Include="Chat\ChatWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

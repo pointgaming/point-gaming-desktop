@@ -21,6 +21,7 @@ namespace PointGaming.Desktop.Chat
         public ChatWindow()
         {
             InitializeComponent();
+            new ChatWindowBoundsPersistor().Load(this);
         }
 
         public void Init(ChatManager manager)
@@ -132,6 +133,7 @@ namespace PointGaming.Desktop.Chat
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             _manager.ChatWindowClosed();
+            new ChatWindowBoundsPersistor().Save(this);
         }
 
         private void Window_Activated(object sender, EventArgs e)
@@ -188,6 +190,29 @@ namespace PointGaming.Desktop.Chat
             _manager.JoinChatroom(id);
             _manager.SendChatroomInvite(new ChatroomInviteOut { _id = id, toUser = a.ToUserBase(), });
             _manager.SendChatroomInvite(new ChatroomInviteOut { _id = id, toUser = b.ToUserBase(), });
+        }
+
+        private class ChatWindowBoundsPersistor : WindowBoundsPersistor
+        {
+            protected override Rect GetBounds(out string oldDesktopInfo)
+            {
+                var r = new Rect(
+                    Properties.Settings.Default.ChatWindowBoundsLeft,
+                    Properties.Settings.Default.ChatWindowBoundsTop,
+                    Properties.Settings.Default.ChatWindowBoundsWidth,
+                    Properties.Settings.Default.ChatWindowBoundsHeight
+                );
+                oldDesktopInfo = Properties.Settings.Default.ChatWindowBoundsDesktopInfo;
+                return r;
+            }
+            protected override void SetBounds(Rect r, string desktopInfo)
+            {
+                Properties.Settings.Default.ChatWindowBoundsLeft = r.Left;
+                Properties.Settings.Default.ChatWindowBoundsTop = r.Top;
+                Properties.Settings.Default.ChatWindowBoundsWidth = r.Width;
+                Properties.Settings.Default.ChatWindowBoundsHeight = r.Height;
+                Properties.Settings.Default.ChatWindowBoundsDesktopInfo = desktopInfo;
+            }
         }
     }
 }

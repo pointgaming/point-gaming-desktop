@@ -6,7 +6,7 @@
         Title="Point Gaming" Height="350" Width="525"
         Loaded="Window_Loaded" Closing="Window_Closing"
         Icon="/PointGaming.Desktop;component/PointGaming.ico"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+        DataContext="{Binding RelativeSource={RelativeSource Self}}" >
     <Grid>
         <tb:TaskbarIcon Name="taskbarIcon" IconSource="/PointGaming.Desktop;component/PointGaming.ico" 
                         TrayMouseDoubleClick="TaskbarIcon_TrayMouseDoubleClick"

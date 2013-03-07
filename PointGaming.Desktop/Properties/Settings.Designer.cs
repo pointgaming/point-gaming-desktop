@@ -159,5 +159,125 @@ namespace PointGaming.Desktop.Properties {
                 return ((string)(this["Games"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double HomeWindowBoundsWidth {
+            get {
+                return ((double)(this["HomeWindowBoundsWidth"]));
+            }
+            set {
+                this["HomeWindowBoundsWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double HomeWindowBoundsHeight {
+            get {
+                return ((double)(this["HomeWindowBoundsHeight"]));
+            }
+            set {
+                this["HomeWindowBoundsHeight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double HomeWindowBoundsLeft {
+            get {
+                return ((double)(this["HomeWindowBoundsLeft"]));
+            }
+            set {
+                this["HomeWindowBoundsLeft"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double HomeWindowBoundsTop {
+            get {
+                return ((double)(this["HomeWindowBoundsTop"]));
+            }
+            set {
+                this["HomeWindowBoundsTop"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public string HomeWindowBoundsDesktopInfo {
+            get {
+                return ((string)(this["HomeWindowBoundsDesktopInfo"]));
+            }
+            set {
+                this["HomeWindowBoundsDesktopInfo"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double ChatWindowBoundsWidth {
+            get {
+                return ((double)(this["ChatWindowBoundsWidth"]));
+            }
+            set {
+                this["ChatWindowBoundsWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double ChatWindowBoundsHeight {
+            get {
+                return ((double)(this["ChatWindowBoundsHeight"]));
+            }
+            set {
+                this["ChatWindowBoundsHeight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double ChatWindowBoundsLeft {
+            get {
+                return ((double)(this["ChatWindowBoundsLeft"]));
+            }
+            set {
+                this["ChatWindowBoundsLeft"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double ChatWindowBoundsTop {
+            get {
+                return ((double)(this["ChatWindowBoundsTop"]));
+            }
+            set {
+                this["ChatWindowBoundsTop"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ChatWindowBoundsDesktopInfo {
+            get {
+                return ((string)(this["ChatWindowBoundsDesktopInfo"]));
+            }
+            set {
+                this["ChatWindowBoundsDesktopInfo"] = value;
+            }
+        }
     }
 }

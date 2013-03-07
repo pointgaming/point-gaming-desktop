@@ -25,6 +25,7 @@ namespace PointGaming.Desktop
         {
             InitializeComponent();
             Home = this;
+            new HomeWindowBoundsPersistor().Load(this);
         }
 
         public void Init(SocketSession session)
@@ -177,7 +178,32 @@ namespace PointGaming.Desktop
         {
             _windowClosing = true;
             LogOut(false);
+            new HomeWindowBoundsPersistor().Save(this);
+        }
+
+        private class HomeWindowBoundsPersistor : WindowBoundsPersistor
+        {
+            protected override Rect GetBounds(out string oldDesktopInfo)
+            {
+                var r = new Rect(
+                    Properties.Settings.Default.HomeWindowBoundsLeft,
+                    Properties.Settings.Default.HomeWindowBoundsTop,
+                    Properties.Settings.Default.HomeWindowBoundsWidth,
+                    Properties.Settings.Default.HomeWindowBoundsHeight
+                );
+                oldDesktopInfo = Properties.Settings.Default.HomeWindowBoundsDesktopInfo;
+                return r;
+            }
+            protected override void SetBounds(Rect r, string desktopInfo)
+            {
+                Properties.Settings.Default.HomeWindowBoundsLeft = r.Left;
+                Properties.Settings.Default.HomeWindowBoundsTop = r.Top;
+                Properties.Settings.Default.HomeWindowBoundsWidth = r.Width;
+                Properties.Settings.Default.HomeWindowBoundsHeight = r.Height;
+                Properties.Settings.Default.HomeWindowBoundsDesktopInfo = desktopInfo;
+            }
         }
     }
-
 }
+
+
