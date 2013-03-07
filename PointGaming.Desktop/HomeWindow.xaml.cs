@@ -132,6 +132,11 @@ namespace PointGaming.Desktop
             _chatManager.JoinChatroom(id);
         }
 
+        public Chat.ChatWindow GetChatWindow()
+        {
+            return _chatManager.ChatWindow;
+        }
+
         public void LogOut(bool shouldShowLogInWindow)
         {
             if (SocketSession == null)

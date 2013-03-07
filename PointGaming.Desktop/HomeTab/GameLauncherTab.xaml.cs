@@ -166,7 +166,12 @@ namespace PointGaming.Desktop.HomeTab
         private void buttonJoinLobbyClick(object sender, RoutedEventArgs e)
         {
             var launcher = ((FrameworkElement)sender).DataContext as LauncherInfo;
-            MessageDialog.Show(HomeWindow.Home, "Join Lobby", "Join lobby " + launcher.DisplayName + "!");
+            if (!launcher.IsOfficialGame)
+            {
+                MessageDialog.Show(HomeWindow.Home, "Lobby doesn't exist", "Lobby doesn't exist for " + launcher.DisplayName + "!");
+                return;
+            }
+            HomeWindow.Home.JoinChat("lobby_" + launcher.Id);
         }
 
         private void buttonLaunchExecutableClick(object sender, RoutedEventArgs e)

@@ -86,10 +86,18 @@ namespace PointGaming.Desktop.Chat
             ClosableTab tabItem;
             if (!_chatTabs2.TryGetValue(tabId, out tabItem))
             {
-                var chatTab = new ChatroomTab();
-                chatTab.Init(this, roomManager);
-
-                tabItem = AddTab(roomManager.ChatroomId, tabId, chatTab);
+                if (roomManager.ChatroomId.StartsWith("lobby_"))
+                {
+                    var lobbyTab = new Lobby.LobbyTab();
+                    lobbyTab.Init(this, roomManager);
+                    tabItem = AddTab(roomManager.ChatroomId, tabId, lobbyTab);
+                }
+                else
+                {
+                    var chatTab = new ChatroomTab();
+                    chatTab.Init(this, roomManager);
+                    tabItem = AddTab(roomManager.ChatroomId, tabId, chatTab);
+                }
             }
             return tabItem;
         }
@@ -137,6 +145,9 @@ namespace PointGaming.Desktop.Chat
 
         private void tabControlChats_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (e.OriginalSource != tabControlChats)
+                return;
+
             ClosableTab tabItem = null;
             foreach (var item in e.AddedItems)
             { tabItem = (ClosableTab)item; break; }
