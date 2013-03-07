@@ -33,42 +33,43 @@ namespace PointGaming.Desktop.Lobby
             InitializeComponent();
         }
 
-        private void hyperLinkInfoClick(object sender, RequestNavigateEventArgs e)
+        private void hyperLinkInfoClick(object sender, RoutedEventArgs e)
         {
             MessageDialog.Show(HomeWindow.Home.GetChatWindow(), "Info", "TODO: Information goes here.");
         }
-
+        
         private void buttonButtonJoin_Click(object sender, RoutedEventArgs e)
         {
             MessageDialog.Show(HomeWindow.Home.GetChatWindow(), "Game Room", "TODO: Show game room.");
         }
 
         public static readonly DependencyProperty GameRoomTitleProperty = DependencyProperty.Register(
-            "GameRoomTitle", typeof(string), typeof(GameRoomPanel),
-            new FrameworkPropertyMetadata("Game #", //FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                new PropertyChangedCallback(OnFirstPropertyChanged)
-                //, null, false, UpdateSourceTrigger.PropertyChanged
-                )
+            "GameRoomTitle", typeof(string), typeof(GameRoomPanel)
+            //,
+            //new FrameworkPropertyMetadata("Game #", //FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+            //    new PropertyChangedCallback(OnFirstPropertyChanged)
+            //    //, null, false, UpdateSourceTrigger.PropertyChanged
+            //    )
             );
         public string GameRoomTitle
         {
-            get
-            {
-                return this.GetValue(GameRoomTitleProperty) as string;
-            }
-            set
-            {
-                this.SetValue(GameRoomTitleProperty, value);
-            }
+            get {return this.GetValue(GameRoomTitleProperty) as string; }
+            set { this.SetValue(GameRoomTitleProperty, value); }
         }
-        private static void OnFirstPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
 
-            //PropertyChangedEventHandler h = PropertyChanged;
-            //if (h != null)
-            //{
-            //   h(sender, new PropertyChangedEventArgs("Second"));
-            //}
+        public static readonly DependencyProperty GameRoomPopulationProperty = DependencyProperty.Register(
+            "GameRoomPopulation", typeof(string), typeof(GameRoomPanel));
+        public string GameRoomPopulation
+        {
+            get { return this.GetValue(GameRoomPopulationProperty) as string; }
+            set { this.SetValue(GameRoomPopulationProperty, value); }
+        }
+        public static readonly DependencyProperty GameRoomDescriptionProperty = DependencyProperty.Register(
+            "GameRoomDescription", typeof(FlowDocument), typeof(GameRoomPanel));
+        public FlowDocument GameRoomDescription
+        {
+            get { return this.GetValue(GameRoomDescriptionProperty) as FlowDocument; }
+            set { this.SetValue(GameRoomDescriptionProperty, value); }
         }
     }
 }

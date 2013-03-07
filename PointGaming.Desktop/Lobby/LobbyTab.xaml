@@ -34,7 +34,10 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Lobby:GameRoomPanel GameRoomTitle="{Binding FullName}" Width="200" Height="125" Margin="2"/>
+                            <Lobby:GameRoomPanel Width="200" Height="125" Margin="2"
+                                GameRoomTitle="{Binding DisplayName}"
+                                GameRoomPopulation="{Binding MemberStatus}"
+                                GameRoomDescription="{Binding DescriptionDocument}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                     <ItemsControl.ItemsSource>

@@ -9,39 +9,41 @@ using System.Windows.Controls;
 
 namespace PointGaming.Desktop.Lobby
 {
-    public sealed class FileCollection : ObservableCollection<FileSystemInfo>
+    public sealed class FileCollection : ObservableCollection<GameRoomItem>
     {
         public FileCollection()
         {
-            // put files in %windir%\web\wallpaper into the collection
+            var item = new GameRoomItem {
+                Id = Guid.NewGuid().ToString().Replace("-", ""),
+                Description = "5 vs 5 Dust 2 No Scrubs Will ban for being bad No 8 digs",
+                MaxMemberCount = 10,
+                MemberCount = 10,
+                Position = 1,
+                IsLocked = false,
+            };
+            Add(item);
 
-            // get %windir%
-            string windir = Environment.GetEnvironmentVariable("WINDIR");
-            if (string.IsNullOrEmpty(windir))
-                return;
-
-            // put files into collection
-            string wallpaperPath = string.Format(@"{0}\Web\Wallpaper", windir);
-            DirectoryInfo info = new DirectoryInfo(wallpaperPath);
-            FileSystemInfo[] files = info.GetFileSystemInfos();
-            AddFiles(files);
-        }
-
-        private void AddFiles(FileSystemInfo[] files)
-        {
-            foreach (FileSystemInfo fi in files)
+            item = new GameRoomItem
             {
-                // exlude hidden files 
-                if ((fi.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden)
-                {
-                    if ((fi.Attributes & FileAttributes.Directory) == FileAttributes.Directory)
-                    {
-                        AddFiles(new DirectoryInfo(fi.FullName).GetFileSystemInfos());
-                        continue;
-                    }
-                    Add(fi);
-                }
-            }
+                Id = Guid.NewGuid().ToString().Replace("-", ""),
+                Description = "Team dP",
+                MaxMemberCount = 99,
+                MemberCount = 1,
+                Position = 2,
+                IsLocked = true,
+            };
+            Add(item);
+
+            item = new GameRoomItem
+            {
+                Id = Guid.NewGuid().ToString().Replace("-", ""),
+                Description = "",
+                MaxMemberCount = 99,
+                MemberCount = 1,
+                Position = 3,
+                IsLocked = false,
+            };
+            Add(item);
         }
     }
 }

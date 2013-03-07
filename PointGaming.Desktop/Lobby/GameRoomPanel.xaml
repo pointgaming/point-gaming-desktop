@@ -16,18 +16,18 @@
             <Grid Name="gridTitle">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="70" />
+                    <ColumnDefinition Width="40" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Content="{Binding ElementName=gameRoomPanel, Path=GameRoomTitle}" Height="28" HorizontalAlignment="Left" Name="labelTitle" VerticalAlignment="Center" />
-                <Label Grid.Column="1" Content="Label" Height="28" HorizontalAlignment="Right" Name="labelPopulation" VerticalAlignment="Center" />
-                <Label Grid.Column="2" Height="28" HorizontalAlignment="Left" Name="hyperLinkInfo" VerticalAlignment="Center">
-                    <TextBlock><Hyperlink RequestNavigate="hyperLinkInfoClick">Info</Hyperlink></TextBlock>
-                </Label>
+                <TextBlock Grid.Column="0" Height="18" Margin="2" Text="{Binding ElementName=gameRoomPanel, Path=GameRoomTitle}" HorizontalAlignment="Left" Name="textBlockTitle" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="1" Height="18" Margin="2" Text="{Binding ElementName=gameRoomPanel, Path=GameRoomPopulation}" HorizontalAlignment="Right" Name="textBlockPopulation" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="2" Height="18" Margin="2" HorizontalAlignment="Left" Name="hyperLinkInfo" VerticalAlignment="Center">
+                    <Hyperlink Click="hyperLinkInfoClick">Info</Hyperlink>
+                </TextBlock>
             </Grid>
 
             <FlowDocumentScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" Name="documentViewerDescription" VerticalAlignment="Stretch"
-                     VerticalScrollBarVisibility="Auto" Background="White">
+                     VerticalScrollBarVisibility="Auto" Background="White" Document="{Binding ElementName=gameRoomPanel, Path=GameRoomDescription}">
                 <FlowDocumentScrollViewer.Resources>
                     <Style TargetType="{x:Type Paragraph}">
                         <Setter Property="Margin" Value="0"/>

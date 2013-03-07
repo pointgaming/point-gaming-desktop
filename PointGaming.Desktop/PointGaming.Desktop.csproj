@@ -149,6 +149,7 @@
       <DependentUpon>LauncherEditorDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="HomeTab\LauncherInfo.cs" />
+    <Compile Include="Lobby\GameRoomItem.cs" />
     <Compile Include="Lobby\GameRoomPanel.xaml.cs">
       <DependentUpon>GameRoomPanel.xaml</DependentUpon>
     </Compile>
