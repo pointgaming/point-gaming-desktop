@@ -106,8 +106,8 @@ namespace PointGaming.Desktop.Chat
         private ClosableTab AddTab(string title, string tabId, object content)
         {
             var tabItem = new ClosableTab();
+            tabItem.Header = title;
             tabItem.Content = content;
-            tabItem.Title = title;
             tabItem.Closing += tabItem_Closing;
 
             tabControlChats.Items.Add(tabItem);

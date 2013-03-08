@@ -4,12 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="30" d:DesignWidth="90" Margin="0" Padding="0">
+             d:DesignHeight="30" d:DesignWidth="90" Margin="0" Padding="0"
+             Name="userControlHeader" OpacityMask="White" Background="#01010101">
     <Grid Margin="0">
-        <Label Content="TabItemj"  Height="16" HorizontalAlignment="Left" Margin="3,0,0,0" Name="label_TabTitle" VerticalAlignment="Center" Padding="-1"/>
-        <Button HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,3,1" Name="button_close" Padding="0" 
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Column="0" Text="{Binding ElementName=userControlHeader, Path=Text, FallbackValue='Hello world!', UpdateSourceTrigger=PropertyChanged}" Height="16" HorizontalAlignment="Left" Margin="3,0,0,0" Name="label_TabTitle" VerticalAlignment="Center" />
+        <Button Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,3,1" Name="button_close" Padding="1" 
           Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
-           Visibility="Visible" ToolTip="Close">
+           Visibility="Hidden" ToolTip="Close" MouseEnter="button_close_MouseEnter" MouseLeave="button_close_MouseLeave" Click="button_close_Click">
             <Canvas Width="7" Height="7" Margin="1">
                 <Line X1="0" Y1="0" X2="7" Y2="7" Stroke="Black" StrokeThickness="1" />
                 <Line X1="7" Y1="0" X2="0" Y2="7" Stroke="Black" StrokeThickness="1" />

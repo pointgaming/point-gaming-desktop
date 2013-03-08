@@ -137,6 +137,9 @@
     </Compile>
     <Compile Include="Chat\ChatTabCommon.cs" />
     <Compile Include="Chat\ITabWithId.cs" />
+    <Compile Include="ClosableTab.xaml.cs">
+      <DependentUpon>ClosableTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ClosableTabHeader.xaml.cs">
       <DependentUpon>ClosableTabHeader.xaml</DependentUpon>
     </Compile>
@@ -144,6 +147,9 @@
     <Compile Include="DragAndDrop\IDragSourceAdvisor.cs" />
     <Compile Include="DragAndDrop\DropPreviewAdorner.cs" />
     <Compile Include="DragAndDrop\DragDropManager.cs" />
+    <Compile Include="GameRoom\GameRoomTab.xaml.cs">
+      <DependentUpon>GameRoomTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HomeTab\ButtonProperties.cs" />
     <Compile Include="HomeTab\LauncherEditorDialog.xaml.cs">
       <DependentUpon>LauncherEditorDialog.xaml</DependentUpon>
@@ -192,7 +198,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="ClosableTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ClosableTabHeader.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GameRoom\GameRoomTab.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
