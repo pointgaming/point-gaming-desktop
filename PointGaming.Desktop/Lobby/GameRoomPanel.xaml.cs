@@ -40,7 +40,7 @@ namespace PointGaming.Desktop.Lobby
         
         private void buttonButtonJoin_Click(object sender, RoutedEventArgs e)
         {
-            MessageDialog.Show(HomeWindow.Home.GetChatWindow(), "Game Room", "TODO: Show game room.");
+            HomeWindow.Home.JoinChat("gameroom_" + "asdfsfsf");
         }
 
         public static readonly DependencyProperty GameRoomTitleProperty = DependencyProperty.Register(

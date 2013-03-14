@@ -11,7 +11,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="4" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="120" />
         </Grid.ColumnDefinitions>
 
@@ -21,7 +21,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <FlowDocumentScrollViewer Grid.Row="0" HorizontalAlignment="Stretch" Name="richTextBoxLog" VerticalAlignment="Stretch"
+            <FlowDocumentScrollViewer Grid.Row="0" HorizontalAlignment="Stretch" Name="flowDocumentLog" VerticalAlignment="Stretch"
                     VerticalScrollBarVisibility="Auto" Background="White">
                 <FlowDocumentScrollViewer.Resources>
                     <Style TargetType="{x:Type Paragraph}">
@@ -40,7 +40,7 @@
             </Grid>
         </Grid>
 
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Name="gridSplitter1" VerticalAlignment="Stretch" />
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Name="gridSplitter1" VerticalAlignment="Stretch" Width="4" Margin="3,0,3,0" />
         
         <ListBox Grid.Column="2" Name="listBoxMembership" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                      PreviewMouseLeftButtonDown="listBoxMembership_PreviewMouseLeftButtonDown"

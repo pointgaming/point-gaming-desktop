@@ -5,42 +5,90 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:my="clr-namespace:PointGaming.Desktop"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="400" Loaded="UserControl_Loaded"
+             d:DesignHeight="500" d:DesignWidth="600" Loaded="UserControl_Loaded"
              AllowDrop="True" PreviewDrop="TabPreviewDrop" PreviewDragEnter="TabPreviewDragQuery"
-             PreviewDragOver="TabPreviewDragQuery" PreviewDragLeave="TabPreviewDragQuery">
+             PreviewDragOver="TabPreviewDragQuery" PreviewDragLeave="TabPreviewDragQuery" Padding="2">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="4" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="120" />
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Column="0" Name="gridLogAndSend">
+        <Grid Grid.Column="0" Name="gridMainPanel" >
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <FlowDocumentScrollViewer Grid.Row="0" HorizontalAlignment="Stretch" Name="richTextBoxLog" VerticalAlignment="Stretch"
-                    VerticalScrollBarVisibility="Auto" Background="White">
-                <FlowDocumentScrollViewer.Resources>
-                    <Style TargetType="{x:Type Paragraph}">
-                        <Setter Property="Margin" Value="0"/>
-                    </Style>
-                </FlowDocumentScrollViewer.Resources>
-            </FlowDocumentScrollViewer>
+            <Grid Grid.Row="0" Name="gridTopLeftStuff">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-            <Grid Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBox Grid.Column="0" HorizontalAlignment="Stretch" Name="textBoxInput" VerticalAlignment="Stretch" PreviewKeyDown="textBoxInput_PreviewKeyDown" MaxLength="1024" TextWrapping="Wrap" AcceptsReturn="True" />
-                <Button Grid.Column="1" Content="Send" Grid.Row="1" Height="23" HorizontalAlignment="Left" Name="buttonSendInput" VerticalAlignment="Bottom" Width="75" Click="buttonSendInput_Click" />
+                <TextBlock Grid.Row="0" Height="18" Margin="2" HorizontalAlignment="Right" Name="hyperLinkRoomInfo" VerticalAlignment="Center">
+                    <Hyperlink Click="hyperLinkRoomInfoClick">Room Admin</Hyperlink>
+                </TextBlock>
+
+                <FlowDocumentScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" Name="flowDocumentDescription" VerticalAlignment="Stretch"
+                        VerticalScrollBarVisibility="Auto" Background="White" Height="Auto" MaxHeight="100" MinHeight="22" BorderBrush="#FF828790" BorderThickness="1">
+                    <FlowDocumentScrollViewer.Resources>
+                        <Style TargetType="{x:Type Paragraph}">
+                            <Setter Property="Margin" Value="0"/>
+                        </Style>
+                    </FlowDocumentScrollViewer.Resources>
+                </FlowDocumentScrollViewer>
+
+                <Border Grid.Row="2" Margin="0,5,0,5" BorderThickness="1" BorderBrush="#FF828790">
+                    <Grid Name="gridBetting">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Button Grid.Row="0" Content="Propose a bet..." Height="23" HorizontalAlignment="Left" Name="buttonProposeABet" VerticalAlignment="Top" Width="150" Click="buttonProposeABet_Click" />
+                        <ItemsControl Grid.Row="1" Height="150" HorizontalAlignment="Stretch" Name="itemsControlBets" VerticalAlignment="Top" />
+                    </Grid>
+                </Border>
             </Grid>
+
+            <Border Grid.Row="1"  Margin="0,0,0,5" BorderBrush="#FF828790" BorderThickness="1">
+                <Grid Name="gridLogAndSend">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <FlowDocumentScrollViewer Grid.Row="0" HorizontalAlignment="Stretch" Name="flowDocumentLog" VerticalAlignment="Stretch"
+                        VerticalScrollBarVisibility="Auto" Background="White">
+                        <FlowDocumentScrollViewer.Resources>
+                            <Style TargetType="{x:Type Paragraph}">
+                                <Setter Property="Margin" Value="0"/>
+                            </Style>
+                        </FlowDocumentScrollViewer.Resources>
+                    </FlowDocumentScrollViewer>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" HorizontalAlignment="Stretch" Name="textBoxInput" VerticalAlignment="Stretch" PreviewKeyDown="textBoxInput_PreviewKeyDown" MaxLength="1024" TextWrapping="Wrap" AcceptsReturn="True" />
+                        <Button Grid.Column="1" Content="Send" Grid.Row="1" Height="23" HorizontalAlignment="Left" Name="buttonSendInput" VerticalAlignment="Bottom" Width="75" Click="buttonSendInput_Click" />
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <StackPanel Grid.Row="2" Name="spCheckboxes" Orientation="Horizontal">
+                <CheckBox Content="Mute" Height="16" Name="checkBoxMute" Margin="3" />
+                <CheckBox Content="Mute Microphone" Height="16" Name="checkBoxMuteMicrophone" Margin="3" />
+                <CheckBox Content="Team-Only Chat" Height="16" Name="checkBoxTeamOnlyChat" Margin="3" />
+            </StackPanel>
         </Grid>
 
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Name="gridSplitter1" VerticalAlignment="Stretch" />
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Name="gridSplitter1" VerticalAlignment="Stretch" Width="4" Margin="3,0,3,0"/>
 
         <ListBox Grid.Column="2" Name="listBoxMembership" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                      PreviewMouseLeftButtonDown="listBoxMembership_PreviewMouseLeftButtonDown"

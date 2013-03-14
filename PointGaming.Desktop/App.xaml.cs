@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using System.Windows.Media;
+using System.Windows.Documents;
 using System.Runtime.InteropServices;
 using System.Reflection;
 using System.Windows.Interop;
@@ -364,6 +365,15 @@ namespace PointGaming.Desktop
             info.dwTimeout = 1000;
  
             FlashWindowEx(ref info);
+        }
+
+        public static void SetPointGamingDefaults(this FlowDocument doc)
+        {
+            doc.Background = System.Windows.Media.Brushes.White;
+            doc.PagePadding = new Thickness(2);
+            var textBlock = new TextBlock();
+            doc.FontFamily = textBlock.FontFamily;
+            doc.FontSize = textBlock.FontSize;
         }
     }
 }

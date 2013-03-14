@@ -25,16 +25,26 @@ namespace PointGaming.Desktop.GameRoom
         private ChatroomInfo _roomManager;
         private SocketSession _session = HomeWindow.Home.SocketSession;
         private AutoScroller _autoScroller;
+        private FlowDocument _descriptionDocument;
 
         public string Id { get { return _roomManager.ChatroomId; } }
 
         public GameRoomTab()
         {
             InitializeComponent();
-            richTextBoxLog.Document = new FlowDocument();
+            flowDocumentLog.Document = new FlowDocument();
             UpdateChatFont();
-            _autoScroller = new AutoScroller(richTextBoxLog);
+            _autoScroller = new AutoScroller(flowDocumentLog);
             PropertyChangedEventManager.AddListener(Properties.Settings.Default, this, "PropertyChanged");
+
+            _descriptionDocument = new FlowDocument();
+            _descriptionDocument.SetPointGamingDefaults();
+            flowDocumentDescription.Document = _descriptionDocument;
+
+            var p = new Paragraph();
+            p.Inlines.Add(new Bold(new Run("Description: ")));
+            Chat.ChatTabCommon.Format("5 vs 5 Dust 2 No Scrubs\r\nWill ban for being bad\r\nNo 8 digs\r\n\r\n\r\n\r\n\r\n\r\n", p.Inlines);
+            _descriptionDocument.Blocks.Add(p);
         }
 
         public bool ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
@@ -45,10 +55,10 @@ namespace PointGaming.Desktop.GameRoom
 
         private void UpdateChatFont()
         {
-            richTextBoxLog.Document.Background = Brushes.White;
-            richTextBoxLog.Document.PagePadding = new Thickness(2);
-            richTextBoxLog.Document.FontFamily = new FontFamily(Properties.Settings.Default.ChatFontFamily + ", " + richTextBoxLog.Document.FontFamily);
-            richTextBoxLog.Document.FontSize = Properties.Settings.Default.ChatFontSize;
+            flowDocumentLog.Document.Background = Brushes.White;
+            flowDocumentLog.Document.PagePadding = new Thickness(2);
+            flowDocumentLog.Document.FontFamily = new FontFamily(Properties.Settings.Default.ChatFontFamily + ", " + flowDocumentLog.Document.FontFamily);
+            flowDocumentLog.Document.FontSize = Properties.Settings.Default.ChatFontSize;
         }
 
         public void Init(ChatWindow window, ChatroomInfo roomManager)
@@ -109,7 +119,7 @@ namespace PointGaming.Desktop.GameRoom
             p.Inlines.Add(new Run(timeString + " "));
             p.Inlines.Add(new Bold(new Run(username + ": ")));
             ChatTabCommon.Format(message, p.Inlines);
-            richTextBoxLog.Document.Blocks.Add(p);
+            flowDocumentLog.Document.Blocks.Add(p);
 
             _autoScroller.PostAppend();
         }
@@ -199,5 +209,15 @@ namespace PointGaming.Desktop.GameRoom
             }
         }
         #endregion
+
+        private void hyperLinkRoomInfoClick(object sender, RoutedEventArgs e)
+        {
+            MessageDialog.Show(_chatWindow, "Room Admin", "This is the room admin");
+        }
+
+        private void buttonProposeABet_Click(object sender, RoutedEventArgs e)
+        {
+            MessageDialog.Show(_chatWindow, "Propose a Bet", "Todo bet propose dialog");
+        }
     }
 }

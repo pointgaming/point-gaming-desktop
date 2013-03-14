@@ -115,13 +115,10 @@ namespace PointGaming.Desktop.Lobby
             {
                 var p = new Paragraph();
                 Chat.ChatTabCommon.Format(_description, p.Inlines);
+
                 var doc = new FlowDocument();
+                doc.SetPointGamingDefaults();
                 doc.Blocks.Add(p);
-                doc.Background = System.Windows.Media.Brushes.White;
-                doc.PagePadding = new Thickness(2);
-                var textBlock = new TextBlock();
-                doc.FontFamily = textBlock.FontFamily;
-                doc.FontSize = textBlock.FontSize;
                 return doc;
             }
         }

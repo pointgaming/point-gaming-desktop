@@ -31,9 +31,9 @@ namespace PointGaming.Desktop.Lobby
         public LobbyTab()
         {
             InitializeComponent();
-            richTextBoxLog.Document = new FlowDocument();
+            flowDocumentLog.Document = new FlowDocument();
             UpdateChatFont();
-            _autoScroller = new AutoScroller(richTextBoxLog);
+            _autoScroller = new AutoScroller(flowDocumentLog);
             PropertyChangedEventManager.AddListener(Properties.Settings.Default, this, "PropertyChanged");
         }
 
@@ -45,10 +45,10 @@ namespace PointGaming.Desktop.Lobby
 
         private void UpdateChatFont()
         {
-            richTextBoxLog.Document.Background = Brushes.White;
-            richTextBoxLog.Document.PagePadding = new Thickness(2);
-            richTextBoxLog.Document.FontFamily = new FontFamily(Properties.Settings.Default.ChatFontFamily + ", " + richTextBoxLog.Document.FontFamily);
-            richTextBoxLog.Document.FontSize = Properties.Settings.Default.ChatFontSize;
+            flowDocumentLog.Document.Background = Brushes.White;
+            flowDocumentLog.Document.PagePadding = new Thickness(2);
+            flowDocumentLog.Document.FontFamily = new FontFamily(Properties.Settings.Default.ChatFontFamily + ", " + flowDocumentLog.Document.FontFamily);
+            flowDocumentLog.Document.FontSize = Properties.Settings.Default.ChatFontSize;
         }
 
         public void Init(ChatWindow window, ChatroomInfo roomManager)
@@ -109,7 +109,7 @@ namespace PointGaming.Desktop.Lobby
             p.Inlines.Add(new Run(timeString + " "));
             p.Inlines.Add(new Bold(new Run(username + ": ")));
             ChatTabCommon.Format(message, p.Inlines);
-            richTextBoxLog.Document.Blocks.Add(p);
+            flowDocumentLog.Document.Blocks.Add(p);
 
             _autoScroller.PostAppend();
         }

@@ -82,24 +82,39 @@ namespace PointGaming.Desktop.Chat
         }
         private ClosableTab GetOrCreateTab(ChatroomInfo roomManager)
         {
-            var tabId = GetTabId(typeof(ChatroomTab), roomManager.ChatroomId);
-
             ClosableTab tabItem;
-            if (!_chatTabs2.TryGetValue(tabId, out tabItem))
+
+            if (roomManager.ChatroomId.StartsWith("lobby_"))
             {
-                if (roomManager.ChatroomId.StartsWith("lobby_"))
+                var tabId = GetTabId(typeof(Lobby.LobbyTab), roomManager.ChatroomId);
+                if (!_chatTabs2.TryGetValue(tabId, out tabItem))
                 {
                     var lobbyTab = new Lobby.LobbyTab();
                     lobbyTab.Init(this, roomManager);
                     tabItem = AddTab(roomManager.ChatroomId, tabId, lobbyTab);
                 }
-                else
+            }
+            else if (roomManager.ChatroomId.StartsWith("gameroom_"))
+            {
+                var tabId = GetTabId(typeof(GameRoom.GameRoomTab), roomManager.ChatroomId);
+                if (!_chatTabs2.TryGetValue(tabId, out tabItem))
+                {
+                    var gameRoomTab = new GameRoom.GameRoomTab();
+                    gameRoomTab.Init(this, roomManager);
+                    tabItem = AddTab(roomManager.ChatroomId, tabId, gameRoomTab);
+                }
+            }
+            else
+            {
+                var tabId = GetTabId(typeof(ChatroomTab), roomManager.ChatroomId);
+                if (!_chatTabs2.TryGetValue(tabId, out tabItem))
                 {
                     var chatTab = new ChatroomTab();
                     chatTab.Init(this, roomManager);
                     tabItem = AddTab(roomManager.ChatroomId, tabId, chatTab);
                 }
             }
+            
             return tabItem;
         }
 

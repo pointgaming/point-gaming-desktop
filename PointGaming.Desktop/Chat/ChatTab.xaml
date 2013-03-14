@@ -12,7 +12,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <FlowDocumentScrollViewer Grid.Row="0" HorizontalAlignment="Stretch" Name="richTextBoxLog" VerticalAlignment="Stretch"
+        <FlowDocumentScrollViewer Grid.Row="0" HorizontalAlignment="Stretch" Name="flowDocumentLog" VerticalAlignment="Stretch"
                      VerticalScrollBarVisibility="Auto" Background="White">
             <FlowDocumentScrollViewer.Resources>
                 <Style TargetType="{x:Type Paragraph}">

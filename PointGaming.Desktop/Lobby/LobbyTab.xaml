@@ -12,7 +12,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="4" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="120" />
         </Grid.ColumnDefinitions>
 
@@ -20,7 +20,7 @@
         <Grid Grid.Column="0" Name="gridGameRoomsAndChat">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
-                <RowDefinition Height="4" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="200" />
             </Grid.RowDefinitions>
 
@@ -46,7 +46,7 @@
                 </ItemsControl>
             </ScrollViewer>
 
-            <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="4" Margin="0,3,0,3" />
 
             <TabControl Grid.Row="2" Name="gridChatAndActiveGames">
                 <TabItem Header="Chat" Name="tabItemChat">
@@ -56,7 +56,7 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <FlowDocumentScrollViewer Grid.Row="0" HorizontalAlignment="Stretch" Name="richTextBoxLog" VerticalAlignment="Stretch"
+                        <FlowDocumentScrollViewer Grid.Row="0" HorizontalAlignment="Stretch" Name="flowDocumentLog" VerticalAlignment="Stretch"
                         VerticalScrollBarVisibility="Auto" Background="White">
                             <FlowDocumentScrollViewer.Resources>
                                 <Style TargetType="{x:Type Paragraph}">
@@ -83,7 +83,7 @@
             </TabControl>
         </Grid>
 
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="4" Margin="3,0,3,0" />
         
         <Grid Grid.Column="2" Name="gridUserAndJoinedGameRoomLists">
             <Grid.RowDefinitions>
