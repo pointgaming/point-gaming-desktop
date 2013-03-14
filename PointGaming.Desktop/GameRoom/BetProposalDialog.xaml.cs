@@ -92,16 +92,16 @@ namespace PointGaming.Desktop.GameRoom
             int loseAmount = BetAmount;
             decimal multiplier = 1m;
             ComboBoxItem selectedOdds = (ComboBoxItem)comboBoxOdds.SelectedItem;
-            if (selectedOdds == oneToOne)
-                multiplier = 1m;
-            else if (selectedOdds == oneToThreeHalves)
-                multiplier = 1.5m;
-            else if (selectedOdds == oneToTwo)
-                multiplier = 2m;
-            else if (selectedOdds == oneToFive)
-                multiplier = 5m;
-            else if (selectedOdds == oneToTen)
-                multiplier = 10m;
+            if (selectedOdds == oneTo1) multiplier = 1m;
+            else if (selectedOdds == oneTo2) multiplier = 2m;
+            else if (selectedOdds == oneTo3) multiplier = 3m;
+            else if (selectedOdds == oneTo4) multiplier = 4m;
+            else if (selectedOdds == oneTo5) multiplier = 5m;
+            else if (selectedOdds == oneTo6) multiplier = 6m;
+            else if (selectedOdds == oneTo7) multiplier = 7m;
+            else if (selectedOdds == oneTo8) multiplier = 8m;
+            else if (selectedOdds == oneTo9) multiplier = 9m;
+            else if (selectedOdds == oneTo10) multiplier = 10m;
             else
                 throw new NotImplementedException("Woops! Didn't implement odds '" + selectedOdds.Content + "'");
 
