@@ -18,36 +18,31 @@ namespace PointGaming.Desktop
 {
     public partial class ClosableTab : TabItem
     {
-        //readonly ClosableTabHeader _closableTabTabHeader;
         public event CancelEventHandler Closing;
 
-        // Constructor
+        public static readonly DependencyProperty ShouldFlashProperty = DependencyProperty.Register(
+            "ShouldFlash", typeof(bool), typeof(ClosableTab));
+        public bool ShouldFlash
+        {
+            get { return (this.GetValue(ShouldFlashProperty) as bool?) == true; }
+            set { this.SetValue(ShouldFlashProperty, value); }
+        }
+
         public ClosableTab()
         {
             InitializeComponent();
-            // Create an instance of the usercontrol
-            //_closableTabTabHeader = new ClosableTabHeader();
-            //_closableTabTabHeader.Text = "";
-            // Assign the usercontrol to the tab header
-            //this.Header = _closableTabTabHeader;
-
-            // Attach to the ClosableHeader events
-            // (Mouse Enter/Leave, Button Click, and Label resize)
-            //ClosableHeader.button_close.MouseEnter +=
-            //   new MouseEventHandler(button_close_MouseEnter);
-            //ClosableHeader.button_close.MouseLeave +=
-            //   new MouseEventHandler(button_close_MouseLeave);
-            //ClosableHeader.button_close.Click +=
-            //   new RoutedEventHandler(button_close_Click);
         }
-        //public static readonly DependencyProperty ClosableTitleProperty = DependencyProperty.Register(
-        //    "ClosableTitle", typeof(string), typeof(ClosableTab));
-        //public string ClosableTitle
-        //{
-        //    get { return this.GetValue(ClosableTitleProperty) as string; }
-        //    set { this.SetValue(ClosableTitleProperty, value); }
-        //}
         internal void OnTabHeaderCloseClick()
+        {
+            PerformClosing();
+        }
+
+        public void Close()
+        {
+            PerformClosing();
+        }
+
+        private void PerformClosing()
         {
             var closing = Closing;
             if (closing != null)

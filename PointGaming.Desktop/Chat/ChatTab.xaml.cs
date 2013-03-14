@@ -95,7 +95,6 @@ namespace PointGaming.Desktop.Chat
         }
         public void MessageSent(PrivateMessageSent message)
         {
-            _chatWindow.StartFlashingTab(this.GetType(), _otherUser.Id);
             AppendUserMessage(_session.Data.User.Username, message.message);
         }
 

@@ -118,6 +118,25 @@ namespace PointGaming.Desktop.Chat
             return tabItem;
         }
 
+        public void AddInvite(ChatroomInviteNew invite)
+        {
+            ClosableTab tabItem;
+            var tabId = GetTabId(typeof(RoomInviteTab), RoomInviteTab.TabId);
+            if (!_chatTabs2.TryGetValue(tabId, out tabItem))
+            {
+                var inviteTab = new RoomInviteTab();
+                inviteTab.Init(this);
+                tabItem = AddTab("Invites", tabId, inviteTab);
+            }
+
+            {
+                var inviteTab = (RoomInviteTab)tabItem.Content;
+                inviteTab.AddInvite(invite);
+            }
+
+            StartFlashingTab(typeof(RoomInviteTab), RoomInviteTab.TabId);
+        }
+
         private ClosableTab AddTab(string title, string tabId, object content)
         {
             var tabItem = new ClosableTab();
@@ -173,6 +192,14 @@ namespace PointGaming.Desktop.Chat
             StopFlashingTab(tabItem);
         }
 
+        public void CloseTab(Type tabType, string id)
+        {
+            var tabId = GetTabId(tabType, id);
+            ClosableTab tabItem;
+            if (_chatTabs2.TryGetValue(tabId, out tabItem))
+                tabItem.Close();
+        }
+
         public void StartFlashingTab(Type tabType, string id)
         {
             if (!IsActive && Properties.Settings.Default.ShouldFlashChatWindow)
@@ -184,7 +211,7 @@ namespace PointGaming.Desktop.Chat
             if (!_chatTabs2.TryGetValue(tabId, out tabItem))
                 return;
             if (!IsActive || !tabItem.IsSelected)
-                tabItem.SetValue(Control.StyleProperty, (Style)this.Resources["FlashingHeader"]);
+                tabItem.ShouldFlash = true;
         }
 
         private static string GetTabId(Type tabType, string id)
@@ -195,7 +222,7 @@ namespace PointGaming.Desktop.Chat
 
         private void StopFlashingTab(ClosableTab tabItem)
         {
-            tabItem.Style = null;
+            tabItem.ShouldFlash = false;
         }
 
         public void CreateChatroomWith(PgUser a, PgUser b)

@@ -129,14 +129,17 @@ namespace PointGaming.Desktop.HomeTab
             friend.status = FriendStatusOffline;
             AddOrUpdateFriend(friend);
 
+            var todoList = new List<UIElement>();
             foreach (var item in stackPanelFriendRequestsFrom.Children)
             {
                 var request = item as FriendRequestFromUserControl;
                 if (request == null)
                     continue;
                 if (request.Username == friendStatus.username)
-                    stackPanelFriendRequestsFrom.Children.Remove((UIElement)item);
+                    todoList.Add((UIElement)item);
             }
+            foreach (var item in todoList)
+                stackPanelFriendRequestsFrom.Children.Remove(item);
         }
 
         private void GetFriends()

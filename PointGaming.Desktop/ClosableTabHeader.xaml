@@ -11,7 +11,31 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Column="0" Text="{Binding ElementName=userControlHeader, Path=Text, FallbackValue='Hello world!', UpdateSourceTrigger=PropertyChanged}" Height="16" HorizontalAlignment="Left" Margin="3,0,0,0" Name="label_TabTitle" VerticalAlignment="Center" />
+        <TextBlock Grid.Column="0" Height="16" HorizontalAlignment="Left" Margin="3,0,0,0" Name="label_TabTitle" VerticalAlignment="Center"
+                   Text="{Binding ElementName=userControlHeader, Path=Text, FallbackValue='Hello world!', UpdateSourceTrigger=PropertyChanged}">
+            
+            <!-- use style to make the header flash when ShouldFlash == true -->
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=userControlHeader, Path=ShouldFlash}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard Name="sbHeader">
+                                    <Storyboard AutoReverse="False" RepeatBehavior="Forever" Storyboard.TargetProperty="Foreground.Opacity">
+                                        <DoubleAnimation From="1.0" To="0.25" AutoReverse="True" Duration="0:0:0.5" BeginTime="0:0:1.0" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <StopStoryboard BeginStoryboardName="sbHeader"/>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+
         <Button Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,3,1" Name="button_close" Padding="1" 
           Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
            Visibility="Hidden" ToolTip="Close" MouseEnter="button_close_MouseEnter" MouseLeave="button_close_MouseLeave" Click="button_close_Click">
@@ -19,7 +43,6 @@
                 <Line X1="0" Y1="0" X2="7" Y2="7" Stroke="Black" StrokeThickness="1" />
                 <Line X1="7" Y1="0" X2="0" Y2="7" Stroke="Black" StrokeThickness="1" />
             </Canvas>
-            <!--Label Content="x"  HorizontalAlignment="Left" Margin="0" Padding="-1" Height="9" VerticalAlignment="Bottom"/-->
         </Button>
     </Grid>
 </UserControl>

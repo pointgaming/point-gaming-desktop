@@ -177,12 +177,17 @@ namespace PointGaming.Desktop.Chat
                 if (!_chatroomUsage.TryGetValue(id, out usage)
                     || usage.State == ChatroomState.Disconnected)
                 {
-                    JoinChatroom(id);
+                    if (id.StartsWith("lobby_") || id.StartsWith("gameroom_"))
+                    {
+                        ChatWindow.AddInvite(received);
+                    }
+                    else
+                        JoinChatroom(id);
                 }
             }
             else
             {
-                // todo dean 2013-02-17: handle chat invites from non-friends, and invites to lobbies/gamerooms
+                ChatWindow.AddInvite(received);
             }
         }
 
@@ -227,7 +232,6 @@ namespace PointGaming.Desktop.Chat
         {
             _session.EmitLater("Chatroom.Message.send", message);
         }
-
         public void SendChatroomInvite(ChatroomInviteOut invite)
         {
             ChatroomInviteSend(invite);

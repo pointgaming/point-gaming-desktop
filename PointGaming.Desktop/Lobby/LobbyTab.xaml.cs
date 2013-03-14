@@ -93,7 +93,6 @@ namespace PointGaming.Desktop.Lobby
 
         private void ReceivedMessage(UserBase fromUser, string message)
         {
-            _chatWindow.StartFlashingTab(this.GetType(), _roomManager.ChatroomId);
             AppendUserMessage(fromUser.username, message);
         }
         

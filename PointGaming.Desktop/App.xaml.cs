@@ -266,6 +266,10 @@ namespace PointGaming.Desktop
         public static bool TryGetParent<T>(this DependencyObject element, out T parent) where T : DependencyObject
         {
             parent = default(T);
+
+            if (element != null)
+                element = VisualTreeHelper.GetParent(element);
+
             while (element != null)
             {
                 if (element is T)
@@ -277,7 +281,23 @@ namespace PointGaming.Desktop
             }
             return false;
         }
-        
+
+        public static bool TryGetPresentedParent<T>(this DependencyObject element, out T parent) where T : class
+        {
+            parent = default(T);
+            ContentPresenter presenter;
+            if (element.TryGetParent(out presenter))
+            {
+                parent = presenter.Content as T;
+                if (parent != null)
+                    return true;
+
+                return TryGetPresentedParent((DependencyObject)presenter, out parent);
+            }
+            return false;
+        }
+
+                
         public static T FindDescendant<T>(this DependencyObject obj) where T : DependencyObject
         {
             if (obj == null) return default(T);
