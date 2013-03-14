@@ -182,7 +182,7 @@ namespace PointGaming.Desktop.Chat
             }
             else
             {
-                // todo dean 2013-02-17: handle chat invites from non-friends
+                // todo dean 2013-02-17: handle chat invites from non-friends, and invites to lobbies/gamerooms
             }
         }
 
@@ -193,7 +193,10 @@ namespace PointGaming.Desktop.Chat
             {
                 if (usage.State == ChatroomState.Connected
                     || usage.State == ChatroomState.New)
+                {
+                    ChatWindow.ShowChatroom(usage);
                     return;
+                }
             }
 
             usage = new ChatroomInfo(this) { ChatroomId = id, State = ChatroomState.New, };

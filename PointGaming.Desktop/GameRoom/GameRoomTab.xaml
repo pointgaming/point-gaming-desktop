@@ -81,7 +81,7 @@
                 </Grid>
             </Border>
 
-            <StackPanel Grid.Row="2" Name="spCheckboxes" Orientation="Horizontal">
+            <StackPanel Grid.Row="2" Name="spCheckboxes" Orientation="Horizontal" IsEnabled="False">
                 <CheckBox Content="Mute" Height="16" Name="checkBoxMute" Margin="3" />
                 <CheckBox Content="Mute Microphone" Height="16" Name="checkBoxMuteMicrophone" Margin="3" />
                 <CheckBox Content="Team-Only Chat" Height="16" Name="checkBoxTeamOnlyChat" Margin="3" />

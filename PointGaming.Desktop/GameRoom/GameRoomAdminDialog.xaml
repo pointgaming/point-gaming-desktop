@@ -22,7 +22,7 @@
                  Text="{Binding ElementName=myWindow, Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" />
 
         <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal">
-            <CheckBox Content="Advertise in lobby's active games" Height="16" Name="checkBoxAdvertise" Margin="3" />
+            <CheckBox Content="Advertise in lobby's active games" Height="16" Name="checkBoxAdvertise" Margin="3" IsEnabled="False"/>
         </StackPanel>
         <Grid Grid.Row="3" Grid.ColumnSpan="2" Width="250" HorizontalAlignment="Center" Margin="20">
             <Grid.ColumnDefinitions>
