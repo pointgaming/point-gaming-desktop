@@ -1,7 +1,7 @@
 ﻿<Window x:Class="PointGaming.Desktop.GameRoom.GameRoomAdminDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="BetProposalDialog" Height="300" Width="450" Padding="5" Icon="/PointGaming.Desktop;component/PointGaming.ico"
+        Title="Gameroom Admin" Height="300" Width="450" Padding="5" Icon="/PointGaming.Desktop;component/PointGaming.ico"
         WindowStyle="ToolWindow" ResizeMode="NoResize"
         Name="myWindow" WindowStartupLocation="CenterOwner">
     <Grid>

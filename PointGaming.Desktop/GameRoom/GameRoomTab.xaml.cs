@@ -225,6 +225,7 @@ namespace PointGaming.Desktop.GameRoom
         {
             var dialog = new BetProposalDialog();
             dialog.Owner = _chatWindow;
+            dialog.SetBetOperands(new PgUser { Username = "Mr.Apple" }, new PgUser { Username = "Mr.Banana" });
             dialog.ShowDialog();
             if (dialog.DialogResult == true)
             {

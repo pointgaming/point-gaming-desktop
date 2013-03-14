@@ -1,9 +1,9 @@
 ﻿<Window x:Class="PointGaming.Desktop.GameRoom.BetProposalDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="BetProposalDialog" Height="300" Width="450" Padding="5" Icon="/PointGaming.Desktop;component/PointGaming.ico"
+        Title="Propose a Bet" Height="300" Width="450" Padding="5" Icon="/PointGaming.Desktop;component/PointGaming.ico"
         WindowStyle="ToolWindow" ResizeMode="NoResize"
-        Name="myWindow" WindowStartupLocation="CenterOwner">
+        Name="myWindow" WindowStartupLocation="CenterOwner" Loaded="myWindow_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -19,7 +19,7 @@
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0" Content="Outcome" Height="28" HorizontalAlignment="Right" Name="label3" VerticalAlignment="Center" />
-        <ComboBox Grid.Row="0" Grid.Column="1" Height="23" HorizontalAlignment="Stretch" Name="comboBoxOutcome" VerticalAlignment="Center" SelectedIndex="0">
+        <ComboBox Grid.Row="0" Grid.Column="1" Height="23" HorizontalAlignment="Stretch" Name="comboBoxOutcome" VerticalAlignment="Center" SelectedIndex="0" SelectionChanged="comboBoxOutcome_SelectionChanged">
             <ComboBoxItem Name="aBeatsB">MrApple beats MrBanana</ComboBoxItem>
             <ComboBoxItem Name="bBeatsA">MrBanana beats MrApple</ComboBoxItem>
         </ComboBox>
@@ -29,8 +29,8 @@
                  Text="{Binding ElementName=myWindow, Path=MapName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <Label Grid.Row="2" Grid.Column="0" Content="Odds" Height="28" HorizontalAlignment="Right" Name="label2" VerticalAlignment="Center" />
-        <ComboBox Grid.Row="2" Grid.Column="1" Height="23" HorizontalAlignment="Left" Name="comboBox2" VerticalAlignment="Center" Width="120" SelectedIndex="0"
-                  HorizontalContentAlignment="Right">
+        <ComboBox Grid.Row="2" Grid.Column="1" Height="23" HorizontalAlignment="Left" Name="comboBoxOdds" VerticalAlignment="Center" Width="120" SelectedIndex="0"
+                  HorizontalContentAlignment="Right" SelectionChanged="comboBoxOdds_SelectionChanged">
             <ComboBoxItem Name="oneToOne">1:1</ComboBoxItem>
             <ComboBoxItem Name="oneToThreeHalves">1:1.5</ComboBoxItem>
             <ComboBoxItem Name="oneToTwo">1:2</ComboBoxItem>

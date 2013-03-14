@@ -12,7 +12,13 @@ using SocketIOClient.Messages;
 
 namespace PointGaming.Desktop
 {
-    public class PgUser : INotifyPropertyChanged
+    public interface IBetOperand : INotifyPropertyChanged
+    {
+        string Id { get; }
+        string ShortDescription { get; }
+    }
+
+    public class PgUser : IBetOperand
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyChanged(string propertyName)
@@ -47,8 +53,15 @@ namespace PointGaming.Desktop
                     return;
                 _username = value;
                 NotifyChanged("Username");
+                NotifyChanged("ShortDescription");
             }
         }
+
+        public string ShortDescription
+        {
+            get { return _username; }
+        }
+
         private string _status;
         public string Status
         {

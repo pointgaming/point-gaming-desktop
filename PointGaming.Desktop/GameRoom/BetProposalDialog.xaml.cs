@@ -39,6 +39,7 @@ namespace PointGaming.Desktop.GameRoom
                 _betAmount = value;
                 NotifyChanged("BetAmount");
                 buttonOK.IsEnabled = _betAmount > 0;
+                UpdateSummary();
             }
         }
 
@@ -60,6 +61,56 @@ namespace PointGaming.Desktop.GameRoom
             InitializeComponent();
         }
 
+        private IBetOperand _betOperandA;
+        private IBetOperand _betOperandB;
+
+        public void SetBetOperands(IBetOperand operandA, IBetOperand operandB)
+        {
+            _betOperandA = operandA;
+            _betOperandB = operandB;
+            aBeatsB.Content = operandA.ShortDescription + " beats " + operandB.ShortDescription;
+            bBeatsA.Content = operandB.ShortDescription + " beats " + operandA.ShortDescription;
+            UpdateSummary();
+        }
+
+        private void UpdateSummary()
+        {
+            if (!IsLoaded)
+                return;
+
+            IBetOperand winner, loser;
+            if (comboBoxOutcome.SelectedIndex == 0)
+            {
+                winner = _betOperandA;
+                loser = _betOperandB;
+            }
+            else
+            {
+                winner = _betOperandB;
+                loser = _betOperandA;
+            }
+            int loseAmount = BetAmount;
+            decimal multiplier = 1m;
+            ComboBoxItem selectedOdds = (ComboBoxItem)comboBoxOdds.SelectedItem;
+            if (selectedOdds == oneToOne)
+                multiplier = 1m;
+            else if (selectedOdds == oneToThreeHalves)
+                multiplier = 1.5m;
+            else if (selectedOdds == oneToTwo)
+                multiplier = 2m;
+            else if (selectedOdds == oneToFive)
+                multiplier = 5m;
+            else if (selectedOdds == oneToTen)
+                multiplier = 10m;
+            else
+                throw new NotImplementedException("Woops! Didn't implement odds '" + selectedOdds.Content + "'");
+
+            int winAmount = (int)Math.Floor(multiplier * loseAmount);
+
+            string summaryFormat = "If {0} wins, you win {1}.\r\nIf {2} wins, you lose {3}.";
+            textBoxSummary.Text = string.Format(summaryFormat, winner.ShortDescription, winAmount, loser.ShortDescription, loseAmount);
+        }
+
         private void buttonOK_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
@@ -70,6 +121,21 @@ namespace PointGaming.Desktop.GameRoom
         {
             DialogResult = false;
             Close();
+        }
+
+        private void comboBoxOdds_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateSummary();
+        }
+
+        private void comboBoxOutcome_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateSummary();
+        }
+
+        private void myWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            UpdateSummary();
         }
     }
 }
