@@ -212,12 +212,24 @@ namespace PointGaming.Desktop.GameRoom
 
         private void hyperLinkRoomInfoClick(object sender, RoutedEventArgs e)
         {
-            MessageDialog.Show(_chatWindow, "Room Admin", "This is the room admin");
+            var dialog = new GameRoomAdminDialog();
+            dialog.Owner = _chatWindow;
+            dialog.ShowDialog();
+            if (dialog.DialogResult == true)
+            {
+                MessageDialog.Show(_chatWindow, "Room Admin", "Todo set room admin values");
+            }
         }
 
         private void buttonProposeABet_Click(object sender, RoutedEventArgs e)
         {
-            MessageDialog.Show(_chatWindow, "Propose a Bet", "Todo bet propose dialog");
+            var dialog = new BetProposalDialog();
+            dialog.Owner = _chatWindow;
+            dialog.ShowDialog();
+            if (dialog.DialogResult == true)
+            {
+                MessageBox.Show(_chatWindow, "Add Proposal", "Todo add a proposal");
+            }
         }
     }
 }

@@ -147,6 +147,12 @@
     <Compile Include="DragAndDrop\IDragSourceAdvisor.cs" />
     <Compile Include="DragAndDrop\DropPreviewAdorner.cs" />
     <Compile Include="DragAndDrop\DragDropManager.cs" />
+    <Compile Include="GameRoom\BetProposalDialog.xaml.cs">
+      <DependentUpon>BetProposalDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GameRoom\GameRoomAdminDialog.xaml.cs">
+      <DependentUpon>GameRoomAdminDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GameRoom\GameRoomTab.xaml.cs">
       <DependentUpon>GameRoomTab.xaml</DependentUpon>
     </Compile>
@@ -203,6 +209,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ClosableTabHeader.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GameRoom\BetProposalDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GameRoom\GameRoomAdminDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
