@@ -34,13 +34,25 @@ namespace PointGaming.Desktop
             {
                 textBoxUsername.Text = lastUsername;
                 passwordBoxPassword.Focus();
+
+                string lastPasswordEncrypted = Properties.Settings.Default.Password;
+                if (!string.IsNullOrWhiteSpace(lastPasswordEncrypted))
+                {
+                    string lastPassword;
+                    if (UserDataManager.TryDecryptString(lastPasswordEncrypted, out lastPassword))
+                    {
+                        checkBoxRememberPassword.IsChecked = true;
+                        passwordBoxPassword.Password = lastPassword;
+                        LogIn();
+                    }
+                }
             }
         }
 
         private void LogIn()
         {
-            var password = passwordBoxPassword.Password.Trim();
             var username = textBoxUsername.Text.Trim();
+            var password = passwordBoxPassword.Password.Trim();
 
             if (username == "")
             {
@@ -67,21 +79,31 @@ namespace PointGaming.Desktop
             DateTime timeout = DateTime.Now + Properties.Settings.Default.LogInTimeout;
 
             bool isSuccess = false;
-            session.BeginAndCallback(delegate {
+            session.BeginAndCallback(delegate
+            {
                 isSuccess = session.Login(username, password, timeout);
-            }, delegate {
-                if (isSuccess) 
+            }, delegate
+            {
+                if (isSuccess)
                 {
                     IsLoggedIn = true;
                     SocketSession = session;
 
-                    App.LoggedIn();
+                    App.LoggedIn(username);
 
                     var homeWindow = new HomeWindow();
                     session.SetThreadQueuerForCurrentThread(HomeWindow.Home.BeginInvokeUI);
                     homeWindow.Init(session);
                     Hide();
                     homeWindow.Show();
+
+                    Properties.Settings.Default.Username = username;
+                    if (checkBoxRememberPassword.IsChecked == true)
+                        Properties.Settings.Default.Password = UserDataManager.EncryptString(password);
+                    else
+                        Properties.Settings.Default.Password = "";
+                    Properties.Settings.Default.Save();
+
                     Close();
                 }
                 else

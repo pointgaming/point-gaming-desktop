@@ -6,7 +6,7 @@
         ResizeMode="NoResize" WindowStyle="None" Icon="/PointGaming.Desktop;component/PointGaming.ico" Closing="windowLogin_Closing"
         Background="Transparent" AllowsTransparency="True">
     <Grid>
-        <Border BorderBrush="#FF000000" BorderThickness="1,1,1,1" CornerRadius="8,8,8,8" Background="White" Width="350" Height="200">
+        <Border BorderBrush="#FF000000" BorderThickness="1,1,1,1" CornerRadius="8,8,8,8" Background="White" Width="350" Height="220">
             <Grid Margin="15">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -46,6 +46,8 @@
 
                             <Label Grid.Row="1" Content="Password" Height="28" HorizontalAlignment="Right" Name="labelPassword" VerticalAlignment="Center" />
                             <PasswordBox Grid.Row="1" Grid.Column="1" Height="23" HorizontalAlignment="Stretch" Name="passwordBoxPassword" VerticalAlignment="Center" PreviewKeyDown="passwordBoxPassword_PreviewKeyDown" Background="#60FFFFFF" />
+                            
+                            <CheckBox Grid.Row="2" Content="Remember Password" Grid.Column="1" Height="16" HorizontalAlignment="Left" Margin="0,5,0,5" Name="checkBoxRememberPassword" VerticalAlignment="Top" />
                         </Grid>
                     </Grid>
 

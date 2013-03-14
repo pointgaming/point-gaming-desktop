@@ -52,6 +52,8 @@ namespace PointGaming.Desktop.HomeTab
         
         private void buttonLogOut_Click(object sender, RoutedEventArgs e)
         {
+            Properties.Settings.Default.Password = "";
+            Properties.Settings.Default.Save();
             HomeWindow.Home.LogOut(true);
         }
 

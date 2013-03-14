@@ -24,11 +24,11 @@ namespace PointGaming.Desktop
         public static bool IsShuttingDown = false;
 
         private static readonly string ApplicationSettingsPath;
-        public static string LoginSettingsPath {get {
+        public static string GetLoginSettingsPath(string username) {
             return ApplicationSettingsPath
                 + Path.DirectorySeparatorChar
-                + PointGaming.Desktop.Properties.Settings.Default.Username;
-        }}
+                + username;
+        }
 
         private static StreamWriter _logWriter;
 
@@ -61,9 +61,9 @@ namespace PointGaming.Desktop
             OpenLogFile(ApplicationSettingsPath);
         }
 
-        public static void LoggedIn()
+        public static void LoggedIn(string username)
         {
-            OpenLogFile(LoginSettingsPath);
+            OpenLogFile(GetLoginSettingsPath(username));
         }
 
         private static string _lastLogFolder = null;

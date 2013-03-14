@@ -187,9 +187,7 @@ namespace PointGaming.Desktop
                     AuthToken = apiResponse.Data.auth_token;
                     Data.User.Username = username;
                     Data.User.Id = apiResponse.Data._id;
-                    Properties.Settings.Default.Username = username;
-                    Properties.Settings.Default.Save();
-
+                    
                     ConnectSocket();
                     while (DateTime.Now < timeout && !_isAuthResponded)
                         Thread.Sleep(25);
