@@ -13,7 +13,7 @@ namespace PointGaming.Desktop.Chat
 {
     public partial class ChatWindow : Window
     {
-        private UserDataManager _userData = HomeWindow.Home.UserData;
+        private UserDataManager _userData = HomeWindow.UserData;
         private ChatManager _manager;
 
         private readonly Dictionary<string, ClosableTab> _chatTabs2 = new Dictionary<string, ClosableTab>();

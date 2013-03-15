@@ -19,7 +19,7 @@ namespace PointGaming.Desktop.HomeTab
 {
     public partial class GameLauncherTab : UserControl
     {
-        private UserDataManager _userData = HomeWindow.Home.UserData;
+        private UserDataManager _userData = HomeWindow.UserData;
 
         private readonly ObservableCollection<LauncherInfo> _launchers = new ObservableCollection<LauncherInfo>();
         public ObservableCollection<LauncherInfo> Launchers { get { return _launchers; } }

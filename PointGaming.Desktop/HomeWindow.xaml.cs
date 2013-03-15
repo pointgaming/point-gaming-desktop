@@ -15,10 +15,9 @@ namespace PointGaming.Desktop
     {
         public static int GuiThreadId;
         public static HomeWindow Home;
+        public static UserDataManager UserData;
 
         private readonly List<Window> _childWindows = new List<Window>();
-
-        public UserDataManager UserData;
 
         public HomeWindow()
         {

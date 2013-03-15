@@ -12,6 +12,10 @@ using SocketIOClient.Messages;
 using PointGaming.Desktop.HomeTab;
 using System.Security;
 using System.Security.Cryptography;
+using PointGaming.Desktop.Lobby;
+using PointGaming.Desktop.GameRoom;
+using PointGaming.Desktop.Chat;
+
 
 namespace PointGaming.Desktop
 {
@@ -19,7 +23,9 @@ namespace PointGaming.Desktop
     {
         public readonly PgUser User;
         public readonly SocketSession PgSession;
-        private Chat.ChatManager _chatManager;
+        private ChatManager _chatManager;
+
+        private readonly ObservableCollection<LobbySession> _lobbies = new ObservableCollection<LobbySession>();
         
         private readonly ObservableCollection<PgUser> _friends = new ObservableCollection<PgUser>();
         public ObservableCollection<PgUser> Friends { get { return _friends; } }

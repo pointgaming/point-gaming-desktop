@@ -21,7 +21,7 @@ namespace PointGaming.Desktop.Chat
     {
         private ChatWindow _chatWindow;
         private PgUser _otherUser;
-        private UserDataManager _userData = HomeWindow.Home.UserData;
+        private UserDataManager _userData = HomeWindow.UserData;
         private AutoScroller _autoScroller;
 
         public string Id { get { return _otherUser.Id; } }

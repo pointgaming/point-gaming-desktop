@@ -21,7 +21,7 @@ namespace PointGaming.Desktop.HomeTab
 
         private static readonly List<string> ChatAvailableStatuses = new List<string>(new[] { FriendStatusOnline });
 
-        private UserDataManager _userData = HomeWindow.Home.UserData;
+        private UserDataManager _userData = HomeWindow.UserData;
         public ObservableCollection<PgUser> Friends { get { return _userData.Friends; } }
 
         public FriendTab()

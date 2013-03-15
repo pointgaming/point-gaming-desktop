@@ -19,7 +19,7 @@ namespace PointGaming.Desktop.Chat
     public partial class RoomInviteTab : UserControl, ITabWithId
     {
         private ChatWindow _chatWindow;
-        private UserDataManager _userData = HomeWindow.Home.UserData;
+        private UserDataManager _userData = HomeWindow.UserData;
 
         public const string TabId = "@%%^&^#&)):hgdf";
         public string Id { get { return TabId; } }

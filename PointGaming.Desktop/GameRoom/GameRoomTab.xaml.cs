@@ -23,7 +23,7 @@ namespace PointGaming.Desktop.GameRoom
     {
         private ChatWindow _chatWindow;
         private ChatroomSession _roomManager;
-        private UserDataManager _userData = HomeWindow.Home.UserData;
+        private UserDataManager _userData = HomeWindow.UserData;
         private AutoScroller _autoScroller;
         private FlowDocument _descriptionDocument;
 

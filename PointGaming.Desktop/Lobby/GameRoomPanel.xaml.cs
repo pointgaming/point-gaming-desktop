@@ -27,7 +27,7 @@ namespace PointGaming.Desktop.Lobby
             var args = new PropertyChangedEventArgs(propertyName);
             changedCallback(this, args);
         }
-        private UserDataManager _userData = HomeWindow.Home.UserData;
+        private UserDataManager _userData = HomeWindow.UserData;
 
         public GameRoomPanel()
         {
