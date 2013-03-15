@@ -25,8 +25,6 @@ namespace PointGaming.Desktop
         public readonly SocketSession PgSession;
         private ChatManager _chatManager;
 
-        private readonly ObservableCollection<LobbySession> _lobbies = new ObservableCollection<LobbySession>();
-        
         private readonly ObservableCollection<PgUser> _friends = new ObservableCollection<PgUser>();
         public ObservableCollection<PgUser> Friends { get { return _friends; } }
         private Dictionary<string, PgUser> _friendLookup = new Dictionary<string, PgUser>();

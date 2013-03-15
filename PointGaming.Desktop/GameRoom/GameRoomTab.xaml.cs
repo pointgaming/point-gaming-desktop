@@ -19,15 +19,15 @@ using PointGaming.Desktop.Chat;
 
 namespace PointGaming.Desktop.GameRoom
 {
-    public partial class GameRoomTab : UserControl, IWeakEventListener, ITabWithId
+    public partial class GameRoomTab : UserControl, IWeakEventListener, IChatroomTab
     {
         private ChatWindow _chatWindow;
-        private ChatroomSession _roomManager;
+        private GameRoomSession _gameRoomSession;
         private UserDataManager _userData = HomeWindow.UserData;
         private AutoScroller _autoScroller;
         private FlowDocument _descriptionDocument;
 
-        public string Id { get { return _roomManager.ChatroomId; } }
+        public string Id { get { return _gameRoomSession.ChatroomId; } }
 
         public GameRoomTab()
         {
@@ -61,12 +61,12 @@ namespace PointGaming.Desktop.GameRoom
             flowDocumentLog.Document.FontSize = Properties.Settings.Default.ChatFontSize;
         }
 
-        public void Init(ChatWindow window, ChatroomSession roomManager)
+        public void Init(ChatWindow window, ChatroomSession gameRoomSession)
         {
             _chatWindow = window;
-            _roomManager = roomManager;
-            _roomManager.ReceivedMessage += ReceivedMessage;
-            listBoxMembership.ItemsSource = _roomManager.Membership;
+            _gameRoomSession = (GameRoomSession)gameRoomSession;
+            _gameRoomSession.ReceivedMessage += ReceivedMessage;
+            listBoxMembership.ItemsSource = _gameRoomSession.Membership;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -98,7 +98,7 @@ namespace PointGaming.Desktop.GameRoom
                 return;
             textBoxInput.Text = remain;
 
-            _roomManager.SendMessage(send);
+            _gameRoomSession.SendMessage(send);
         }
 
         private void ReceivedMessage(UserBase fromUser, string message)
@@ -203,7 +203,7 @@ namespace PointGaming.Desktop.GameRoom
             if (e.Data.GetDataPresent(typeof(PgUser).FullName))
             {
                 PgUser anotherUser = e.Data.GetData(typeof(PgUser).FullName) as PgUser;
-                _roomManager.Invite(anotherUser);
+                _gameRoomSession.Invite(anotherUser);
                 e.Handled = true;
             }
         }

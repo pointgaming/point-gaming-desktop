@@ -16,6 +16,8 @@ namespace PointGaming.Desktop.Chat
 
     public class ChatManager
     {
+        public const string PrefixLobby = "lobby_";
+        public const string PrefixGameRoom = "gameroom_";
         private UserDataManager _userData;
         private ChatWindow _chatWindow;
 
@@ -74,6 +76,7 @@ namespace PointGaming.Desktop.Chat
         }
         private void Disconnect(ChatroomSession item)
         {
+            var id = item.ChatroomId;
             item.State = ChatroomState.Disconnected;
             ChatroomUserLeave(new Chatroom { _id = item.ChatroomId, });
         }
@@ -124,19 +127,19 @@ namespace PointGaming.Desktop.Chat
         {
             var received = message.Json.GetFirstArgAs<ChatroomMemberList>();
             var id = received._id;
-            ChatroomSession usage;
-            if (!_chatroomUsage.TryGetValue(id, out usage))
+            ChatroomSession chatroomSession;
+            if (!_chatroomUsage.TryGetValue(id, out chatroomSession))
                 return;
 
-            usage.State = ChatroomState.Connected;
+            chatroomSession.State = ChatroomState.Connected;
             foreach (var item in received.members)
             {
                 var pgUser = _userData.GetPgUser(item);
-                if (!usage.Membership.Contains(pgUser))
-                    usage.Membership.Add(pgUser);
+                if (!chatroomSession.Membership.Contains(pgUser))
+                    chatroomSession.Membership.Add(pgUser);
             }
 
-            ChatWindow.ShowChatroom(usage);
+            ChatWindow.Show(chatroomSession);
         }
         private void OnChatroomMemberChange(IMessage message)
         {
@@ -178,7 +181,7 @@ namespace PointGaming.Desktop.Chat
                 if (!_chatroomUsage.TryGetValue(id, out usage)
                     || usage.State == ChatroomState.Disconnected)
                 {
-                    if (id.StartsWith("lobby_") || id.StartsWith("gameroom_"))
+                    if (id.StartsWith(PrefixLobby) || id.StartsWith(PrefixGameRoom))
                     {
                         ChatWindow.AddInvite(received);
                     }
@@ -194,25 +197,33 @@ namespace PointGaming.Desktop.Chat
 
         public void JoinChatroom(string id)
         {
-            ChatroomSession usage;
-            if (_chatroomUsage.TryGetValue(id, out usage))
+            ChatroomSession chatroomSession;
+            if (_chatroomUsage.TryGetValue(id, out chatroomSession))
             {
-                if (usage.State == ChatroomState.Connected
-                    || usage.State == ChatroomState.New)
+                if (chatroomSession.State == ChatroomState.Connected
+                    || chatroomSession.State == ChatroomState.New)
                 {
-                    ChatWindow.ShowChatroom(usage);
+                    ChatWindow.Show(chatroomSession);
                     return;
                 }
             }
+            if (id.StartsWith(PrefixLobby))
+                chatroomSession = new Lobby.LobbySession(this);
+            else if (id.StartsWith(PrefixGameRoom))
+                chatroomSession = new GameRoom.GameRoomSession(this);
+            else
+                chatroomSession = new ChatroomSession(this);
+            
+            chatroomSession.ChatroomId = id;
+            chatroomSession.State = ChatroomState.New;
 
-            usage = new ChatroomSession(this) { ChatroomId = id, State = ChatroomState.New, };
-            _chatroomUsage[id] = usage;
+            _chatroomUsage[id] = chatroomSession;
 
             var chatroom = new Chatroom { _id = id };
             ChatroomUserJoin(chatroom);
             ChatroomMemberGetList(chatroom);
         }
-
+        
         private void ChatroomUserJoin(Chatroom chatroom)
         {
             _userData.PgSession.EmitLater("Chatroom.join", chatroom);

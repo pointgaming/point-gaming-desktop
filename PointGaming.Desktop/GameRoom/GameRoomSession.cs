@@ -6,9 +6,21 @@ using PointGaming.Desktop.Chat;
 
 namespace PointGaming.Desktop.GameRoom
 {
-    public class GameRoomSession
+    public class GameRoomSession : ChatroomSession
     {
-        private ChatroomSession _chatroom;
+        public GameRoomSession(ChatManager manager)
+            : base(manager)
+        {
+        }
 
+        public override Type GetUserControlType()
+        {
+            return typeof(GameRoomTab);
+        }
+
+        public override IChatroomTab GetNewUserControl()
+        {
+            return new GameRoomTab();
+        }
     }
 }

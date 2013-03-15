@@ -41,7 +41,7 @@ namespace PointGaming.Desktop.Lobby
         
         private void buttonButtonJoin_Click(object sender, RoutedEventArgs e)
         {
-            _userData.JoinChat("gameroom_" + "asdfsfsf");
+            _userData.JoinChat(Chat.ChatManager.PrefixGameRoom + "asdfsfsf");
         }
 
         public static readonly DependencyProperty GameRoomTitleProperty = DependencyProperty.Register(

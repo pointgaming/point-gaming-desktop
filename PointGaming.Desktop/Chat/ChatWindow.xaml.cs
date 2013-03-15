@@ -60,9 +60,9 @@ namespace PointGaming.Desktop.Chat
             tabControlChats.SelectedItem = tabItem;
         }
 
-        public void ShowChatroom(ChatroomSession roomManager)
+        public void Show(ChatroomSession chatroomSession)
         {
-            ClosableTab tabItem = GetOrCreateTab(roomManager);
+            ClosableTab tabItem = GetOrCreateTab(chatroomSession);
             tabControlChats.SelectedItem = tabItem;
         }
 
@@ -80,39 +80,18 @@ namespace PointGaming.Desktop.Chat
             }
             return tabItem;
         }
-        private ClosableTab GetOrCreateTab(ChatroomSession roomManager)
+        private ClosableTab GetOrCreateTab(ChatroomSession chatroomSession)
         {
             ClosableTab tabItem;
 
-            if (roomManager.ChatroomId.StartsWith("lobby_"))
+            var type = chatroomSession.GetUserControlType();
+
+            var tabId = GetTabId(type, chatroomSession.ChatroomId);
+            if (!_chatTabs2.TryGetValue(tabId, out tabItem))
             {
-                var tabId = GetTabId(typeof(Lobby.LobbyTab), roomManager.ChatroomId);
-                if (!_chatTabs2.TryGetValue(tabId, out tabItem))
-                {
-                    var lobbyTab = new Lobby.LobbyTab();
-                    lobbyTab.Init(this, roomManager);
-                    tabItem = AddTab(roomManager.ChatroomId, tabId, lobbyTab);
-                }
-            }
-            else if (roomManager.ChatroomId.StartsWith("gameroom_"))
-            {
-                var tabId = GetTabId(typeof(GameRoom.GameRoomTab), roomManager.ChatroomId);
-                if (!_chatTabs2.TryGetValue(tabId, out tabItem))
-                {
-                    var gameRoomTab = new GameRoom.GameRoomTab();
-                    gameRoomTab.Init(this, roomManager);
-                    tabItem = AddTab(roomManager.ChatroomId, tabId, gameRoomTab);
-                }
-            }
-            else
-            {
-                var tabId = GetTabId(typeof(ChatroomTab), roomManager.ChatroomId);
-                if (!_chatTabs2.TryGetValue(tabId, out tabItem))
-                {
-                    var chatTab = new ChatroomTab();
-                    chatTab.Init(this, roomManager);
-                    tabItem = AddTab(roomManager.ChatroomId, tabId, chatTab);
-                }
+                var chatTab = chatroomSession.GetNewUserControl();
+                chatTab.Init(this, chatroomSession);
+                tabItem = AddTab(chatroomSession.ChatroomId, tabId, chatTab);
             }
             
             return tabItem;

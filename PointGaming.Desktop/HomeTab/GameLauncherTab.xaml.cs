@@ -171,7 +171,7 @@ namespace PointGaming.Desktop.HomeTab
                 MessageDialog.Show(HomeWindow.Home, "Lobby doesn't exist", "Lobby doesn't exist for " + launcher.DisplayName + "!");
                 return;
             }
-            _userData.JoinChat("lobby_" + launcher.Id);
+            _userData.JoinChat(Chat.ChatManager.PrefixLobby + launcher.Id);
         }
 
         private void buttonLaunchExecutableClick(object sender, RoutedEventArgs e)

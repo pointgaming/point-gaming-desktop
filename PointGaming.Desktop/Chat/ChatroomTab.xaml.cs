@@ -18,7 +18,7 @@ using PointGaming.Desktop.POCO;
 
 namespace PointGaming.Desktop.Chat
 {
-    public partial class ChatroomTab : UserControl, IWeakEventListener, ITabWithId
+    public partial class ChatroomTab : UserControl, IWeakEventListener, IChatroomTab
     {
         private ChatWindow _chatWindow;
         private ChatroomSession _roomManager;

@@ -19,14 +19,14 @@ using PointGaming.Desktop.Chat;
 
 namespace PointGaming.Desktop.Lobby
 {
-    public partial class LobbyTab : UserControl, IWeakEventListener, ITabWithId
+    public partial class LobbyTab : UserControl, IWeakEventListener, IChatroomTab
     {
         private ChatWindow _chatWindow;
-        private ChatroomSession _roomManager;
+        private LobbySession _lobbySession;
         private UserDataManager _userData = HomeWindow.UserData;
         private AutoScroller _autoScroller;
 
-        public string Id { get { return _roomManager.ChatroomId; } }
+        public string Id { get { return _lobbySession.ChatroomId; } }
 
         public LobbyTab()
         {
@@ -51,12 +51,12 @@ namespace PointGaming.Desktop.Lobby
             flowDocumentLog.Document.FontSize = Properties.Settings.Default.ChatFontSize;
         }
 
-        public void Init(ChatWindow window, ChatroomSession roomManager)
+        public void Init(ChatWindow window, ChatroomSession lobbySession)
         {
             _chatWindow = window;
-            _roomManager = roomManager;
-            _roomManager.ReceivedMessage += ReceivedMessage;
-            listBoxMembership.ItemsSource = _roomManager.Membership;
+            _lobbySession = (LobbySession)lobbySession;
+            _lobbySession.ReceivedMessage += ReceivedMessage;
+            listBoxMembership.ItemsSource = _lobbySession.Membership;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -88,7 +88,7 @@ namespace PointGaming.Desktop.Lobby
                 return;
             textBoxInput.Text = remain;
 
-            _roomManager.SendMessage(send);
+            _lobbySession.SendMessage(send);
         }
 
         private void ReceivedMessage(UserBase fromUser, string message)
@@ -193,7 +193,7 @@ namespace PointGaming.Desktop.Lobby
             if (e.Data.GetDataPresent(typeof(PgUser).FullName))
             {
                 PgUser anotherUser = e.Data.GetData(typeof(PgUser).FullName) as PgUser;
-                _roomManager.Invite(anotherUser);
+                _lobbySession.Invite(anotherUser);
                 e.Handled = true;
             }
         }

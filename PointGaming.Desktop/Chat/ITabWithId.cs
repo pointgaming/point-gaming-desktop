@@ -9,4 +9,8 @@ namespace PointGaming.Desktop.Chat
     {
         string Id { get; }
     }
+    public interface IChatroomTab : ITabWithId
+    {
+        void Init(ChatWindow window, ChatroomSession roomManager);
+    }
 }

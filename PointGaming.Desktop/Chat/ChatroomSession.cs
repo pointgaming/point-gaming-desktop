@@ -46,5 +46,15 @@ namespace PointGaming.Desktop.Chat
                 return;
             _manager.ChatroomInviteSend(new ChatroomInviteOut { _id = ChatroomId, toUser = other.ToUserBase(), });
         }
+
+        public virtual Type GetUserControlType()
+        {
+            return typeof(ChatroomTab);
+        }
+
+        public virtual IChatroomTab GetNewUserControl()
+        {
+            return new ChatroomTab();
+        }
     }
 }
