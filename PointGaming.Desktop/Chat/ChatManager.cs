@@ -19,7 +19,7 @@ namespace PointGaming.Desktop.Chat
         private SocketSession _session;
         private ChatWindow _chatWindow;
 
-        private readonly Dictionary<string, ChatroomInfo> _chatroomUsage = new Dictionary<string, ChatroomInfo>();
+        private readonly Dictionary<string, ChatroomSession> _chatroomUsage = new Dictionary<string, ChatroomSession>();
 
         public void Init(SocketSession session)
         {
@@ -65,13 +65,13 @@ namespace PointGaming.Desktop.Chat
         }
         public void Leave(string id)
         {
-            ChatroomInfo chatroomUsage;
+            ChatroomSession chatroomUsage;
             if (_chatroomUsage.TryGetValue(id, out chatroomUsage))
             {
                 Disconnect(chatroomUsage);
             }
         }
-        private void Disconnect(ChatroomInfo item)
+        private void Disconnect(ChatroomSession item)
         {
             item.State = ChatroomState.Disconnected;
             ChatroomUserLeave(new Chatroom { _id = item.ChatroomId, });
@@ -114,7 +114,7 @@ namespace PointGaming.Desktop.Chat
             var received = message.Json.GetFirstArgAs<ChatroomUserList>();
             foreach (var id in received.chatrooms)
             {
-                ChatroomInfo usage;
+                ChatroomSession usage;
                 if (!_chatroomUsage.TryGetValue(id, out usage))
                     JoinChatroom(id);
             }
@@ -123,7 +123,7 @@ namespace PointGaming.Desktop.Chat
         {
             var received = message.Json.GetFirstArgAs<ChatroomMemberList>();
             var id = received._id;
-            ChatroomInfo usage;
+            ChatroomSession usage;
             if (!_chatroomUsage.TryGetValue(id, out usage))
                 return;
 
@@ -141,7 +141,7 @@ namespace PointGaming.Desktop.Chat
         {
             var received = message.Json.GetFirstArgAs<ChatroomMemberChange>();
             var id = received._id;
-            ChatroomInfo usage;
+            ChatroomSession usage;
             if (!_chatroomUsage.TryGetValue(id, out usage))
                 return;
 
@@ -159,7 +159,7 @@ namespace PointGaming.Desktop.Chat
         {
             var received = message.Json.GetFirstArgAs<ChatroomMessageNew>();
             var id = received._id;
-            ChatroomInfo usage;
+            ChatroomSession usage;
             if (!_chatroomUsage.TryGetValue(id, out usage))
                 return;
             if (usage.State != ChatroomState.Connected)
@@ -173,7 +173,7 @@ namespace PointGaming.Desktop.Chat
             var id = received._id;
             if (_session.Data.IsFriend(received.fromUser._id))
             {
-                ChatroomInfo usage;
+                ChatroomSession usage;
                 if (!_chatroomUsage.TryGetValue(id, out usage)
                     || usage.State == ChatroomState.Disconnected)
                 {
@@ -193,7 +193,7 @@ namespace PointGaming.Desktop.Chat
 
         public void JoinChatroom(string id)
         {
-            ChatroomInfo usage;
+            ChatroomSession usage;
             if (_chatroomUsage.TryGetValue(id, out usage))
             {
                 if (usage.State == ChatroomState.Connected
@@ -204,7 +204,7 @@ namespace PointGaming.Desktop.Chat
                 }
             }
 
-            usage = new ChatroomInfo(this) { ChatroomId = id, State = ChatroomState.New, };
+            usage = new ChatroomSession(this) { ChatroomId = id, State = ChatroomState.New, };
             _chatroomUsage[id] = usage;
 
             var chatroom = new Chatroom { _id = id };

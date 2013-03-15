@@ -60,7 +60,7 @@ namespace PointGaming.Desktop.Chat
             tabControlChats.SelectedItem = tabItem;
         }
 
-        public void ShowChatroom(ChatroomInfo roomManager)
+        public void ShowChatroom(ChatroomSession roomManager)
         {
             ClosableTab tabItem = GetOrCreateTab(roomManager);
             tabControlChats.SelectedItem = tabItem;
@@ -80,7 +80,7 @@ namespace PointGaming.Desktop.Chat
             }
             return tabItem;
         }
-        private ClosableTab GetOrCreateTab(ChatroomInfo roomManager)
+        private ClosableTab GetOrCreateTab(ChatroomSession roomManager)
         {
             ClosableTab tabItem;
 

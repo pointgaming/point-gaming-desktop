@@ -14,7 +14,7 @@ namespace PointGaming.Desktop.Chat
         Connected,
         Disconnected,
     }
-    public class ChatroomInfo
+    public class ChatroomSession
     {
         public event ReceivedMessage ReceivedMessage;
         public string ChatroomId;
@@ -22,7 +22,7 @@ namespace PointGaming.Desktop.Chat
         public readonly ObservableCollection<PgUser> Membership = new ObservableCollection<PgUser>();
         private ChatManager _manager;
 
-        public ChatroomInfo(ChatManager manager)
+        public ChatroomSession(ChatManager manager)
         {
             _manager = manager;
         }

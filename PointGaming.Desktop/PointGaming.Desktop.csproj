@@ -132,7 +132,7 @@
     </ApplicationDefinition>
     <Compile Include="Chat\AutoScroller.cs" />
     <Compile Include="Chat\ChatManager.cs" />
-    <Compile Include="Chat\ChatroomInfo.cs" />
+    <Compile Include="Chat\ChatroomSession.cs" />
     <Compile Include="Chat\ChatroomTab.xaml.cs">
       <DependentUpon>ChatroomTab.xaml</DependentUpon>
     </Compile>
@@ -157,6 +157,7 @@
     <Compile Include="GameRoom\GameRoomAdminDialog.xaml.cs">
       <DependentUpon>GameRoomAdminDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GameRoom\GameRoomSession.cs" />
     <Compile Include="GameRoom\GameRoomTab.xaml.cs">
       <DependentUpon>GameRoomTab.xaml</DependentUpon>
     </Compile>
@@ -170,6 +171,7 @@
       <DependentUpon>GameRoomPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Lobby\FileCollection.cs" />
+    <Compile Include="Lobby\LobbySession.cs" />
     <Compile Include="Lobby\LobbyTab.xaml.cs">
       <DependentUpon>LobbyTab.xaml</DependentUpon>
     </Compile>
