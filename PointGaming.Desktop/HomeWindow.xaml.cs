@@ -18,8 +18,7 @@ namespace PointGaming.Desktop
 
         private readonly List<Window> _childWindows = new List<Window>();
 
-        public SocketSession SocketSession;
-        private Chat.ChatManager _chatManager;
+        public UserDataManager UserData;
 
         public HomeWindow()
         {
@@ -30,7 +29,7 @@ namespace PointGaming.Desktop
 
         public void Init(SocketSession session)
         {
-            SocketSession = session;
+            UserData = new UserDataManager(session);
             
             var tab = new TabItem
             {
@@ -67,8 +66,7 @@ namespace PointGaming.Desktop
             };
             tabControlMain.Items.Add(tab);
 
-            _chatManager = new Chat.ChatManager();
-            _chatManager.Init(SocketSession);
+            UserData.StartChat();
         }
         
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -124,23 +122,10 @@ namespace PointGaming.Desktop
         {
             _childWindows.Remove(window);
         }
-        public void ChatWith(PgUser friend)
-        {
-            _chatManager.ChatWith(friend);
-        }
-        public void JoinChat(string id)
-        {
-            _chatManager.JoinChatroom(id);
-        }
-
-        public Chat.ChatWindow GetChatWindow()
-        {
-            return _chatManager.ChatWindow;
-        }
-
+        
         public void LogOut(bool shouldShowLogInWindow)
         {
-            if (SocketSession == null)
+            if (UserData == null)
                 return;
 
             taskbarIcon.Visibility = System.Windows.Visibility.Collapsed;
@@ -154,11 +139,8 @@ namespace PointGaming.Desktop
 
             Hide();
 
-            SocketSession.Data.LoggedOut();
-            SocketSession.Begin(SocketSession.Logout);
-
-            SocketSession = null;
-            _chatManager = null;
+            UserData.LoggedOut();
+            UserData = null;
 
             if (shouldShowLogInWindow)
             {

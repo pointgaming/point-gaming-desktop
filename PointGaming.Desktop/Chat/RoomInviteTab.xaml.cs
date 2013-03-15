@@ -19,7 +19,7 @@ namespace PointGaming.Desktop.Chat
     public partial class RoomInviteTab : UserControl, ITabWithId
     {
         private ChatWindow _chatWindow;
-        private SocketSession _session = HomeWindow.Home.SocketSession;
+        private UserDataManager _userData = HomeWindow.Home.UserData;
 
         public const string TabId = "@%%^&^#&)):hgdf";
         public string Id { get { return TabId; } }
@@ -47,7 +47,7 @@ namespace PointGaming.Desktop.Chat
             ChatroomInviteNew invite;
             if (((DependencyObject)sender).TryGetPresentedParent(out invite))
             {
-                HomeWindow.Home.JoinChat(invite._id);
+                _userData.JoinChat(invite._id);
                 _invites.Remove(invite);
             }
 

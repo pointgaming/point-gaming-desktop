@@ -21,7 +21,7 @@ namespace PointGaming.Desktop.Chat
     {
         private ChatWindow _chatWindow;
         private PgUser _otherUser;
-        private SocketSession _session = HomeWindow.Home.SocketSession;
+        private UserDataManager _userData = HomeWindow.Home.UserData;
         private AutoScroller _autoScroller;
 
         public string Id { get { return _otherUser.Id; } }
@@ -95,7 +95,7 @@ namespace PointGaming.Desktop.Chat
         }
         public void MessageSent(PrivateMessageSent message)
         {
-            AppendUserMessage(_session.Data.User.Username, message.message);
+            AppendUserMessage(_userData.User.Username, message.message);
         }
 
         private void AppendUserMessage(string username, string message)

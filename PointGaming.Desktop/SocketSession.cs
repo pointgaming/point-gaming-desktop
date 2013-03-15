@@ -16,8 +16,7 @@ namespace PointGaming.Desktop
     {
         public Client MyClient;
         private AuthEmit _authEmit;
-        public UserDataManager Data = new UserDataManager();
-
+        
         private AutoResetEvent socketWorker = new AutoResetEvent(false);
         public string AuthToken { get; set; }
 
@@ -30,6 +29,8 @@ namespace PointGaming.Desktop
 
         private Dictionary<int, Action<Action>> _threadQueuers = new Dictionary<int, Action<Action>>();
         private readonly List<CallbackAction> _workQueue = new List<CallbackAction>();
+
+        public PgUser User;
 
         public SocketSession()
         {
@@ -185,8 +186,7 @@ namespace PointGaming.Desktop
                     isSuccess = false;
 
                     AuthToken = apiResponse.Data.auth_token;
-                    Data.User.Username = username;
-                    Data.User.Id = apiResponse.Data._id;
+                    User = new PgUser {Id = apiResponse.Data._id, Username = username };
                     
                     ConnectSocket();
                     while (DateTime.Now < timeout && !_isAuthResponded)
@@ -226,8 +226,9 @@ namespace PointGaming.Desktop
             }
 
             AuthToken = "";
-            Data.User.Username = "";
-            Data.User.Id = "";
+            User.Username = "";
+            User.Id = "";
+            User.Status = "";
 
             App.LogLine("Logged in session ended.");
         }

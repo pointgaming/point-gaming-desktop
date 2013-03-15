@@ -27,6 +27,7 @@ namespace PointGaming.Desktop.Lobby
             var args = new PropertyChangedEventArgs(propertyName);
             changedCallback(this, args);
         }
+        private UserDataManager _userData = HomeWindow.Home.UserData;
 
         public GameRoomPanel()
         {
@@ -35,12 +36,12 @@ namespace PointGaming.Desktop.Lobby
 
         private void hyperLinkInfoClick(object sender, RoutedEventArgs e)
         {
-            MessageDialog.Show(HomeWindow.Home.GetChatWindow(), "Info", "TODO: Information goes here.");
+            MessageDialog.Show(_userData.GetChatWindow(), "Info", "TODO: Information goes here.");
         }
         
         private void buttonButtonJoin_Click(object sender, RoutedEventArgs e)
         {
-            HomeWindow.Home.JoinChat("gameroom_" + "asdfsfsf");
+            _userData.JoinChat("gameroom_" + "asdfsfsf");
         }
 
         public static readonly DependencyProperty GameRoomTitleProperty = DependencyProperty.Register(

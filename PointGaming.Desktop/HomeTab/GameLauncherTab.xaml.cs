@@ -19,7 +19,7 @@ namespace PointGaming.Desktop.HomeTab
 {
     public partial class GameLauncherTab : UserControl
     {
-        private SocketSession _session = HomeWindow.Home.SocketSession;
+        private UserDataManager _userData = HomeWindow.Home.UserData;
 
         private readonly ObservableCollection<LauncherInfo> _launchers = new ObservableCollection<LauncherInfo>();
         public ObservableCollection<LauncherInfo> Launchers { get { return _launchers; } }
@@ -60,9 +60,9 @@ namespace PointGaming.Desktop.HomeTab
             _launchers.CollectionChanged += _launchers_CollectionChanged;
 
             RestResponse<GameList> response = null;
-            _session.BeginAndCallback(delegate
+            _userData.PgSession.BeginAndCallback(delegate
             {
-                var url = Properties.Settings.Default.Games + "?auth_token=" + _session.AuthToken;
+                var url = Properties.Settings.Default.Games + "?auth_token=" + _userData.PgSession.AuthToken;
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.GET);
                 response = (RestResponse<GameList>)client.Execute<GameList>(request);
@@ -171,7 +171,7 @@ namespace PointGaming.Desktop.HomeTab
                 MessageDialog.Show(HomeWindow.Home, "Lobby doesn't exist", "Lobby doesn't exist for " + launcher.DisplayName + "!");
                 return;
             }
-            HomeWindow.Home.JoinChat("lobby_" + launcher.Id);
+            _userData.JoinChat("lobby_" + launcher.Id);
         }
 
         private void buttonLaunchExecutableClick(object sender, RoutedEventArgs e)

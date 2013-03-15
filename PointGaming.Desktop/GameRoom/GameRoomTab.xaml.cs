@@ -23,7 +23,7 @@ namespace PointGaming.Desktop.GameRoom
     {
         private ChatWindow _chatWindow;
         private ChatroomSession _roomManager;
-        private SocketSession _session = HomeWindow.Home.SocketSession;
+        private UserDataManager _userData = HomeWindow.Home.UserData;
         private AutoScroller _autoScroller;
         private FlowDocument _descriptionDocument;
 
@@ -129,7 +129,7 @@ namespace PointGaming.Desktop.GameRoom
             if (((DependencyObject)sender).TryGetParent(out item))
             {
                 var pgUser = (PgUser)item.DataContext;
-                HomeWindow.Home.ChatWith(pgUser);
+                _userData.ChatWith(pgUser);
             }
         }
 

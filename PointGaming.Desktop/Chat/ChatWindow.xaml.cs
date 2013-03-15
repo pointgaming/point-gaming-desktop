@@ -13,7 +13,7 @@ namespace PointGaming.Desktop.Chat
 {
     public partial class ChatWindow : Window
     {
-        private SocketSession _session = HomeWindow.Home.SocketSession;
+        private UserDataManager _userData = HomeWindow.Home.UserData;
         private ChatManager _manager;
 
         private readonly Dictionary<string, ClosableTab> _chatTabs2 = new Dictionary<string, ClosableTab>();
@@ -37,14 +37,14 @@ namespace PointGaming.Desktop.Chat
 
         public void MessageReceived(PrivateMessageIn message)
         {
-            var data = _session.Data.GetPgUser(message.fromUser);
+            var data = _userData.GetPgUser(message.fromUser);
             ClosableTab tabItem = GetOrCreateTab(data);
             var chatTab = (Chat.ChatTab)tabItem.Content;
             chatTab.MessageReceived(message);
         }
         public void MessageSent(PrivateMessageSent message)
         {
-            var data = _session.Data.GetPgUser(message.toUser);
+            var data = _userData.GetPgUser(message.toUser);
             ClosableTab tabItem = GetOrCreateTab(data);
             var chatTab = (Chat.ChatTab)tabItem.Content;
             chatTab.MessageSent(message);

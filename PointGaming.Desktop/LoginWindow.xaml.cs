@@ -39,7 +39,7 @@ namespace PointGaming.Desktop
                 if (!string.IsNullOrWhiteSpace(lastPasswordEncrypted))
                 {
                     string lastPassword;
-                    if (UserDataManager.TryDecryptString(lastPasswordEncrypted, out lastPassword))
+                    if (lastPasswordEncrypted.TryDecrypt(out lastPassword))
                     {
                         checkBoxRememberPassword.IsChecked = true;
                         passwordBoxPassword.Password = lastPassword;
@@ -99,7 +99,7 @@ namespace PointGaming.Desktop
 
                     Properties.Settings.Default.Username = username;
                     if (checkBoxRememberPassword.IsChecked == true)
-                        Properties.Settings.Default.Password = UserDataManager.EncryptString(password);
+                        Properties.Settings.Default.Password = password.Encrypt();
                     else
                         Properties.Settings.Default.Password = "";
                     Properties.Settings.Default.Save();

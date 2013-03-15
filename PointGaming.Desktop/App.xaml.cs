@@ -395,5 +395,35 @@ namespace PointGaming.Desktop
             doc.FontFamily = textBlock.FontFamily;
             doc.FontSize = textBlock.FontSize;
         }
+
+
+        private static byte[] EncryptEntropy = System.Text.Encoding.UTF8.GetBytes("ln^lQ+0pX0_%>3b[,5Ulfbl,b\\.myWENxJJeF&*u3p");
+
+        public static string Encrypt(this string input)
+        {
+            byte[] encryptedData = System.Security.Cryptography.ProtectedData.Protect(
+                System.Text.Encoding.UTF8.GetBytes(input),
+                EncryptEntropy,
+                System.Security.Cryptography.DataProtectionScope.CurrentUser);
+            return Convert.ToBase64String(encryptedData);
+        }
+
+        public static bool TryDecrypt(this string encryptedData, out string plain)
+        {
+            try
+            {
+                byte[] decryptedData = System.Security.Cryptography.ProtectedData.Unprotect(
+                    Convert.FromBase64String(encryptedData),
+                    EncryptEntropy,
+                    System.Security.Cryptography.DataProtectionScope.CurrentUser);
+                plain = System.Text.Encoding.UTF8.GetString(decryptedData);
+                return true;
+            }
+            catch
+            {
+            }
+            plain = null;
+            return false;
+        }
     }
 }

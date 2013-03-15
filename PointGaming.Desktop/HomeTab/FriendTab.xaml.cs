@@ -21,8 +21,8 @@ namespace PointGaming.Desktop.HomeTab
 
         private static readonly List<string> ChatAvailableStatuses = new List<string>(new[] { FriendStatusOnline });
 
-        private SocketSession _session = HomeWindow.Home.SocketSession;
-        public ObservableCollection<PgUser> Friends { get { return _session.Data.Friends; } }
+        private UserDataManager _userData = HomeWindow.Home.UserData;
+        public ObservableCollection<PgUser> Friends { get { return _userData.Friends; } }
 
         public FriendTab()
         {
@@ -33,9 +33,9 @@ namespace PointGaming.Desktop.HomeTab
             if (DesignerProperties.GetIsInDesignMode(this))
                 return;
 
-            _session.OnThread("friend_status_changed", OnFriendStatusChanged);
-            _session.OnThread("friend_request_created", OnFriendRequestCreated);
-            _session.OnThread("friend_request_destroyed", OnFriendRequestDestroyed);
+            _userData.PgSession.OnThread("friend_status_changed", OnFriendStatusChanged);
+            _userData.PgSession.OnThread("friend_request_created", OnFriendRequestCreated);
+            _userData.PgSession.OnThread("friend_request_destroyed", OnFriendRequestDestroyed);
 
             GetFriends();
             GetFriendRequestsTo();
@@ -69,7 +69,7 @@ namespace PointGaming.Desktop.HomeTab
             {
                 if (CanChatWith(friend))
                 {
-                    HomeWindow.Home.ChatWith(friend);
+                    _userData.ChatWith(friend);
                 }
             }
         }
@@ -108,7 +108,7 @@ namespace PointGaming.Desktop.HomeTab
         private void FriendStatusChanged(FriendStatus friendStatus)
         {
             PgUser friendData;
-            if (_session.Data.TryGetFriend(friendStatus._id, out friendData))
+            if (_userData.TryGetFriend(friendStatus._id, out friendData))
             {
                 friendData.Status = friendStatus.status;
             }
@@ -117,8 +117,8 @@ namespace PointGaming.Desktop.HomeTab
         private void FriendRemoved(FriendStatus friendStatus)
         {
             PgUser friendUiData;
-            if (_session.Data.TryGetFriend(friendStatus._id, out friendUiData))
-                _session.Data.RemoveFriend(friendUiData);
+            if (_userData.TryGetFriend(friendStatus._id, out friendUiData))
+                _userData.RemoveFriend(friendUiData);
         }
 
         private void FriendAdded(FriendStatus friendStatus)
@@ -145,9 +145,9 @@ namespace PointGaming.Desktop.HomeTab
         private void GetFriends()
         {
             RestResponse<FriendList> response = null;
-            _session.BeginAndCallback(delegate
+            _userData.PgSession.BeginAndCallback(delegate
             {
-                var friendsRequestCall = Properties.Settings.Default.Friends + "?auth_token=" + _session.AuthToken;
+                var friendsRequestCall = Properties.Settings.Default.Friends + "?auth_token=" + _userData.PgSession.AuthToken;
                 var friendClient = new RestClient(friendsRequestCall);
                 var fRequest = new RestRequest(Method.GET);
                 response = (RestResponse<FriendList>)friendClient.Execute<FriendList>(fRequest);
@@ -167,7 +167,7 @@ namespace PointGaming.Desktop.HomeTab
         private void AddOrUpdateFriend(UserWithStatus friend)
         {
             PgUser old;
-            if (_session.Data.TryGetFriend(friend._id, out old))
+            if (_userData.TryGetFriend(friend._id, out old))
             {
                 old.Status = friend.status;
                 old.Username = friend.username;
@@ -180,7 +180,7 @@ namespace PointGaming.Desktop.HomeTab
                     Status = friend.status,
                     Id = friend._id,
                 };
-                _session.Data.AddFriend(newFriend);
+                _userData.AddFriend(newFriend);
             }
         }
 
@@ -195,7 +195,7 @@ namespace PointGaming.Desktop.HomeTab
                 if (!newData.ContainsKey(item.Username))
                     removes.Add(item);
             foreach (var item in removes)
-                _session.Data.RemoveFriend(item);
+                _userData.RemoveFriend(item);
         }
         #endregion
 
@@ -204,11 +204,11 @@ namespace PointGaming.Desktop.HomeTab
         private void OnFriendRequestCreated(IMessage data)
         {
             var friendRequest = data.Json.GetFirstArgAs<FriendRequest>();
-            if (friendRequest.to_user._id == _session.Data.User.Id)
+            if (friendRequest.to_user._id == _userData.User.Id)
             {
                 FriendRequestToReceived(friendRequest);
             }
-            else if (friendRequest.from_user._id == _session.Data.User.Id)
+            else if (friendRequest.from_user._id == _userData.User.Id)
             {
                 FriendRequestFromReceived(friendRequest);
             }
@@ -254,9 +254,9 @@ namespace PointGaming.Desktop.HomeTab
         {
             List<FriendRequest> requests = null;
             bool isSuccess = false;
-            _session.BeginAndCallback(delegate
+            _userData.PgSession.BeginAndCallback(delegate
             {
-                var friendsRequestCall = Properties.Settings.Default.FriendRequests + "?sent=1&auth_token=" + _session.AuthToken;
+                var friendsRequestCall = Properties.Settings.Default.FriendRequests + "?sent=1&auth_token=" + _userData.PgSession.AuthToken;
                 var friendClient = new RestClient(friendsRequestCall);
                 var fRequest = new RestRequest(Method.GET);
                 var response = (RestResponse<FriendRequestRoot>)
@@ -288,9 +288,9 @@ namespace PointGaming.Desktop.HomeTab
         private void FriendRequestFromCanceled(FriendRequestFromUserControl source)
         {
             string id = source.FriendRequestId;
-            _session.Begin(delegate
+            _userData.PgSession.Begin(delegate
             {
-                var apiCall = Properties.Settings.Default.FriendRequests + id + "?auth_token=" + _session.AuthToken;
+                var apiCall = Properties.Settings.Default.FriendRequests + id + "?auth_token=" + _userData.PgSession.AuthToken;
                 var client = new RestClient(apiCall);
                 var request = new RestRequest(Method.DELETE);
                 client.Execute<ApiResponse>(request);
@@ -303,9 +303,9 @@ namespace PointGaming.Desktop.HomeTab
         {
             List<FriendRequest> requests = null;
             bool isSuccess = false;
-            _session.BeginAndCallback(delegate
+            _userData.PgSession.BeginAndCallback(delegate
             {
-                var friendsRequestCall = Properties.Settings.Default.FriendRequests + "?auth_token=" + _session.AuthToken;
+                var friendsRequestCall = Properties.Settings.Default.FriendRequests + "?auth_token=" + _userData.PgSession.AuthToken;
                 var friendClient = new RestClient(friendsRequestCall);
                 var fRequest = new RestRequest(Method.GET);
                 var response = (RestResponse<FriendRequestRoot>)
@@ -337,9 +337,9 @@ namespace PointGaming.Desktop.HomeTab
         private void FriendRequestToAnswered(FriendRequestToUserControl source, bool isAccepted)
         {
             string id = source.FriendRequestId;
-            _session.Begin(delegate
+            _userData.PgSession.Begin(delegate
             {
-                var apiCall = Properties.Settings.Default.FriendRequests + id + "?auth_token=" + _session.AuthToken;
+                var apiCall = Properties.Settings.Default.FriendRequests + id + "?auth_token=" + _userData.PgSession.AuthToken;
                 var client = new RestClient(apiCall);
                 var request = new RestRequest(Method.PUT) { RequestFormat = RestSharp.DataFormat.Json };
 
@@ -389,10 +389,10 @@ namespace PointGaming.Desktop.HomeTab
             request.RequestFormat = RestSharp.DataFormat.Json;
             request.AddBody(friendRequestRootObject);
 
-            var friendsRequestApiCall = Properties.Settings.Default.FriendRequests + "?auth_token=" + _session.AuthToken;
+            var friendsRequestApiCall = Properties.Settings.Default.FriendRequests + "?auth_token=" + _userData.PgSession.AuthToken;
             var client = new RestClient(friendsRequestApiCall);
 
-            _session.Begin(delegate
+            _userData.PgSession.Begin(delegate
             {
                 var apiResponse = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
 
@@ -421,10 +421,10 @@ namespace PointGaming.Desktop.HomeTab
         #region unfriend
         private void Unfriend(PgUser friend)
         {
-            _session.Begin(delegate
+            _userData.PgSession.Begin(delegate
             {
                 var request = new RestRequest(Method.DELETE);
-                var baseUrl = Properties.Settings.Default.Friends + friend.Id + "?auth_token=" + _session.AuthToken;
+                var baseUrl = Properties.Settings.Default.Friends + friend.Id + "?auth_token=" + _userData.PgSession.AuthToken;
                 var client = new RestClient(baseUrl);
                 client.Execute<ApiResponse>(request);
             });
@@ -505,7 +505,7 @@ namespace PointGaming.Desktop.HomeTab
             if (e.Data.GetDataPresent(typeof(PgUser).FullName))
             {
                 PgUser user = e.Data.GetData(typeof(PgUser).FullName) as PgUser;
-                if (_session.Data.IsFriend(user.Id))
+                if (_userData.IsFriend(user.Id))
                     RequestFriend(user.Username);
                 else
                 {
@@ -528,14 +528,14 @@ namespace PointGaming.Desktop.HomeTab
 
         private void buttonJoinChat_Click(object sender, RoutedEventArgs e)
         {
-            HomeWindow.Home.JoinChat(textBoxChatroomId.Text);
+            _userData.JoinChat(textBoxChatroomId.Text);
         }
 
         private void textBoxJoinChat_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                HomeWindow.Home.JoinChat(textBoxChatroomId.Text);
+                _userData.JoinChat(textBoxChatroomId.Text);
                 e.Handled = true;
                 return;
             }
