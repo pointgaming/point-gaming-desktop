@@ -57,6 +57,8 @@ namespace PointGaming.Desktop.Lobby
             _lobbySession = (LobbySession)lobbySession;
             _lobbySession.ReceivedMessage += ReceivedMessage;
             listBoxMembership.ItemsSource = _lobbySession.Membership;
+            itemsControlGameRoomList.ItemsSource = _lobbySession.AllGameRooms;
+            itemsControlJoinedGameRoomList.ItemsSource = _lobbySession.JoinedGameRooms;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -198,5 +200,19 @@ namespace PointGaming.Desktop.Lobby
             }
         }
         #endregion
+
+        private void GameRoomPanel_JoinClick(object sender, RoutedEventArgs e)
+        {
+            GameRoomItem item;
+            if (((DependencyObject)sender).TryGetPresentedParent(out item))
+                _userData.JoinChat(Chat.ChatManager.PrefixGameRoom + item.Id);
+        }
+
+        private void GameRoomPanel_InfoClick(object sender, RoutedEventArgs e)
+        {
+            GameRoomItem item;
+            if (((DependencyObject)sender).TryGetPresentedParent(out item))
+                MessageDialog.Show(_userData.GetChatWindow(), "Info", "TODO: Information goes here.  GameRoom Id = " + item.Id);
+        }
     }
 }

@@ -11,52 +11,19 @@ namespace PointGaming.Desktop.Lobby
 {
     public class LobbySession : ChatroomSession
     {
-        public class JoinedGameRoom : INotifyPropertyChanged
-        {
-            public event PropertyChangedEventHandler PropertyChanged;
-            private void NotifyChanged(string propertyName)
-            {
-                var changedCallback = PropertyChanged;
-                if (changedCallback == null)
-                    return;
-                var args = new PropertyChangedEventArgs(propertyName);
-                changedCallback(this, args);
-            }
+        private readonly ObservableCollection<GameRoomItem> _allGameRooms = new ObservableCollection<GameRoomItem>();
+        public ObservableCollection<GameRoomItem> AllGameRooms { get { return _allGameRooms; } }
 
-
-            private string _id;
-            public string Id
-            {
-                get { return _id; }
-                set
-                {
-                    if (value == _id)
-                        return;
-                    _id = value;
-                    NotifyChanged("Id");
-                }
-            }
-
-            private string _displayName;
-            public string DisplayName
-            {
-                get { return _displayName; }
-                set
-                {
-                    if (value == _displayName)
-                        return;
-                    _displayName = value;
-                    NotifyChanged("DisplayName");
-                }
-            }
-        }
-
-        private ObservableCollection<JoinedGameRoom> _gameRooms = new ObservableCollection<JoinedGameRoom>();
-        public ObservableCollection<JoinedGameRoom> JoinedGameRooms { get { return _gameRooms; } }
+        private readonly ObservableCollection<GameRoomItem> _joinedGameRooms = new ObservableCollection<GameRoomItem>();
+        public ObservableCollection<GameRoomItem> JoinedGameRooms { get { return _joinedGameRooms; } }
 
         public LobbySession(ChatManager manager)
             : base(manager)
         {
+            foreach (var item in new FileCollection())
+                _allGameRooms.Add(item);
+
+            _joinedGameRooms.Add(_allGameRooms.First());
         }
 
         public override Type GetUserControlType()

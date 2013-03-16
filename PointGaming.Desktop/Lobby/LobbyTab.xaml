@@ -26,7 +26,7 @@
 
 
             <ScrollViewer Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <ItemsControl>
+                <ItemsControl Name="itemsControlGameRoomList">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel />
@@ -37,7 +37,8 @@
                             <Lobby:GameRoomPanel Width="200" Height="125" Margin="2"
                                 GameRoomTitle="{Binding DisplayName}"
                                 GameRoomPopulation="{Binding MemberStatus}"
-                                GameRoomDescription="{Binding DescriptionDocument}"/>
+                                GameRoomDescription="{Binding DescriptionDocument}"
+                                JoinClick="GameRoomPanel_JoinClick" InfoClick="GameRoomPanel_InfoClick"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                     <ItemsControl.ItemsSource>
@@ -104,8 +105,25 @@
             </ListBox>
 
             <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-            
-            <Label Grid.Row="2" Content="Joined Game Rooms" Height="28" HorizontalAlignment="Center" Name="label1" VerticalAlignment="Center" />
+
+
+            <ScrollViewer Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <ItemsControl Name="itemsControlJoinedGameRoomList">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding DisplayName}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsSource>
+                        <Lobby:FileCollection/>
+                    </ItemsControl.ItemsSource>
+                </ItemsControl>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </UserControl>

@@ -18,6 +18,8 @@ namespace PointGaming.Desktop.Lobby
     public partial class GameRoomPanel : UserControl, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        public event RoutedEventHandler JoinClick;
+        public event RoutedEventHandler InfoClick;
 
         private void NotifyChanged(string propertyName)
         {
@@ -36,12 +38,16 @@ namespace PointGaming.Desktop.Lobby
 
         private void hyperLinkInfoClick(object sender, RoutedEventArgs e)
         {
-            MessageDialog.Show(_userData.GetChatWindow(), "Info", "TODO: Information goes here.");
+            var del = InfoClick;
+            if (del != null)
+                del(this, new RoutedEventArgs());
         }
         
         private void buttonButtonJoin_Click(object sender, RoutedEventArgs e)
         {
-            _userData.JoinChat(Chat.ChatManager.PrefixGameRoom + "asdfsfsf");
+            var del = JoinClick;
+            if (del != null)
+                del(this, new RoutedEventArgs());
         }
 
         public static readonly DependencyProperty GameRoomTitleProperty = DependencyProperty.Register(

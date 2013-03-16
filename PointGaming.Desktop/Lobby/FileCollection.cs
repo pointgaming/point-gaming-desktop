@@ -14,7 +14,7 @@ namespace PointGaming.Desktop.Lobby
         public FileCollection()
         {
             var item = new GameRoomItem {
-                Id = Guid.NewGuid().ToString().Replace("-", ""),
+                Id = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 10),
                 Description = "5 vs 5 Dust 2 No Scrubs Will ban for being bad No 8 digs",
                 MaxMemberCount = 10,
                 MemberCount = 10,
@@ -25,7 +25,7 @@ namespace PointGaming.Desktop.Lobby
 
             item = new GameRoomItem
             {
-                Id = Guid.NewGuid().ToString().Replace("-", ""),
+                Id = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 10),
                 Description = "Team dP",
                 MaxMemberCount = 99,
                 MemberCount = 1,
@@ -36,7 +36,7 @@ namespace PointGaming.Desktop.Lobby
 
             item = new GameRoomItem
             {
-                Id = Guid.NewGuid().ToString().Replace("-", ""),
+                Id = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 10),
                 Description = "",
                 MaxMemberCount = 99,
                 MemberCount = 1,
