@@ -214,5 +214,24 @@ namespace PointGaming.Desktop.Lobby
             if (((DependencyObject)sender).TryGetPresentedParent(out item))
                 MessageDialog.Show(_userData.GetChatWindow(), "Info", "TODO: Information goes here.  GameRoom Id = " + item.Id);
         }
+
+        private GameRoomItem _joinedItemMouseOver;
+        private void TextBlock_MouseEnter(object sender, MouseEventArgs e)
+        {
+            GameRoomItem item;
+            if (((DependencyObject)sender).TryGetPresentedParent(out item))
+                _joinedItemMouseOver = item;
+        }
+
+        private void TextBlock_MouseLeave(object sender, MouseEventArgs e)
+        {
+            _joinedItemMouseOver = null;
+        }
+
+        private void itemsControlJoinedGameRoomList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            _userData.JoinChat(Chat.ChatManager.PrefixGameRoom + _joinedItemMouseOver.Id);
+            _joinedItemMouseOver = null;
+        }
     }
 }

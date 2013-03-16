@@ -26,7 +26,7 @@
 
 
             <ScrollViewer Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <ItemsControl Name="itemsControlGameRoomList">
+                <ListBox Name="itemsControlGameRoomList">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel />
@@ -44,7 +44,7 @@
                     <ItemsControl.ItemsSource>
                         <Lobby:FileCollection/>
                     </ItemsControl.ItemsSource>
-                </ItemsControl>
+                </ListBox>
             </ScrollViewer>
 
             <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="4" Margin="0,3,0,3" />
@@ -108,21 +108,16 @@
 
 
             <ScrollViewer Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <ItemsControl Name="itemsControlJoinedGameRoomList">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
+                <ListBox Name="itemsControlJoinedGameRoomList" MouseDoubleClick="itemsControlJoinedGameRoomList_MouseDoubleClick">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding DisplayName}"/>
+                            <TextBlock Text="{Binding DisplayName}" MouseEnter="TextBlock_MouseEnter" MouseLeave="TextBlock_MouseLeave" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                     <ItemsControl.ItemsSource>
                         <Lobby:FileCollection/>
                     </ItemsControl.ItemsSource>
-                </ItemsControl>
+                </ListBox>
             </ScrollViewer>
         </Grid>
     </Grid>
