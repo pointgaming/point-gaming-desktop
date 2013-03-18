@@ -26,7 +26,7 @@
 
 
             <ScrollViewer Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <ListBox Name="itemsControlGameRoomList">
+                <ItemsControl Name="itemsControlGameRoomList" >
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel />
@@ -44,7 +44,7 @@
                     <ItemsControl.ItemsSource>
                         <Lobby:FileCollection/>
                     </ItemsControl.ItemsSource>
-                </ListBox>
+                </ItemsControl>
             </ScrollViewer>
 
             <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="4" Margin="0,3,0,3" />
