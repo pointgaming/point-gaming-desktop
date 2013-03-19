@@ -39,6 +39,19 @@ namespace PointGaming.Desktop.Lobby
             }
         }
 
+        private string _gameId;
+        public string GameId
+        {
+            get { return _gameId; }
+            set
+            {
+                if (value == _gameId)
+                    return;
+                _gameId = value;
+                NotifyChanged("GameId");
+            }
+        }
+
         private int _position;
         public int Position
         {
@@ -109,6 +122,32 @@ namespace PointGaming.Desktop.Lobby
             }
         }
 
+        private PgUser _owner;
+        public PgUser Owner
+        {
+            get { return _owner; }
+            set
+            {
+                if (value == _owner)
+                    return;
+                _owner = value;
+                NotifyChanged("Owner");
+            }
+        }
+
+        private bool _isAdvertising;
+        public bool IsAdvertising
+        {
+            get { return _isAdvertising; }
+            set
+            {
+                if (value == _isAdvertising)
+                    return;
+                _isAdvertising = value;
+                NotifyChanged("IsAdvertising");
+            }
+        }
+
         public FlowDocument DescriptionDocument
         {
             get
@@ -121,6 +160,38 @@ namespace PointGaming.Desktop.Lobby
                 doc.Blocks.Add(p);
                 return doc;
             }
+        }
+
+        public GameRoomItem() { }
+
+        public GameRoomItem(POCO.GameRoomPoco poco)
+        {
+            Id = poco._id;
+            GameId = poco.game_id;
+            Description = poco.description;
+            MaxMemberCount = poco.max_member_count;
+            MemberCount = poco.member_count;
+            Position = poco.position;
+            IsLocked = poco.is_locked;
+            IsAdvertising = poco.is_advertising;
+            Owner = HomeWindow.UserData.GetPgUser(poco.owner);
+        }
+
+        public POCO.GameRoomPoco ToPoco()
+        {
+            POCO.GameRoomPoco poco = new POCO.GameRoomPoco
+            {
+                _id = Id,
+                game_id = GameId,
+                position = Position,
+                owner = new POCO.UserBase { _id = Owner.Id, username = Owner.Username },
+                description = Description,
+                is_advertising = IsAdvertising,
+                is_locked = IsLocked,
+                max_member_count = MaxMemberCount,
+                member_count = MemberCount,
+            };
+            return poco;
         }
     }
 }

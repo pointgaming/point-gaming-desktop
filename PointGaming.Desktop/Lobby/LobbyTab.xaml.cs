@@ -205,7 +205,19 @@ namespace PointGaming.Desktop.Lobby
         {
             GameRoomItem item;
             if (((DependencyObject)sender).TryGetPresentedParent(out item))
-                _userData.JoinChat(Chat.ChatManager.PrefixGameRoom + item.Id);
+            {
+                if (item.Id == null)
+                {
+                    _lobbySession.CreateRoomAt(item.Position, "Hello world!", OnMyRoomCreated);
+                }
+                else
+                    _userData.JoinChat(Chat.ChatManager.PrefixGameRoom + item.Id);
+            }
+        }
+
+        private void OnMyRoomCreated(GameRoomItem room)
+        {
+            _userData.JoinChat(Chat.ChatManager.PrefixGameRoom + room.Id);
         }
 
         private void GameRoomPanel_InfoClick(object sender, RoutedEventArgs e)

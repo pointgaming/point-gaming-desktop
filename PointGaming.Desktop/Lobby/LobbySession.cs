@@ -6,24 +6,142 @@ using System.Text;
 using System.ComponentModel;
 using PointGaming.Desktop.Chat;
 using PointGaming.Desktop.GameRoom;
+using PointGaming.Desktop.POCO;
+using RestSharp;
+using SocketIOClient;
+using SocketIOClient.Messages;
 
 namespace PointGaming.Desktop.Lobby
 {
     public class LobbySession : ChatroomSession
     {
+        private const int MinRoomCount = 100;
+        public readonly string GameId;
+        private readonly UserDataManager _userData = HomeWindow.UserData;
+
+        public Dictionary<string, GameRoomItem> GameRoomLookup = new Dictionary<string, GameRoomItem>();
+
         private readonly ObservableCollection<GameRoomItem> _allGameRooms = new ObservableCollection<GameRoomItem>();
         public ObservableCollection<GameRoomItem> AllGameRooms { get { return _allGameRooms; } }
 
         private readonly ObservableCollection<GameRoomItem> _joinedGameRooms = new ObservableCollection<GameRoomItem>();
         public ObservableCollection<GameRoomItem> JoinedGameRooms { get { return _joinedGameRooms; } }
 
-        public LobbySession(ChatManager manager)
+        public event Action<LobbySession> LoadGameRoomsComplete;
+
+        public LobbySession(ChatManager manager, string gameId)
             : base(manager)
         {
-            foreach (var item in new FileCollection())
-                _allGameRooms.Add(item);
+            GameId = gameId;
+        }
 
-            _joinedGameRooms.Add(_allGameRooms.First());
+        public void LoadGameRooms()
+        {
+            FillEmptyRooms();
+
+            RestResponse<GameRoomListPoco> response = null;
+            _userData.PgSession.BeginAndCallback(delegate
+            {
+                var url = Properties.Settings.Default.GameRooms + "?game_id=" + GameId + "&auth_token=" + _userData.PgSession.AuthToken;
+                var client = new RestClient(url);
+                var request = new RestRequest(Method.GET);
+                response = (RestResponse<GameRoomListPoco>)client.Execute<GameRoomListPoco>(request);
+            }, delegate
+            {
+                if (response.IsOk())
+                {
+                    var gameRooms = response.Data.game_rooms;
+                    foreach (var gameRoom in gameRooms)
+                    {
+                        var item = new GameRoomItem(gameRoom);
+                        AddRoom(item);
+                    }
+                    var call = LoadGameRoomsComplete;
+                    if (call != null)
+                        call(this);
+                }
+            });
+        }
+        
+        private void FillEmptyRooms()
+        {
+            while (_allGameRooms.Count < MinRoomCount)
+            {
+                var position = _allGameRooms.Count + 1;
+                SetFakeRoomAt(position);
+            }
+        }
+
+        private void SetFakeRoomAt(int position)
+        {
+            var fakeRoom = new GameRoomItem { Position = position, Description = "", MaxMemberCount = 99, };
+            int index = position - 1;
+            if (index < _allGameRooms.Count)
+                _allGameRooms[index] = fakeRoom;
+            else
+                _allGameRooms.Add(fakeRoom);
+        }
+
+        public void CreateRoomAt(int position, string description, Action<GameRoomItem> onCreated)
+        {
+            RestResponse<GameRoomSinglePoco> response = null;
+            _userData.PgSession.BeginAndCallback(delegate
+            {
+                var url = Properties.Settings.Default.GameRooms + "?auth_token=" + _userData.PgSession.AuthToken;
+                var client = new RestClient(url);
+                var request = new RestRequest(Method.POST) { RequestFormat = RestSharp.DataFormat.Json };
+                var poco = new GameRoomPoco {
+                    position = position,
+                    description = description,
+                    max_member_count = 88,
+                    is_locked = false,
+                    is_advertising = false,
+                    game_id = GameId,
+                };
+                var root = new GameRoomSinglePoco { game_room = poco };
+                request.AddBody(root);
+                response = (RestResponse<GameRoomSinglePoco>)client.Execute<GameRoomSinglePoco>(request);
+            }, delegate
+            {
+                if (response.IsOk())
+                {
+                    var gameRoom = response.Data.game_room;
+                    var item = new GameRoomItem(gameRoom);
+                    AddRoom(item);
+                    if (onCreated != null)
+                        onCreated(item);
+                }
+            });
+        }
+
+        public static void LookupGameRoom(UserDataManager userData, string id, Action<GameRoomItem> onLookupResponse)
+        {
+            RestResponse<GameRoomSinglePoco> response = null;
+            userData.PgSession.BeginAndCallback(delegate
+            {
+                var url = Properties.Settings.Default.GameRooms + "/" + id + "?auth_token=" + userData.PgSession.AuthToken;
+                var client = new RestClient(url);
+                var request = new RestRequest(Method.GET);
+                response = (RestResponse<GameRoomSinglePoco>)client.Execute<GameRoomSinglePoco>(request);
+            }, delegate
+            {
+                if (response.IsOk())
+                {
+                    var gameRoom = response.Data.game_room;
+                    var item = new GameRoomItem(gameRoom);
+                    if (onLookupResponse != null)
+                        onLookupResponse(item);
+                }
+            });
+        }
+
+        private void AddRoom(GameRoomItem room)
+        {
+            var position = room.Position;
+            while (position >= _allGameRooms.Count)// if position is 100
+                SetFakeRoomAt(_allGameRooms.Count + 1);// then create a fake room at 101
+            _allGameRooms[position - 1] = room;
+            GameRoomLookup[room.Id] = room;
         }
 
         public override Type GetUserControlType()

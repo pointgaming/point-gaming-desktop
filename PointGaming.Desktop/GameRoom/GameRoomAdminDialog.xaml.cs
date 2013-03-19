@@ -40,6 +40,32 @@ namespace PointGaming.Desktop.GameRoom
             }
         }
 
+        private bool _isAdvertising;
+        public bool IsAdvertising
+        {
+            get { return _isAdvertising; }
+            set
+            {
+                if (value == _isAdvertising)
+                    return;
+                _isAdvertising = value;
+                NotifyChanged("IsAdvertising");
+            }
+        }
+
+        private bool _isLocked;
+        public bool IsLocked
+        {
+            get { return _isLocked; }
+            set
+            {
+                if (value == _isLocked)
+                    return;
+                _isLocked = value;
+                NotifyChanged("IsLocked");
+            }
+        }
+
         public GameRoomAdminDialog()
         {
             InitializeComponent();

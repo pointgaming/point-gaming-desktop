@@ -291,5 +291,14 @@ namespace PointGaming.Desktop.Properties {
                 this["Password"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/api/v1/game_rooms")]
+        public string GameRooms {
+            get {
+                return ((string)(this["GameRooms"]));
+            }
+        }
     }
 }

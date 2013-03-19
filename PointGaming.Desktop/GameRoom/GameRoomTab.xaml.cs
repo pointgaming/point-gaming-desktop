@@ -40,7 +40,7 @@ namespace PointGaming.Desktop.GameRoom
             _descriptionDocument = new FlowDocument();
             _descriptionDocument.SetPointGamingDefaults();
             flowDocumentDescription.Document = _descriptionDocument;
-
+            
             var p = new Paragraph();
             p.Inlines.Add(new Bold(new Run("Description: ")));
             Chat.ChatTabCommon.Format("5 vs 5 Dust 2 No Scrubs\r\nWill ban for being bad\r\nNo 8 digs\r\n\r\n\r\n\r\n\r\n\r\n", p.Inlines);
@@ -67,6 +67,10 @@ namespace PointGaming.Desktop.GameRoom
             _gameRoomSession = (GameRoomSession)gameRoomSession;
             _gameRoomSession.ReceivedMessage += ReceivedMessage;
             listBoxMembership.ItemsSource = _gameRoomSession.Membership;
+
+            Binding b = new Binding("DescriptionDocument");
+            b.Source = _gameRoomSession.GameRoom;
+            flowDocumentDescription.SetBinding(FlowDocumentScrollViewer.DocumentProperty, b);
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -212,11 +216,18 @@ namespace PointGaming.Desktop.GameRoom
         private void hyperLinkRoomInfoClick(object sender, RoutedEventArgs e)
         {
             var dialog = new GameRoomAdminDialog();
+            dialog.Description = _gameRoomSession.GameRoom.Description;
+            dialog.IsLocked = _gameRoomSession.GameRoom.IsLocked;
+            dialog.IsAdvertising = _gameRoomSession.GameRoom.IsAdvertising;
             dialog.Owner = _chatWindow;
             dialog.ShowDialog();
             if (dialog.DialogResult == true)
             {
-                MessageDialog.Show(_chatWindow, "Room Admin", "Todo set room admin values");
+                var poco = _gameRoomSession.GameRoom.ToPoco();
+                poco.description= dialog.Description;
+                poco.is_advertising = dialog.IsAdvertising;
+                poco.is_locked = dialog.IsLocked;
+                _gameRoomSession.SetGameRoomSettings(poco);
             }
         }
 
