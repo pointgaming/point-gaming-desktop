@@ -215,9 +215,9 @@ namespace PointGaming.Desktop.Lobby
             }
         }
 
-        private void OnMyRoomCreated(GameRoomItem room)
+        private void OnMyRoomCreated(string id)
         {
-            _userData.JoinChat(Chat.ChatManager.PrefixGameRoom + room.Id);
+            _userData.JoinChat(Chat.ChatManager.PrefixGameRoom + id);
         }
 
         private void GameRoomPanel_InfoClick(object sender, RoutedEventArgs e)

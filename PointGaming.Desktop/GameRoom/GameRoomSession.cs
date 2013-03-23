@@ -56,5 +56,14 @@ namespace PointGaming.Desktop.GameRoom
                 }
             });
         }
+
+        public void OnUpdate(GameRoomPoco poco)
+        {
+            // lobby should have handled it
+        }
+        public void OnDestroy(GameRoomPoco poco)
+        {
+            _manager.ChatWindow.CloseTab(typeof(GameRoomTab), ChatroomId);
+        }
     }
 }

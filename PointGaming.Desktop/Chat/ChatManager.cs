@@ -37,6 +37,10 @@ namespace PointGaming.Desktop.Chat
             session.OnThread("Chatroom.Message.new", OnChatroomMessageNew);
             session.OnThread("Chatroom.Invite.new", OnChatroomInviteNew);
 
+            session.OnThread("GameRoom.new", OnGameRoomNew);
+            session.OnThread("GameRoom.update", OnGameRoomUpdate);
+            session.OnThread("GameRoom.destroy", OnGameRoomDestroy);
+
             ChatroomUserGetList();
         }
 
@@ -272,8 +276,19 @@ namespace PointGaming.Desktop.Chat
 
         private void JoinLobbyAndGameRoom(Lobby.GameRoomItem room)
         {
-            _gameRoomsToJoinAfterLobbyJoin.Add(room.Id);
-            JoinChatroom(PrefixGameLobby + room.GameId);
+            ChatroomSession session;
+            if (_chatroomUsage.TryGetValue(PrefixGameLobby + room.GameId, out session))
+            {
+                var lobbySession = (Lobby.LobbySession)session;
+                Lobby.GameRoomItem gameRoomItem;
+                if (lobbySession.GameRoomLookup.TryGetValue(room.Id, out gameRoomItem))
+                    JoinChatroom(PrefixGameRoom + room.Id);
+            }
+            else
+            {
+                _gameRoomsToJoinAfterLobbyJoin.Add(room.Id);
+                JoinChatroom(PrefixGameLobby + room.GameId);
+            }
         }
         
         private void ChatroomUserJoin(Chatroom chatroom)
@@ -303,6 +318,72 @@ namespace PointGaming.Desktop.Chat
         public void ChatroomInviteSend(ChatroomInviteOut invite)
         {
             _userData.PgSession.EmitLater("Chatroom.Invite.send", invite);
+        }
+        #endregion
+
+        #region game room
+        private void OnGameRoomNew(IMessage message)
+        {
+            var received = message.Json.GetFirstArgAs<GameRoomSinglePoco>();
+            var gameRoom = received.game_room;
+
+            Lobby.LobbySession lobby;
+            if (TryGetGameLobby(gameRoom, out lobby))
+                lobby.OnGameRoomNew(gameRoom);
+        }
+
+        private void OnGameRoomUpdate(IMessage message)
+        {
+            var received = message.Json.GetFirstArgAs<GameRoomSinglePoco>();
+            var gameRoom = received.game_room;
+            
+            GameRoom.GameRoomSession gameRoomSession;
+            if (TryGetGameRoom(gameRoom, out gameRoomSession))
+                gameRoomSession.OnUpdate(gameRoom);
+
+            Lobby.LobbySession lobby;
+            if (TryGetGameLobby(gameRoom, out lobby))
+                lobby.OnGameRoomUpdate(gameRoom);
+        }
+
+        private void OnGameRoomDestroy(IMessage message)
+        {
+            var received = message.Json.GetFirstArgAs<GameRoomSinglePoco>();
+            var gameRoom = received.game_room;
+
+            GameRoom.GameRoomSession gameRoomSession;
+            if (TryGetGameRoom(gameRoom, out gameRoomSession))
+                gameRoomSession.OnDestroy(gameRoom);
+
+            Lobby.LobbySession lobby;
+            if (TryGetGameLobby(gameRoom, out lobby))
+                lobby.OnGameRoomDestroy(gameRoom);
+        }
+
+        private bool TryGetGameLobby(GameRoomPoco gameRoom, out Lobby.LobbySession lobby)
+        {
+            lobby = null;
+
+            var lobbyId = PrefixGameLobby + gameRoom.game_id;
+            ChatroomSession usage;
+            if (!_chatroomUsage.TryGetValue(lobbyId, out usage))
+                return false;
+
+            lobby = (Lobby.LobbySession)usage;
+            return true;
+        }
+
+        private bool TryGetGameRoom(GameRoomPoco gameRoom, out GameRoom.GameRoomSession gameRoomSession)
+        {
+            gameRoomSession = null;
+
+            var gameRoomId = PrefixGameRoom + gameRoom._id;
+            ChatroomSession usage;
+            if (!_chatroomUsage.TryGetValue(gameRoomId, out usage))
+                return false;
+
+            gameRoomSession = (GameRoom.GameRoomSession)usage;
+            return true;
         }
         #endregion
     }

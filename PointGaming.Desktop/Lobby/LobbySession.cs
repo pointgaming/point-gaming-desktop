@@ -82,7 +82,7 @@ namespace PointGaming.Desktop.Lobby
                 _allGameRooms.Add(fakeRoom);
         }
 
-        public void CreateRoomAt(int position, string description, Action<GameRoomItem> onCreated)
+        public void CreateRoomAt(int position, string description, Action<string> onCreated)
         {
             RestResponse<GameRoomSinglePoco> response = null;
             _userData.PgSession.BeginAndCallback(delegate
@@ -106,10 +106,8 @@ namespace PointGaming.Desktop.Lobby
                 if (response.IsOk())
                 {
                     var gameRoom = response.Data.game_room;
-                    var item = new GameRoomItem(gameRoom);
-                    AddRoom(item);
                     if (onCreated != null)
-                        onCreated(item);
+                        onCreated(gameRoom._id);
                 }
             });
         }
@@ -144,6 +142,25 @@ namespace PointGaming.Desktop.Lobby
             GameRoomLookup[room.Id] = room;
         }
 
+        private void DeleteRoom(GameRoomItem room)
+        {
+            var position = room.Position;
+            SetFakeRoomAt(position);
+
+            bool isLastEmpty = _allGameRooms[_allGameRooms.Count - 1].Id == null;
+            if (isLastEmpty)
+            {
+                int lastMinRoomIndex = MinRoomCount - 1;
+                for (int i = _allGameRooms.Count - 2; i >= lastMinRoomIndex; i--)
+                {
+                    var isEmpty = _allGameRooms[i].Id == null;
+                    if (!isEmpty)
+                        break;
+                    _allGameRooms.RemoveAt(i + 1);
+                }
+            }
+        }
+
         public override Type GetUserControlType()
         {
             return typeof(LobbyTab);
@@ -152,6 +169,35 @@ namespace PointGaming.Desktop.Lobby
         public override IChatroomTab GetNewUserControl()
         {
             return new LobbyTab();
+        }
+
+        public void OnGameRoomNew(GameRoomPoco poco)
+        {
+            var item = new GameRoomItem(poco);
+            AddRoom(item);
+        }
+        public void OnGameRoomUpdate(GameRoomPoco poco)
+        {
+            GameRoomItem room;
+            if (!GameRoomLookup.TryGetValue(poco._id, out room))
+                return;
+
+            if (room.Position != poco.position)
+            {
+                SetFakeRoomAt(room.Position);
+                room.Position = poco.position;
+                _allGameRooms[poco.position - 1] = room;
+            }
+
+            room.Update(poco);
+        }
+        public void OnGameRoomDestroy(GameRoomPoco poco)
+        {
+            GameRoomItem item;
+            if (!GameRoomLookup.TryGetValue(poco._id, out item))
+                return;
+
+            DeleteRoom(item);
         }
     }
 }

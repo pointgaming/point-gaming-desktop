@@ -193,5 +193,15 @@ namespace PointGaming.Desktop.Lobby
             };
             return poco;
         }
+
+        public void Update(POCO.GameRoomPoco poco)
+        {
+            Description = poco.description;
+            MaxMemberCount = poco.max_member_count;
+            MemberCount = poco.member_count;
+            IsLocked = poco.is_locked;
+            IsAdvertising = poco.is_advertising;
+            Owner = HomeWindow.UserData.GetPgUser(poco.owner);
+        }
     }
 }

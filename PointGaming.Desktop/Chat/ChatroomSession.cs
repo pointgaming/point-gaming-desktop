@@ -20,7 +20,7 @@ namespace PointGaming.Desktop.Chat
         public string ChatroomId;
         public ChatroomState State;
         public readonly ObservableCollection<PgUser> Membership = new ObservableCollection<PgUser>();
-        private ChatManager _manager;
+        protected ChatManager _manager;
 
         public ChatroomSession(ChatManager manager)
         {
