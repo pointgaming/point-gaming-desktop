@@ -5,9 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:my="clr-namespace:PointGaming.Desktop"
              mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="600" Loaded="UserControl_Loaded"
+             d:DesignHeight="500" d:DesignWidth="600" Name="myControl"
+             Loaded="UserControl_Loaded"
              AllowDrop="True" PreviewDrop="TabPreviewDrop" PreviewDragEnter="TabPreviewDragQuery"
              PreviewDragOver="TabPreviewDragQuery" PreviewDragLeave="TabPreviewDragQuery" Padding="2">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -93,12 +97,33 @@
         <ListBox Grid.Column="2" Name="listBoxMembership" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                      PreviewMouseLeftButtonDown="listBoxMembership_PreviewMouseLeftButtonDown"
                      PreviewMouseLeftButtonUp="listBoxMembership_PreviewMouseLeftButtonUp"
-                     PreviewMouseMove="listBoxMembership_PreviewMouseMove">
+                     PreviewMouseMove="listBoxMembership_PreviewMouseMove" PreviewMouseRightButtonDown="listBoxMembership_PreviewMouseRightButtonDown">
             <ListBox.Resources>
                 <DataTemplate DataType="{x:Type my:PgUser}">
                     <Label Content="{Binding Username}" MouseDoubleClick="Label_MouseDoubleClick" />
                 </DataTemplate>
+
+                <ContextMenu x:Key="MemberContextMenuOwner">
+                    <MenuItem Header="Kick" Click="KickMemberClick" />
+                    <MenuItem Header="Ban" Click="BanMemberClick" />
+                    <MenuItem Header="Promote to owner" Click="PromoteToOwnerMemberClick" />
+                </ContextMenu>
             </ListBox.Resources>
+
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem" x:Name="styleForDataRow">
+                    <Setter Property="ContextMenu" Value="{StaticResource MemberContextMenuOwner}" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=myControl, Path=IsOwner}" Value="False">
+                            <Setter Property="ContextMenu" Value="{x:Null}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=myControl, Path=IsSelfMemberClick}" Value="True">
+                            <Setter Property="ContextMenu" Value="{x:Null}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
+
         </ListBox>
     </Grid>
 </UserControl>

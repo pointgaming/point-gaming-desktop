@@ -37,7 +37,7 @@ namespace PointGaming.Desktop.GameRoom
             return new GameRoomTab();
         }
 
-        public void SetGameRoomSettings(POCO.GameRoomPoco poco)
+        public void SetGameRoomSettings(object poco)
         {
             RestResponse<GameRoomSinglePoco> response = null;
             _userData.PgSession.BeginAndCallback(delegate
@@ -45,7 +45,7 @@ namespace PointGaming.Desktop.GameRoom
                 var url = Properties.Settings.Default.GameRooms + "/" + GameRoom.Id + "?auth_token=" + _userData.PgSession.AuthToken;
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.PUT) { RequestFormat = RestSharp.DataFormat.Json };
-                var root = new GameRoomSinglePoco { game_room = poco };
+                var root = new { game_room = poco };
                 request.AddBody(root);
                 response = (RestResponse<GameRoomSinglePoco>)client.Execute<GameRoomSinglePoco>(request);
             }, delegate

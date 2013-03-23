@@ -19,8 +19,18 @@ using PointGaming.Desktop.Chat;
 
 namespace PointGaming.Desktop.GameRoom
 {
-    public partial class GameRoomTab : UserControl, IWeakEventListener, IChatroomTab
+    public partial class GameRoomTab : UserControl, IWeakEventListener, IChatroomTab, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyChanged(string propertyName)
+        {
+            var changedCallback = PropertyChanged;
+            if (changedCallback == null)
+                return;
+            var args = new PropertyChangedEventArgs(propertyName);
+            changedCallback(this, args);
+        }
+
         private ChatWindow _chatWindow;
         private GameRoomSession _gameRoomSession;
         private UserDataManager _userData = HomeWindow.UserData;
@@ -47,6 +57,19 @@ namespace PointGaming.Desktop.GameRoom
             _descriptionDocument.Blocks.Add(p);
         }
 
+        void GameRoom_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Owner")
+            {
+                UpdateOwner();
+            }
+        }
+
+        private void UpdateOwner()
+        {
+            IsOwner = _gameRoomSession.GameRoom.Owner.Equals(_userData.User);
+        }
+
         public bool ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
         {
             this.BeginInvokeUI(UpdateChatFont);
@@ -71,6 +94,9 @@ namespace PointGaming.Desktop.GameRoom
             Binding b = new Binding("DescriptionDocument");
             b.Source = _gameRoomSession.GameRoom;
             flowDocumentDescription.SetBinding(FlowDocumentScrollViewer.DocumentProperty, b);
+
+            _gameRoomSession.GameRoom.PropertyChanged += GameRoom_PropertyChanged;
+            UpdateOwner();
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -223,10 +249,13 @@ namespace PointGaming.Desktop.GameRoom
             dialog.ShowDialog();
             if (dialog.DialogResult == true)
             {
-                var poco = _gameRoomSession.GameRoom.ToPoco();
-                poco.description= dialog.Description;
-                poco.is_advertising = dialog.IsAdvertising;
-                poco.is_locked = dialog.IsLocked;
+                var poco = new
+                {
+                    _id = _gameRoomSession.GameRoom.Id,
+                    description= dialog.Description,
+                    is_advertising = dialog.IsAdvertising,
+                    is_locked = dialog.IsLocked,
+                };
                 _gameRoomSession.SetGameRoomSettings(poco);
             }
         }
@@ -240,6 +269,64 @@ namespace PointGaming.Desktop.GameRoom
             if (dialog.DialogResult == true)
             {
                 MessageBox.Show(_chatWindow, "Add Proposal", "Todo add a proposal");
+            }
+        }
+
+        private void KickMemberClick(object sender, RoutedEventArgs e)
+        {
+            MessageDialog.Show(_chatWindow, "Todo", "Todo: kick");
+        }
+
+        private void BanMemberClick(object sender, RoutedEventArgs e)
+        {
+            MessageDialog.Show(_chatWindow, "Todo", "Todo: ban");
+        }
+
+        private void PromoteToOwnerMemberClick(object sender, RoutedEventArgs e)
+        {
+            var poco = new
+            {
+                _id = _gameRoomSession.GameRoom.Id,
+                owner_id = _contextMenuUser.Id,
+            };
+            _gameRoomSession.SetGameRoomSettings(poco);
+        }
+
+        private PgUser _contextMenuUser;
+        private void listBoxMembership_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ListBoxItem item;
+            PgUser pgUser;
+            if (listBoxMembership.TryGetItemAndItem(e, out item, out pgUser))
+            {
+                _contextMenuUser = pgUser;
+                IsSelfMemberClick = _contextMenuUser.Equals(_userData.User);
+            }
+        }
+
+        private bool _isOwner;
+        public bool IsOwner
+        {
+            get { return _isOwner; }
+            set
+            {
+                if (value == _isOwner)
+                    return;
+                _isOwner = value;
+                NotifyChanged("IsOwner");
+            }
+        }
+
+        private bool _isSelfMemberClick;
+        public bool IsSelfMemberClick
+        {
+            get { return _isSelfMemberClick; }
+            set
+            {
+                if (value == _isSelfMemberClick)
+                    return;
+                _isSelfMemberClick = value;
+                NotifyChanged("IsSelfMemberClick");
             }
         }
     }
