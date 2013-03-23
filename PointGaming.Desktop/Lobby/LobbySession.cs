@@ -15,6 +15,7 @@ namespace PointGaming.Desktop.Lobby
 {
     public class LobbySession : ChatroomSession
     {
+        private const int DefaultMaxGameRoomMemberCount = 50;
         private const int MinRoomCount = 100;
         public readonly string GameId;
         private readonly UserDataManager _userData = HomeWindow.UserData;
@@ -74,7 +75,7 @@ namespace PointGaming.Desktop.Lobby
 
         private void SetFakeRoomAt(int position)
         {
-            var fakeRoom = new GameRoomItem { Position = position, Description = "", MaxMemberCount = 99, };
+            var fakeRoom = new GameRoomItem { Position = position, Description = "", MaxMemberCount = DefaultMaxGameRoomMemberCount, };
             int index = position - 1;
             if (index < _allGameRooms.Count)
                 _allGameRooms[index] = fakeRoom;
@@ -93,7 +94,7 @@ namespace PointGaming.Desktop.Lobby
                 var poco = new GameRoomPoco {
                     position = position,
                     description = description,
-                    max_member_count = 88,
+                    max_member_count = DefaultMaxGameRoomMemberCount,
                     is_locked = false,
                     is_advertising = false,
                     game_id = GameId,
