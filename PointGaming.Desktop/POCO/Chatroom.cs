@@ -6,6 +6,10 @@ namespace PointGaming.Desktop.POCO
 	{
 		public string _id { get; set; }
 	}
+    public class ChatroomWithPassword : Chatroom
+    {
+        public string password { get; set; }
+    }
     public class ChatroomMessageOut
     {
         public string _id { get; set; }

@@ -26,7 +26,7 @@ namespace PointGaming.Desktop.GameRoom
             changedCallback(this, args);
         }
 
-        private string _description = "5 vs 5 Dust 2 No Scrubs\r\nWill ban for being bad\r\nNo 8 digs";
+        private string _description;
         public string Description
         {
             get { return _description; }
@@ -40,6 +40,19 @@ namespace PointGaming.Desktop.GameRoom
             }
         }
 
+        private string _password;
+        public string Password
+        {
+            get { return _password; }
+            set
+            {
+                if (value == _password)
+                    return;
+                _password = value;
+                NotifyChanged("Password");
+            }
+        }
+
         private bool _isAdvertising;
         public bool IsAdvertising
         {
@@ -50,19 +63,6 @@ namespace PointGaming.Desktop.GameRoom
                     return;
                 _isAdvertising = value;
                 NotifyChanged("IsAdvertising");
-            }
-        }
-
-        private bool _isLocked;
-        public bool IsLocked
-        {
-            get { return _isLocked; }
-            set
-            {
-                if (value == _isLocked)
-                    return;
-                _isLocked = value;
-                NotifyChanged("IsLocked");
             }
         }
 

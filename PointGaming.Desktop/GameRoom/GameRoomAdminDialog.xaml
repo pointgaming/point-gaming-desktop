@@ -11,23 +11,33 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
 
-        <Label Grid.Row="0" Grid.Column="0" Content="Description" Height="28" HorizontalAlignment="Right" Name="label5" VerticalAlignment="Center" />
-        <TextBox Grid.Row="0" Grid.Column="1" Height="75" VerticalScrollBarVisibility="Auto"
-                 HorizontalAlignment="Stretch" Name="textBoxMap" VerticalAlignment="Center"
-                 Text="{Binding ElementName=myWindow, Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" />
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal">
+            <Label Grid.Row="0" Grid.Column="0" Content="Description" Height="28" HorizontalAlignment="Right" Name="label5" VerticalAlignment="Center" />
+            <TextBox Grid.Row="0" Grid.Column="1" Height="75" VerticalScrollBarVisibility="Auto"
+                     HorizontalAlignment="Stretch" Name="textBoxMap" VerticalAlignment="Center"
+                     Text="{Binding ElementName=myWindow, Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     AcceptsReturn="True" TextWrapping="Wrap" />
+
+            <Label Grid.Row="1" Grid.Column="0" Content="Password" Height="28" HorizontalAlignment="Right" Name="label6" VerticalAlignment="Center" />
+            <TextBox Grid.Row="1" Grid.Column="1" Height="23" HorizontalAlignment="Stretch" Name="textBoxPassword" VerticalAlignment="Center"
+                     Text="{Binding ElementName=myWindow, Path=Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        </Grid>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
             <CheckBox Content="Advertise in lobby's active games" Height="16" Name="checkBoxAdvertise" Margin="3"
                       IsChecked="{Binding ElementName=myWindow, Path=IsAdvertising, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <CheckBox Content="Lock" Height="16" Name="checkBoxLock" Margin="3"
-                      IsChecked="{Binding ElementName=myWindow, Path=IsLocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
-        <Grid Grid.Row="3" Grid.ColumnSpan="2" Width="250" HorizontalAlignment="Center" Margin="20">
+        <Grid Grid.Row="3" Width="250" HorizontalAlignment="Center" Margin="20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />

@@ -243,7 +243,7 @@ namespace PointGaming.Desktop.GameRoom
         {
             var dialog = new GameRoomAdminDialog();
             dialog.Description = _gameRoomSession.GameRoom.Description;
-            dialog.IsLocked = _gameRoomSession.GameRoom.IsLocked;
+            dialog.Password = _gameRoomSession.GameRoom.Password;
             dialog.IsAdvertising = _gameRoomSession.GameRoom.IsAdvertising;
             dialog.Owner = _chatWindow;
             dialog.ShowDialog();
@@ -252,9 +252,9 @@ namespace PointGaming.Desktop.GameRoom
                 var poco = new
                 {
                     _id = _gameRoomSession.GameRoom.Id,
-                    description= dialog.Description,
+                    description = dialog.Description,
                     is_advertising = dialog.IsAdvertising,
-                    is_locked = dialog.IsLocked,
+                    password = dialog.Password,
                 };
                 _gameRoomSession.SetGameRoomSettings(poco);
             }

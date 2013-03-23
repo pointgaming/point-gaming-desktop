@@ -18,6 +18,10 @@ namespace PointGaming.Desktop.Chat
     {
         public const string PrefixGameLobby = "Game_";
         public const string PrefixGameRoom = "GameRoom_";
+
+        public const string ReasonInvalidPassword = "invalid password";
+        public const string ReasonPasswordRequired = "password required";
+
         private UserDataManager _userData;
         private ChatWindow _chatWindow;
 
@@ -31,6 +35,8 @@ namespace PointGaming.Desktop.Chat
             session.OnThread("Message.Send.new", OnPrivateMessageSent);
             session.OnThread("Message.Receive.new", OnPrivateMessageReceived);
             session.OnThread("Message.Send.fail", OnPrivateMessageSendFailed);
+            
+            session.OnThread("Chatroom.Join.fail", OnChatroomJoinFailed);
             session.OnThread("Chatroom.User.list", OnChatroomUserList);
             session.OnThread("Chatroom.Member.list", OnChatroomMemberList);
             session.OnThread("Chatroom.Member.change", OnChatroomMemberChange);
@@ -117,6 +123,20 @@ namespace PointGaming.Desktop.Chat
         #endregion
 
         #region chatroom
+
+        private void OnChatroomJoinFailed(IMessage message)
+        {
+            var received = message.Json.GetFirstArgAs<ApiResponse>();
+            var reason = received.message;
+            if (reason == ReasonInvalidPassword)
+            {
+                MessageDialog.Show(_chatWindow, "Join Failed", "Todo: retry dialog.  Sorry, the password you entered isn't correct.");
+            }
+            else if (reason == ReasonPasswordRequired)
+            {
+                MessageDialog.Show(_chatWindow, "Join Failed", "Todo: password required dialog.");
+            }
+        }
         private void OnChatroomUserList(IMessage message)
         {
             var received = message.Json.GetFirstArgAs<ChatroomUserList>();
@@ -199,7 +219,7 @@ namespace PointGaming.Desktop.Chat
             }
         }
 
-        public void JoinChatroom(string id)
+        public void JoinChatroom(string id, string password = null)
         {
             ChatroomSession chatroomSession;
             if (_chatroomUsage.TryGetValue(id, out chatroomSession))
@@ -253,7 +273,10 @@ namespace PointGaming.Desktop.Chat
             _chatroomUsage[id] = chatroomSession;
 
             var chatroom = new Chatroom { _id = id };
-            ChatroomUserJoin(chatroom);
+            var joinChatroom = (password == null)
+                ? chatroom
+                : new ChatroomWithPassword { _id = id, password = password, };
+            ChatroomUserJoin(joinChatroom);
             ChatroomMemberGetList(chatroom);
         }
 

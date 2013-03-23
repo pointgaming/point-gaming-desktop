@@ -122,6 +122,23 @@ namespace PointGaming.Desktop.Lobby
             }
         }
 
+        private string _password;
+        public string Password
+        {
+            get { return _password; }
+            set
+            {
+                var newValue = value == null ? "" : value.Trim();
+                if (newValue == _password)
+                    return;
+                _password = newValue;
+                NotifyChanged("Password");
+                IsLocked = !string.IsNullOrWhiteSpace(newValue);
+                NotifyChanged("IsLocked");
+                NotifyChanged("DisplayName");
+            }
+        }
+
         private PgUser _owner;
         public PgUser Owner
         {
@@ -173,6 +190,7 @@ namespace PointGaming.Desktop.Lobby
             MemberCount = poco.member_count;
             Position = poco.position;
             IsLocked = poco.is_locked;
+            Password = poco.password;
             IsAdvertising = poco.is_advertising;
             Owner = HomeWindow.UserData.GetPgUser(poco.owner);
         }
@@ -188,6 +206,7 @@ namespace PointGaming.Desktop.Lobby
                 description = Description,
                 is_advertising = IsAdvertising,
                 is_locked = IsLocked,
+                password = Password,
                 max_member_count = MaxMemberCount,
                 member_count = MemberCount,
             };
@@ -199,6 +218,7 @@ namespace PointGaming.Desktop.Lobby
             Description = poco.description;
             MaxMemberCount = poco.max_member_count;
             MemberCount = poco.member_count;
+            Password = poco.password;
             IsLocked = poco.is_locked;
             IsAdvertising = poco.is_advertising;
             Owner = HomeWindow.UserData.GetPgUser(poco.owner);

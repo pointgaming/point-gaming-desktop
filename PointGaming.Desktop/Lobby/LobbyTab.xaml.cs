@@ -208,7 +208,7 @@ namespace PointGaming.Desktop.Lobby
             {
                 if (item.Id == null)
                 {
-                    _lobbySession.CreateRoomAt(item.Position, "Hello world!", OnMyRoomCreated);
+                    _lobbySession.CreateRoomAt(item.Position, "New game room", OnMyRoomCreated);
                 }
                 else
                     _userData.JoinChat(Chat.ChatManager.PrefixGameRoom + item.Id);

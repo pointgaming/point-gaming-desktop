@@ -95,7 +95,6 @@ namespace PointGaming.Desktop.Lobby
                     position = position,
                     description = description,
                     max_member_count = DefaultMaxGameRoomMemberCount,
-                    is_locked = false,
                     is_advertising = false,
                     game_id = GameId,
                 };
