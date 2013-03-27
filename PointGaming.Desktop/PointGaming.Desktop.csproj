@@ -162,6 +162,9 @@
     <Compile Include="GameRoom\GameRoomTab.xaml.cs">
       <DependentUpon>GameRoomTab.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GameRoom\PasswordDialog.xaml.cs">
+      <DependentUpon>PasswordDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GameRoom\VsBetCollection.cs" />
     <Compile Include="HomeTab\ButtonProperties.cs" />
     <Compile Include="HomeTab\LauncherEditorDialog.xaml.cs">
@@ -233,6 +236,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="GameRoom\GameRoomTab.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GameRoom\PasswordDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

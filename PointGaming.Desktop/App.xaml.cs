@@ -119,7 +119,6 @@ namespace PointGaming.Desktop
 
             while (!App.IsShuttingDown)
             {
-
                 Thread.Sleep(250);
                 string text;
 

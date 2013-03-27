@@ -128,13 +128,23 @@ namespace PointGaming.Desktop.Chat
         {
             var received = message.Json.GetFirstArgAs<ApiResponse>();
             var reason = received.message;
+            string password = null;
             if (reason == ReasonInvalidPassword)
             {
-                MessageDialog.Show(_chatWindow, "Join Failed", "Todo: retry dialog.  Sorry, the password you entered isn't correct.");
+                GameRoom.PasswordDialog.Show(_chatWindow, "Join Failed", "Incorrect password.", out password);
             }
             else if (reason == ReasonPasswordRequired)
             {
-                MessageDialog.Show(_chatWindow, "Join Failed", "Todo: password required dialog.");
+                GameRoom.PasswordDialog.Show(_chatWindow, "Join Failed", "Password required.", out password);
+            }
+            else
+            {
+                MessageDialog.Show(_chatWindow, "Join Failed", reason);
+            }
+
+            if (password != null)
+            {
+                JoinChatroom(received._id, password);
             }
         }
         private void OnChatroomUserList(IMessage message)
