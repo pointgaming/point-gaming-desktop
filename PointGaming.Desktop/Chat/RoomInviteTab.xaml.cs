@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -18,11 +19,22 @@ namespace PointGaming.Desktop.Chat
 {
     public partial class RoomInviteTab : UserControl, ITabWithId
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyChanged(string propertyName)
+        {
+            var changedCallback = PropertyChanged;
+            if (changedCallback == null)
+                return;
+            var args = new PropertyChangedEventArgs(propertyName);
+            changedCallback(this, args);
+        }
         private ChatWindow _chatWindow;
         private UserDataManager _userData = HomeWindow.UserData;
 
         public const string TabId = "@%%^&^#&)):hgdf";
+        public const string HeaderString = "Invites";
         public string Id { get { return TabId; } }
+        public string Header { get { return HeaderString; } }
 
         private readonly ObservableCollection<ChatroomInviteNew> _invites = new ObservableCollection<ChatroomInviteNew>();
         public ObservableCollection<ChatroomInviteNew> Invites { get { return _invites; } }

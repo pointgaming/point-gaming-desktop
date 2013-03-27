@@ -20,12 +20,23 @@ namespace PointGaming.Desktop.Chat
 {
     public partial class ChatroomTab : UserControl, IWeakEventListener, IChatroomTab
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyChanged(string propertyName)
+        {
+            var changedCallback = PropertyChanged;
+            if (changedCallback == null)
+                return;
+            var args = new PropertyChangedEventArgs(propertyName);
+            changedCallback(this, args);
+        }
+
         private ChatWindow _chatWindow;
         private ChatroomSession _roomManager;
         private UserDataManager _userData = HomeWindow.UserData;
         private AutoScroller _autoScroller;
 
         public string Id { get { return _roomManager.ChatroomId; } }
+        public string Header { get { return _roomManager.ChatroomId; } }
 
         public ChatroomTab()
         {

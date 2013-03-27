@@ -244,10 +244,14 @@ namespace PointGaming.Desktop.Chat
             if (id.StartsWith(PrefixGameLobby))
             {
                 var gameId = id.Substring(PrefixGameLobby.Length);
-                var session = new Lobby.LobbySession(this, gameId);
-                session.LoadGameRoomsComplete += session_LoadGameRoomsComplete;
-                session.LoadGameRooms();
-                chatroomSession = session;
+                HomeTab.LauncherInfo gameInfo;
+                if (_userData.TryGetGame(gameId, out gameInfo))
+                {
+                    var session = new Lobby.LobbySession(this, gameInfo);
+                    session.LoadGameRoomsComplete += session_LoadGameRoomsComplete;
+                    session.LoadGameRooms();
+                    chatroomSession = session;
+                }
             }
             else if (id.StartsWith(PrefixGameRoom))
             {

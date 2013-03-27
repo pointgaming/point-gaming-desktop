@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Collections.Generic;
@@ -76,7 +77,7 @@ namespace PointGaming.Desktop.Chat
                 var chatTab = new ChatTab();
                 chatTab.Init(this, data);
 
-                tabItem = AddTab(data.Username, tabId, chatTab);
+                tabItem = AddTab(tabId, chatTab);
             }
             return tabItem;
         }
@@ -91,7 +92,7 @@ namespace PointGaming.Desktop.Chat
             {
                 var chatTab = chatroomSession.GetNewUserControl();
                 chatTab.Init(this, chatroomSession);
-                tabItem = AddTab(chatroomSession.ChatroomId, tabId, chatTab);
+                tabItem = AddTab(tabId, chatTab);
             }
             
             return tabItem;
@@ -105,7 +106,7 @@ namespace PointGaming.Desktop.Chat
             {
                 var inviteTab = new RoomInviteTab();
                 inviteTab.Init(this);
-                tabItem = AddTab("Invites", tabId, inviteTab);
+                tabItem = AddTab(tabId, inviteTab);
             }
 
             {
@@ -116,12 +117,15 @@ namespace PointGaming.Desktop.Chat
             StartFlashingTab(typeof(RoomInviteTab), RoomInviteTab.TabId);
         }
 
-        private ClosableTab AddTab(string title, string tabId, object content)
+        private ClosableTab AddTab(string tabId, ITabWithId content)
         {
             var tabItem = new ClosableTab();
-            tabItem.Header = title;
             tabItem.Content = content;
             tabItem.Closing += tabItem_Closing;
+
+            Binding b = new Binding("Header");
+            b.Source = content;
+            tabItem.SetBinding(TabItem.HeaderProperty, b);
 
             tabControlChats.Items.Add(tabItem);
 

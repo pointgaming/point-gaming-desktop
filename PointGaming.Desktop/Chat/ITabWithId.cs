@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.ComponentModel;
 
 namespace PointGaming.Desktop.Chat
 {
-    public interface ITabWithId
+    public interface ITabWithId : INotifyPropertyChanged
     {
         string Id { get; }
+        string Header { get; }
     }
     public interface IChatroomTab : ITabWithId
     {

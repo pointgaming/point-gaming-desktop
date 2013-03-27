@@ -19,12 +19,22 @@ namespace PointGaming.Desktop.Chat
 {
     public partial class ChatTab : UserControl, IWeakEventListener, ITabWithId
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyChanged(string propertyName)
+        {
+            var changedCallback = PropertyChanged;
+            if (changedCallback == null)
+                return;
+            var args = new PropertyChangedEventArgs(propertyName);
+            changedCallback(this, args);
+        }
         private ChatWindow _chatWindow;
         private PgUser _otherUser;
         private UserDataManager _userData = HomeWindow.UserData;
         private AutoScroller _autoScroller;
 
         public string Id { get { return _otherUser.Id; } }
+        public string Header { get { return _otherUser.Username; } }
 
         public ChatTab()
         {
@@ -35,10 +45,20 @@ namespace PointGaming.Desktop.Chat
             PropertyChangedEventManager.AddListener(Properties.Settings.Default, this, "PropertyChanged");
         }
 
-        public bool ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
+        bool IWeakEventListener.ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
         {
-            this.BeginInvokeUI(UpdateChatFont);
-            return true;
+            if (sender == Properties.Settings.Default)
+            {
+                this.BeginInvokeUI(UpdateChatFont);
+                return true;
+            }
+            else if (sender == _otherUser)
+            {
+                if (((PropertyChangedEventArgs)e).PropertyName == "Username")
+                    NotifyChanged("Header");
+                return true;
+            }
+            return false;
         }
         
         private void UpdateChatFont()
@@ -58,6 +78,7 @@ namespace PointGaming.Desktop.Chat
         {
             _chatWindow = window;
             _otherUser = otherUser;
+            PropertyChangedEventManager.AddListener(_otherUser, this, "PropertyChanged");
         }
 
         private void buttonSendInput_Click(object sender, RoutedEventArgs e)

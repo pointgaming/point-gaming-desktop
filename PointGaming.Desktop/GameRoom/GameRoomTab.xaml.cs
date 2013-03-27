@@ -38,6 +38,7 @@ namespace PointGaming.Desktop.GameRoom
         private FlowDocument _descriptionDocument;
 
         public string Id { get { return _gameRoomSession.ChatroomId; } }
+        public string Header { get { return "Game " + _gameRoomSession.GameRoom.Position; } }
 
         public GameRoomTab()
         {
@@ -72,8 +73,18 @@ namespace PointGaming.Desktop.GameRoom
 
         public bool ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
         {
-            this.BeginInvokeUI(UpdateChatFont);
-            return true;
+            if (sender == Properties.Settings.Default)
+            {
+                this.BeginInvokeUI(UpdateChatFont);
+                return true;
+            }
+            else if (sender == _gameRoomSession.GameRoom)
+            {
+                if (((PropertyChangedEventArgs)e).PropertyName == "Position")
+                    NotifyChanged("Header");
+                return true;
+            }
+            return false;
         }
 
         private void UpdateChatFont()
@@ -97,6 +108,8 @@ namespace PointGaming.Desktop.GameRoom
 
             _gameRoomSession.GameRoom.PropertyChanged += GameRoom_PropertyChanged;
             UpdateOwner();
+
+            PropertyChangedEventManager.AddListener(_gameRoomSession.GameRoom, this, "PropertyChanged");
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)

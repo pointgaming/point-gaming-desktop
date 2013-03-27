@@ -17,7 +17,7 @@ namespace PointGaming.Desktop.GameRoom
         private readonly Lobby.LobbySession _lobbySession;
         public readonly Lobby.GameRoomItem GameRoom;
 
-        public string GameId { get { return _lobbySession.GameId; } }
+        public string GameId { get { return GameRoom.GameId; } }
         public string GameRoomId { get { return GameRoom.Id; } }
 
         public GameRoomSession(ChatManager manager, Lobby.LobbySession lobbySession, Lobby.GameRoomItem gameRoom)

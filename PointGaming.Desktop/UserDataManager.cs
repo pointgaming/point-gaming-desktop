@@ -31,6 +31,8 @@ namespace PointGaming.Desktop
 
         private Dictionary<string, PgUser> _userLookup = new Dictionary<string, PgUser>();
 
+        public readonly ObservableCollection<LauncherInfo> Launchers = new ObservableCollection<LauncherInfo>();
+
         public UserDataManager(SocketSession session)
         {
             PgSession = session;
@@ -97,6 +99,20 @@ namespace PointGaming.Desktop
             _userLookup[userBase._id] = user;
             // todo dean gores 2013-02-26: should probably look this user up so that real info can be shown
             return user;
+        }
+
+        public bool TryGetGame(string gameId, out LauncherInfo info)
+        {
+            foreach (var item in Launchers)
+            {
+                if (item.Id == gameId)
+                {
+                    info = item;
+                    return true;
+                }
+            }
+            info = null;
+            return false;
         }
     }
 }

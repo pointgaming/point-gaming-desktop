@@ -21,12 +21,23 @@ namespace PointGaming.Desktop.Lobby
 {
     public partial class LobbyTab : UserControl, IWeakEventListener, IChatroomTab
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyChanged(string propertyName)
+        {
+            var changedCallback = PropertyChanged;
+            if (changedCallback == null)
+                return;
+            var args = new PropertyChangedEventArgs(propertyName);
+            changedCallback(this, args);
+        }
+
         private ChatWindow _chatWindow;
         private LobbySession _lobbySession;
         private UserDataManager _userData = HomeWindow.UserData;
         private AutoScroller _autoScroller;
 
         public string Id { get { return _lobbySession.ChatroomId; } }
+        public string Header { get { return _lobbySession.GameInfo.DisplayName; } }
 
         public LobbyTab()
         {
@@ -39,8 +50,18 @@ namespace PointGaming.Desktop.Lobby
 
         public bool ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
         {
-            this.BeginInvokeUI(UpdateChatFont);
-            return true;
+            if (sender == Properties.Settings.Default)
+            {
+                this.BeginInvokeUI(UpdateChatFont);
+                return true;
+            }
+            else if (sender == _lobbySession.GameInfo)
+            {
+                if (((PropertyChangedEventArgs)e).PropertyName == "DisplayName")
+                    NotifyChanged("Header");
+                return true;
+            }
+            return false;
         }
 
         private void UpdateChatFont()
@@ -59,6 +80,8 @@ namespace PointGaming.Desktop.Lobby
             listBoxMembership.ItemsSource = _lobbySession.Membership;
             itemsControlGameRoomList.ItemsSource = _lobbySession.AllGameRooms;
             itemsControlJoinedGameRoomList.ItemsSource = _lobbySession.JoinedGameRooms;
+
+            PropertyChangedEventManager.AddListener(_lobbySession.GameInfo, this, "PropertyChanged");
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)

@@ -17,7 +17,7 @@ namespace PointGaming.Desktop.Lobby
     {
         private const int DefaultMaxGameRoomMemberCount = 50;
         private const int MinRoomCount = 100;
-        public readonly string GameId;
+        public readonly HomeTab.LauncherInfo GameInfo;
         private readonly UserDataManager _userData = HomeWindow.UserData;
 
         public Dictionary<string, GameRoomItem> GameRoomLookup = new Dictionary<string, GameRoomItem>();
@@ -30,10 +30,10 @@ namespace PointGaming.Desktop.Lobby
 
         public event Action<LobbySession> LoadGameRoomsComplete;
 
-        public LobbySession(ChatManager manager, string gameId)
+        public LobbySession(ChatManager manager, HomeTab.LauncherInfo gameInfo)
             : base(manager)
         {
-            GameId = gameId;
+            GameInfo = gameInfo;
         }
 
         public void LoadGameRooms()
@@ -43,7 +43,7 @@ namespace PointGaming.Desktop.Lobby
             RestResponse<GameRoomListPoco> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
-                var url = Properties.Settings.Default.GameRooms + "?game_id=" + GameId + "&auth_token=" + _userData.PgSession.AuthToken;
+                var url = Properties.Settings.Default.GameRooms + "?game_id=" + GameInfo.Id + "&auth_token=" + _userData.PgSession.AuthToken;
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.GET);
                 response = (RestResponse<GameRoomListPoco>)client.Execute<GameRoomListPoco>(request);
@@ -96,7 +96,7 @@ namespace PointGaming.Desktop.Lobby
                     description = description,
                     max_member_count = DefaultMaxGameRoomMemberCount,
                     is_advertising = false,
-                    game_id = GameId,
+                    game_id = GameInfo.Id,
                 };
                 var root = new GameRoomSinglePoco { game_room = poco };
                 request.AddBody(root);

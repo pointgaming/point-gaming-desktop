@@ -21,8 +21,7 @@ namespace PointGaming.Desktop.HomeTab
     {
         private UserDataManager _userData = HomeWindow.UserData;
 
-        private readonly ObservableCollection<LauncherInfo> _launchers = new ObservableCollection<LauncherInfo>();
-        public ObservableCollection<LauncherInfo> Launchers { get { return _launchers; } }
+        public ObservableCollection<LauncherInfo> Launchers { get { return _userData.Launchers; } }
 
         public GameLauncherTab()
         {
@@ -45,7 +44,7 @@ namespace PointGaming.Desktop.HomeTab
                 catch { }
             }
 
-            if (_launchers.Count == 0)
+            if (Launchers.Count == 0)
             {
                 var launcher = new LauncherInfo("Firefox", "C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe", "http://www.shadowstats.com/charts/monetary-base-money-supply");
                 AddOrUpdate(launcher);
@@ -57,7 +56,7 @@ namespace PointGaming.Desktop.HomeTab
                 AddOrUpdate(launcher);
             }
 
-            _launchers.CollectionChanged += _launchers_CollectionChanged;
+            Launchers.CollectionChanged += _launchers_CollectionChanged;
 
             RestResponse<GameList> response = null;
             _userData.PgSession.BeginAndCallback(delegate
@@ -82,7 +81,7 @@ namespace PointGaming.Desktop.HomeTab
 
         private void AddOrUpdate(LauncherInfo li)
         {
-            foreach (var item in _launchers)
+            foreach (var item in Launchers)
             {
                 if (item.Id == li.Id)
                 {
@@ -92,7 +91,7 @@ namespace PointGaming.Desktop.HomeTab
             }
 
             li.PropertyChanged += launcher_PropertyChanged;
-            _launchers.Add(li);
+            Launchers.Add(li);
         }
 
         void launcher_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -108,7 +107,7 @@ namespace PointGaming.Desktop.HomeTab
         private void SaveLauncherList()
         {
             var settingsList = new System.Collections.Specialized.StringCollection();
-            foreach (var item in _launchers)
+            foreach (var item in Launchers)
             {
                 settingsList.Add(item.ToJson());
             }
@@ -138,7 +137,7 @@ namespace PointGaming.Desktop.HomeTab
             if (result)
             {
                 var launcher = editor.Launcher;
-                _launchers.Add(launcher);
+                Launchers.Add(launcher);
                 launcher.PropertyChanged += launcher_PropertyChanged;
             }
         }
@@ -156,7 +155,7 @@ namespace PointGaming.Desktop.HomeTab
         {
             if (_rightClickLauncher.IsOfficialGame)
                 return;
-            _launchers.Remove(_rightClickLauncher);
+            Launchers.Remove(_rightClickLauncher);
             e.Handled = true;
         }
 
