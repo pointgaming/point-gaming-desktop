@@ -151,6 +151,7 @@
     <Compile Include="DragAndDrop\IDragSourceAdvisor.cs" />
     <Compile Include="DragAndDrop\DropPreviewAdorner.cs" />
     <Compile Include="DragAndDrop\DragDropManager.cs" />
+    <Compile Include="GameRoom\Bet.cs" />
     <Compile Include="GameRoom\BetProposalDialog.xaml.cs">
       <DependentUpon>BetProposalDialog.xaml</DependentUpon>
     </Compile>
@@ -161,6 +162,7 @@
     <Compile Include="GameRoom\GameRoomTab.xaml.cs">
       <DependentUpon>GameRoomTab.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GameRoom\VsBetCollection.cs" />
     <Compile Include="HomeTab\ButtonProperties.cs" />
     <Compile Include="HomeTab\LauncherEditorDialog.xaml.cs">
       <DependentUpon>LauncherEditorDialog.xaml</DependentUpon>
@@ -170,7 +172,7 @@
     <Compile Include="Lobby\GameRoomPanel.xaml.cs">
       <DependentUpon>GameRoomPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Lobby\FileCollection.cs" />
+    <Compile Include="Lobby\VsGameRoomItemCollection.cs" />
     <Compile Include="Lobby\LobbySession.cs" />
     <Compile Include="Lobby\LobbyTab.xaml.cs">
       <DependentUpon>LobbyTab.xaml</DependentUpon>

@@ -26,19 +26,21 @@ namespace PointGaming.Desktop.GameRoom
             changedCallback(this, args);
         }
 
-        private int _betAmount = 0;
-        public int BetAmount
+        private decimal _wager = 0;
+        public decimal Wager
         {
-            get { return _betAmount; }
+            get { return _wager; }
             set
             {
-                if (value == _betAmount)
+                if (value == _wager)
                     return;
                 if (value < 0)
-                    throw new Exception("Amount must be > 0");
-                _betAmount = value;
-                NotifyChanged("BetAmount");
-                buttonOK.IsEnabled = _betAmount > 0;
+                    throw new Exception("Wager must be > 0");
+                if (Math.Floor(value) != value)
+                    throw new Exception("Wager must be a whole number");
+                _wager = value;
+                NotifyChanged("Wager");
+                buttonOK.IsEnabled = _wager > 0;
                 UpdateSummary();
             }
         }
@@ -78,37 +80,25 @@ namespace PointGaming.Desktop.GameRoom
             if (!IsLoaded)
                 return;
 
-            IBetOperand winner, loser;
+            Bet bet = new Bet();
+            bet.Wager = Wager;
+            var selectedOdds = (ComboBoxItem)comboBoxOdds.SelectedItem;
+            bet.Odds = selectedOdds.Content.ToString();
+
             if (comboBoxOutcome.SelectedIndex == 0)
             {
-                winner = _betOperandA;
-                loser = _betOperandB;
+                bet.Winner = _betOperandA;
+                bet.Loser = _betOperandB;
             }
             else
             {
-                winner = _betOperandB;
-                loser = _betOperandA;
+                bet.Winner = _betOperandB;
+                bet.Loser = _betOperandA;
             }
-            int loseAmount = BetAmount;
-            decimal multiplier = 1m;
-            ComboBoxItem selectedOdds = (ComboBoxItem)comboBoxOdds.SelectedItem;
-            if (selectedOdds == oneTo1) multiplier = 1m;
-            else if (selectedOdds == oneTo2) multiplier = 2m;
-            else if (selectedOdds == oneTo3) multiplier = 3m;
-            else if (selectedOdds == oneTo4) multiplier = 4m;
-            else if (selectedOdds == oneTo5) multiplier = 5m;
-            else if (selectedOdds == oneTo6) multiplier = 6m;
-            else if (selectedOdds == oneTo7) multiplier = 7m;
-            else if (selectedOdds == oneTo8) multiplier = 8m;
-            else if (selectedOdds == oneTo9) multiplier = 9m;
-            else if (selectedOdds == oneTo10) multiplier = 10m;
-            else
-                throw new NotImplementedException("Woops! Didn't implement odds '" + selectedOdds.Content + "'");
-
-            int winAmount = (int)Math.Floor(multiplier * loseAmount);
-
-            string summaryFormat = "If {0} wins, you win {1}.\r\nIf {2} wins, you lose {3}.";
-            textBoxSummary.Text = string.Format(summaryFormat, winner.ShortDescription, winAmount, loser.ShortDescription, loseAmount);
+            string summaryFormat = "If {0} wins, you win {1:#,0}.\r\nIf {2} wins, you lose {3:#,0}.";
+            textBoxSummary.Text = string.Format(summaryFormat,
+                bet.Winner.ShortDescription, bet.BookerReward,
+                bet.Loser.ShortDescription, bet.BookerWager);
         }
 
         private void buttonOK_Click(object sender, RoutedEventArgs e)

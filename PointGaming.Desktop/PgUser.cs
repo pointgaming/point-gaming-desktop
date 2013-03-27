@@ -18,6 +18,48 @@ namespace PointGaming.Desktop
         string ShortDescription { get; }
     }
 
+    public class PgTeam : IBetOperand
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyChanged(string propertyName)
+        {
+            var changedCallback = PropertyChanged;
+            if (changedCallback == null)
+                return;
+            var args = new PropertyChangedEventArgs(propertyName);
+            changedCallback(this, args);
+        }
+
+
+        private string _id;
+        public string Id
+        {
+            get { return _id; }
+            set
+            {
+                if (value == _id)
+                    return;
+                _id = value;
+                NotifyChanged("Id");
+            }
+        }
+        private string _name;
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (value == _name)
+                    return;
+                _name = value;
+                NotifyChanged("Name");
+                NotifyChanged("ShortDescription");
+            }
+        }
+
+        public string ShortDescription { get { return _name; } }
+    }
+
     public class PgUser : IBetOperand
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -57,10 +99,7 @@ namespace PointGaming.Desktop
             }
         }
 
-        public string ShortDescription
-        {
-            get { return _username; }
-        }
+        public string ShortDescription { get { return _username; } }
 
         private string _status;
         public string Status

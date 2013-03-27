@@ -329,5 +329,21 @@ namespace PointGaming.Desktop.GameRoom
                 NotifyChanged("IsSelfMemberClick");
             }
         }
+
+        private void hyperlinkAcceptBetClick(object sender, RoutedEventArgs e)
+        {
+            if (_mouseOverBet != null)
+            {
+                MessageDialog.Show(_chatWindow, "Accept Bet", "Todo accept bet!");
+            }
+        }
+
+        private Bet _mouseOverBet;
+        private void hyperlinkMouseOver(object sender, MouseEventArgs e)
+        {
+            Bet bet;
+            if (((DependencyObject)sender).TryGetPresentedParent(out bet))
+                _mouseOverBet = bet;
+        }
     }
 }

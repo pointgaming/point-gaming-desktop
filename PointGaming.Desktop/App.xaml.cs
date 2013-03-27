@@ -394,6 +394,7 @@ namespace PointGaming.Desktop
             var textBlock = new TextBlock();
             doc.FontFamily = textBlock.FontFamily;
             doc.FontSize = textBlock.FontSize;
+            doc.TextAlignment = TextAlignment.Left;
         }
 
 

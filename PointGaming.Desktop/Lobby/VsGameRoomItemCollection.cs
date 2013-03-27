@@ -9,9 +9,9 @@ using System.Windows.Controls;
 
 namespace PointGaming.Desktop.Lobby
 {
-    public sealed class FileCollection : ObservableCollection<GameRoomItem>
+    public sealed class VsGameRoomItemCollection : ObservableCollection<GameRoomItem>
     {
-        public FileCollection()
+        public VsGameRoomItemCollection()
         {
             var item = new GameRoomItem {
                 Id = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 10),

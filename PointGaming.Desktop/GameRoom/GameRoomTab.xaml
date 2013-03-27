@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:my="clr-namespace:PointGaming.Desktop"
+             xmlns:gameRoom="clr-namespace:PointGaming.Desktop.GameRoom"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="600" Name="myControl"
              Loaded="UserControl_Loaded"
@@ -53,7 +54,32 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Button Grid.Row="0" Content="Propose a bet..." Height="23" HorizontalAlignment="Left" Name="buttonProposeABet" VerticalAlignment="Top" Width="150" Click="buttonProposeABet_Click" />
-                        <ItemsControl Grid.Row="1" Height="150" HorizontalAlignment="Stretch" Name="itemsControlBets" VerticalAlignment="Top" />
+                        <ScrollViewer Grid.Row="1" Height="150" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <ItemsControl Name="itemsControlBets">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock PreviewMouseMove="hyperlinkMouseOver">
+                                        <Hyperlink Click="hyperlinkAcceptBetClick">
+                                            <Run Text="{Binding Loser.ShortDescription, Mode=OneWay}"/>
+                                            <Run Text="beats" />
+                                            <Run Text="{Binding Winner.ShortDescription, Mode=OneWay}"/>
+                                            <Run Text="on map" />
+                                            <Run Text="{Binding Map, Mode=OneWay}"/>
+                                            <Run Text="with odds of" />
+                                            <Run Text="{Binding BetterOdds, Mode=OneWay}"/><Run Text=". Reward:" />
+                                            <Run Text="{Binding BetterReward, StringFormat='{}{0:#,0}', Mode=OneWay}"/>
+                                            <Run Text="Wager:" />
+                                            <Run Text="{Binding BetterWager, StringFormat='{}{0:#,0}', Mode=OneWay}"/>
+                                            <Run Text="(" /><Run Text="{Binding Booker.ShortDescription, Mode=OneWay}"/><Run Text=")" />
+                                        </Hyperlink>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.ItemsSource>
+                                    <gameRoom:VsBetCollection/>
+                                </ItemsControl.ItemsSource>
+                            </ItemsControl>
+                        </ScrollViewer>
                     </Grid>
                 </Border>
             </Grid>
