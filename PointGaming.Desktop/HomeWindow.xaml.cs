@@ -46,7 +46,7 @@ namespace PointGaming.Desktop
 
             tab = new TabItem
             {
-                Header = "Bitcoin",
+                Header = "Points",
                 Content = new HomeTab.PaymentTab(),
             };
             tabControlMain.Items.Add(tab);
