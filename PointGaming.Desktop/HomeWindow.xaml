@@ -1,18 +1,44 @@
 ﻿<Window x:Class="PointGaming.Desktop.HomeWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:my="clr-namespace:PointGaming.Desktop"
         xmlns:HomeTab="clr-namespace:PointGaming.Desktop.HomeTab"
         xmlns:tb="http://www.hardcodet.net/taskbar"
         Title="Point Gaming" Height="350" Width="525"
         Loaded="Window_Loaded" Closing="Window_Closing"
         Icon="/PointGaming.Desktop;component/PointGaming.ico"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}" >
+        Name="homeWindow"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}" WindowStyle="None" ResizeMode="NoResize"
+        Background="Transparent" AllowsTransparency="True" ShowInTaskbar="False">
     <Grid>
+
         <tb:TaskbarIcon Name="taskbarIcon" IconSource="/PointGaming.Desktop;component/PointGaming.ico" 
                         TrayMouseDoubleClick="TaskbarIcon_TrayMouseDoubleClick"
-                        ToolTipText="Poing Gaming" Visibility="Collapsed" />
-        
-        <TabControl HorizontalAlignment="Stretch" Name="tabControlMain" VerticalAlignment="Stretch">
-        </TabControl>
+                        ToolTipText="Poing Gaming" Visibility="Visible">
+
+            <tb:TaskbarIcon.Resources>
+                <ContextMenu x:Key="TrayIconContextMenu">
+                    <MenuItem Header="Exit" Click="ExitClick" />
+                </ContextMenu>
+            </tb:TaskbarIcon.Resources>
+
+            <tb:TaskbarIcon.Style>
+                <Style TargetType="tb:TaskbarIcon">
+                    <Setter Property="ContextMenu" Value="{StaticResource TrayIconContextMenu}" />
+                    <!--<Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=myControl, Path=IsOwner}" Value="False">
+                            <Setter Property="ContextMenu" Value="{x:Null}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=myControl, Path=IsSelfMemberClick}" Value="True">
+                            <Setter Property="ContextMenu" Value="{x:Null}" />
+                        </DataTrigger>
+                    </Style.Triggers>-->
+                </Style>
+            </tb:TaskbarIcon.Style>
+        </tb:TaskbarIcon>
+
+        <my:WindowBorder Window="{Binding ElementName=homeWindow}" OtherContent="{Binding ElementName=tabControlMain}"
+                         MaximizeVisibility="Collapsed" CloseVisibility="Collapsed"/>
+        <TabControl Name="tabControlMain" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="6" />
     </Grid>
 </Window>

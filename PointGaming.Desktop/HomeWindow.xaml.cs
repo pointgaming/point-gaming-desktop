@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Controls;
+using System.Windows.Media;
 using PointGaming.Desktop.POCO;
 using SocketIOClient;
 using SocketIOClient.Messages;
 using RestSharp;
+
 
 namespace PointGaming.Desktop
 {
@@ -72,29 +75,12 @@ namespace PointGaming.Desktop
         {
             if (DesignerProperties.GetIsInDesignMode(this))
                 return;
-
-            UpdateMinimizeToTray();
-        }
-
-        public void UpdateMinimizeToTray()
-        {
-            bool isEnabled = Properties.Settings.Default.MinimizeToTray;
-            if (!isEnabled && !IsVisible)
-            {
-                this.Show();
-                this.WindowState = WindowState.Normal;
-            }
-            taskbarIcon.Visibility = isEnabled ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
-            ShowInTaskbar = !isEnabled;
         }
 
         protected override void OnStateChanged(EventArgs e)
         {
-            if (Properties.Settings.Default.MinimizeToTray)
-            {
-                if (WindowState == WindowState.Minimized)
-                    this.Hide();
-            }
+            if (WindowState == WindowState.Minimized)
+                this.Hide();
 
             base.OnStateChanged(e);
         }
@@ -127,6 +113,8 @@ namespace PointGaming.Desktop
             if (UserData == null)
                 return;
 
+            _shouldClose = true;
+
             taskbarIcon.Visibility = System.Windows.Visibility.Collapsed;
             
             var childWindows = new List<Window>(_childWindows);
@@ -157,10 +145,23 @@ namespace PointGaming.Desktop
         private bool _windowClosing;
         private void Window_Closing(object sender, CancelEventArgs e)
         {
+            if (!_shouldClose)
+            {
+                e.Cancel = true;
+                WindowState = System.Windows.WindowState.Minimized;
+                return;
+            }
+
             _windowClosing = true;
             LogOut(false);
             new HomeWindowBoundsPersistor().Save(this);
         }
+        private void ExitClick(object sender, RoutedEventArgs e)
+        {
+            _shouldClose = true;
+            Close();
+        }
+        private bool _shouldClose = false;
 
         private class HomeWindowBoundsPersistor : WindowBoundsPersistor
         {

@@ -180,6 +180,10 @@
     <Compile Include="Lobby\LobbyTab.xaml.cs">
       <DependentUpon>LobbyTab.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MaximizeHelper.cs" />
+    <Compile Include="WindowBorder.xaml.cs">
+      <DependentUpon>WindowBorder.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PgFonts\FontChooser.xaml.cs">
       <DependentUpon>FontChooser.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -324,6 +328,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MessageDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WindowBorder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
