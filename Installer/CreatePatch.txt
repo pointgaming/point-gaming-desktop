@@ -1,0 +1,5 @@
+﻿"C:\Program Files (x86)\WiX Toolset v3.6\bin\torch.exe" -p -xi 1.0.0\PointGamingDesktop.wixpdb 1.0.3\PointGamingDesktop.wixpdb -out PointGamingDesktop.wixmst
+"C:\Program Files (x86)\WiX Toolset v3.6\bin\candle.exe" PointGamingDesktop.wxs
+"C:\Program Files (x86)\WiX Toolset v3.6\bin\light.exe" PointGamingDesktop.wixobj
+"C:\Program Files (x86)\WiX Toolset v3.6\bin\pyro.exe" PointGamingDesktop.wixmsp -out PointGamingDesktop.msp -t Sample PointGamingDesktop.wixmst
+msiexec /p PointGamingDesktop.msp

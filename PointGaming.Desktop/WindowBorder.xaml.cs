@@ -202,6 +202,9 @@ namespace PointGaming.Desktop
 
         private void DoubleClickMaximizer()
         {
+            if (MaximizeVisibility != System.Windows.Visibility.Visible)
+                return;
+
             if (Window.WindowState == System.Windows.WindowState.Maximized)
                 Window.WindowState = System.Windows.WindowState.Normal;
             else

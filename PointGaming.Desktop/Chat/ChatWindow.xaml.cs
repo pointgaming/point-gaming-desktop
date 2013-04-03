@@ -19,10 +19,13 @@ namespace PointGaming.Desktop.Chat
 
         private readonly Dictionary<string, ClosableTab> _chatTabs2 = new Dictionary<string, ClosableTab>();
 
+        private WindowBoundsPersistor _windowBoundsPersistor;
+
         public ChatWindow()
         {
             InitializeComponent();
-            new ChatWindowBoundsPersistor().Load(this);
+            _windowBoundsPersistor = new ChatWindowBoundsPersistor(this);
+            _windowBoundsPersistor.Load();
         }
 
         public void Init(ChatManager manager)
@@ -150,7 +153,7 @@ namespace PointGaming.Desktop.Chat
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             _manager.ChatWindowClosed();
-            new ChatWindowBoundsPersistor().Save(this);
+            _windowBoundsPersistor.Save();
         }
 
         private void Window_Activated(object sender, EventArgs e)
@@ -219,6 +222,8 @@ namespace PointGaming.Desktop.Chat
 
         private class ChatWindowBoundsPersistor : WindowBoundsPersistor
         {
+            public ChatWindowBoundsPersistor(Window window) : base(window) { }
+
             protected override Rect GetBounds(out string oldDesktopInfo)
             {
                 var r = new Rect(

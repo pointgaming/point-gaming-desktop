@@ -11,28 +11,52 @@ namespace PointGaming.Desktop
 {
     public abstract class WindowBoundsPersistor
     {
-        public void Save(Window window)
+        private Rect _bounds;
+        private Window _window;
+        public WindowBoundsPersistor(Window window) 
         {
-            var rect = new Rect(window.Left, window.Top, window.Width, window.Height);
+            _window = window;
+            _window.LocationChanged += LocationChanged;
+            _window.SizeChanged += SizeChanged;
+        }
+
+        private void LocationChanged(object sender, EventArgs e)
+        {
+            if (_window.WindowState != WindowState.Normal)
+                return;
+            _bounds.X = _window.Left;
+            _bounds.Y = _window.Top;
+        }
+        private void SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (_window.WindowState != WindowState.Normal)
+                return;
+            _bounds.Width = _window.Width;
+            _bounds.Height = _window.Height;
+        }
+
+        public void Save()
+        {
+            var rect = new Rect(_bounds.Left, _bounds.Top, _bounds.Width, _bounds.Height);
             var desktopInfo = GetDesktopInfo();
 
             SetBounds(rect, desktopInfo);
             Properties.Settings.Default.Save();
         }
-        public void Load(Window window)
+        public void Load()
         {
             string oldDesktopInfo;
-            var rect = GetBounds(out oldDesktopInfo);
+            _bounds = GetBounds(out oldDesktopInfo);
             var desktopInfo = GetDesktopInfo();
 
             if (desktopInfo != oldDesktopInfo)
                 return;
 
-            window.Left = rect.Left;
-            window.Top = rect.Top;
-            window.Width = rect.Width;
-            window.Height = rect.Height;
-            window.WindowStartupLocation = WindowStartupLocation.Manual;
+            _window.Left = _bounds.Left;
+            _window.Top = _bounds.Top;
+            _window.Width = _bounds.Width;
+            _window.Height = _bounds.Height;
+            _window.WindowStartupLocation = WindowStartupLocation.Manual;
         }
 
         private string GetDesktopInfo()

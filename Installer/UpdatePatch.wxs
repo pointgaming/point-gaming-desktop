@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Patch AllowRemoval='yes' Manufacturer='whitepaperclip' MoreInfoURL='whitepaperclip.com'
+    DisplayName='1.0.3 Patch' Description='Small Update Patch' Classification='Update'>
+
+    <Media Id='5010' Cabinet='Sample.cab' EmbedCab='yes' CompressionLevel='high'>
+      <PatchBaseline Id='Sample'>
+        <Validate ProductId="yes" UpgradeCode="yes" ProductVersion="Update" ProductVersionOperator="GreaterOrEqual" />
+      </PatchBaseline>
+    </Media>
+
+    <PatchFamily Id='SamplePatchFamily' Version='1.0.3.0' Supersede='yes'>
+      <ComponentRef Id='ProductComponent' />
+      <PropertyRef Id="ProductVersion" />
+    </PatchFamily>
+  </Patch>
+</Wix>

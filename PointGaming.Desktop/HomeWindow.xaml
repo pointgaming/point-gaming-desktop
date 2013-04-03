@@ -9,7 +9,7 @@
         Icon="/PointGaming.Desktop;component/PointGaming.ico"
         Name="homeWindow"
         DataContext="{Binding RelativeSource={RelativeSource Self}}" WindowStyle="None" ResizeMode="NoResize"
-        Background="Transparent" AllowsTransparency="True" ShowInTaskbar="False">
+        Background="Transparent" AllowsTransparency="True" ShowInTaskbar="False" >
     <Grid>
 
         <tb:TaskbarIcon Name="taskbarIcon" IconSource="/PointGaming.Desktop;component/PointGaming.ico" 

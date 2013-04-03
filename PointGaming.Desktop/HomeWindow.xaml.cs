@@ -22,11 +22,14 @@ namespace PointGaming.Desktop
 
         private readonly List<Window> _childWindows = new List<Window>();
 
+        private WindowBoundsPersistor _windowBoundsPersistor;
+
         public HomeWindow()
         {
             InitializeComponent();
             Home = this;
-            new HomeWindowBoundsPersistor().Load(this);
+            _windowBoundsPersistor = new HomeWindowBoundsPersistor(this);
+            _windowBoundsPersistor.Load();
         }
 
         public void Init(SocketSession session)
@@ -154,7 +157,7 @@ namespace PointGaming.Desktop
 
             _windowClosing = true;
             LogOut(false);
-            new HomeWindowBoundsPersistor().Save(this);
+            _windowBoundsPersistor.Save();
         }
         private void ExitClick(object sender, RoutedEventArgs e)
         {
@@ -165,6 +168,8 @@ namespace PointGaming.Desktop
 
         private class HomeWindowBoundsPersistor : WindowBoundsPersistor
         {
+            public HomeWindowBoundsPersistor(Window window) : base(window) { }
+
             protected override Rect GetBounds(out string oldDesktopInfo)
             {
                 var r = new Rect(
