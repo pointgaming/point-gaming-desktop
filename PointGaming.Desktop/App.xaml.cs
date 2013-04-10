@@ -30,6 +30,21 @@ namespace PointGaming.Desktop
                 + username;
         }
 
+        public static DirectoryInfo ExecutableDirectoryInfo
+        {
+            get
+            {
+                var dllLocation = typeof(App).Assembly.Location;
+                var dllFileInfo = new System.IO.FileInfo(dllLocation);
+                var info = dllFileInfo.Directory;
+                return info;
+            }
+        }
+
+        public static Version Version { get {
+            return typeof(App).Assembly.GetName().Version;
+        } }
+
         private static StreamWriter _logWriter;
 
         static App()

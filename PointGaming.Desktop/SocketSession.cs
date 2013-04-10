@@ -165,6 +165,8 @@ namespace PointGaming.Desktop
 
         public bool Login(string username, string password, DateTime timeout)
         {
+            _isAuthorized = false;
+            _isAuthResponded = false;
             bool isSuccess = false;
             try
             {

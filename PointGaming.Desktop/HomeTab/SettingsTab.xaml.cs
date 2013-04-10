@@ -8,9 +8,6 @@ using System.ComponentModel;
 
 namespace PointGaming.Desktop.HomeTab
 {
-    /// <summary>
-    /// Interaction logic for SettingTab.xaml
-    /// </summary>
     public partial class SettingsTab : UserControl
     {
         public SettingsTab()
@@ -20,6 +17,8 @@ namespace PointGaming.Desktop.HomeTab
             if (DesignerProperties.GetIsInDesignMode(this))
                 return;
         }
+
+        public string ProgramVersion { get { return "Version " + App.Version; } }
 
         private void buttonScanForGames_Click(object sender, RoutedEventArgs e)
         {

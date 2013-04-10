@@ -27,9 +27,8 @@ namespace PointGaming.Desktop.HomeTab
 
         private void RunMiner()
         {
-            var dllLocation = typeof(PaymentTab).Assembly.Location;
-            var dllFileInfo = new System.IO.FileInfo(dllLocation);
-            var executableInfo = dllFileInfo.Directory.GetDirectories("poclbm")[0].GetFiles("poclbm.exe")[0];
+            var dirInfo = App.ExecutableDirectoryInfo;
+            var executableInfo = dirInfo.GetDirectories("poclbm")[0].GetFiles("poclbm.exe")[0];
 
             Process poclbm = new Process();
             poclbm.StartInfo.FileName = executableInfo.FullName;

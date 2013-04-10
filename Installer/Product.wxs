@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product Id="E2604983-14AB-4ef4-BA5E-300D4A0B0ACB" Name="Point Gaming Desktop" Language="1033"
-           Version="1.0.0" Manufacturer="whitepaperclip" UpgradeCode="82A7F7EA-94AF-46dd-AC99-909AE1464EA0">
+           Version="1.0.1" Manufacturer="whitepaperclip" UpgradeCode="82A7F7EA-94AF-46dd-AC99-909AE1464EA0">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
     <WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\Resources\License.rtf"/>
@@ -32,10 +32,10 @@
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of Point Gaming Desktop is already installed." />
     <Upgrade Id="6150EC14-A99C-4bb8-8331-BA7EE1056CEB">
-      <UpgradeVersion OnlyDetect='yes'  Property='SELFFOUND' Minimum='1.0.0' IncludeMinimum='yes' Maximum='1.0.0' IncludeMaximum='yes' />
-      <UpgradeVersion OnlyDetect='yes' Property='NEWERFOUND' Minimum='1.0.0' IncludeMinimum='no' />
+      <UpgradeVersion OnlyDetect='yes'  Property='SELFFOUND' Minimum='1.0.1' IncludeMinimum='yes' Maximum='1.0.1' IncludeMaximum='yes' />
+      <UpgradeVersion OnlyDetect='yes' Property='NEWERFOUND' Minimum='1.0.1' IncludeMinimum='no' />
     </Upgrade>
-    <CustomAction Id='AlreadyUpdated' Error='Point Gaming Desktop has already been updated to 1.0.0 or newer.' />
+    <CustomAction Id='AlreadyUpdated' Error='Point Gaming Desktop has already been updated to 1.0.1 or newer.' />
     <CustomAction Id='NoDowngrade' Error='A later version of Point Gaming Desktop is already installed.' />
     <InstallExecuteSequence>
       <Custom Action='AlreadyUpdated' After='FindRelatedProducts'>SELFFOUND</Custom>

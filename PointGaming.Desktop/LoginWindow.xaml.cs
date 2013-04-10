@@ -5,6 +5,8 @@ using System.Windows.Media;
 using PointGaming.Desktop.POCO;
 using RestSharp;
 using System.Threading;
+using System.Net;
+using System.Diagnostics;
 
 namespace PointGaming.Desktop
 {
@@ -20,6 +22,79 @@ namespace PointGaming.Desktop
             InitializeComponent();
 
             App.LoggedOut();
+
+            SocketSession = new SocketSession();
+            SocketSession.SetThreadQueuerForCurrentThread(this.BeginInvokeUI);
+
+            RestResponse<PgVersion> response = null;
+
+            SocketSession.BeginAndCallback(delegate
+            {
+                var url = "https://dev.pointgaming.com/desktop_client/version";
+                var client = new RestClient(url);
+                var request = new RestRequest(Method.GET);
+                response = (RestResponse<PgVersion>)client.Execute<PgVersion>(request);
+            }, delegate
+            {
+                if (response.IsOk())
+                {
+                    var latestVersion = response.Data.version;
+                    var assemblyVersion = App.Version;
+                    Version latestVersionV = new Version(latestVersion);
+                    if (latestVersionV > assemblyVersion)
+                        RunUpdate();
+                }
+            });
+        }
+
+        private void RunUpdate()
+        {
+            var updateFileName = "updater.msp";
+            var tempPath = System.IO.Path.GetTempPath() + "\\" + updateFileName;
+            try
+            {
+                using (WebClient Client = new WebClient())
+                {
+                    Client.DownloadFile("https://dev.pointgaming.com/desktop_client/updater.msp", tempPath);
+
+                    var processName = Process.GetCurrentProcess().ProcessName;
+
+                    var dllLocation = typeof(App).Assembly.Location;
+                    var dllFileInfo = new System.IO.FileInfo(dllLocation);
+                    var runAfterUpdate = dllFileInfo.Name;
+
+                    var dirInfo = App.ExecutableDirectoryInfo;
+                    var executableInfo = dirInfo.GetFiles("PointGaming.Desktop.Update.exe")[0];
+
+                    Process updateInvoker = new Process();
+                    updateInvoker.StartInfo.FileName = executableInfo.FullName;
+                    updateInvoker.StartInfo.Arguments = BuildArguments(processName, updateFileName, runAfterUpdate);
+                    updateInvoker.StartInfo.UseShellExecute = false;
+                    updateInvoker.StartInfo.RedirectStandardOutput = true;
+                    updateInvoker.Start();
+                    Close();
+                    // ... update installer installs update, then restarts the desktop client
+                }
+            }
+            catch (Exception e)
+            {
+                App.LogLine(e.Message);
+                // todo handle error
+            }
+        }
+
+        private static string BuildArguments(params string[] arguments)
+        {
+            var result = "";
+            foreach (var arg in arguments)
+            {
+                if (result.Length > 0)
+                    result = result + " ";
+
+                var a = arg.Replace("\"", "\"\"");
+                result = result + "\"" + a + "\"";
+            }
+            return result;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -72,28 +147,26 @@ namespace PointGaming.Desktop
             labelResult.Foreground = Brushes.Black;
             labelResult.Content = "Logging in...";
             gridControls.IsEnabled = false;
-            SocketSession session = new SocketSession();
-            session.SetThreadQueuerForCurrentThread(this.BeginInvokeUI);
+            
             passwordBoxPassword.Clear();
 
             DateTime timeout = DateTime.Now + Properties.Settings.Default.LogInTimeout;
 
             bool isSuccess = false;
-            session.BeginAndCallback(delegate
+            SocketSession.BeginAndCallback(delegate
             {
-                isSuccess = session.Login(username, password, timeout);
+                isSuccess = SocketSession.Login(username, password, timeout);
             }, delegate
             {
                 if (isSuccess)
                 {
                     IsLoggedIn = true;
-                    SocketSession = session;
 
                     App.LoggedIn(username);
 
                     var homeWindow = new HomeWindow();
-                    session.SetThreadQueuerForCurrentThread(HomeWindow.Home.BeginInvokeUI);
-                    homeWindow.Init(session);
+                    SocketSession.SetThreadQueuerForCurrentThread(HomeWindow.Home.BeginInvokeUI);
+                    homeWindow.Init(SocketSession);
                     Hide();
                     homeWindow.Show();
 
