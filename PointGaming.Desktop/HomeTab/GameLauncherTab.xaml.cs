@@ -160,20 +160,26 @@ namespace PointGaming.Desktop.HomeTab
         }
 
         private void dataGridLauncher_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {}
+        {
+            LauncherInfo launcher;
+            if (dataGridLauncher.TryGetRowItem(e, out launcher))
+                JoinLobby(launcher);
+        }
 
-        private void buttonJoinLobbyClick(object sender, RoutedEventArgs e)
+        private void JoinLobbyClick(object sender, RoutedEventArgs e)
         {
             var launcher = ((FrameworkElement)sender).DataContext as LauncherInfo;
+            JoinLobby(launcher);
+        }
+
+        private void JoinLobby(LauncherInfo launcher)
+        {
             if (!launcher.IsOfficialGame)
-            {
-                MessageDialog.Show(HomeWindow.Home, "Lobby doesn't exist", "Lobby doesn't exist for " + launcher.DisplayName + "!");
                 return;
-            }
             _userData.JoinChat(Chat.ChatManager.PrefixGameLobby + launcher.Id);
         }
 
-        private void buttonLaunchExecutableClick(object sender, RoutedEventArgs e)
+        private void LaunchExecutableClick(object sender, RoutedEventArgs e)
         {
             var launcher = ((FrameworkElement)sender).DataContext as LauncherInfo;
             launcher.Launch();

@@ -22,7 +22,8 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Actions" Width="100" IsReadOnly="True">
+                
+                <!--<DataGridTemplateColumn Header="Actions" Width="100" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Grid  Margin="0">
@@ -35,7 +36,8 @@
                             </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                </DataGridTemplateColumn>-->
+                
                 <DataGridTextColumn Binding="{Binding PlayerCount}" Header="Players" Width="50" IsReadOnly="True" />
             </DataGrid.Columns>
             
@@ -47,7 +49,16 @@
 
 
             <DataGrid.Resources>
-                <ContextMenu x:Key="DataRowContextMenu">
+                <ContextMenu x:Key="OfficialGame">
+                    <MenuItem Header="Join Lobby" Click="JoinLobbyClick" />
+                    <MenuItem Header="Launch Game" Click="LaunchExecutableClick" />
+                    <Separator />
+                    <MenuItem Header="Add..." Click="AddLauncherClick" />
+                    <MenuItem Header="Edit..." Click="EditLauncherClick" />
+                </ContextMenu>
+                <ContextMenu x:Key="EndUserGame">
+                    <MenuItem Header="Launch Program" Click="LaunchExecutableClick" />
+                    <Separator />
                     <MenuItem Header="Add..." Click="AddLauncherClick" />
                     <MenuItem Header="Edit..." Click="EditLauncherClick" />
                     <MenuItem Header="Remove" Click="RemoveLauncherClick" />
@@ -56,7 +67,12 @@
 
             <DataGrid.RowStyle>
                 <Style TargetType="{x:Type DataGridRow}" x:Name="styleForDataRow">
-                    <Setter Property="ContextMenu" Value="{StaticResource DataRowContextMenu}" />
+                    <Setter Property="ContextMenu" Value="{StaticResource OfficialGame}" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsOfficialGame}" Value="False">
+                            <Setter Property="ContextMenu" Value="{StaticResource EndUserGame}" />
+                        </DataTrigger>
+                    </Style.Triggers>
                 </Style>
             </DataGrid.RowStyle>
         </DataGrid>
