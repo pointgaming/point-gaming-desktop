@@ -9,60 +9,44 @@
         <Border BorderBrush="#FF000000" BorderThickness="1,1,1,1" CornerRadius="8,8,8,8" Background="White" Width="350" Height="220">
             <Grid Margin="15">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Grid Grid.Row="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
 
-                    <Grid Grid.Column="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
+                <Label Grid.Row="0" Content="Point Gaming Login" Height="28" HorizontalAlignment="Left" Name="labelTitle" VerticalAlignment="Top" FontWeight="Bold" />
 
-                        <Label Grid.Row="0" Content="Point Gaming Login" Height="28" HorizontalAlignment="Left" Name="labelTitle" VerticalAlignment="Top" FontWeight="Bold" />
-
-                        <Label Grid.Row="1" Height="28" HorizontalAlignment="Left" Name="labelResult" VerticalAlignment="Top"
+                <Label Grid.Row="1" Height="28" HorizontalAlignment="Left" Name="labelResult" VerticalAlignment="Top"
                      BorderThickness="0" Background="#60FFFFFF" Content="Welcome.  Please login to continue."/>
 
-                        <Grid Grid.Row="2" Name="gridControls" Margin="0,0,5,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <Label Grid.Row="0" Content="Username" Height="28" HorizontalAlignment="Right" Name="labelUsername" VerticalAlignment="Center" />
-                            <TextBox Grid.Row="0" Grid.Column="1" Height="23" HorizontalAlignment="Stretch" Name="textBoxUsername" VerticalAlignment="Center" PreviewKeyDown="textBoxUsername_PreviewKeyDown" Background="#60FFFFFF" />
-
-                            <Label Grid.Row="1" Content="Password" Height="28" HorizontalAlignment="Right" Name="labelPassword" VerticalAlignment="Center" />
-                            <PasswordBox Grid.Row="1" Grid.Column="1" Height="23" HorizontalAlignment="Stretch" Name="passwordBoxPassword" VerticalAlignment="Center" PreviewKeyDown="passwordBoxPassword_PreviewKeyDown" Background="#60FFFFFF" />
-                            
-                            <CheckBox Grid.Row="2" Content="Remember Password" Grid.Column="1" Height="16" HorizontalAlignment="Left" Margin="0,5,0,5" Name="checkBoxRememberPassword" VerticalAlignment="Top" />
-                        </Grid>
-                    </Grid>
-
-                    <!--<Image Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
-                       Stretch="Uniform" Height="100" Width="100"
-                       Source="/PointGaming.Desktop;component/Resources/PointGamingLogo256x256.png" />-->
-                </Grid>
-
-                <Grid Grid.Row="1" Margin="5" >
+                <Grid Grid.Row="2" Name="gridControls" Margin="0,0,5,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0" Content="Log In" Height="23" HorizontalAlignment="Center" Name="buttonLogIn" VerticalAlignment="Center" Width="75" Click="buttonLogIn_Click" Background="#60FFFFFF" />
-                    <Button Grid.Column="1" Content="Quit" Height="23" HorizontalAlignment="Center" Name="buttonQuit" VerticalAlignment="Center" Width="75" Click="buttonQuit_Click" Background="#60FFFFFF" />
+
+                    <Label Grid.Row="0" Content="Username" Height="28" HorizontalAlignment="Right" Name="labelUsername" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="0" Grid.Column="1" Height="23" HorizontalAlignment="Stretch" Name="textBoxUsername" VerticalAlignment="Center" PreviewKeyDown="textBoxUsername_PreviewKeyDown" Background="#60FFFFFF" />
+
+                    <Label Grid.Row="1" Content="Password" Height="28" HorizontalAlignment="Right" Name="labelPassword" VerticalAlignment="Center" />
+                    <PasswordBox Grid.Row="1" Grid.Column="1" Height="23" HorizontalAlignment="Stretch" Name="passwordBoxPassword" VerticalAlignment="Center" PreviewKeyDown="passwordBoxPassword_PreviewKeyDown" Background="#60FFFFFF" />
+
+                    <CheckBox Grid.Row="2" Content="Remember Password" Grid.Column="1" Height="16" HorizontalAlignment="Left" Margin="0,5,0,5" Name="checkBoxRememberPassword" VerticalAlignment="Top" />
+
+                    <Grid Grid.Row="3" ColumnSpan="2"  Margin="5" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Content="Log In" Height="23" HorizontalAlignment="Center" Name="buttonLogIn" VerticalAlignment="Center" Width="75" Click="buttonLogIn_Click" Background="#60FFFFFF" />
+                        <Button Grid.Column="1" Content="Quit" Height="23" HorizontalAlignment="Center" Name="buttonQuit" VerticalAlignment="Center" Width="75" Click="buttonQuit_Click" Background="#60FFFFFF" />
+                    </Grid>
                 </Grid>
             </Grid>
         </Border>

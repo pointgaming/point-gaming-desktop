@@ -1,4 +1,4 @@
-﻿// extract the old installer and the new installer
+﻿// extract the old installer and the new installer (run cmd as administrator)
 msiexec /a PointGamingDesktop.msi /qb TARGETDIR=g:\test\1.0.0
 msiexec /a PointGamingDesktop.msi /qb TARGETDIR=g:\test\1.0.1
 

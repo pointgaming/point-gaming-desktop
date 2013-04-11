@@ -288,5 +288,14 @@ namespace PointGaming.Desktop.Properties {
                 return ((string)(this["GameRooms"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UpdateAutomatic {
+            get {
+                return ((bool)(this["UpdateAutomatic"]));
+            }
+        }
     }
 }

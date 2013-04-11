@@ -22,40 +22,17 @@ namespace PointGaming.Desktop
             InitializeComponent();
 
             App.LoggedOut();
-
-            SocketSession = new SocketSession();
-            SocketSession.SetThreadQueuerForCurrentThread(this.BeginInvokeUI);
-
-            RestResponse<PgVersion> response = null;
-
-            SocketSession.BeginAndCallback(delegate
-            {
-                var url = "https://dev.pointgaming.com/desktop_client/version";
-                var client = new RestClient(url);
-                var request = new RestRequest(Method.GET);
-                response = (RestResponse<PgVersion>)client.Execute<PgVersion>(request);
-            }, delegate
-            {
-                if (response.IsOk())
-                {
-                    var latestVersion = response.Data.version;
-                    var assemblyVersion = App.Version;
-                    Version latestVersionV = new Version(latestVersion);
-                    if (latestVersionV > assemblyVersion)
-                        RunUpdate();
-                }
-            });
         }
 
-        private void RunUpdate()
+        private bool RunUpdate()
         {
-            var updateFileName = "updater.msp";
+            var updateFileName = "PoingGamingDesktop.msp";
             var tempPath = System.IO.Path.GetTempPath() + "\\" + updateFileName;
             try
             {
                 using (WebClient Client = new WebClient())
                 {
-                    Client.DownloadFile("https://dev.pointgaming.com/desktop_client/updater.msp", tempPath);
+                    Client.DownloadFile("https://dev.pointgaming.com/system/desktop_client/PointGamingDesktop.msp", tempPath);
 
                     var processName = Process.GetCurrentProcess().ProcessName;
 
@@ -73,6 +50,8 @@ namespace PointGaming.Desktop
                     updateInvoker.StartInfo.RedirectStandardOutput = true;
                     updateInvoker.Start();
                     Close();
+
+                    return true;
                     // ... update installer installs update, then restarts the desktop client
                 }
             }
@@ -81,6 +60,7 @@ namespace PointGaming.Desktop
                 App.LogLine(e.Message);
                 // todo handle error
             }
+            return false;
         }
 
         private static string BuildArguments(params string[] arguments)
@@ -99,6 +79,48 @@ namespace PointGaming.Desktop
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            SocketSession = new SocketSession();
+            SocketSession.SetThreadQueuerForCurrentThread(this.BeginInvokeUI);
+
+            if (Properties.Settings.Default.UpdateAutomatic)
+                CheckForUpdate();
+            else
+                UseRememberedLogin();
+        }
+
+        private void CheckForUpdate()
+        {
+            SetWork("Checking for updates...", Brushes.Black, false);
+            RestResponse<PgVersion> response = null;
+
+            SocketSession.BeginAndCallback(delegate
+            {
+                var url = "https://dev.pointgaming.com/desktop_client/version";
+                var client = new RestClient(url);
+                var request = new RestRequest(Method.GET);
+                response = (RestResponse<PgVersion>)client.Execute<PgVersion>(request);
+            }, delegate
+            {
+                if (response.IsOk())
+                {
+                    var latestVersion = response.Data.version;
+                    var assemblyVersion = App.Version;
+                    Version latestVersionV = new Version(latestVersion);
+
+                    bool isQuitForUpdate = false;
+                    if (latestVersionV > assemblyVersion)
+                        isQuitForUpdate = RunUpdate();
+
+                    if (!isQuitForUpdate)
+                        UseRememberedLogin();
+                }
+            });
+        }
+
+        private void UseRememberedLogin()
+        {
+            SetWork("Welcome.  Please login to continue.", Brushes.Black, true);
+
             string lastUsername = Properties.Settings.Default.Username;
             if (string.IsNullOrWhiteSpace(lastUsername))
             {
@@ -131,22 +153,20 @@ namespace PointGaming.Desktop
 
             if (username == "")
             {
-                labelResult.Foreground = Brushes.Red;
-                labelResult.Content = "Enter username";
+                SetWork("Enter username", Brushes.Red, true);
                 textBoxUsername.Focus();
                 return;
             }
             if (password == "")
             {
-                labelResult.Foreground = Brushes.Red;
-                labelResult.Content = "Enter password";
+                SetWork("Enter password", Brushes.Red, true);
                 passwordBoxPassword.Focus();
                 return;
             }
 
-            labelResult.Foreground = Brushes.Black;
-            labelResult.Content = "Logging in...";
-            gridControls.IsEnabled = false;
+            var workMessage = "Logging in...";
+
+            SetWork(workMessage, Brushes.Black, false);
             
             passwordBoxPassword.Clear();
 
@@ -184,12 +204,18 @@ namespace PointGaming.Desktop
                     var message = "Invalid username or password";
                     if (DateTime.Now >= timeout)
                         message = "Try again later.  No response within timeout period.";
-                    labelResult.Foreground = Brushes.Red;
-                    labelResult.Content = message;
-                    gridControls.IsEnabled = true;
+
+                    SetWork(message, Brushes.Red, true);
                     passwordBoxPassword.Focus();
                 }
             });
+        }
+
+        private void SetWork(string workMessage, Brush textColor, bool isEnabled)
+        {
+            labelResult.Foreground = textColor;
+            labelResult.Content = workMessage;
+            gridControls.IsEnabled = isEnabled;
         }
 
         
