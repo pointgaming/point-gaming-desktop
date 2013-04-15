@@ -156,6 +156,7 @@
     <Compile Include="GameRoom\BetProposalDialog.xaml.cs">
       <DependentUpon>BetProposalDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GameRoom\Match.cs" />
     <Compile Include="GameRoom\GameRoomAdminDialog.xaml.cs">
       <DependentUpon>GameRoomAdminDialog.xaml</DependentUpon>
     </Compile>

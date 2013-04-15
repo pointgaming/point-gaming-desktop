@@ -7,6 +7,7 @@ using PointGaming.Desktop.POCO;
 using RestSharp;
 using SocketIOClient;
 using SocketIOClient.Messages;
+using System.Collections.ObjectModel;
 
 namespace PointGaming.Desktop.GameRoom
 {
@@ -16,6 +17,9 @@ namespace PointGaming.Desktop.GameRoom
 
         private readonly Lobby.LobbySession _lobbySession;
         public readonly Lobby.GameRoomItem GameRoom;
+
+        public readonly Match RoomMatch = new Match();
+        public readonly ObservableCollection<Bet> RoomBets = new ObservableCollection<Bet>();
 
         public string GameId { get { return GameRoom.GameId; } }
         public string GameRoomId { get { return GameRoom.Id; } }

@@ -6,6 +6,15 @@ using System.ComponentModel;
 
 namespace PointGaming.Desktop.GameRoom
 {
+    public enum BetOutcome
+    {
+        undetermined,
+        aWins,
+        bWins,
+        draw,
+        canceled,
+    }
+
     public class Bet : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -16,6 +25,43 @@ namespace PointGaming.Desktop.GameRoom
                 return;
             var args = new PropertyChangedEventArgs(propertyName);
             changedCallback(this, args);
+        }
+
+        private string _id;
+        public string Id
+        {
+            get { return _id; }
+            set
+            {
+                if (value == _id)
+                    return;
+                _id = value;
+                NotifyChanged("Id");
+            }
+        }
+        private string _matchId;
+        public string MatchId
+        {
+            get { return _matchId; }
+            set
+            {
+                if (value == _matchId)
+                    return;
+                _matchId = value;
+                NotifyChanged("MatchId");
+            }
+        }
+        private BetOutcome _betOutcome;
+        public BetOutcome BetOutcome
+        {
+            get { return _betOutcome; }
+            set
+            {
+                if (value == _betOutcome)
+                    return;
+                _betOutcome = value;
+                NotifyChanged("BetOutcome");
+            }
         }
 
         private IBetOperand _winner;
@@ -43,7 +89,6 @@ namespace PointGaming.Desktop.GameRoom
             }
         }
 
-
         private string _map;
         public string Map
         {
@@ -56,6 +101,7 @@ namespace PointGaming.Desktop.GameRoom
                 NotifyChanged("Map");
             }
         }
+
         private string _odds = "1:1";
         public string Odds
         {

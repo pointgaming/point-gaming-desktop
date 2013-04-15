@@ -82,5 +82,55 @@ namespace PointGaming.Desktop.GameRoom
             DialogResult = false;
             Close();
         }
+
+        private void tabControlMatchState_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string state = (string)(((TabItem)(tabControlMatchState.SelectedItem)).Header);
+
+            bool canEditDetails = state == "none" || state == "created";
+            textBoxBettingMap.IsEnabled = canEditDetails;
+            textBoxPlayer1.IsEnabled = canEditDetails;
+            textBoxPlayer2.IsEnabled = canEditDetails;
+
+            checkBoxEnableBooking.IsEnabled = state == "created";
+
+            radioButtonPlayerDraw.IsEnabled = state == "started";
+            radioButtonPlayer1.IsEnabled = state == "started";
+            radioButtonPlayer2.IsEnabled = state == "started";
+        }
+
+        private void MatchCreate_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MatchUpdate_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MatchStart_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MatchFinish_Click(object sender, RoutedEventArgs e)
+        {
+            if (radioButtonPlayer1.IsChecked==false && radioButtonPlayer2.IsChecked==false && radioButtonPlayerDraw.IsChecked==false)
+            {
+                MessageDialog.Show(this, "Choose Winner First", "Choose the winner first.");
+                return;
+            }
+
+
+        }
+        private void MatchCancel1_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void MatchCancel2_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
