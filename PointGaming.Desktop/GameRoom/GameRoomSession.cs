@@ -69,5 +69,12 @@ namespace PointGaming.Desktop.GameRoom
         {
             _manager.ChatWindow.CloseTab(typeof(GameRoomTab), ChatroomId);
         }
+
+        public void OnMatchNew(MatchPoco poco) { }
+        public void OnMatchUpdate(MatchPoco poco) { }
+        public void OnBetNew(BetPoco poco) { }
+        public void OnBettorNew(BetPoco poco) { }
+        public void OnBetUpdate(BetPoco poco) { }
+        public void OnBetDestroy(BetPoco poco) { }
     }
 }

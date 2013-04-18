@@ -31,25 +31,25 @@
         <Label Grid.Row="2" Grid.Column="0" Content="Odds" Height="28" HorizontalAlignment="Right" Name="label2" VerticalAlignment="Center" />
         <ComboBox Grid.Row="2" Grid.Column="1" Height="23" HorizontalAlignment="Left" Name="comboBoxOdds" VerticalAlignment="Center" Width="120" SelectedIndex="9"
                   HorizontalContentAlignment="Right" SelectionChanged="comboBoxOdds_SelectionChanged">
-            <ComboBoxItem Name="i10To01">10:1</ComboBoxItem>
-            <ComboBoxItem Name="i09To01">9:1</ComboBoxItem>
-            <ComboBoxItem Name="i08To01">8:1</ComboBoxItem>
-            <ComboBoxItem Name="i07To01">7:1</ComboBoxItem>
-            <ComboBoxItem Name="i06To01">6:1</ComboBoxItem>
-            <ComboBoxItem Name="i05To01">5:1</ComboBoxItem>
-            <ComboBoxItem Name="i04To01">4:1</ComboBoxItem>
-            <ComboBoxItem Name="i03To01">3:1</ComboBoxItem>
-            <ComboBoxItem Name="i02To01">2:1</ComboBoxItem>
-            <ComboBoxItem Name="i01To01">1:1</ComboBoxItem>
-            <ComboBoxItem Name="i01To02">1:2</ComboBoxItem>
-            <ComboBoxItem Name="i01To03">1:3</ComboBoxItem>
-            <ComboBoxItem Name="i01To04">1:4</ComboBoxItem>
-            <ComboBoxItem Name="i01To05">1:5</ComboBoxItem>
-            <ComboBoxItem Name="i01To06">1:6</ComboBoxItem>
-            <ComboBoxItem Name="i01To07">1:7</ComboBoxItem>
-            <ComboBoxItem Name="i01To08">1:8</ComboBoxItem>
-            <ComboBoxItem Name="i01To09">1:9</ComboBoxItem>
-            <ComboBoxItem Name="i01To10">1:10</ComboBoxItem>
+            <ComboBoxItem>10:1</ComboBoxItem>
+            <ComboBoxItem>9:1</ComboBoxItem>
+            <ComboBoxItem>8:1</ComboBoxItem>
+            <ComboBoxItem>7:1</ComboBoxItem>
+            <ComboBoxItem>6:1</ComboBoxItem>
+            <ComboBoxItem>5:1</ComboBoxItem>
+            <ComboBoxItem>4:1</ComboBoxItem>
+            <ComboBoxItem>3:1</ComboBoxItem>
+            <ComboBoxItem>2:1</ComboBoxItem>
+            <ComboBoxItem>1:1</ComboBoxItem>
+            <ComboBoxItem>1:2</ComboBoxItem>
+            <ComboBoxItem>1:3</ComboBoxItem>
+            <ComboBoxItem>1:4</ComboBoxItem>
+            <ComboBoxItem>1:5</ComboBoxItem>
+            <ComboBoxItem>1:6</ComboBoxItem>
+            <ComboBoxItem>1:7</ComboBoxItem>
+            <ComboBoxItem>1:8</ComboBoxItem>
+            <ComboBoxItem>1:9</ComboBoxItem>
+            <ComboBoxItem>1:10</ComboBoxItem>
         </ComboBox>
 
         <Label Grid.Row="3" Grid.Column="0" Content="Wager" Height="28" HorizontalAlignment="Right" Name="label1" VerticalAlignment="Center" />

@@ -47,6 +47,13 @@ namespace PointGaming.Desktop.Chat
             session.OnThread("GameRoom.update", OnGameRoomUpdate);
             session.OnThread("GameRoom.destroy", OnGameRoomDestroy);
 
+            session.OnThread("Match.new", OnMatchNew);
+            session.OnThread("Match.update", OnMatchUpdate);
+            session.OnThread("Bet.new", OnBetNew);
+            session.OnThread("Bet.Bettor.new", OnBettorNew);
+            session.OnThread("Bet.update", OnBetUpdate);
+            session.OnThread("Bet.destroy", OnBetDestroy);
+
             ChatroomUserGetList();
         }
 
@@ -365,7 +372,7 @@ namespace PointGaming.Desktop.Chat
             var gameRoom = received.game_room;
 
             Lobby.LobbySession lobby;
-            if (TryGetGameLobby(gameRoom, out lobby))
+            if (TryGetGameLobby(gameRoom.game_id, out lobby))
                 lobby.OnGameRoomNew(gameRoom);
         }
 
@@ -375,11 +382,11 @@ namespace PointGaming.Desktop.Chat
             var gameRoom = received.game_room;
             
             GameRoom.GameRoomSession gameRoomSession;
-            if (TryGetGameRoom(gameRoom, out gameRoomSession))
+            if (TryGetGameRoom(gameRoom._id, out gameRoomSession))
                 gameRoomSession.OnUpdate(gameRoom);
 
             Lobby.LobbySession lobby;
-            if (TryGetGameLobby(gameRoom, out lobby))
+            if (TryGetGameLobby(gameRoom.game_id, out lobby))
                 lobby.OnGameRoomUpdate(gameRoom);
         }
 
@@ -389,19 +396,19 @@ namespace PointGaming.Desktop.Chat
             var gameRoom = received.game_room;
 
             GameRoom.GameRoomSession gameRoomSession;
-            if (TryGetGameRoom(gameRoom, out gameRoomSession))
+            if (TryGetGameRoom(gameRoom._id, out gameRoomSession))
                 gameRoomSession.OnDestroy(gameRoom);
 
             Lobby.LobbySession lobby;
-            if (TryGetGameLobby(gameRoom, out lobby))
+            if (TryGetGameLobby(gameRoom.game_id, out lobby))
                 lobby.OnGameRoomDestroy(gameRoom);
         }
 
-        private bool TryGetGameLobby(GameRoomPoco gameRoom, out Lobby.LobbySession lobby)
+        private bool TryGetGameLobby(string gameId, out Lobby.LobbySession lobby)
         {
             lobby = null;
 
-            var lobbyId = PrefixGameLobby + gameRoom.game_id;
+            var lobbyId = PrefixGameLobby + gameId;
             ChatroomSession usage;
             if (!_chatroomUsage.TryGetValue(lobbyId, out usage))
                 return false;
@@ -410,18 +417,95 @@ namespace PointGaming.Desktop.Chat
             return true;
         }
 
-        private bool TryGetGameRoom(GameRoomPoco gameRoom, out GameRoom.GameRoomSession gameRoomSession)
+        private bool TryGetGameRoom(string gameRoomId, out GameRoom.GameRoomSession gameRoomSession)
         {
             gameRoomSession = null;
 
-            var gameRoomId = PrefixGameRoom + gameRoom._id;
+            var usageId = PrefixGameRoom + gameRoomId;
             ChatroomSession usage;
-            if (!_chatroomUsage.TryGetValue(gameRoomId, out usage))
+            if (!_chatroomUsage.TryGetValue(usageId, out usage))
                 return false;
 
             gameRoomSession = (GameRoom.GameRoomSession)usage;
             return true;
         }
         #endregion
+
+
+        private void OnMatchNew(IMessage message)
+        {
+            var received = message.Json.GetFirstArgAs<MatchSinglePoco>();
+            var match = received.match;
+            _matchToGameRoom[match._id] = match.room_id;
+
+            GameRoom.GameRoomSession gameRoom;
+            if (TryGetGameRoom(match.room_id, out gameRoom))
+                gameRoom.OnMatchNew(match);
+        }
+
+        private void OnMatchUpdate(IMessage message)
+        {
+            var received = message.Json.GetFirstArgAs<MatchSinglePoco>();
+            var match = received.match;
+            _matchToGameRoom[match._id] = match.room_id;
+
+            GameRoom.GameRoomSession gameRoom;
+            if (TryGetGameRoom(match.room_id, out gameRoom))
+                gameRoom.OnMatchUpdate(match);
+        }
+        private Dictionary<string, string> _matchToGameRoom = new Dictionary<string, string>();
+
+        private void OnBetNew(IMessage message)
+        {
+            var received = message.Json.GetFirstArgAs<BetSinglePoco>();
+            var bet = received.bet;
+
+            string gameId;
+            if (!_matchToGameRoom.TryGetValue(bet.match_id, out gameId))
+                return;
+
+            GameRoom.GameRoomSession gameRoom;
+            if (TryGetGameRoom(gameId, out gameRoom))
+                gameRoom.OnBetNew(bet);
+        }
+        private void OnBettorNew(IMessage message)
+        {
+            var received = message.Json.GetFirstArgAs<BetSinglePoco>();
+            var bet = received.bet;
+
+            string gameId;
+            if (!_matchToGameRoom.TryGetValue(bet.match_id, out gameId))
+                return;
+
+            GameRoom.GameRoomSession gameRoom;
+            if (TryGetGameRoom(gameId, out gameRoom))
+                gameRoom.OnBettorNew(bet);
+        }
+        private void OnBetUpdate(IMessage message)
+        {
+            var received = message.Json.GetFirstArgAs<BetSinglePoco>();
+            var bet = received.bet;
+
+            string gameId;
+            if (!_matchToGameRoom.TryGetValue(bet.match_id, out gameId))
+                return;
+
+            GameRoom.GameRoomSession gameRoom;
+            if (TryGetGameRoom(gameId, out gameRoom))
+                gameRoom.OnBetUpdate(bet);
+        }
+        private void OnBetDestroy(IMessage message)
+        {
+            var received = message.Json.GetFirstArgAs<BetSinglePoco>();
+            var bet = received.bet;
+
+            string gameId;
+            if (!_matchToGameRoom.TryGetValue(bet.match_id, out gameId))
+                return;
+
+            GameRoom.GameRoomSession gameRoom;
+            if (TryGetGameRoom(gameId, out gameRoom))
+                gameRoom.OnBetDestroy(bet);
+        }
     }
 }

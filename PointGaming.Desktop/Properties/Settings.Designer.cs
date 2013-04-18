@@ -282,7 +282,7 @@ namespace PointGaming.Desktop.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/api/v1/game_rooms")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/game_rooms")]
         public string GameRooms {
             get {
                 return ((string)(this["GameRooms"]));
