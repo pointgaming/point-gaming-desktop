@@ -56,4 +56,26 @@ namespace PointGaming.Desktop.POCO
       //"age": ""
 
 	}
+
+    public class TeamBase
+    {
+        public string _id { get; set; }
+        public string name { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as UserBase;
+            if (other == null)
+                return false;
+            return _id == other._id;
+        }
+        public override int GetHashCode()
+        {
+            return _id.GetHashCode();
+        }
+        public override string ToString()
+        {
+            return name;
+        }
+    }
 }

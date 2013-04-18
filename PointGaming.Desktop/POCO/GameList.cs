@@ -83,8 +83,10 @@ namespace PointGaming.Desktop.POCO
 
         public string player_1_id { get; set; }
         public string player_1_type { get; set; }
+        public string player_1_name { get; set; }
         public string player_2_id { get; set; }
         public string player_2_type { get; set; }
+        public string player_2_name { get; set; }
 
         public string room_id { get; set; }
         public string room_type { get; set; }

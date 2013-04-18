@@ -87,18 +87,18 @@ namespace PointGaming.Desktop.GameRoom
 
             if (comboBoxOutcome.SelectedIndex == 0)
             {
-                bet.Winner = _betOperandA;
-                bet.Loser = _betOperandB;
+                bet.BookerChoice = _betOperandA;
+                bet.BetterChoice = _betOperandB;
             }
             else
             {
-                bet.Winner = _betOperandB;
-                bet.Loser = _betOperandA;
+                bet.BookerChoice = _betOperandB;
+                bet.BetterChoice = _betOperandA;
             }
             string summaryFormat = "If {0} wins, you win {1:#,0}.\r\nIf {2} wins, you lose {3:#,0}.";
             textBoxSummary.Text = string.Format(summaryFormat,
-                bet.Winner.ShortDescription, bet.BookerReward,
-                bet.Loser.ShortDescription, bet.BookerWager);
+                bet.BookerChoice.ShortDescription, bet.BookerReward,
+                bet.BetterChoice.ShortDescription, bet.BookerWager);
         }
 
         private void buttonOK_Click(object sender, RoutedEventArgs e)

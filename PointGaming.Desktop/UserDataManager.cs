@@ -30,6 +30,7 @@ namespace PointGaming.Desktop
         private Dictionary<string, PgUser> _friendLookup = new Dictionary<string, PgUser>();
 
         private Dictionary<string, PgUser> _userLookup = new Dictionary<string, PgUser>();
+        private Dictionary<string, PgTeam> _teamLookup = new Dictionary<string, PgTeam>();
 
         public readonly ObservableCollection<LauncherInfo> Launchers = new ObservableCollection<LauncherInfo>();
 
@@ -99,6 +100,16 @@ namespace PointGaming.Desktop
             _userLookup[userBase._id] = user;
             // todo dean gores 2013-02-26: should probably look this user up so that real info can be shown
             return user;
+        }
+        public PgTeam GetPgTeam(TeamBase teamBase)
+        {
+            PgTeam team;
+            if (_teamLookup.TryGetValue(teamBase._id, out team))
+                return team;
+            team = new PgTeam { Id = teamBase._id, Name = teamBase.name };
+            _teamLookup[teamBase._id] = team;
+            // todo dean gores 2013-02-26: should probably look this user up so that real info can be shown
+            return team;
         }
 
         public bool TryGetGame(string gameId, out LauncherInfo info)

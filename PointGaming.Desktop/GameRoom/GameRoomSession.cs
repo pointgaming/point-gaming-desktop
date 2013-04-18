@@ -18,7 +18,7 @@ namespace PointGaming.Desktop.GameRoom
         private readonly Lobby.LobbySession _lobbySession;
         public readonly Lobby.GameRoomItem GameRoom;
 
-        public readonly Match RoomMatch = new Match();
+        public readonly Match MyMatch = new Match();
         public readonly ObservableCollection<Bet> RoomBets = new ObservableCollection<Bet>();
 
         public string GameId { get { return GameRoom.GameId; } }
@@ -70,11 +70,55 @@ namespace PointGaming.Desktop.GameRoom
             _manager.ChatWindow.CloseTab(typeof(GameRoomTab), ChatroomId);
         }
 
-        public void OnMatchNew(MatchPoco poco) { }
-        public void OnMatchUpdate(MatchPoco poco) { }
-        public void OnBetNew(BetPoco poco) { }
-        public void OnBettorNew(BetPoco poco) { }
-        public void OnBetUpdate(BetPoco poco) { }
-        public void OnBetDestroy(BetPoco poco) { }
+        public void OnMatchNew(MatchPoco poco)
+        {
+            MyMatch.Update(_userData, poco);
+            RoomBets.Clear();
+        }
+        public void OnMatchUpdate(MatchPoco poco)
+        {
+            MyMatch.Update(_userData, poco);
+        }
+        public void OnBetNew(BetPoco poco)
+        {
+            Bet bet = new Bet(_userData, MyMatch, poco);
+            RoomBets.Add(bet);
+        }
+        public void OnBettorNew(BetPoco poco)
+        {
+            var acceptedBy = _userData.GetPgUser(poco.better);
+
+            Bet bet;
+            if (TryGetBetById(poco, out bet))
+                bet.AcceptedBy(acceptedBy);
+        }
+
+        private bool TryGetBetById(BetPoco poco, out Bet bet)
+        {
+            bet = null;
+            foreach (var item in RoomBets)
+            {
+                if (item.Id == poco._id)
+                {
+                    bet = item;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void OnBetUpdate(BetPoco poco)
+        {
+            var outcome = poco.outcome;
+            Bet bet;
+            if (TryGetBetById(poco, out bet))
+                bet.SetOutcome(outcome);
+        }
+        public void OnBetDestroy(BetPoco poco)
+        {
+            Bet bet;
+            if (TryGetBetById(poco, out bet))
+                RoomBets.Remove(bet);
+        }
     }
 }

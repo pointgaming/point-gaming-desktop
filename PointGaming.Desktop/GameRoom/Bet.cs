@@ -9,8 +9,8 @@ namespace PointGaming.Desktop.GameRoom
     public enum BetOutcome
     {
         undetermined,
-        aWins,
-        bWins,
+        bookie_won,
+        better_won,
         draw,
         canceled,
     }
@@ -39,16 +39,16 @@ namespace PointGaming.Desktop.GameRoom
                 NotifyChanged("Id");
             }
         }
-        private string _matchId;
-        public string MatchId
+        private Match _myMatch;
+        public Match MyMatch
         {
-            get { return _matchId; }
+            get { return _myMatch; }
             set
             {
-                if (value == _matchId)
+                if (value == _myMatch)
                     return;
-                _matchId = value;
-                NotifyChanged("MatchId");
+                _myMatch = value;
+                NotifyChanged("MyMatch");
             }
         }
         private BetOutcome _betOutcome;
@@ -64,41 +64,28 @@ namespace PointGaming.Desktop.GameRoom
             }
         }
 
-        private IBetOperand _winner;
-        public IBetOperand Winner
+        private IBetOperand _bookerChoice;
+        public IBetOperand BookerChoice
         {
-            get { return _winner; }
+            get { return _bookerChoice; }
             set
             {
-                if (value == _winner)
+                if (value == _bookerChoice)
                     return;
-                _winner = value;
-                NotifyChanged("Winner");
+                _bookerChoice = value;
+                NotifyChanged("BookerChoice");
             }
         }
-        private IBetOperand _loser;
-        public IBetOperand Loser
+        private IBetOperand _betterChoice;
+        public IBetOperand BetterChoice
         {
-            get { return _loser; }
+            get { return _betterChoice; }
             set
             {
-                if (value == _loser)
+                if (value == _betterChoice)
                     return;
-                _loser = value;
-                NotifyChanged("Loser");
-            }
-        }
-
-        private string _map;
-        public string Map
-        {
-            get { return _map; }
-            set
-            {
-                if (value == _map)
-                    return;
-                _map = value;
-                NotifyChanged("Map");
+                _betterChoice = value;
+                NotifyChanged("BetterChoice");
             }
         }
 
@@ -185,6 +172,47 @@ namespace PointGaming.Desktop.GameRoom
                 var multiplier = loserChance / winnerChance;
                 return multiplier;
             }
+        }
+
+        public Bet() { }
+
+        public Bet(UserDataManager manager, Match match, POCO.BetPoco poco)
+        {
+            Id = poco._id;
+            MyMatch = match;
+            SetOutcome(poco.outcome);
+
+            if (poco.winner_id == match.Player1.Id)
+            {
+                BookerChoice = match.Player1;
+                BetterChoice = match.Player2;
+            }
+            else
+            {
+                BookerChoice = match.Player2;
+                BetterChoice = match.Player1;
+            }
+
+            Booker = manager.GetPgUser(poco.bookie);
+            Odds = poco.bookie_odds;
+            Wager = poco.bookie_wager;
+
+            if (poco.better != null && !string.IsNullOrWhiteSpace(poco.better._id))
+                Better = manager.GetPgUser(poco.better);
+        }
+
+        public void SetOutcome(string outcome)
+        {
+            try
+            {
+                BetOutcome = (BetOutcome)Enum.Parse(typeof(BetOutcome), outcome);
+            }
+            catch { BetOutcome = GameRoom.BetOutcome.undetermined; }
+        }
+
+        public void AcceptedBy(PgUser user)
+        {
+            Better = user;
         }
     }
 }
