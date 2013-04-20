@@ -70,23 +70,95 @@ namespace PointGaming.Desktop.GameRoom
             _manager.ChatWindow.CloseTab(typeof(GameRoomTab), ChatroomId);
         }
 
+        public void CreateBet(Bet bet)
+        {
+            var poco = bet.ToPoco();
+            poco.match_hash = MyMatch.MatchHash;
+
+            RestResponse<BetPoco> response = null;
+            _userData.PgSession.BeginAndCallback(delegate
+            {
+                var url = Properties.Settings.Default.Matches + "/" + MyMatch.Id + "/bets?auth_token=" + _userData.PgSession.AuthToken;
+                var client = new RestClient(url);
+                var request = new RestRequest(Method.POST) { RequestFormat = RestSharp.DataFormat.Json };
+                var root = new { bet = poco };
+                request.AddBody(root);
+                response = (RestResponse<BetPoco>)client.Execute<BetPoco>(request);
+            }, delegate
+            {
+                if (!response.IsOk())
+                {
+                    MessageDialog.Show(_userData.GetChatWindow(), "Failed to create bet", response.ErrorMessage);
+                }
+            });
+        }
+
+        public void AcceptBet(Bet bet) 
+        {
+            RestResponse<ApiResponse> response = null;
+            _userData.PgSession.BeginAndCallback(delegate
+            {
+                var url = Properties.Settings.Default.Matches + "/" + MyMatch.Id + "/bets" + bet.Id + "?auth_token=" + _userData.PgSession.AuthToken;
+                var client = new RestClient(url);
+                var request = new RestRequest(Method.PUT);
+                response = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
+            }, delegate
+            {
+                if (!response.IsOk())
+                {
+                    MessageDialog.Show(_userData.GetChatWindow(), "Failed to accept bet", response.ErrorMessage);
+                }
+            });
+        }
+
+        public void CancelBet(Bet bet) 
+        {
+            RestResponse<ApiResponse> response = null;
+            _userData.PgSession.BeginAndCallback(delegate
+            {
+                var url = Properties.Settings.Default.Matches + "/" + MyMatch.Id + "/bets" + bet.Id + "?auth_token=" + _userData.PgSession.AuthToken;
+                var client = new RestClient(url);
+                var request = new RestRequest(Method.DELETE);
+                response = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
+            }, delegate
+            {
+                if (!response.IsOk())
+                {
+                    MessageDialog.Show(_userData.GetChatWindow(), "Failed to delete bet", response.ErrorMessage);
+                }
+            });
+        }
+
         public void OnMatchNew(MatchPoco poco)
         {
             MyMatch.Update(_userData, poco);
-            RoomBets.Clear();
+            CleanBets(poco.match_hash);
         }
         public void OnMatchUpdate(MatchPoco poco)
         {
             MyMatch.Update(_userData, poco);
+            CleanBets(poco.match_hash);
+        }
+
+        private void CleanBets(string matchHash)
+        {
+            var removes = new List<Bet>();
+            foreach (var item in RoomBets)
+            {
+                if (item.MatchHash != matchHash)
+                    removes.Add(item);
+            }
+            foreach (var item in removes)
+                RoomBets.Remove(item);
         }
         public void OnBetNew(BetPoco poco)
         {
             Bet bet = new Bet(_userData, MyMatch, poco);
             RoomBets.Add(bet);
         }
-        public void OnBettorNew(BetPoco poco)
+        public void OnBetTakerNew(BetPoco poco)
         {
-            var acceptedBy = _userData.GetPgUser(poco.better);
+            var acceptedBy = _userData.GetPgUser(poco.taker);
 
             Bet bet;
             if (TryGetBetById(poco, out bet))

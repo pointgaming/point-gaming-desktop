@@ -16,10 +16,13 @@ namespace PointGaming.Desktop
     {
         string Id { get; }
         string ShortDescription { get; }
+        string PocoType { get; }
     }
 
     public class PgTeam : IBetOperand
     {
+        public string PocoType { get { return "Team"; } }
+
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyChanged(string propertyName)
         {
@@ -62,6 +65,7 @@ namespace PointGaming.Desktop
 
     public class PgUser : IBetOperand
     {
+        public string PocoType { get { return "User"; } }
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyChanged(string propertyName)
         {

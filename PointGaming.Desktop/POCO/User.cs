@@ -78,4 +78,12 @@ namespace PointGaming.Desktop.POCO
             return name;
         }
     }
+
+
+    public class BetOperandPoco
+    {
+        public string _id { get; set; }
+        public string name { get; set; }
+        public string type { get; set; }
+    }
 }

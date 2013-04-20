@@ -20,32 +20,32 @@ namespace PointGaming.Desktop.GameRoom
 
             Bet item;
             
-            item = new Bet { BookerChoice = winner, BetterChoice = loser, Booker = booker, Better = better, Odds = "5:1", Wager = 10m, };
+            item = new Bet { OffererChoice = winner, TakerChoice = loser, Offerer = booker, Taker = better, OffererOdds = "5:1", OffererWager = 10m, };
             Add(item);
-            item = new Bet { BookerChoice = winner, BetterChoice = loser, Booker = booker, Better = better, Odds = "1:5", Wager = 10m, };
+            item = new Bet { OffererChoice = winner, TakerChoice = loser, Offerer = booker, Taker = better, OffererOdds = "1:5", OffererWager = 10m, };
             Add(item);
-            item = new Bet { BookerChoice = winner, BetterChoice = loser, Booker = booker, Better = better, Odds = "1:1", Wager = 10m, };
-            Add(item);
-
-            item = new Bet { BookerChoice = winner, BetterChoice = loser, Booker = booker, Better = better, Odds = "5:1", Wager = 10m, };
-            Add(item);
-            item = new Bet { BookerChoice = winner, BetterChoice = loser, Booker = booker, Better = better, Odds = "1:5", Wager = 10m, };
-            Add(item);
-            item = new Bet { BookerChoice = winner, BetterChoice = loser, Booker = booker, Better = better, Odds = "1:1", Wager = 10m, };
+            item = new Bet { OffererChoice = winner, TakerChoice = loser, Offerer = booker, Taker = better, OffererOdds = "1:1", OffererWager = 10m, };
             Add(item);
 
-            item = new Bet { BookerChoice = winner, BetterChoice = loser, Booker = booker, Better = better, Odds = "5:1", Wager = 10m, };
+            item = new Bet { OffererChoice = winner, TakerChoice = loser, Offerer = booker, Taker = better, OffererOdds = "5:1", OffererWager = 10m, };
             Add(item);
-            item = new Bet { BookerChoice = winner, BetterChoice = loser, Booker = booker, Better = better, Odds = "1:5", Wager = 10m, };
+            item = new Bet { OffererChoice = winner, TakerChoice = loser, Offerer = booker, Taker = better, OffererOdds = "1:5", OffererWager = 10m, };
             Add(item);
-            item = new Bet { BookerChoice = winner, BetterChoice = loser, Booker = booker, Better = better, Odds = "1:1", Wager = 10m, };
+            item = new Bet { OffererChoice = winner, TakerChoice = loser, Offerer = booker, Taker = better, OffererOdds = "1:1", OffererWager = 10m, };
             Add(item);
 
-            item = new Bet { BookerChoice = winner, BetterChoice = loser, Booker = booker, Better = better, Odds = "5:1", Wager = 10m, };
+            item = new Bet { OffererChoice = winner, TakerChoice = loser, Offerer = booker, Taker = better, OffererOdds = "5:1", OffererWager = 10m, };
             Add(item);
-            item = new Bet { BookerChoice = winner, BetterChoice = loser, Booker = booker, Better = better, Odds = "1:5", Wager = 10m, };
+            item = new Bet { OffererChoice = winner, TakerChoice = loser, Offerer = booker, Taker = better, OffererOdds = "1:5", OffererWager = 10m, };
             Add(item);
-            item = new Bet { BookerChoice = winner, BetterChoice = loser, Booker = booker, Better = better, Odds = "1:1", Wager = 10m, };
+            item = new Bet { OffererChoice = winner, TakerChoice = loser, Offerer = booker, Taker = better, OffererOdds = "1:1", OffererWager = 10m, };
+            Add(item);
+
+            item = new Bet { OffererChoice = winner, TakerChoice = loser, Offerer = booker, Taker = better, OffererOdds = "5:1", OffererWager = 10m, };
+            Add(item);
+            item = new Bet { OffererChoice = winner, TakerChoice = loser, Offerer = booker, Taker = better, OffererOdds = "1:5", OffererWager = 10m, };
+            Add(item);
+            item = new Bet { OffererChoice = winner, TakerChoice = loser, Offerer = booker, Taker = better, OffererOdds = "1:1", OffererWager = 10m, };
             Add(item);
         }
     }

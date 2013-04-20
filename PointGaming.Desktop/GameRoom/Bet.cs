@@ -51,6 +51,20 @@ namespace PointGaming.Desktop.GameRoom
                 NotifyChanged("MyMatch");
             }
         }
+
+        private string _matchHash;
+        public string MatchHash
+        {
+            get { return _matchHash; }
+            set
+            {
+                if (value == _matchHash)
+                    return;
+                _matchHash = value;
+                NotifyChanged("MatchHash");
+            }
+        }
+
         private BetOutcome _betOutcome;
         public BetOutcome BetOutcome
         {
@@ -64,109 +78,106 @@ namespace PointGaming.Desktop.GameRoom
             }
         }
 
-        private IBetOperand _bookerChoice;
-        public IBetOperand BookerChoice
+        private IBetOperand _offererChoice;
+        public IBetOperand OffererChoice
         {
-            get { return _bookerChoice; }
+            get { return _offererChoice; }
             set
             {
-                if (value == _bookerChoice)
+                if (value == _offererChoice)
                     return;
-                _bookerChoice = value;
-                NotifyChanged("BookerChoice");
+                _offererChoice = value;
+                NotifyChanged("OffererChoice");
             }
         }
-        private IBetOperand _betterChoice;
-        public IBetOperand BetterChoice
+        private IBetOperand _takerChoice;
+        public IBetOperand TakerChoice
         {
-            get { return _betterChoice; }
+            get { return _takerChoice; }
             set
             {
-                if (value == _betterChoice)
+                if (value == _takerChoice)
                     return;
-                _betterChoice = value;
-                NotifyChanged("BetterChoice");
-            }
-        }
-
-        private string _odds = "1:1";
-        public string Odds
-        {
-            get { return _odds; }
-            set
-            {
-                if (value == _odds)
-                    return;
-                _odds = value;
-                NotifyChanged("Odds");
-                NotifyChanged("LoserOdds");
-                NotifyChanged("BookerWager");
-                NotifyChanged("BetterWager");
-                NotifyChanged("BookerReward");
-                NotifyChanged("BetterReward");
-            }
-        }
-        private decimal _wager;
-        public decimal Wager
-        {
-            get { return _wager; }
-            set
-            {
-                if (value == _wager)
-                    return;
-                _wager = value;
-                NotifyChanged("Wager");
-                NotifyChanged("BookerWager");
-                NotifyChanged("BetterWager");
-                NotifyChanged("BookerReward");
-                NotifyChanged("BetterReward");
+                _takerChoice = value;
+                NotifyChanged("TakerChoice");
             }
         }
 
-        private PgUser _booker;
-        public PgUser Booker
+        private string _offererOdds = "1:1";
+        public string OffererOdds
         {
-            get { return _booker; }
+            get { return _offererOdds; }
             set
             {
-                if (value == _booker)
+                if (value == _offererOdds)
                     return;
-                _booker = value;
-                NotifyChanged("Booker");
+                _offererOdds = value;
+                NotifyChanged("OffererOdds");
+                NotifyChanged("TakerOdds");
+                NotifyChanged("OffererReward");
+                NotifyChanged("TakerWager");
+                NotifyChanged("TakerReward");
             }
         }
-        private PgUser _better;
-        public PgUser Better
+        private decimal _offererWager;
+        public decimal OffererWager
         {
-            get { return _better; }
+            get { return _offererWager; }
             set
             {
-                if (value == _better)
+                if (value == _offererWager)
                     return;
-                _better = value;
-                NotifyChanged("Better");
+                _offererWager = value;
+                NotifyChanged("OffererWager");
+                NotifyChanged("OffererReward");
+                NotifyChanged("TakerWager");
+                NotifyChanged("TakerReward");
             }
         }
 
-        public decimal BookerReward { get { return Math.Floor(Wager * BookerMultiplier); } }
-        public decimal BookerWager { get { return Wager; } }
-        public decimal BetterReward { get { return Wager; } }
-        public decimal BetterWager { get { return Math.Floor(Wager * BookerMultiplier); } }
+        private PgUser _offerer;
+        public PgUser Offerer
+        {
+            get { return _offerer; }
+            set
+            {
+                if (value == _offerer)
+                    return;
+                _offerer = value;
+                NotifyChanged("Offerer");
+            }
+        }
+        private PgUser _taker;
+        public PgUser Taker
+        {
+            get { return _taker; }
+            set
+            {
+                if (value == _taker)
+                    return;
+                _taker = value;
+                NotifyChanged("Taker");
+            }
+        }
 
-        public string BetterOdds
+        public decimal OffererReward { get { return Math.Floor(OffererWager * OffererMultiplier); } }
+        public decimal TakerReward { get { return OffererWager; } }
+        public decimal TakerWager { get { return OffererReward; } }
+
+        public string TakerOdds
         {
             get
             {
-                var oddsSplit = Odds.Split(':');
+                var oddsSplit = OffererOdds.Split(':');
                 return oddsSplit[1] + ":" + oddsSplit[0];
             }
         }
 
-        private decimal BookerMultiplier
+        private decimal OffererMultiplier
         {
             get
             {
-                var oddsSplit = Odds.Split(':');
+                var oddsSplit = OffererOdds.Split(':');
                 var winnerChance = decimal.Parse(oddsSplit[0].Trim());
                 var loserChance = decimal.Parse(oddsSplit[1].Trim());
                 var multiplier = loserChance / winnerChance;
@@ -180,25 +191,44 @@ namespace PointGaming.Desktop.GameRoom
         {
             Id = poco._id;
             MyMatch = match;
+            MatchHash = poco.match_hash;
+
             SetOutcome(poco.outcome);
 
-            if (poco.winner_id == match.Player1.Id)
+            if (poco.offerer_choice_id == match.Player1.Id)
             {
-                BookerChoice = match.Player1;
-                BetterChoice = match.Player2;
+                OffererChoice = match.Player1;
+                TakerChoice = match.Player2;
             }
             else
             {
-                BookerChoice = match.Player2;
-                BetterChoice = match.Player1;
+                OffererChoice = match.Player2;
+                TakerChoice = match.Player1;
             }
 
-            Booker = manager.GetPgUser(poco.bookie);
-            Odds = poco.bookie_odds;
-            Wager = poco.bookie_wager;
+            Offerer = manager.GetPgUser(poco.offerer);
+            OffererOdds = poco.offerer_odds;
+            OffererWager = poco.offerer_wager;
 
-            if (poco.better != null && !string.IsNullOrWhiteSpace(poco.better._id))
-                Better = manager.GetPgUser(poco.better);
+            if (poco.taker != null && !string.IsNullOrWhiteSpace(poco.taker._id))
+                Taker = manager.GetPgUser(poco.taker);
+        }
+
+        public POCO.BetPoco ToPoco()
+        {
+            var poco = new POCO.BetPoco
+            {
+                match_hash = MyMatch.MatchHash,
+                offerer_choice_id = OffererChoice.Id,
+                offerer_choice_name = OffererChoice.ShortDescription,
+                offerer_choice_type = OffererChoice.PocoType,
+                taker_choice_id = TakerChoice.Id,
+                taker_choice_name = TakerChoice.ShortDescription,
+                taker_choice_type = TakerChoice.PocoType,
+                offerer_wager = OffererWager,
+                offerer_odds = OffererOdds,
+            };
+            return poco;
         }
 
         public void SetOutcome(string outcome)
@@ -212,7 +242,7 @@ namespace PointGaming.Desktop.GameRoom
 
         public void AcceptedBy(PgUser user)
         {
-            Better = user;
+            Taker = user;
         }
     }
 }

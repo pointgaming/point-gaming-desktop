@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -25,6 +26,13 @@ namespace PointGaming.Desktop.GameRoom
             var args = new PropertyChangedEventArgs(propertyName);
             changedCallback(this, args);
         }
+
+        private readonly ObservableCollection<IBetOperand> _player1Options = new ObservableCollection<IBetOperand>();
+        public ObservableCollection<IBetOperand> Player1Options { get { return _player1Options; } }
+        private readonly ObservableCollection<IBetOperand> _player2Options = new ObservableCollection<IBetOperand>();
+        public ObservableCollection<IBetOperand> Player2Options { get { return _player2Options; } }
+
+        private UserDataManager _userData = HomeWindow.UserData;
 
         private string _description;
         public string Description
@@ -101,7 +109,16 @@ namespace PointGaming.Desktop.GameRoom
 
         private void MatchCreate_Click(object sender, RoutedEventArgs e)
         {
+            Match m = new Match {
+                Player1 = (IBetOperand)textBoxPlayer1.SelectedValue,
+                Player2 = (IBetOperand)textBoxPlayer2.SelectedValue,
+            };
 
+            if (m.Player1 == null || m.Player2 == null)
+            {
+                MessageDialog.Show(this, "Choose players first", "Choose players first.");
+                return;
+            }
         }
 
         private void MatchUpdate_Click(object sender, RoutedEventArgs e)
@@ -132,5 +149,42 @@ namespace PointGaming.Desktop.GameRoom
         {
 
         }
+
+        private void textBoxPlayer1_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var t = textBoxPlayer1;
+            if (t.Text.Length < 2)
+                return;
+            _userData.LookupBetOperand(t.Text, Player1AutoComplete);
+        }
+        private void textBoxPlayer2_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var t = textBoxPlayer2;
+            if (t.Text.Length < 2)
+                return;
+            _userData.LookupBetOperand(t.Text, Player2AutoComplete);
+        }
+
+        private void Player1AutoComplete(List<POCO.BetOperandPoco> pocos)
+        {
+            AutoComplete(pocos, Player1Options);
+        }
+        private void Player2AutoComplete(List<POCO.BetOperandPoco> pocos)
+        {
+            AutoComplete(pocos, Player2Options);
+        }
+
+        private void AutoComplete(List<POCO.BetOperandPoco> pocos, ObservableCollection<IBetOperand> options)
+        {
+            options.Clear();
+            foreach (var item in pocos)
+            {
+                if (item.type == "User")
+                    options.Add(_userData.GetPgUser(new POCO.UserBase { _id = item._id, username = item.name, }));
+                else if (item.type == "Team")
+                    options.Add(_userData.GetPgTeam(new POCO.TeamBase { _id = item._id, name = item.name, }));
+            }
+        }
+
     }
 }

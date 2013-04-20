@@ -110,6 +110,8 @@ namespace PointGaming.Desktop.GameRoom
             UpdateOwner();
 
             PropertyChangedEventManager.AddListener(_gameRoomSession.GameRoom, this, "PropertyChanged");
+
+            itemsControlBets.ItemsSource = _gameRoomSession.RoomBets;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -275,13 +277,16 @@ namespace PointGaming.Desktop.GameRoom
 
         private void buttonProposeABet_Click(object sender, RoutedEventArgs e)
         {
+            if (!_gameRoomSession.MyMatch.IsBetting || _gameRoomSession.MyMatch.State != MatchState.@new)
+                return;
+
             var dialog = new BetProposalDialog();
             dialog.Owner = _chatWindow;
             dialog.SetBetOperands(new PgUser { Username = "Mr.Apple" }, new PgUser { Username = "Mr.Banana" });
             dialog.ShowDialog();
             if (dialog.DialogResult == true)
             {
-                MessageBox.Show(_chatWindow, "Add Proposal", "Todo add a proposal");
+                _gameRoomSession.CreateBet(dialog.ToBet());
             }
         }
 
@@ -347,7 +352,10 @@ namespace PointGaming.Desktop.GameRoom
         {
             if (_mouseOverBet != null)
             {
-                MessageDialog.Show(_chatWindow, "Accept Bet", "Todo accept bet!");
+                if (_mouseOverBet.Offerer == _userData.User)
+                    _gameRoomSession.CancelBet(_mouseOverBet);
+                else
+                    _gameRoomSession.AcceptBet(_mouseOverBet);
             }
         }
 

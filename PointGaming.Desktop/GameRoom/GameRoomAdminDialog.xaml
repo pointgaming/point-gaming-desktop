@@ -1,9 +1,23 @@
 ﻿<Window x:Class="PointGaming.Desktop.GameRoom.GameRoomAdminDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:actb="clr-namespace:Aviad.WPF.Controls;assembly=Aviad.WPF.Controls"
         Title="Gameroom Admin" Height="300" Width="450" Padding="5" Icon="/PointGaming.Desktop;component/PointGaming.ico"
         WindowStyle="ToolWindow" ResizeMode="NoResize"
         Name="myWindow" WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <DataTemplate x:Key="TheItemTemplate">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding ShortDescription}"/>
+                <TextBlock Text=" ("/>
+                <TextBlock Text="{Binding PocoType}"/>
+                <TextBlock Text=")"/>
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+    
+    
+    
     <TabControl>
         <TabItem Header="Info">
             <Grid>
@@ -72,11 +86,21 @@
 
                     <Label Grid.Row="1" Content="Team/Player 1" Height="28" HorizontalAlignment="Right" Name="label1" VerticalAlignment="Center" />
                     <RadioButton Grid.Row="1" Grid.Column="1" GroupName="WinnerChoice" Name="radioButtonPlayer1" VerticalAlignment="Center" Height="16" HorizontalAlignment="Center" Margin="0,0,3,0"/>
-                    <TextBox Grid.Row="1" Grid.Column="2" Height="23" HorizontalAlignment="Stretch" Name="textBoxPlayer1" VerticalAlignment="Center" />
+                    <actb:AutoCompleteTextBox Grid.Row="1" Grid.Column="2" Height="23" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+            x:Name="textBoxPlayer1" 
+            ItemsSource="{Binding ElementName=myWindow, Path=Player1Options}"
+            ItemTemplate="{StaticResource TheItemTemplate}"
+            Binding="{Binding ShortDescription}" 
+            MaxCompletions="10" TextChanged="textBoxPlayer1_TextChanged" />
 
                     <Label Grid.Row="2" Content="Team/Player 2" Height="28" HorizontalAlignment="Right" Name="label2" VerticalAlignment="Center" />
                     <RadioButton Grid.Row="2" Grid.Column="1" GroupName="WinnerChoice" Name="radioButtonPlayer2" VerticalAlignment="Center" Height="16" HorizontalAlignment="Center" Margin="0,0,3,0"/>
-                    <TextBox Grid.Column="2" Grid.Row="2" Height="23" HorizontalAlignment="Stretch" Name="textBoxPlayer2" VerticalAlignment="Center" />
+                    <actb:AutoCompleteTextBox Grid.Row="2" Grid.Column="2" Height="23" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+            x:Name="textBoxPlayer2" 
+            ItemsSource="{Binding ElementName=myWindow, Path=Player2Options}"
+            ItemTemplate="{StaticResource TheItemTemplate}"
+            Binding="{Binding ShortDescription}" 
+            MaxCompletions="10" TextChanged="textBoxPlayer2_TextChanged" />
 
                     <Label Grid.Row="3" Content="Draw/Tie" Height="28" HorizontalAlignment="Right" Name="label7" VerticalAlignment="Center" />
                     <RadioButton Grid.Row="3" Grid.Column="1" GroupName="WinnerChoice" Name="radioButtonPlayerDraw" VerticalAlignment="Center" Height="16" HorizontalAlignment="Center" Margin="0,0,3,0"/>

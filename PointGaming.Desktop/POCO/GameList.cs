@@ -45,28 +45,29 @@ namespace PointGaming.Desktop.POCO
     {
         public string _id { get; set; }
         public string match_id { get; set; }
+        public string match_hash { get; set; }
         public string outcome { get; set; }
 
-        public decimal bookie_wager { get; set; }
-        public string bookie_odds { get; set; }
+        public decimal offerer_wager { get; set; }
+        public string offerer_odds { get; set; }
 
 
-        //public string bookie_id { get; set; }
-        public UserBase bookie { get; set; }
+        public string offerer_id { get; set; }
+        public UserBase offerer { get; set; }
 
-        //public string better_id { get; set; }
-        public UserBase better { get; set; }
+        public string taker_id { get; set; }
+        public UserBase taker { get; set; }
 
         //public string created_at { get; set; }
         //public string updated_at { get; set; }
         
-        public string loser_id { get; set; }
-        public string loser_name { get; set; }
-        public string loser_type { get; set; }
+        public string taker_choice_id { get; set; }
+        public string taker_choice_name { get; set; }
+        public string taker_choice_type { get; set; }
 
-        public string winner_id { get; set; }
-        public string winner_name { get; set; }
-        public string winner_type { get; set; }
+        public string offerer_choice_id { get; set; }
+        public string offerer_choice_name { get; set; }
+        public string offerer_choice_type { get; set; }
     }
 
     public class BetSinglePoco
@@ -78,6 +79,7 @@ namespace PointGaming.Desktop.POCO
     public class MatchPoco
     {
         public string _id { get; set; }
+        public string match_hash { get; set; }
         public bool betting { get; set; }
         public string map { get; set; }
 

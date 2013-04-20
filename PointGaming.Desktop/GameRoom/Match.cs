@@ -41,6 +41,19 @@ namespace PointGaming.Desktop.GameRoom
             }
         }
 
+        private string _matchHash;
+        public string MatchHash
+        {
+            get { return _matchHash; }
+            set
+            {
+                if (value == _matchHash)
+                    return;
+                _matchHash = value;
+                NotifyChanged("MatchHash");
+            }
+        }
+
         private string _roomId;
         public string RoomId
         {

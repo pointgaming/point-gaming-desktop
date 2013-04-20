@@ -50,7 +50,7 @@ namespace PointGaming.Desktop.Chat
             session.OnThread("Match.new", OnMatchNew);
             session.OnThread("Match.update", OnMatchUpdate);
             session.OnThread("Bet.new", OnBetNew);
-            session.OnThread("Bet.Bettor.new", OnBettorNew);
+            session.OnThread("Bet.Taker.new", OnBetTakerNew);
             session.OnThread("Bet.update", OnBetUpdate);
             session.OnThread("Bet.destroy", OnBetDestroy);
 
@@ -468,7 +468,7 @@ namespace PointGaming.Desktop.Chat
             if (TryGetGameRoom(gameId, out gameRoom))
                 gameRoom.OnBetNew(bet);
         }
-        private void OnBettorNew(IMessage message)
+        private void OnBetTakerNew(IMessage message)
         {
             var received = message.Json.GetFirstArgAs<BetSinglePoco>();
             var bet = received.bet;
@@ -479,7 +479,7 @@ namespace PointGaming.Desktop.Chat
 
             GameRoom.GameRoomSession gameRoom;
             if (TryGetGameRoom(gameId, out gameRoom))
-                gameRoom.OnBettorNew(bet);
+                gameRoom.OnBetTakerNew(bet);
         }
         private void OnBetUpdate(IMessage message)
         {

@@ -297,5 +297,23 @@ namespace PointGaming.Desktop.Properties {
                 return ((bool)(this["UpdateAutomatic"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/matches")]
+        public string Matches {
+            get {
+                return ((string)(this["Matches"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/search/playable.json?query=")]
+        public string BetOperandQuery {
+            get {
+                return ((string)(this["BetOperandQuery"]));
+            }
+        }
     }
 }

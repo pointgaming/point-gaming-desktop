@@ -125,5 +125,23 @@ namespace PointGaming.Desktop
             info = null;
             return false;
         }
+
+        public void LookupBetOperand(string query, Action<List<BetOperandPoco>> callback)
+        {
+            RestResponse<List<BetOperandPoco>> response = null;
+            PgSession.BeginAndCallback(delegate
+            {
+                var url = Properties.Settings.Default.BetOperandQuery + query + "&auth_token=" + PgSession.AuthToken;
+                var client = new RestClient(url);
+                var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+                response = (RestResponse<List<BetOperandPoco>>)client.Execute<List<BetOperandPoco>>(request);
+            }, delegate
+            {
+                if (response.IsOk())
+                {
+                    callback(response.Data);
+                }
+            });
+        }
     }
 }

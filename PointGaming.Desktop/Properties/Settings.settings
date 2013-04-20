@@ -77,5 +77,11 @@
     <Setting Name="UpdateAutomatic" Type="System.Boolean" Scope="Application">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="Matches" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">https://dev.pointgaming.com/matches</Value>
+    </Setting>
+    <Setting Name="BetOperandQuery" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">https://dev.pointgaming.com/search/playable.json?query=</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
