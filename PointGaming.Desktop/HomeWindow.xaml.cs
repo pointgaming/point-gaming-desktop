@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Runtime.InteropServices;
+using System.Windows.Interop;
 using PointGaming.Desktop.POCO;
 using SocketIOClient;
 using SocketIOClient.Messages;
@@ -189,6 +191,79 @@ namespace PointGaming.Desktop
                 Properties.Settings.Default.HomeWindowBoundsHeight = r.Height;
                 Properties.Settings.Default.HomeWindowBoundsDesktopInfo = desktopInfo;
             }
+        }
+
+        private void homeWindow_SourceInitialized(object sender, EventArgs e)
+        {
+            GlassExtender.SetMaximizable(this, false);
+            GlassExtender.SetMinimizable(this, false);
+            GlassExtender.ExtendGlassFrame(this, new Thickness(-1));
+        }
+
+    }
+
+    public class GlassExtender
+    {
+        [DllImport("user32.dll")]
+        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+        [DllImport("user32.dll")]
+        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+        [DllImport("dwmapi.dll", PreserveSig = false)]
+        static extern void DwmExtendFrameIntoClientArea(IntPtr hwnd, ref MARGINS margins);
+        [DllImport("dwmapi.dll", PreserveSig = false)]
+        static extern bool DwmIsCompositionEnabled();
+        struct MARGINS
+        {
+            public MARGINS(Thickness t)
+            {
+                Left = (int)t.Left;
+                Right = (int)t.Right;
+                Top = (int)t.Top;
+                Bottom = (int)t.Bottom;
+            }
+            public int Left;
+            public int Right;
+            public int Top;
+            public int Bottom;
+        }
+
+        public static void SetMinimizable(Window window, bool can)
+        {
+            const int GWL_STYLE = -16;
+            IntPtr hwnd = new WindowInteropHelper(window).Handle;
+            int windowLong = GetWindowLong(hwnd, GWL_STYLE);
+            if (can)
+                windowLong = (int)(windowLong | 0x00020000);
+            else
+                windowLong = (int)(windowLong & 0xfffdffff);
+            SetWindowLong(hwnd, GWL_STYLE, windowLong);
+        }
+        public static void SetMaximizable(Window window, bool can)
+        {
+            const int GWL_STYLE = -16;
+            IntPtr hwnd = new WindowInteropHelper(window).Handle;
+            int windowLong = GetWindowLong(hwnd, GWL_STYLE);
+            if (can)
+                windowLong = (int)(windowLong | 0x00010000);
+            else
+                windowLong = (int)(windowLong & 0xfffeffff);
+            SetWindowLong(hwnd, GWL_STYLE, windowLong);
+        }
+
+        public static bool ExtendGlassFrame(Window window, Thickness margin)
+        {
+            if (!DwmIsCompositionEnabled())
+                return false;
+
+            IntPtr hwnd = new WindowInteropHelper(window).Handle;
+            
+            // Set the background to transparent from both the WPF and Win32 perspectives
+            window.Background = Brushes.Transparent;
+            HwndSource.FromHwnd(hwnd).CompositionTarget.BackgroundColor = Colors.Transparent;
+
+            MARGINS margins = new MARGINS(margin);
+            DwmExtendFrameIntoClientArea(hwnd, ref margins);
+            return true;
         }
     }
 }

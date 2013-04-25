@@ -5,8 +5,8 @@
         Title="Chat" Height="400" Width="600" WindowStartupLocation="CenterOwner"
         Name="chatWindow"
         Closing="Window_Closing" ShowActivated="False" Activated="Window_Activated"
-        Icon="/PointGaming.Desktop;component/PointGaming.ico" WindowStyle="None" ResizeMode="NoResize"
-        Background="Transparent" AllowsTransparency="True" ShowInTaskbar="False">
+        Icon="/PointGaming.Desktop;component/PointGaming.ico" WindowStyle="SingleBorderWindow" ResizeMode="CanResize"
+        ShowInTaskbar="False" SourceInitialized="chatWindow_SourceInitialized">
     <Window.Resources>
         <Style x:Key="FlashingHeader" TargetType="TabItem">
             <Setter Property="TabItem.HeaderTemplate">
@@ -35,15 +35,8 @@
         </Style>
     </Window.Resources>
 
-    <Grid>
-
-        <my:WindowBorder Window="{Binding ElementName=chatWindow}" OtherContent="{Binding ElementName=tabControlChats}"
-                        MinimizeVisibility="Collapsed" MaximizeVisibility="Collapsed" />
-        <TabControl Name="tabControlChats" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="6"
+    <TabControl Name="tabControlChats" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0"
                     SelectionChanged="tabControlChats_SelectionChanged">
-            <!--<TabItem Header="tabItem1" Name="tabItem1">
-                <Grid />
-            </TabItem>-->
-        </TabControl>
-    </Grid>
+    </TabControl>
+
 </Window>

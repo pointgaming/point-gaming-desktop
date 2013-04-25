@@ -244,5 +244,12 @@ namespace PointGaming.Desktop.Chat
                 Properties.Settings.Default.ChatWindowBoundsDesktopInfo = desktopInfo;
             }
         }
+
+        private void chatWindow_SourceInitialized(object sender, EventArgs e)
+        {
+            GlassExtender.SetMaximizable(this, false);
+            GlassExtender.SetMinimizable(this, false);
+            GlassExtender.ExtendGlassFrame(this, new Thickness(-1));
+        }
     }
 }
