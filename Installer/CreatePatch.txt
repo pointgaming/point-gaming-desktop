@@ -1,15 +1,15 @@
 ﻿// extract the old installer and the new installer (run cmd as administrator)
-msiexec /a PointGamingDesktop.msi /qb TARGETDIR=g:\test\1.0.0
-msiexec /a PointGamingDesktop.msi /qb TARGETDIR=g:\test\1.0.1
+msiexec /a PointGaming.msi /qb TARGETDIR=g:\test\1.0.0
+msiexec /a PointGaming.msi /qb TARGETDIR=g:\test\1.0.1
 
 // create a wix diff
-"C:\Program Files (x86)\WiX Toolset v3.6\bin\torch.exe" -p -ax binaries -xo 1.0.0\PointGamingDesktop.msi 1.0.1\PointGamingDesktop.msi -out PointGamingDesktop.wixmst
+"C:\Program Files (x86)\WiX Toolset v3.6\bin\torch.exe" -p -ax binaries -xo 1.0.0\PointGaming.msi 1.0.1\PointGaming.msi -out PointGaming.wixmst
 
 // create the patch file
-"C:\Program Files (x86)\WiX Toolset v3.6\bin\candle.exe" PointGamingDesktop.wxs
-"C:\Program Files (x86)\WiX Toolset v3.6\bin\light.exe" PointGamingDesktop.wixobj
-"C:\Program Files (x86)\WiX Toolset v3.6\bin\pyro.exe" PointGamingDesktop.wixmsp -t Sample PointGamingDesktop.wixmst -out PointGamingDesktop.msp
+"C:\Program Files (x86)\WiX Toolset v3.6\bin\candle.exe" PointGaming.wxs
+"C:\Program Files (x86)\WiX Toolset v3.6\bin\light.exe" PointGaming.wixobj
+"C:\Program Files (x86)\WiX Toolset v3.6\bin\pyro.exe" PointGaming.wixmsp -t Sample PointGaming.wixmst -out PointGaming.msp
 
 // install the patch
-msiexec /p PointGamingDesktop.msp
+msiexec /p PointGaming.msp
 

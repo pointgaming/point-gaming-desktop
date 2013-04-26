@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Patch AllowRemoval='yes' Manufacturer='whitepaperclip' MoreInfoURL='whitepaperclip.com'
+  <Patch AllowRemoval='yes' Manufacturer='Point Gaming, LLC' MoreInfoURL='pointgaming.com'
     DisplayName='1.0.3 Patch' Description='Small Update Patch' Classification='Update'>
 
     <Media Id='5010' Cabinet='Sample.cab' EmbedCab='yes' CompressionLevel='high'>

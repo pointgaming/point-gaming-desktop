@@ -6,7 +6,7 @@
     <ProductVersion>3.6</ProductVersion>
     <ProjectGuid>{0eff9983-fb0f-4fb8-8eb1-68149978be6c}</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>PointGamingDesktop</OutputName>
+    <OutputName>PointGaming</OutputName>
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
@@ -28,16 +28,16 @@
     <None Include="UpdatePatch.wxs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PointGaming.Desktop.Update\PointGaming.Desktop.Update.csproj">
-      <Name>PointGaming.Desktop.Update</Name>
+    <ProjectReference Include="..\PointGaming.Update\PointGaming.Update.csproj">
+      <Name>PointGaming.Update</Name>
       <Project>{922ecc01-d03a-4f06-8b2d-0c1404ae274d}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
-    <ProjectReference Include="..\PointGaming.Desktop\PointGaming.Desktop.csproj">
-      <Name>PointGaming.Desktop</Name>
+    <ProjectReference Include="..\PointGaming\PointGaming.csproj">
+      <Name>PointGaming</Name>
       <Project>{7aa39d24-65b8-4315-8ca0-c8f37d7e7352}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>

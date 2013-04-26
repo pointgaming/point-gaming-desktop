@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="PointGaming.ClosableTabHeader"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="30" d:DesignWidth="90" Margin="0" Padding="0"
+             Name="userControlHeader" OpacityMask="White" Background="#01010101">
+    <Grid Margin="0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Column="0" Height="16" HorizontalAlignment="Left" Margin="3,0,0,0" Name="label_TabTitle" VerticalAlignment="Center"
+                   Text="{Binding ElementName=userControlHeader, Path=Text, FallbackValue='Hello world!', UpdateSourceTrigger=PropertyChanged}">
+            
+            <!-- use style to make the header flash when ShouldFlash == true -->
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=userControlHeader, Path=ShouldFlash}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard Name="sbHeader">
+                                    <Storyboard AutoReverse="False" RepeatBehavior="Forever" Storyboard.TargetProperty="Foreground.Opacity">
+                                        <DoubleAnimation From="1.0" To="0.25" AutoReverse="True" Duration="0:0:0.5" BeginTime="0:0:1.0" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <StopStoryboard BeginStoryboardName="sbHeader"/>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+
+        <Button Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,3,1" Name="button_close" Padding="1" 
+          Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+           Visibility="Hidden" ToolTip="Close" MouseEnter="button_close_MouseEnter" MouseLeave="button_close_MouseLeave" Click="button_close_Click">
+            <Canvas Width="7" Height="7" Margin="1">
+                <Line X1="0" Y1="0" X2="7" Y2="7" Stroke="Black" StrokeThickness="1" />
+                <Line X1="7" Y1="0" X2="0" Y2="7" Stroke="Black" StrokeThickness="1" />
+            </Canvas>
+        </Button>
+    </Grid>
+</UserControl>

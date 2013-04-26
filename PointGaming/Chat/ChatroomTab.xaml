@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="PointGaming.Chat.ChatroomTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:my="clr-namespace:PointGaming"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="400" Loaded="UserControl_Loaded"
+             AllowDrop="True" PreviewDrop="TabPreviewDrop" PreviewDragEnter="TabPreviewDragQuery"
+             PreviewDragOver="TabPreviewDragQuery" PreviewDragLeave="TabPreviewDragQuery">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="120" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0" Name="gridLogAndSend">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <FlowDocumentScrollViewer Grid.Row="0" HorizontalAlignment="Stretch" Name="flowDocumentLog" VerticalAlignment="Stretch"
+                    VerticalScrollBarVisibility="Auto" Background="White">
+                <FlowDocumentScrollViewer.Resources>
+                    <Style TargetType="{x:Type Paragraph}">
+                        <Setter Property="Margin" Value="0"/>
+                    </Style>
+                </FlowDocumentScrollViewer.Resources>
+            </FlowDocumentScrollViewer>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" HorizontalAlignment="Stretch" Name="textBoxInput" VerticalAlignment="Stretch" PreviewKeyDown="textBoxInput_PreviewKeyDown" MaxLength="1024" TextWrapping="Wrap" AcceptsReturn="True" />
+                <Button Grid.Column="1" Content="Send" Grid.Row="1" Height="23" HorizontalAlignment="Left" Name="buttonSendInput" VerticalAlignment="Bottom" Width="75" Click="buttonSendInput_Click" />
+            </Grid>
+        </Grid>
+
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Name="gridSplitter1" VerticalAlignment="Stretch" Width="4" Margin="3,0,3,0" />
+        
+        <ListBox Grid.Column="2" Name="listBoxMembership" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                     PreviewMouseLeftButtonDown="listBoxMembership_PreviewMouseLeftButtonDown"
+                     PreviewMouseLeftButtonUp="listBoxMembership_PreviewMouseLeftButtonUp"
+                     PreviewMouseMove="listBoxMembership_PreviewMouseMove">
+            <ListBox.Resources>
+                <DataTemplate DataType="{x:Type my:PgUser}">
+                    <Label Content="{Binding Username}" MouseDoubleClick="Label_MouseDoubleClick" />
+                </DataTemplate>
+            </ListBox.Resources>
+        </ListBox>
+    </Grid>
+</UserControl>
