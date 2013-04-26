@@ -14,7 +14,7 @@
 
         <tb:TaskbarIcon Name="taskbarIcon" IconSource="/PointGaming.Desktop;component/PointGaming.ico" 
                         TrayMouseDoubleClick="TaskbarIcon_TrayMouseDoubleClick"
-                        ToolTipText="Poing Gaming" Visibility="Visible">
+                        ToolTipText="Point Gaming" Visibility="Visible">
 
             <tb:TaskbarIcon.Resources>
                 <ContextMenu x:Key="TrayIconContextMenu">
