@@ -195,8 +195,6 @@ namespace PointGaming.Desktop
 
         private void homeWindow_SourceInitialized(object sender, EventArgs e)
         {
-            GlassExtender.SetMaximizable(this, false);
-            GlassExtender.SetMinimizable(this, false);
             GlassExtender.ExtendGlassFrame(this, new Thickness(-1));
         }
 
