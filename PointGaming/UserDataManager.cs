@@ -38,6 +38,7 @@ namespace PointGaming
         {
             PgSession = session;
             User = session.User;
+            _userLookup[User.Id] = User;
             _chatManager = new Chat.ChatManager();
         }
 

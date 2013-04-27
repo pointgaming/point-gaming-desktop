@@ -52,25 +52,28 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <Button Grid.Row="0" Content="Propose a bet..." Height="23" HorizontalAlignment="Left" Name="buttonProposeABet" VerticalAlignment="Top" Width="150" Click="buttonProposeABet_Click" />
-                        <ScrollViewer Grid.Row="1" Height="150" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                        <TextBox Grid.Row="0" Height="23" Name="textBoxMatchDescription" IsReadOnly="True" HorizontalAlignment="Stretch" />
+                        <Button Grid.Row="1" Content="Propose a bet..." Height="23" HorizontalAlignment="Left" Name="buttonProposeABet" VerticalAlignment="Top" Width="150" Click="buttonProposeABet_Click" />
+                        <ScrollViewer Grid.Row="2" Height="150" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                             <ItemsControl Name="itemsControlBets">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock PreviewMouseMove="hyperlinkMouseOver">
                                         <Hyperlink Click="hyperlinkAcceptBetClick">
-                                            <Run Text="{Binding Loser.ShortDescription, Mode=OneWay}"/>
-                                            <Run Text="beats" />
-                                            <Run Text="{Binding Winner.ShortDescription, Mode=OneWay}"/>
-                                            <Run Text="on map" />
-                                            <Run Text="{Binding Map, Mode=OneWay}"/>
-                                            <Run Text="with odds of" />
-                                            <Run Text="{Binding BetterOdds, Mode=OneWay}"/><Run Text=". Reward:" />
-                                            <Run Text="{Binding BetterReward, StringFormat='{}{0:#,0}', Mode=OneWay}"/>
-                                            <Run Text="Wager:" />
-                                            <Run Text="{Binding BetterWager, StringFormat='{}{0:#,0}', Mode=OneWay}"/>
-                                            <Run Text="(" /><Run Text="{Binding Booker.ShortDescription, Mode=OneWay}"/><Run Text=")" />
+                                            <Run Text="{Binding TakerChoice.ShortDescription, Mode=OneWay}"/><!--
+                                            --><Run Text=" beats " /><!--
+                                            --><Run Text="{Binding OffererChoice.ShortDescription, Mode=OneWay}"/><!--
+                                            --><Run Text=". Odds:" /><!--
+                                            --><Run Text="{Binding TakerOdds, Mode=OneWay}"/><!--
+                                            --><Run Text=", Reward:" /><!--
+                                            --><Run Text="{Binding TakerReward, StringFormat='{}{0:#,0}', Mode=OneWay}"/><!--
+                                            --><Run Text=", Wager:" /><!--
+                                            --><Run Text="{Binding TakerWager, StringFormat='{}{0:#,0}', Mode=OneWay}"/><!--
+                                            --><Run Text=" (" /><!--
+                                            --><Run Text="{Binding Offerer.Username, Mode=OneWay}"/><!--
+                                            --><Run Text=")" />
                                         </Hyperlink>
                                         </TextBlock>
                                     </DataTemplate>

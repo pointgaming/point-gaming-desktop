@@ -28,6 +28,7 @@
       <ComponentRef Id="NewtonsoftJsonComponent" />
       <ComponentRef Id="RestSharpComponent" />
       <ComponentRef Id="SocketIOComponent" />
+      <ComponentRef Id="AviadWPFControlsComponent"/>
     </Feature>
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of Point Gaming is already installed." />
@@ -96,6 +97,9 @@
           <Component Id="SocketIOComponent" Guid="204A3BBB-8A34-4dce-8E33-4BCAFB3DDCA8" >
             <File Name="SocketIOClient.dll"/>
             <File Name="WebSocket4Net.dll"/>
+          </Component>
+          <Component Id="AviadWPFControlsComponent" Guid="40848A33-559A-4ff7-85EF-5047D9E8C037">
+            <File Name="Aviad.WPF.Controls.dll" />
           </Component>
           <Directory Id="PoclbmFolder" Name="poclbm" FileSource="$(var.PointGaming.TargetDir)\poclbm">
             <Component Id="PoclbmComponent" Guid="1E3383C6-4E11-41fb-A177-FAE4580A6407" >

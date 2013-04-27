@@ -69,13 +69,13 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="GameRooms" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">https://dev.pointgaming.com/game_rooms</Value>
+      <Value Profile="(Default)">https://dev.pointgaming.com/game_rooms/</Value>
     </Setting>
     <Setting Name="UpdateAutomatic" Type="System.Boolean" Scope="Application">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="Matches" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">https://dev.pointgaming.com/matches</Value>
+      <Value Profile="(Default)">https://dev.pointgaming.com/matches/</Value>
     </Setting>
     <Setting Name="BetOperandQuery" Type="System.String" Scope="Application">
       <Value Profile="(Default)">https://dev.pointgaming.com/search/playable.json?query=</Value>

@@ -66,8 +66,16 @@ namespace PointGaming.GameRoom
         private IBetOperand _betOperandA;
         private IBetOperand _betOperandB;
 
-        public void SetBetOperands(IBetOperand operandA, IBetOperand operandB)
+        private Match _match;
+
+        public void SetMatch(Match match)
         {
+            MapName = match.Map;
+
+            _match = match;
+            var operandA = match.Player1;
+            var operandB = match.Player2;
+
             _betOperandA = operandA;
             _betOperandB = operandB;
             aBeatsB.Content = operandA.ShortDescription + " beats " + operandB.ShortDescription;
@@ -89,10 +97,13 @@ namespace PointGaming.GameRoom
 
         public Bet ToBet()
         {
-            Bet bet = new Bet();
-            bet.OffererWager = Wager;
             var selectedOdds = (ComboBoxItem)comboBoxOdds.SelectedItem;
-            bet.OffererOdds = selectedOdds.Content.ToString();
+            Bet bet = new Bet
+            {
+                Offerer = HomeWindow.UserData.User,
+                OffererWager = Wager,
+                OffererOdds = selectedOdds.Content.ToString(),
+            };
 
             if (comboBoxOutcome.SelectedIndex == 0)
             {
@@ -104,6 +115,13 @@ namespace PointGaming.GameRoom
                 bet.OffererChoice = _betOperandB;
                 bet.TakerChoice = _betOperandA;
             }
+
+            if (_match != null)
+            {
+                bet.MyMatch = _match;
+                bet.MatchHash = _match.MatchHash;
+            }
+
             return bet;
         }
 

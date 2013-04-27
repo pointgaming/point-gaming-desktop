@@ -23,7 +23,6 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
@@ -53,102 +52,81 @@
                     <CheckBox Content="Advertise in lobby's active games" Height="16" Name="checkBoxAdvertise" Margin="3"
                       IsChecked="{Binding ElementName=myWindow, Path=IsAdvertising, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
-                <Grid Grid.Row="3" Width="250" HorizontalAlignment="Center" Margin="20">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0" Content="OK" Height="23" HorizontalAlignment="Center" Name="buttonOK" VerticalAlignment="Top" Width="75" Click="buttonOK_Click"
-                    IsEnabled="False"/>
-                    <Button Grid.Column="1" Content="Cancel" Height="23" HorizontalAlignment="Center" Name="buttonCancel" VerticalAlignment="Top" Width="75" Click="buttonCancel_Click" />
-                </Grid>
             </Grid>
         </TabItem>
-        <TabItem Header="Betting">
-            <TabControl>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+        <TabItem Header="Match">
+            <Grid Name="gridMatchSettings">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
 
-                    <Label Grid.Row="1" Content="Team/Player 1" Height="28" HorizontalAlignment="Right" Name="label1" VerticalAlignment="Center" />
-                    <RadioButton Grid.Row="1" Grid.Column="1" GroupName="WinnerChoice" Name="radioButtonPlayer1" VerticalAlignment="Center" Height="16" HorizontalAlignment="Center" Margin="0,0,3,0"/>
-                    <actb:AutoCompleteTextBox Grid.Row="1" Grid.Column="2" Height="23" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Row="1" Content="Team/Player 1" Height="28" HorizontalAlignment="Right" Name="label1" VerticalAlignment="Center" />
+                <RadioButton Grid.Row="1" Grid.Column="1" GroupName="WinnerChoice" Name="radioButtonPlayer1" VerticalAlignment="Center" Height="16" HorizontalAlignment="Center" Margin="0,0,3,0"/>
+                <actb:AutoCompleteTextBox Grid.Row="1" Grid.Column="2" Height="23" VerticalAlignment="Center" HorizontalAlignment="Stretch"
             x:Name="textBoxPlayer1" 
             ItemsSource="{Binding ElementName=myWindow, Path=Player1Options}"
             ItemTemplate="{StaticResource TheItemTemplate}"
             Binding="{Binding ShortDescription}" 
             MaxCompletions="10" TextChanged="textBoxPlayer1_TextChanged" />
 
-                    <Label Grid.Row="2" Content="Team/Player 2" Height="28" HorizontalAlignment="Right" Name="label2" VerticalAlignment="Center" />
-                    <RadioButton Grid.Row="2" Grid.Column="1" GroupName="WinnerChoice" Name="radioButtonPlayer2" VerticalAlignment="Center" Height="16" HorizontalAlignment="Center" Margin="0,0,3,0"/>
-                    <actb:AutoCompleteTextBox Grid.Row="2" Grid.Column="2" Height="23" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                <Label Grid.Row="2" Content="Team/Player 2" Height="28" HorizontalAlignment="Right" Name="label2" VerticalAlignment="Center" />
+                <RadioButton Grid.Row="2" Grid.Column="1" GroupName="WinnerChoice" Name="radioButtonPlayer2" VerticalAlignment="Center" Height="16" HorizontalAlignment="Center" Margin="0,0,3,0"/>
+                <actb:AutoCompleteTextBox Grid.Row="2" Grid.Column="2" Height="23" VerticalAlignment="Center" HorizontalAlignment="Stretch"
             x:Name="textBoxPlayer2" 
             ItemsSource="{Binding ElementName=myWindow, Path=Player2Options}"
             ItemTemplate="{StaticResource TheItemTemplate}"
             Binding="{Binding ShortDescription}" 
             MaxCompletions="10" TextChanged="textBoxPlayer2_TextChanged" />
 
-                    <Label Grid.Row="3" Content="Draw/Tie" Height="28" HorizontalAlignment="Right" Name="label7" VerticalAlignment="Center" />
-                    <RadioButton Grid.Row="3" Grid.Column="1" GroupName="WinnerChoice" Name="radioButtonPlayerDraw" VerticalAlignment="Center" Height="16" HorizontalAlignment="Center" Margin="0,0,3,0"/>
-                    
-                    <Label Grid.Row="4" Content="Map" Height="28" HorizontalAlignment="Right" Name="label3" VerticalAlignment="Center" />
-                    <TextBox Grid.Row="4" Grid.Column="2" Height="23" HorizontalAlignment="Stretch" Name="textBoxBettingMap" VerticalAlignment="Center" />
+                <Label Grid.Row="4" Content="Map" Height="28" HorizontalAlignment="Right" Name="label3" VerticalAlignment="Center" />
+                <TextBox Grid.Row="4" Grid.Column="2" Height="23" HorizontalAlignment="Stretch" Name="textBoxBettingMap" VerticalAlignment="Center" />
 
-                    <CheckBox Grid.Row="5" Grid.ColumnSpan="3" Content="Enable Booking" Height="16" Name="checkBoxEnableBooking" IsChecked="True" />
+                <CheckBox Grid.Row="5" Grid.ColumnSpan="3" Content="Enable Booking" Height="16" Name="checkBoxEnableBooking" IsChecked="True" />
 
-                    <TabControl Grid.Row="6" Grid.ColumnSpan="3" Name="tabControlMatchState" SelectionChanged="tabControlMatchState_SelectionChanged">
-                        <TabControl.ItemContainerStyle>
-                            <Style TargetType="{x:Type TabItem}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </Style>
-                        </TabControl.ItemContainerStyle>
-                        <TabItem Header="none">
-                            <Button Content="Create" Height="23" Name="MatchCreate" Width="100" Click="MatchCreate_Click" />
-                        </TabItem>
-                        <TabItem Header="created">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Button Grid.Column="0" Content="Update" Height="23" Name="MatchUpdate" Width="100" Click="MatchUpdate_Click" ToolTip="Updates will cancel existing bookings" />
-                                <Button Grid.Column="1" Content="Start" Height="23" Name="MatchStart" Width="100" Click="MatchStart_Click" ToolTip="Indicates that game has begun &amp; closes booking session." />
-                                <Button Grid.Column="2" Content="Cancel" Height="23" Name="MatchCancel1" Width="100" Click="MatchCancel1_Click" />
-                                <Label Grid.Row="2" Grid.ColumnSpan="3" Content="*" Height="28" HorizontalAlignment="Left" Name="label8" VerticalAlignment="Center" />
-                            </Grid>
-                        </TabItem>
-                        <TabItem Header="started">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Button Grid.Column="0" Content="Finish" Height="23" Name="MatchFinish" Width="100" Click="MatchFinish_Click" />
-                                <Button Grid.Column="1" Content="Cancel" Height="23" Name="MatchCancel2" Width="100" Click="MatchCancel2_Click" />
-                            </Grid>
-                        </TabItem>
-                    </TabControl>
-                </Grid>
-            </TabControl>
+                <TabControl Grid.Row="6" Grid.ColumnSpan="3" Name="tabControlMatchState" SelectionChanged="tabControlMatchState_SelectionChanged">
+                    <TabControl.ItemContainerStyle>
+                        <Style TargetType="{x:Type TabItem}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </Style>
+                    </TabControl.ItemContainerStyle>
+                    <TabItem Header="none">
+                        <Button Content="Create" Height="23" Name="MatchCreate" Width="100" Click="MatchCreate_Click" />
+                    </TabItem>
+                    <TabItem Header="created">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Content="Update" Height="23" Name="MatchUpdate" Width="100" Click="MatchUpdate_Click" ToolTip="Updates will cancel existing bookings" />
+                            <Button Grid.Column="1" Content="Start" Height="23" Name="MatchStart" Width="100" Click="MatchStart_Click" ToolTip="Indicates that game has begun &amp; closes booking session." />
+                            <Button Grid.Column="2" Content="Cancel" Height="23" Name="MatchCancel1" Width="100" Click="MatchCancel1_Click" />
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="started">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Content="Finish" Height="23" Name="MatchFinish" Width="100" Click="MatchFinish_Click" />
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+            </Grid>
         </TabItem>
     </TabControl>
 </Window>

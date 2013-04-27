@@ -10,10 +10,15 @@ namespace PointGaming.GameRoom
 {
     public enum MatchState
     {
-        @new,
+        invalid,
+        create,
+        created,
         start,
+        started,
         cancel,
+        canceled,
         finalize,
+        finalized,
     }
 
     public class Match : INotifyPropertyChanged
@@ -41,6 +46,21 @@ namespace PointGaming.GameRoom
             }
         }
 
+
+        private bool _isEditable = true;
+        public bool IsEditable
+        {
+            get { return _isEditable; }
+            set
+            {
+                if (value == _isEditable)
+                    return;
+                _isEditable = value;
+                NotifyChanged("IsEditable");
+            }
+        }
+
+
         private string _matchHash;
         public string MatchHash
         {
@@ -64,6 +84,19 @@ namespace PointGaming.GameRoom
                     return;
                 _roomId = value;
                 NotifyChanged("RoomId");
+            }
+        }
+
+        private string _gameId;
+        public string GameId
+        {
+            get { return _gameId; }
+            set
+            {
+                if (value == _gameId)
+                    return;
+                _gameId = value;
+                NotifyChanged("GameId");
             }
         }
 
@@ -93,7 +126,7 @@ namespace PointGaming.GameRoom
             }
         }
 
-        public MatchState _state;
+        public MatchState _state = MatchState.invalid;
         public MatchState State
         {
             get { return _state; }
@@ -161,11 +194,26 @@ namespace PointGaming.GameRoom
         public void Update(UserDataManager manager, POCO.MatchPoco poco)
         {
             Id = poco._id;
+            MatchHash = poco.match_hash;
+            GameId = poco.game_id;
             RoomId = poco.room_id;
             RoomType = poco.room_type;
             IsBetting = poco.betting;
-            State = (MatchState)Enum.Parse(typeof(MatchState), poco.state);
             Map = poco.map;
+            
+            if (poco.state == "new")
+                State = MatchState.created;
+            else if (poco.state == "started")
+                State = MatchState.started;
+            else if (poco.state == "cancelled")
+                State = MatchState.canceled;
+            else if (poco.state == "finalized")
+                State = MatchState.finalized;
+            else
+            {
+                State = MatchState.invalid;
+                throw new Exception("Unrecognized state: " + poco.state);
+            }
 
             Player1 = GetBetOperand(manager, poco.player_1_type, poco.player_1_id, poco.player_1_name);
             Player2 = GetBetOperand(manager, poco.player_2_type, poco.player_2_id, poco.player_2_name);

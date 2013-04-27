@@ -117,7 +117,7 @@ namespace PointGaming.Lobby
             RestResponse<GameRoomSinglePoco> response = null;
             userData.PgSession.BeginAndCallback(delegate
             {
-                var url = Properties.Settings.Default.GameRooms + "/" + id + "?auth_token=" + userData.PgSession.AuthToken;
+                var url = Properties.Settings.Default.GameRooms + id + "?auth_token=" + userData.PgSession.AuthToken;
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.GET);
                 response = (RestResponse<GameRoomSinglePoco>)client.Execute<GameRoomSinglePoco>(request);
@@ -186,7 +186,11 @@ namespace PointGaming.Lobby
             {
                 SetFakeRoomAt(room.Position);
                 room.Position = poco.position;
-                _allGameRooms[poco.position - 1] = room;
+                var index = poco.position - 1;
+                if (_allGameRooms.Count == index)
+                    _allGameRooms.Add(room);
+                else
+                    _allGameRooms[index] = room;
             }
 
             room.Update(poco);

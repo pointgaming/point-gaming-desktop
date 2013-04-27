@@ -80,6 +80,16 @@ namespace PointGaming
             }
             socketWorker.Set();
         }
+        
+        public static RestResponse<T> Rest<T>(string url, Method method, object body) where T : new()
+        {
+            var client = new RestClient(url);
+            var request = new RestRequest(method) { RequestFormat = RestSharp.DataFormat.Json };
+            if (body != null)
+                request.AddBody(body);
+            RestResponse<T> response = (RestResponse<T>)client.Execute<T>(request);
+            return response;
+        }
 
         public void OnThread(string eventName, Action<IMessage> action)
         {

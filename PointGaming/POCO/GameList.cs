@@ -30,6 +30,7 @@ namespace PointGaming.POCO
     public class GameRoomPoco
     {
         public string _id { get; set; }
+        public string match_id { get; set; }
         public string game_id { get; set; }
         public int position { get; set; }
         public bool is_advertising { get; set; }
@@ -44,44 +45,45 @@ namespace PointGaming.POCO
     public class BetPoco
     {
         public string _id { get; set; }
+        //public string created_at { get; set; }
+        //public string updated_at { get; set; }
+        
         public string match_id { get; set; }
         public string match_hash { get; set; }
         public string outcome { get; set; }
 
+        public string offerer_id { get; set; }
+        public string offerer_username { get; set; }
         public decimal offerer_wager { get; set; }
         public string offerer_odds { get; set; }
-
-
-        public string offerer_id { get; set; }
-        public UserBase offerer { get; set; }
-
-        public string taker_id { get; set; }
-        public UserBase taker { get; set; }
-
-        //public string created_at { get; set; }
-        //public string updated_at { get; set; }
-        
-        public string taker_choice_id { get; set; }
-        public string taker_choice_name { get; set; }
-        public string taker_choice_type { get; set; }
-
         public string offerer_choice_id { get; set; }
         public string offerer_choice_name { get; set; }
         public string offerer_choice_type { get; set; }
+
+        public string taker_id { get; set; }
+        public string taker_username { get; set; }
+        public decimal taker_wager { get; set; }
+        public string taker_odds { get; set; }
+        public string taker_choice_id { get; set; }
+        public string taker_choice_name { get; set; }
+        public string taker_choice_type { get; set; }
     }
 
     public class BetSinglePoco
     {
         public BetPoco bet { get; set; }
-        public string bet_tooltip { get; set; }
     }
 
     public class MatchPoco
     {
         public string _id { get; set; }
+        //public string created_at { get; set; }
+        //public string updated_at { get; set; }
+        
         public string match_hash { get; set; }
         public bool betting { get; set; }
         public string map { get; set; }
+        public string game_id { get; set; }
 
         public string player_1_id { get; set; }
         public string player_1_type { get; set; }
@@ -101,6 +103,10 @@ namespace PointGaming.POCO
     public class MatchSinglePoco
     {
         public MatchPoco match { get; set; }
-        public string match_details { get; set; }
+    }
+    public class MatchAndBetsPoco
+    {
+        public MatchPoco match { get; set; }
+        public List<BetPoco> bets { get; set; }
     }
 }

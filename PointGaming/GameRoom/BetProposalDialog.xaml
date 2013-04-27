@@ -18,15 +18,15 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Label Grid.Row="0" Grid.Column="0" Content="Outcome" Height="28" HorizontalAlignment="Right" Name="label3" VerticalAlignment="Center" />
-        <ComboBox Grid.Row="0" Grid.Column="1" Height="23" HorizontalAlignment="Stretch" Name="comboBoxOutcome" VerticalAlignment="Center" SelectedIndex="0" SelectionChanged="comboBoxOutcome_SelectionChanged">
+        <Label Grid.Row="0" Grid.Column="0" Content="Map" Height="28" HorizontalAlignment="Right" Name="label5" VerticalAlignment="Center" />
+        <TextBox Grid.Row="0" Grid.Column="1" Height="23" HorizontalAlignment="Stretch" Name="textBoxMap" VerticalAlignment="Center" IsReadOnly="True"
+                 Text="{Binding ElementName=myWindow, Path=MapName}" />
+
+        <Label Grid.Row="1" Grid.Column="0" Content="Outcome" Height="28" HorizontalAlignment="Right" Name="label3" VerticalAlignment="Center" />
+        <ComboBox Grid.Row="1" Grid.Column="1" Height="23" HorizontalAlignment="Stretch" Name="comboBoxOutcome" VerticalAlignment="Center" SelectedIndex="0" SelectionChanged="comboBoxOutcome_SelectionChanged">
             <ComboBoxItem Name="aBeatsB">MrApple beats MrBanana</ComboBoxItem>
             <ComboBoxItem Name="bBeatsA">MrBanana beats MrApple</ComboBoxItem>
         </ComboBox>
-
-        <Label Grid.Row="1" Grid.Column="0" Content="Map" Height="28" HorizontalAlignment="Right" Name="label5" VerticalAlignment="Center" />
-        <TextBox Grid.Row="1" Grid.Column="1" Height="23" HorizontalAlignment="Stretch" Name="textBoxMap" VerticalAlignment="Center"
-                 Text="{Binding ElementName=myWindow, Path=MapName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <Label Grid.Row="2" Grid.Column="0" Content="Odds" Height="28" HorizontalAlignment="Right" Name="label2" VerticalAlignment="Center" />
         <ComboBox Grid.Row="2" Grid.Column="1" Height="23" HorizontalAlignment="Left" Name="comboBoxOdds" VerticalAlignment="Center" Width="120" SelectedIndex="9"

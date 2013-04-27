@@ -52,6 +52,19 @@ namespace PointGaming.Lobby
             }
         }
 
+        private string _matchId;
+        public string MatchId
+        {
+            get { return _matchId; }
+            set
+            {
+                if (value == _matchId)
+                    return;
+                _matchId = value;
+                NotifyChanged("MatchId");
+            }
+        }
+
         private int _position;
         public int Position
         {
@@ -222,6 +235,7 @@ namespace PointGaming.Lobby
             IsLocked = poco.is_locked;
             IsAdvertising = poco.is_advertising;
             Owner = HomeWindow.UserData.GetPgUser(poco.owner);
+            MatchId = poco.match_id;
         }
     }
 }

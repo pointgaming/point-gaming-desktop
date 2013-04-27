@@ -172,6 +172,8 @@ namespace PointGaming.Chat
             if (!_chatroomUsage.TryGetValue(id, out chatroomSession))
                 return;
 
+            chatroomSession.Membership.Clear();
+
             chatroomSession.State = ChatroomState.Connected;
             foreach (var item in received.members)
             {
@@ -272,7 +274,9 @@ namespace PointGaming.Chat
                         Lobby.GameRoomItem gameRoomItem;
                         if (lobbySession.GameRoomLookup.TryGetValue(gameRoomId, out gameRoomItem))
                         {
-                            chatroomSession = new GameRoom.GameRoomSession(this, lobbySession, gameRoomItem);
+                            var grSession = new GameRoom.GameRoomSession(this, lobbySession, gameRoomItem);
+                            grSession.LoadMatch();
+                            chatroomSession = grSession;
                             isFound = true;
                             break;
                         }

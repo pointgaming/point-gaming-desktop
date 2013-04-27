@@ -272,13 +272,18 @@ namespace Aviad.WPF.Controls
             else InternalOpenPopup();
         }
         private object _selectedValue;
-        public object SelectedValue { get {
-            if (_selectedValue != null)
-                return _selectedValue;
-            if (listBox != null && listBox.Items.Count == 1)
-                return listBox.Items[0];
-            return null;
-        } }
+        public object SelectedValue
+        {
+            get
+            {
+                if (_selectedValue != null)
+                    return _selectedValue;
+                if (listBox != null && listBox.Items.Count == 1)
+                    return listBox.Items[0];
+                return null;
+            }
+            set { SetTextValueBySelection(value, false); }
+        }
         private void SetTextValueBySelection(object obj, bool moveFocus)
         {
             if (popup != null)
@@ -296,32 +301,19 @@ namespace Aviad.WPF.Controls
             var originalBinding = BindingOperations.GetBinding(this, BindingProperty);
             if (originalBinding == null) return;
 
-            // Binding hack - not really necessary.
-            //Binding newBinding = new Binding()
-            //{
-            //    Path = new PropertyPath(originalBinding.Path.Path, originalBinding.Path.PathParameters),
-            //    XPath = originalBinding.XPath,
-            //    Converter = originalBinding.Converter,
-            //    ConverterParameter = originalBinding.ConverterParameter,
-            //    ConverterCulture = originalBinding.ConverterCulture,
-            //    StringFormat = originalBinding.StringFormat,
-            //    TargetNullValue = originalBinding.TargetNullValue,
-            //    FallbackValue = originalBinding.FallbackValue
-            //};
-            //newBinding.Source = obj;
-            //BindingOperations.SetBinding(dummy, TextProperty, newBinding);
-
-            // Set the dummy's DataContext to our selected object.
-            dummy.DataContext = obj;
-
-            // Apply the binding to the dummy FrameworkElement.
-            BindingOperations.SetBinding(dummy, TextProperty, originalBinding);
+            string text = "";
+            if (obj != null)
+            {
+                dummy.DataContext = obj;   
+                BindingOperations.SetBinding(dummy, TextProperty, originalBinding);
+                text = dummy.GetValue(TextProperty).ToString();
+            }
             suppressEvent = true;
-
-            // Get the binding's resulting value.
-            Text = dummy.GetValue(TextProperty).ToString();
+            Text = text;
             suppressEvent = false;
-            listBox.SelectedIndex = -1;
+
+            if (listBox != null)
+                listBox.SelectedIndex = -1;
             SelectAll();
             _selectedValue = obj;
         }

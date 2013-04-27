@@ -205,28 +205,35 @@ namespace PointGaming.GameRoom
                 OffererChoice = match.Player2;
                 TakerChoice = match.Player1;
             }
-
-            Offerer = manager.GetPgUser(poco.offerer);
+            
+            var offerer = new POCO.UserBase { _id = poco.offerer_id, username = poco.offerer_username };
+            Offerer = manager.GetPgUser(offerer);
             OffererOdds = poco.offerer_odds;
             OffererWager = poco.offerer_wager;
 
-            if (poco.taker != null && !string.IsNullOrWhiteSpace(poco.taker._id))
-                Taker = manager.GetPgUser(poco.taker);
+            var taker = new POCO.UserBase { _id = poco.taker_id, username = poco.taker_username };
+            if (!string.IsNullOrWhiteSpace(taker._id))
+                Taker = manager.GetPgUser(taker);
         }
 
         public POCO.BetPoco ToPoco()
         {
             var poco = new POCO.BetPoco
             {
-                match_hash = MyMatch.MatchHash,
+                offerer_id = Offerer.Id,
+                offerer_username = Offerer.Username,
+                offerer_wager = OffererWager,
+                offerer_odds = OffererOdds,
+                match_id = MyMatch.Id,
+                match_hash = MatchHash,
                 offerer_choice_id = OffererChoice.Id,
                 offerer_choice_name = OffererChoice.ShortDescription,
                 offerer_choice_type = OffererChoice.PocoType,
                 taker_choice_id = TakerChoice.Id,
                 taker_choice_name = TakerChoice.ShortDescription,
                 taker_choice_type = TakerChoice.PocoType,
-                offerer_wager = OffererWager,
-                offerer_odds = OffererOdds,
+                taker_odds = TakerOdds,
+                taker_wager = TakerWager,
             };
             return poco;
         }

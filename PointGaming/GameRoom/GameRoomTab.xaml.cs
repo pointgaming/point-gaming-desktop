@@ -112,6 +112,41 @@ namespace PointGaming.GameRoom
             PropertyChangedEventManager.AddListener(_gameRoomSession.GameRoom, this, "PropertyChanged");
 
             itemsControlBets.ItemsSource = _gameRoomSession.RoomBets;
+
+            _gameRoomSession.MyMatch.PropertyChanged += MyMatch_PropertyChanged;
+            MyMatch_PropertyChanged(null, null);
+        }
+
+        void MyMatch_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var match = _gameRoomSession.MyMatch;
+
+            var player1 = match.Player1 == null ? "" : match.Player1.ShortDescription;
+            var player2 = match.Player2 == null ? "" : match.Player2.ShortDescription;
+            var winner = match.Winner == null ? "" : match.Winner.ShortDescription;
+            var bettingState = match.IsBetting ? "enabled" : "disabled";
+
+            string text;
+            switch (match.State)
+            {
+                case MatchState.created:
+                    text = string.Format("{0} vs {1} on map {2}. Booking is {3}.", player1, player2, match.Map, bettingState);
+                    break;
+                case MatchState.canceled:
+                    text = "Match canceled.";
+                    break;
+                case MatchState.started:
+                    text = string.Format("{0} vs {1} on map {2}. Match in progress.", player1, player2, match.Map);
+                    break;
+                case MatchState.finalized:
+                    text = string.Format("{0} vs {1} on map {2}. {3} won!", player1, player2, match.Map, winner);
+                    break;
+                default:
+                    text = "No match yet.";
+                    break;
+            }
+
+            textBoxMatchDescription.Text = text;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -257,12 +292,13 @@ namespace PointGaming.GameRoom
         private void hyperLinkRoomInfoClick(object sender, RoutedEventArgs e)
         {
             var dialog = new GameRoomAdminDialog();
-            dialog.Description = _gameRoomSession.GameRoom.Description;
-            dialog.Password = _gameRoomSession.GameRoom.Password;
-            dialog.IsAdvertising = _gameRoomSession.GameRoom.IsAdvertising;
-            dialog.Owner = _chatWindow;
+
+            dialog.Init(_chatWindow, _gameRoomSession);
             dialog.ShowDialog();
-            if (dialog.DialogResult == true)
+
+            if (dialog.Description != _gameRoomSession.GameRoom.Description ||
+                dialog.IsAdvertising != _gameRoomSession.GameRoom.IsAdvertising ||
+                dialog.Password != _gameRoomSession.GameRoom.Password)
             {
                 var poco = new
                 {
@@ -277,12 +313,12 @@ namespace PointGaming.GameRoom
 
         private void buttonProposeABet_Click(object sender, RoutedEventArgs e)
         {
-            if (!_gameRoomSession.MyMatch.IsBetting || _gameRoomSession.MyMatch.State != MatchState.@new)
+            if (!_gameRoomSession.MyMatch.IsBetting || _gameRoomSession.MyMatch.State != MatchState.created)
                 return;
 
             var dialog = new BetProposalDialog();
             dialog.Owner = _chatWindow;
-            dialog.SetBetOperands(new PgUser { Username = "Mr.Apple" }, new PgUser { Username = "Mr.Banana" });
+            dialog.SetMatch(_gameRoomSession.MyMatch);
             dialog.ShowDialog();
             if (dialog.DialogResult == true)
             {
