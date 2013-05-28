@@ -114,6 +114,10 @@ namespace PointGaming
                     if (!isQuitForUpdate)
                         UseRememberedLogin();
                 }
+                else
+                {
+                    UseRememberedLogin();
+                }
             });
         }
 
