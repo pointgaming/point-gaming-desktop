@@ -525,20 +525,5 @@ namespace PointGaming.HomeTab
         }
         #endregion
 
-
-        private void buttonJoinChat_Click(object sender, RoutedEventArgs e)
-        {
-            _userData.JoinChat(textBoxChatroomId.Text);
-        }
-
-        private void textBoxJoinChat_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                _userData.JoinChat(textBoxChatroomId.Text);
-                e.Handled = true;
-                return;
-            }
-        }
     }
 }

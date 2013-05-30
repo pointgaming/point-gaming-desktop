@@ -53,10 +53,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Label Grid.Column="0" Content="Chatroom" Height="28" HorizontalAlignment="Right" Name="labelChatroomId" VerticalAlignment="Center" />
-            <TextBox Grid.Column="1" Height="23" HorizontalAlignment="Stretch" Name="textBoxChatroomId" VerticalAlignment="Center" PreviewKeyDown="textBoxJoinChat_PreviewKeyDown" />
-            <Button Grid.Column="2" Content="Join Chat" Height="23" HorizontalAlignment="Left" Name="buttonJoinChatroom" VerticalAlignment="Center" Width="75" Margin="5,0,0,0" Click="buttonJoinChat_Click" />
-        
+
             <Label Grid.Row="1" Grid.Column="0" Content="Username" Height="28" HorizontalAlignment="Right" Name="labelAddFriend" VerticalAlignment="Center" />
             <TextBox Grid.Row="1" Grid.Column="1" Height="23" HorizontalAlignment="Stretch" Name="textBoxAddFriendUsername" VerticalAlignment="Center" PreviewKeyDown="textBoxAddFriendUsername_PreviewKeyDown" />
             <Button Grid.Row="1" Grid.Column="2" Content="Add Friend" Height="23" HorizontalAlignment="Left" Name="buttonAddFriend" VerticalAlignment="Center" Width="75" Margin="5,0,0,0" Click="buttonAddFriend_Click" />
