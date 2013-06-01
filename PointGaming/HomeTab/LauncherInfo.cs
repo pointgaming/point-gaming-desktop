@@ -86,7 +86,7 @@ namespace PointGaming.HomeTab
                 if (value == _filePath)
                     return;
                 _filePath = value;
-                _fileIcon = GetIcon(value);
+                _fileIcon = GetIcon(value, DisplayName);
                 NotifyChanged("FilePath");
                 NotifyChanged("FileIcon");
             }
@@ -214,10 +214,10 @@ namespace PointGaming.HomeTab
             }
         }
 
-        public static ImageSource GetIcon(string filePath)
+        public static ImageSource GetIcon(string filePath, string appDisplayName = null)
         {
             if (string.IsNullOrWhiteSpace(filePath))
-                return GetDefaultIcon();
+                return GetDefaultIcon(appDisplayName);
 
             try
             {
@@ -229,14 +229,36 @@ namespace PointGaming.HomeTab
             }
             catch
             {
-                return GetDefaultIcon();
+                return GetDefaultIcon(appDisplayName);
             }
         }
 
-        private static ImageSource GetDefaultIcon()
+        private static ImageSource GetDefaultIcon(string appDisplayName)
         {
             var assembly = typeof(LauncherInfo).Assembly;
             var defaultUri = "pack://application:,,,/" + assembly.GetName().Name + ";component/PointGaming.ico";
+
+            switch (appDisplayName)
+            {
+                case "Quake Live":
+                    defaultUri = "pack://application:,,,/" + assembly.GetName().Name + ";component/Resources/Logos/quake-live-logo.png";
+                    break;
+                case "StarCraft II":
+                    defaultUri = "pack://application:,,,/" + assembly.GetName().Name + ";component/Resources/Logos/SC2 Logo.png";
+                    break;
+                case "League of Legends":
+                    defaultUri = "pack://application:,,,/" + assembly.GetName().Name + ";component/Resources/Logos/League_of_Legends.png";
+                    break;
+                case "Counter-Strike: Go":
+                    defaultUri = "pack://application:,,,/" + assembly.GetName().Name + ";component/Resources/Logos/counter strike logo.jpg";
+                    break;
+                case "Counter-Strike: Source":
+                    defaultUri = "pack://application:,,,/" + assembly.GetName().Name + ";component/Resources/Logos/counter strike logo.jpg";
+                    break;
+                case "ShootMania":
+                    defaultUri = "pack://application:,,,/" + assembly.GetName().Name + ";component/Resources/Logo/ShootMania.jpg";
+                    break;
+            }
 
             var source = new ImageSourceConverter().ConvertFromString(defaultUri) as ImageSource;
             return source;

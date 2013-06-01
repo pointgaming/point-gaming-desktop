@@ -426,6 +426,12 @@
       <Link>poclbm\w9xpopen.exe</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\Logos\counter strike logo.jpg" />
+    <Resource Include="Resources\Logos\League_of_Legends.png" />
+    <Resource Include="Resources\Logos\quake-live-logo.png" />
+    <Resource Include="Resources\Logos\SC2 Logo.png" />
+    <Resource Include="Resources\Logos\ShootMania.jpg" />
+    <Resource Include="Resources\Logos\world-of-warcraft.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ACTB\Aviad.WPF.Controls.csproj">
