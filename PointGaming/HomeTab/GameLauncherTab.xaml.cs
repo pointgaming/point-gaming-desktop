@@ -44,18 +44,6 @@ namespace PointGaming.HomeTab
                 catch { }
             }
 
-            if (Launchers.Count == 0)
-            {
-                var launcher = new LauncherInfo("Firefox", "C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe", "http://www.shadowstats.com/charts/monetary-base-money-supply");
-                AddOrUpdate(launcher);
-                launcher = new LauncherInfo("Internet Explorer", "C:\\Program Files\\Internet Explorer\\iexplore.exe", "http://www.shadowstats.com/charts/monetary-base-money-supply");
-                AddOrUpdate(launcher);
-                launcher = new LauncherInfo("Windows Registry", "C:\\Windows\\regedit.exe", "");
-                AddOrUpdate(launcher);
-                launcher = new LauncherInfo("Notepad", "C:\\Windows\\notepad.exe", "C:\\test.txt");
-                AddOrUpdate(launcher);
-            }
-
             Launchers.CollectionChanged += _launchers_CollectionChanged;
 
             RestResponse<GameList> response = null;
