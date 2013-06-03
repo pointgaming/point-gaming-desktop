@@ -54,6 +54,8 @@ namespace PointGaming.Lobby
                     var gameRooms = response.Data.game_rooms;
                     foreach (var gameRoom in gameRooms)
                     {
+                        if (gameRoom.owner == null) continue;
+
                         var item = new GameRoomItem(gameRoom);
                         AddRoom(item);
                     }
