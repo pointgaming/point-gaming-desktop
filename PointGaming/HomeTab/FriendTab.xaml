@@ -24,7 +24,7 @@
                   AllowDrop="True" Drop="dataGridFriends_Drop" DragEnter="dataGridFriends_DragQuery" DragOver="dataGridFriends_DragQuery" DragLeave="dataGridFriends_DragQuery">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Username}" Header="Username" Width="*" IsReadOnly="True" />
-                <DataGridTextColumn Binding="{Binding Status}" Header="Status" Width="100" IsReadOnly="True" />
+                <DataGridTextColumn Binding="{Binding Status}" Header="Status" Width="50" IsReadOnly="True" />
             </DataGrid.Columns>
 
             <DataGrid.Resources>
