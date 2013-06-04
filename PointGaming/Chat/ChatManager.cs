@@ -241,6 +241,8 @@ namespace PointGaming.Chat
         public void JoinChatroom(string id, string password = null)
         {
             ChatroomSession chatroomSession;
+            ChatWindow.Title = "Chat";
+
             if (_chatroomUsage.TryGetValue(id, out chatroomSession))
             {
                 if (chatroomSession.State == ChatroomState.Connected
@@ -260,6 +262,7 @@ namespace PointGaming.Chat
                     session.LoadGameRoomsComplete += session_LoadGameRoomsComplete;
                     session.LoadGameRooms();
                     chatroomSession = session;
+                    ChatWindow.Title = "Point Gaming Lobby";
                 }
             }
             else if (id.StartsWith(PrefixGameRoom))
