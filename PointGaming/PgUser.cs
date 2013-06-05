@@ -122,7 +122,7 @@ namespace PointGaming
         public string Avatar
         {
             // TODO: supply default avatar via paperclip def in the rails api model - default image logic belongs on the server
-            get { return _avatar == string.Empty ? _avatar : "http://forums.pointgaming.com/assets/logo-3b643498dc7635d6ce4598843b5fcf0e.png"; }
+            get { return _avatar == string.Empty | _avatar == null ? "http://forums.pointgaming.com/assets/logo-3b643498dc7635d6ce4598843b5fcf0e.png" : _avatar; }
             set
             {
                 if (value == _avatar)
