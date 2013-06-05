@@ -23,7 +23,17 @@
                   CanUserAddRows="False" CanUserDeleteRows="False"
                   AllowDrop="True" Drop="dataGridFriends_Drop" DragEnter="dataGridFriends_DragQuery" DragOver="dataGridFriends_DragQuery" DragLeave="dataGridFriends_DragQuery">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Username}" Header="Username" Width="*" IsReadOnly="True" />
+                <DataGridTemplateColumn Header="User" Width="*" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Height="48" Width="48" HorizontalAlignment="Left" Margin="0,0,5,0" Stretch="Fill" VerticalAlignment="Center" Source="{Binding Avatar, Mode=OneWay}" />
+                                <TextBlock Height="16" HorizontalAlignment="Left" Margin="0" Text="{Binding Username}" VerticalAlignment="Center" Padding="0" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
                 <DataGridTextColumn Binding="{Binding Status}" Header="Status" Width="50" IsReadOnly="True" />
             </DataGrid.Columns>
 
