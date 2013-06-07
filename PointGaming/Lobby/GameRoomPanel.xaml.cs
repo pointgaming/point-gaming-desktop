@@ -42,6 +42,14 @@ namespace PointGaming.Lobby
             if (del != null)
                 del(this, new RoutedEventArgs());
         }
+
+        private void buttonButtonJoin_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Right)
+            {
+                // TODO: show context menu only if user has takeover rights
+            }
+        }
         
         private void buttonButtonJoin_Click(object sender, RoutedEventArgs e)
         {
