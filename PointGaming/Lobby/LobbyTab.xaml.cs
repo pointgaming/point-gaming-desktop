@@ -247,7 +247,10 @@ namespace PointGaming.Lobby
         {
             GameRoomItem item;
             if (((DependencyObject)sender).TryGetPresentedParent(out item))
-                MessageDialog.Show(_userData.GetChatWindow(), "Info", "TODO: Information goes here.  GameRoom Id = " + item.Id);
+            {
+                // MessageDialog.Show(_userData.GetChatWindow(), "Info", "TODO: Information goes here.  GameRoom Id = " + item.Id);
+                GameInfoDialog.Show(item);
+            }
         }
 
         private GameRoomItem _joinedItemMouseOver;

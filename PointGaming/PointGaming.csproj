@@ -173,6 +173,9 @@
       <DependentUpon>LauncherEditorDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="HomeTab\LauncherInfo.cs" />
+    <Compile Include="Lobby\GameInfoDialog.xaml.cs">
+      <DependentUpon>GameInfoDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Lobby\GameRoomItem.cs" />
     <Compile Include="Lobby\GameRoomPanel.xaml.cs">
       <DependentUpon>GameRoomPanel.xaml</DependentUpon>
@@ -245,6 +248,10 @@
     <Page Include="GameRoom\PasswordDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Lobby\GameInfoDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Lobby\GameRoomPanel.xaml">
       <SubType>Designer</SubType>
