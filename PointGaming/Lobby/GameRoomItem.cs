@@ -117,9 +117,27 @@ namespace PointGaming.Lobby
                 _maxMemberCount = value;
                 NotifyChanged("MaxMemberCount");
                 NotifyChanged("MemberStatus");
+                NotifyChanged("IsNotActive");
+                NotifyChanged("IsActive");
             }
         }
         public string MemberStatus { get { return _memberCount + "/" + MaxMemberCount; } }
+        public bool IsNotActive { 
+            get { return MaxMemberCount == 0; }
+            set
+            {
+                NotifyChanged("IsNotActive");
+                NotifyChanged("IsActive");
+            }  
+        }
+        public bool IsActive { 
+            get { return MaxMemberCount > 0; }  
+            set 
+            {
+                NotifyChanged("IsNotActive");
+                NotifyChanged("IsActive");
+            } 
+        }
 
         private string _description;
         public string Description

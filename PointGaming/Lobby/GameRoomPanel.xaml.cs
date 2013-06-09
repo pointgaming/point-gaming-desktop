@@ -20,6 +20,7 @@ namespace PointGaming.Lobby
         public event PropertyChangedEventHandler PropertyChanged;
         public event RoutedEventHandler JoinClick;
         public event RoutedEventHandler InfoClick;
+        public event RoutedEventHandler StartClick;
 
         private void NotifyChanged(string propertyName)
         {
@@ -58,6 +59,13 @@ namespace PointGaming.Lobby
                 del(this, new RoutedEventArgs());
         }
 
+        private void buttonStartGameRoom_Click(object sender, RoutedEventArgs e)
+        {
+            var del = StartClick;
+            if (del != null)
+                del(this, new RoutedEventArgs());
+        }
+
         public static readonly DependencyProperty GameRoomTitleProperty = DependencyProperty.Register(
             "GameRoomTitle", typeof(string), typeof(GameRoomPanel)
             //,
@@ -85,6 +93,14 @@ namespace PointGaming.Lobby
         {
             get { return this.GetValue(GameRoomDescriptionProperty) as FlowDocument; }
             set { this.SetValue(GameRoomDescriptionProperty, value); }
+        }
+
+        public static readonly DependencyProperty IsNotActiveProperty = DependencyProperty.Register(
+            "IsNotActive", typeof(bool), typeof(GameRoomPanel));
+        public bool IsNotActive
+        {
+            get { return (bool)this.GetValue(IsNotActiveProperty); }
+            set { this.SetValue(IsNotActiveProperty, value); }
         }
     }
 }

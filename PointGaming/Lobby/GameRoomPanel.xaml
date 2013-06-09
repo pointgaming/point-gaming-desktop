@@ -6,14 +6,20 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              x:Name="gameRoomPanel">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BtVC" />
+    </UserControl.Resources>
+
     <Border BorderBrush="#FF000000" BorderThickness="1,1,1,1" CornerRadius="8,8,8,8" Background="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid Margin="5">
+            
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Grid Name="gridTitle">
+            <Grid Name="gridTitle" Visibility="{Binding Path=IsActive, Converter={StaticResource BtVC}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="40" />
@@ -27,7 +33,7 @@
             </Grid>
 
             <FlowDocumentScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" Name="documentViewerDescription" VerticalAlignment="Stretch"
-                     VerticalScrollBarVisibility="Auto" Background="White" Document="{Binding ElementName=gameRoomPanel, Path=GameRoomDescription}">
+                     VerticalScrollBarVisibility="Auto" Background="White" Document="{Binding ElementName=gameRoomPanel, Path=GameRoomDescription}" Visibility="{Binding Path=IsActive, Converter={StaticResource BtVC}}">
                 <FlowDocumentScrollViewer.Resources>
                     <Style TargetType="{x:Type Paragraph}">
                         <Setter Property="Margin" Value="0"/>
@@ -35,7 +41,7 @@
                 </FlowDocumentScrollViewer.Resources>
             </FlowDocumentScrollViewer>
 
-            <Button Grid.Row="2" Content="Join" Height="23" HorizontalAlignment="Right" Name="buttonButtonJoin" VerticalAlignment="Top" Width="75" Click="buttonButtonJoin_Click" MouseDown="buttonButtonJoin_MouseDown">
+            <Button Grid.Row="2" Content="Join" Height="23" HorizontalAlignment="Right" Name="buttonButtonJoin" VerticalAlignment="Top" Width="75" Click="buttonButtonJoin_Click" MouseDown="buttonButtonJoin_MouseDown" Visibility="{Binding Path=IsActive, Converter={StaticResource BtVC}}">
                 <Button.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Join"/>
@@ -43,6 +49,8 @@
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>
+            <Button Content="Start" Grid.Row="1" Height="46" HorizontalAlignment="Center" x:Name="buttonStartGameRoom" VerticalAlignment="Center" Width="150" Visibility="{Binding IsNotActive, Converter={StaticResource BtVC}}" Click="buttonStartGameRoom_Click" />
+
         </Grid>
     </Border>
 </UserControl>

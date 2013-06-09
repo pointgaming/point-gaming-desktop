@@ -38,7 +38,7 @@
                                 GameRoomTitle="{Binding DisplayName}"
                                 GameRoomPopulation="{Binding MemberStatus}"
                                 GameRoomDescription="{Binding DescriptionDocument}"
-                                JoinClick="GameRoomPanel_JoinClick" InfoClick="GameRoomPanel_InfoClick"/>
+                                JoinClick="GameRoomPanel_JoinClick" InfoClick="GameRoomPanel_InfoClick" StartClick="GameRoomPanel_StartClick" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                     <ItemsControl.ItemsSource>

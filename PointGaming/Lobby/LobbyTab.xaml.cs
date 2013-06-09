@@ -33,6 +33,7 @@ namespace PointGaming.Lobby
 
         private ChatWindow _chatWindow;
         private LobbySession _lobbySession;
+        private ObservableCollection<GameRoomItem> _gameRooms;
         private UserDataManager _userData = HomeWindow.UserData;
         private AutoScroller _autoScroller;
 
@@ -78,7 +79,11 @@ namespace PointGaming.Lobby
             _lobbySession = (LobbySession)lobbySession;
             _lobbySession.ReceivedMessage += ReceivedMessage;
             listBoxMembership.ItemsSource = _lobbySession.Membership;
-            itemsControlGameRoomList.ItemsSource = _lobbySession.AllGameRooms;
+
+            _gameRooms = _lobbySession.AllGameRooms;
+            _gameRooms.Add(new GameRoomItem()); // placeholder item for start new game template
+            itemsControlGameRoomList.ItemsSource = _gameRooms;
+
             itemsControlJoinedGameRoomList.ItemsSource = _lobbySession.JoinedGameRooms;
 
             PropertyChangedEventManager.AddListener(_lobbySession.GameInfo, this, "PropertyChanged");
@@ -251,6 +256,11 @@ namespace PointGaming.Lobby
                 // MessageDialog.Show(_userData.GetChatWindow(), "Info", "TODO: Information goes here.  GameRoom Id = " + item.Id);
                 GameInfoDialog.Show(item);
             }
+        }
+
+        private void GameRoomPanel_StartClick(object sender, RoutedEventArgs e)
+        {
+            // TODO: launch new game through api and add new gameroom to lobby
         }
 
         private GameRoomItem _joinedItemMouseOver;
