@@ -73,6 +73,7 @@ namespace PointGaming.Lobby
                 var position = _allGameRooms.Count + 1;
                 SetFakeRoomAt(position);
             }
+            SetPlaceholderRoom();
         }
 
         private void SetFakeRoomAt(int position)
@@ -83,6 +84,11 @@ namespace PointGaming.Lobby
                 _allGameRooms[index] = fakeRoom;
             else
                 _allGameRooms.Add(fakeRoom);
+        }
+
+        private void SetPlaceholderRoom()
+        {
+            _allGameRooms.Add(new GameRoomItem { Position = _allGameRooms.Count + 1});
         }
 
         public void CreateRoomAt(int position, string description, Action<string> onCreated)
@@ -166,6 +172,7 @@ namespace PointGaming.Lobby
                     _allGameRooms.RemoveAt(i + 1);
                 }
             }
+            SetPlaceholderRoom();
         }
 
         public override Type GetUserControlType()

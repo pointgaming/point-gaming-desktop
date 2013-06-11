@@ -41,7 +41,7 @@
                 </FlowDocumentScrollViewer.Resources>
             </FlowDocumentScrollViewer>
 
-            <Button Grid.Row="2" Content="Join" Height="23" HorizontalAlignment="Right" Name="buttonButtonJoin" VerticalAlignment="Top" Width="75" Click="buttonButtonJoin_Click" MouseDown="buttonButtonJoin_MouseDown" Visibility="{Binding Path=IsActive, Converter={StaticResource BtVC}}">
+            <Button Grid.Row="2" Content="Join" Height="23" HorizontalAlignment="Right" Name="buttonButtonJoin" VerticalAlignment="Top" Width="75" Click="buttonButtonJoin_Click" MouseDown="buttonButtonJoin_MouseDown" IsEnabled="{Binding Path=IsJoinable}"  Visibility="{Binding Path=IsActive, Converter={StaticResource BtVC}}">
                 <Button.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Join"/>

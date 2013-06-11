@@ -79,11 +79,7 @@ namespace PointGaming.Lobby
             _lobbySession = (LobbySession)lobbySession;
             _lobbySession.ReceivedMessage += ReceivedMessage;
             listBoxMembership.ItemsSource = _lobbySession.Membership;
-
-            _gameRooms = _lobbySession.AllGameRooms;
-            _gameRooms.Add(new GameRoomItem()); // placeholder item for start new game template
-            itemsControlGameRoomList.ItemsSource = _gameRooms;
-
+            itemsControlGameRoomList.ItemsSource = _lobbySession.AllGameRooms;
             itemsControlJoinedGameRoomList.ItemsSource = _lobbySession.JoinedGameRooms;
 
             PropertyChangedEventManager.AddListener(_lobbySession.GameInfo, this, "PropertyChanged");
@@ -243,11 +239,6 @@ namespace PointGaming.Lobby
             }
         }
 
-        private void GameRoomPanel_StartClick(object sender, RoutedEventArgs e)
-        {
-            _lobbySession.CreateRoomAt(_gameRooms.Count + 1, "New game room", OnMyRoomCreated);
-        }
-
         private void OnMyRoomCreated(string id)
         {
             _userData.JoinChat(Chat.ChatManager.PrefixGameRoom + id);
@@ -258,7 +249,6 @@ namespace PointGaming.Lobby
             GameRoomItem item;
             if (((DependencyObject)sender).TryGetPresentedParent(out item))
             {
-                // MessageDialog.Show(_userData.GetChatWindow(), "Info", "TODO: Information goes here.  GameRoom Id = " + item.Id);
                 GameRoomInfoDialog.Show(item, _userData.PgSession);
             }
         }

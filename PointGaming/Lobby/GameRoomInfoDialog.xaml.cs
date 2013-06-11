@@ -43,7 +43,7 @@ namespace PointGaming.Lobby
         
         public String TakeOverAmount
         {
-            get { return "Take Over Amount: 19,000 points"; }
+            get { return "19,000 points"; }
         }
 
         public String Avatar
@@ -57,6 +57,7 @@ namespace PointGaming.Lobby
             // unnecessary socket communications just to inspect things like room members.
             UserSession.OnThread("Chatroom.Member.list", OnChatroomMemberList);
             UserSession.EmitLater("Chatroom.Member.getList", new Chatroom());
+            UserSession.Emit("Chatroom.Member.getList", new Chatroom());
         }
 
         private void OnChatroomMemberList(IMessage message)

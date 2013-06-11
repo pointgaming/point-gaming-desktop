@@ -102,5 +102,13 @@ namespace PointGaming.Lobby
             get { return (bool)this.GetValue(IsNotActiveProperty); }
             set { this.SetValue(IsNotActiveProperty, value); }
         }
+
+        public static readonly DependencyProperty IsJoinableProperty = DependencyProperty.Register(
+            "IsJoinable", typeof(bool), typeof(GameRoomPanel));
+        public bool IsJoinable
+        {
+            get { return (bool)this.GetValue(IsJoinableProperty); }
+            set { this.SetValue(IsJoinableProperty, value); }
+        }
     }
 }

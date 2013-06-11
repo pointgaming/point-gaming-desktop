@@ -8,7 +8,9 @@
         <TextBlock Height="18" Margin="84,27,0,324" HorizontalAlignment="Left" Name="hyperLinkInfo" VerticalAlignment="Center" Width="198">
             <Hyperlink>http://pointgaming.com</Hyperlink>
         </TextBlock>
-        <TextBlock Width="198" Height="50" Margin="84,59,0,260"  TextWrapping="Wrap" Text="{Binding ElementName=gameRoomInfoDialog, Path=TakeOverAmount}" HorizontalAlignment="Left" x:Name="textBlockTakeOverAmount" VerticalAlignment="Center" />
+        <TextBlock Width="198" Height="17" Margin="84,50,0,302"  TextWrapping="Wrap" Text="Take-over amount" HorizontalAlignment="Left" x:Name="textBlockTakeOverAmountLabel" VerticalAlignment="Center" />
+        <TextBlock Width="198" Height="25" Margin="84,80,0,260"  TextWrapping="Wrap" Text="{Binding ElementName=gameRoomInfoDialog, Path=TakeOverAmount}" HorizontalAlignment="Left" x:Name="textBlockTakeOverAmount" VerticalAlignment="Center" />
+        <TextBlock Width="272" Height="50"  TextWrapping="Wrap" Text="{Binding ElementName=gameRoomInfoDialog, Path=GameRoomDescription}" HorizontalAlignment="Left" x:Name="textBlockGameRoomDescription" VerticalAlignment="Center" Margin="10,114,0,205" />
         <Button Content="OK" Height="23" HorizontalAlignment="Center" Name="buttonOk" VerticalAlignment="Bottom" Width="76" Click="buttonOk_Click" Margin="84,0,82,10" />
     </Grid>
 </Window>

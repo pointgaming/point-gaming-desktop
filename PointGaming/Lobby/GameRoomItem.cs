@@ -138,6 +138,14 @@ namespace PointGaming.Lobby
                 NotifyChanged("IsActive");
             } 
         }
+        public bool IsJoinable
+        {
+            get { return MemberCount < MaxMemberCount; }
+            set
+            {
+                NotifyChanged("IsJoinable");
+            }
+        }
 
         private string _description;
         public string Description
