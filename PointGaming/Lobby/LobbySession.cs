@@ -111,6 +111,11 @@ namespace PointGaming.Lobby
                     if (onCreated != null)
                         onCreated(gameRoom._id);
                 }
+                else
+                {
+                    string reason = String.IsNullOrEmpty(response.ErrorMessage) ? response.Content : response.ErrorMessage;
+                    MessageDialog.Show(_userData.GetChatWindow(), "Join Failed", reason);
+                }
             });
         }
 

@@ -243,6 +243,11 @@ namespace PointGaming.Lobby
             }
         }
 
+        private void GameRoomPanel_StartClick(object sender, RoutedEventArgs e)
+        {
+            _lobbySession.CreateRoomAt(_gameRooms.Count + 1, "New game room", OnMyRoomCreated);
+        }
+
         private void OnMyRoomCreated(string id)
         {
             _userData.JoinChat(Chat.ChatManager.PrefixGameRoom + id);
@@ -254,13 +259,8 @@ namespace PointGaming.Lobby
             if (((DependencyObject)sender).TryGetPresentedParent(out item))
             {
                 // MessageDialog.Show(_userData.GetChatWindow(), "Info", "TODO: Information goes here.  GameRoom Id = " + item.Id);
-                GameInfoDialog.Show(item);
+                GameRoomInfoDialog.Show(item, _userData.PgSession);
             }
-        }
-
-        private void GameRoomPanel_StartClick(object sender, RoutedEventArgs e)
-        {
-            // TODO: launch new game through api and add new gameroom to lobby
         }
 
         private GameRoomItem _joinedItemMouseOver;
