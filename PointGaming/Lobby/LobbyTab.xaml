@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:my="clr-namespace:PointGaming"
-             xmlns:Lobby="clr-namespace:PointGaming.Lobby"
+             xmlns:my="clr-namespace:PointGaming;assembly="
+             xmlns:Lobby="clr-namespace:PointGaming.Lobby;assembly="
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="800" Loaded="UserControl_Loaded"
              AllowDrop="True" PreviewDrop="TabPreviewDrop" PreviewDragEnter="TabPreviewDragQuery"
@@ -87,7 +87,7 @@
         </Grid>
 
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="4" Margin="3,0,3,0" />
-        
+
         <Grid Grid.Column="2" Name="gridUserAndJoinedGameRoomLists">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -98,10 +98,29 @@
             <ListBox Grid.Row="0" Name="listBoxMembership" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                      PreviewMouseLeftButtonDown="listBoxMembership_PreviewMouseLeftButtonDown"
                      PreviewMouseLeftButtonUp="listBoxMembership_PreviewMouseLeftButtonUp"
-                     PreviewMouseMove="listBoxMembership_PreviewMouseMove">
+                     PreviewMouseMove="listBoxMembership_PreviewMouseMove" Margin="0,4,0,0" Grid.RowSpan="2">
+
                 <ListBox.Resources>
-                    <DataTemplate DataType="{x:Type my:PgUser}">
-                        <Label Content="{Binding Username}" MouseDoubleClick="Label_MouseDoubleClick" />
+                    <DataTemplate DataType="{x:Type my:PgUser}" >
+                        <Label Content="{Binding Username}" MouseDoubleClick="Label_MouseDoubleClick" HorizontalAlignment="Stretch" Width="120">
+                            <Label.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Message"/>
+                                    <MenuItem Header="Send Friend Request"/>
+                                    <MenuItem Header="View Profile"/>
+                                    <MenuItem Header="Block (mute)"/>
+                                    <MenuItem Header="Taunt (once a day)"/>
+                                </ContextMenu>
+                            </Label.ContextMenu>
+                            <Label.ToolTip>
+                                <ToolTip>
+                                    <StackPanel>
+                                        <Image Height="48" Width="48" HorizontalAlignment="Left" Margin="0,0,5,0" Stretch="Fill" VerticalAlignment="Center" />
+                                        <TextBlock Text="{Binding Username}" />
+                                    </StackPanel>
+                                </ToolTip>
+                            </Label.ToolTip>
+                        </Label>
                     </DataTemplate>
                 </ListBox.Resources>
             </ListBox>
