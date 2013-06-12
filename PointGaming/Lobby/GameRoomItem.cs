@@ -117,25 +117,25 @@ namespace PointGaming.Lobby
                 _maxMemberCount = value;
                 NotifyChanged("MaxMemberCount");
                 NotifyChanged("MemberStatus");
-                NotifyChanged("IsNotActive");
-                NotifyChanged("IsActive");
+                NotifyChanged("IsNotNew");
+                NotifyChanged("IsNew");
             }
         }
         public string MemberStatus { get { return _memberCount + "/" + MaxMemberCount; } }
-        public bool IsNotActive { 
-            get { return MaxMemberCount == 0; }
+        public bool IsNew {
+            get { return Id == null; }
             set
             {
-                NotifyChanged("IsNotActive");
-                NotifyChanged("IsActive");
+                NotifyChanged("IsNotNew");
+                NotifyChanged("IsNew");
             }  
         }
-        public bool IsActive { 
-            get { return MaxMemberCount > 0; }  
+        public bool IsNotNew {
+            get { return Id != null; }  
             set 
             {
-                NotifyChanged("IsNotActive");
-                NotifyChanged("IsActive");
+                NotifyChanged("IsNotNew");
+                NotifyChanged("IsNew");
             } 
         }
         public bool IsJoinable

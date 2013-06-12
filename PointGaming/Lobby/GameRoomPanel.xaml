@@ -13,27 +13,15 @@
 
     <Border BorderBrush="#FF000000" BorderThickness="1,1,1,1" CornerRadius="8,8,8,8" Background="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid Margin="5">
-            
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Grid Name="gridTitle" Visibility="{Binding Path=IsActive, Converter={StaticResource BtVC}}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="40" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Height="18" Margin="2" Text="{Binding ElementName=gameRoomPanel, Path=GameRoomTitle}" HorizontalAlignment="Left" Name="textBlockTitle" VerticalAlignment="Center" />
-                <TextBlock Grid.Column="1" Height="18" Margin="2" Text="{Binding ElementName=gameRoomPanel, Path=GameRoomPopulation}" HorizontalAlignment="Right" Name="textBlockPopulation" VerticalAlignment="Center" />
-                <TextBlock Grid.Column="2" Height="18" Margin="2" HorizontalAlignment="Left" Name="hyperLinkInfo" VerticalAlignment="Center">
-                    <Hyperlink Click="hyperLinkInfoClick">Info</Hyperlink>
-                </TextBlock>
-            </Grid>
 
-            <FlowDocumentScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" Name="documentViewerDescription" VerticalAlignment="Stretch"
-                     VerticalScrollBarVisibility="Auto" Background="White" Document="{Binding ElementName=gameRoomPanel, Path=GameRoomDescription}" Visibility="{Binding Path=IsActive, Converter={StaticResource BtVC}}">
+            <FlowDocumentScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" x:Name="documentViewerDescription" VerticalAlignment="Stretch"
+        		VerticalScrollBarVisibility="Auto" Background="White" Document="{Binding GameRoomDescription, ElementName=gameRoomPanel}" Visibility="{Binding IsNotNew, Converter={StaticResource BtVC}}">
                 <FlowDocumentScrollViewer.Resources>
                     <Style TargetType="{x:Type Paragraph}">
                         <Setter Property="Margin" Value="0"/>
@@ -41,7 +29,18 @@
                 </FlowDocumentScrollViewer.Resources>
             </FlowDocumentScrollViewer>
 
-            <Button Grid.Row="2" Content="Join" Height="23" HorizontalAlignment="Right" Name="buttonButtonJoin" VerticalAlignment="Top" Width="75" Click="buttonButtonJoin_Click" MouseDown="buttonButtonJoin_MouseDown" IsEnabled="{Binding Path=IsJoinable}"  Visibility="{Binding Path=IsActive, Converter={StaticResource BtVC}}">
+            <Grid x:Name="gridTitle" Visibility="{Binding IsNotNew, Converter={StaticResource BtVC}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="40" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Height="18" Margin="2" Text="{Binding GameRoomTitle, ElementName=gameRoomPanel}" HorizontalAlignment="Left" x:Name="textBlockTitle" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="1" Height="18" Margin="2" Text="{Binding GameRoomPopulation, ElementName=gameRoomPanel}" HorizontalAlignment="Right" x:Name="textBlockPopulation" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="2" Height="18" Margin="2" HorizontalAlignment="Left" x:Name="hyperLinkInfo" VerticalAlignment="Center"><Hyperlink Click="hyperLinkInfoClick"><Run Text="Info"/></Hyperlink></TextBlock>
+            </Grid>
+
+            <Button Grid.Row="2" Content="Join" Height="23" HorizontalAlignment="Right" x:Name="buttonButtonJoin" VerticalAlignment="Top" Width="75" Click="buttonButtonJoin_Click" MouseDown="buttonButtonJoin_MouseDown" IsEnabled="{Binding IsJoinable}"  Visibility="{Binding IsNotNew, Converter={StaticResource BtVC}}">
                 <Button.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Join"/>
@@ -49,8 +48,12 @@
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>
-            <Button Content="Start" Grid.Row="1" Height="46" HorizontalAlignment="Center" x:Name="buttonStartGameRoom" VerticalAlignment="Center" Width="150" Visibility="{Binding IsNotActive, Converter={StaticResource BtVC}}" Click="buttonStartGameRoom_Click" />
 
+
+            <Grid Grid.Row="1"  x:Name="gridStart" Visibility="{Binding IsNew, Converter={StaticResource BtVC}}">
+                <TextBlock Height="18" Width="150" HorizontalAlignment="Center" x:Name="roomPosition" VerticalAlignment="Top" Text="{Binding GameRoomTitle, ElementName=gameRoomPanel}" />
+                <Button Content="Start" Height="46" HorizontalAlignment="Center" x:Name="buttonStartGameRoom" VerticalAlignment="Center" Width="150" Click="buttonStartGameRoom_Click" />
+            </Grid>
         </Grid>
     </Border>
 </UserControl>

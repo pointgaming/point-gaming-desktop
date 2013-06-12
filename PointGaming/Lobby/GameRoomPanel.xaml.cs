@@ -95,12 +95,20 @@ namespace PointGaming.Lobby
             set { this.SetValue(GameRoomDescriptionProperty, value); }
         }
 
-        public static readonly DependencyProperty IsNotActiveProperty = DependencyProperty.Register(
-            "IsNotActive", typeof(bool), typeof(GameRoomPanel));
-        public bool IsNotActive
+        public static readonly DependencyProperty IsNewProperty = DependencyProperty.Register(
+            "IsNew", typeof(bool), typeof(GameRoomPanel));
+        public bool IsNew
         {
-            get { return (bool)this.GetValue(IsNotActiveProperty); }
-            set { this.SetValue(IsNotActiveProperty, value); }
+            get { return (bool)this.GetValue(IsNewProperty); }
+            set { this.SetValue(IsNewProperty, value); }
+        }
+
+        public static readonly DependencyProperty IsNotNewProperty = DependencyProperty.Register(
+            "IsNotNew", typeof(bool), typeof(GameRoomPanel));
+        public bool IsNotNew
+        {
+            get { return (bool)this.GetValue(IsNotNewProperty); }
+            set { this.SetValue(IsNotNewProperty, value); }
         }
 
         public static readonly DependencyProperty IsJoinableProperty = DependencyProperty.Register(
