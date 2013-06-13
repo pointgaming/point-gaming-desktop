@@ -102,17 +102,25 @@
                      PreviewMouseMove="listBoxMembership_PreviewMouseMove" Margin="0,4,0,0" Grid.RowSpan="2">
 
                 <ListBox.Resources>
+                    <ContextMenu x:Key="UserMenu">
+                        <MenuItem Header="Message"/>
+                        <MenuItem Header="Send Friend Request"/>
+                        <MenuItem Header="View Profile"/>
+                        <MenuItem Header="Block (mute)"/>
+                        <MenuItem Header="Taunt (once a day)"/>
+                    </ContextMenu>
+                    <ContextMenu x:Key="AdminMenu">
+                        <MenuItem Header="Message"/>
+                        <MenuItem Header="Send Friend Request"/>
+                        <MenuItem Header="View Profile"/>
+                        <MenuItem Header="Send Warning"/>
+                        <MenuItem Header="Kick From Lobby"/>
+                        <MenuItem Header="Globally Mute (Main Chat)"/>
+                        <MenuItem Header="Ban From Lobby"/>
+                    </ContextMenu>
+
                     <DataTemplate DataType="{x:Type my:PgUser}" >
                         <Label Content="{Binding Username}" MouseDoubleClick="Label_MouseDoubleClick" HorizontalAlignment="Stretch" Width="120">
-                            <Label.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Message"/>
-                                    <MenuItem Header="Send Friend Request"/>
-                                    <MenuItem Header="View Profile"/>
-                                    <MenuItem Header="Block (mute)"/>
-                                    <MenuItem Header="Taunt (once a day)"/>
-                                </ContextMenu>
-                            </Label.ContextMenu>
                             <Label.ToolTip>
                                 <ToolTip>
                                     <StackPanel>
@@ -135,6 +143,17 @@
                         </Label>
                     </DataTemplate>
                 </ListBox.Resources>
+
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}" x:Name="styleForListBox">
+                        <Setter Property="ContextMenu" Value="{StaticResource UserMenu}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding CanAdminUsers}" Value="False">
+                                <Setter Property="ContextMenu" Value="{StaticResource AdminMenu}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.ItemContainerStyle>
             </ListBox>
 
             <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
