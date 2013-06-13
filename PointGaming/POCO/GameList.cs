@@ -33,6 +33,7 @@ namespace PointGaming.POCO
         public string match_id { get; set; }
         public string game_id { get; set; }
         public int position { get; set; }
+        public bool takeover_position { get; set; }
         public bool is_advertising { get; set; }
         public bool is_locked { get; set; }
         public string password { get; set; }

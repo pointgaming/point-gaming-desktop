@@ -42,9 +42,9 @@
 
             <Button Grid.Row="2" Content="Join" Height="23" HorizontalAlignment="Right" x:Name="buttonButtonJoin" VerticalAlignment="Top" Width="75" Click="buttonButtonJoin_Click" MouseDown="buttonButtonJoin_MouseDown" IsEnabled="{Binding IsJoinable}"  Visibility="{Binding IsNotNew, Converter={StaticResource BtVC}}">
                 <Button.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Join"/>
-                        <MenuItem Header="Take over"/>
+                    <ContextMenu >
+                        <MenuItem Header="Join" Click="buttonButtonJoin_Click" />
+                        <MenuItem Header="Take over" Click="buttonTakeoverGameRoom_Click" />
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>

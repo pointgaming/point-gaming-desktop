@@ -21,6 +21,7 @@ namespace PointGaming.Lobby
         public event RoutedEventHandler JoinClick;
         public event RoutedEventHandler InfoClick;
         public event RoutedEventHandler StartClick;
+        public event RoutedEventHandler TakeoverClick;
 
         private void NotifyChanged(string propertyName)
         {
@@ -62,6 +63,13 @@ namespace PointGaming.Lobby
         private void buttonStartGameRoom_Click(object sender, RoutedEventArgs e)
         {
             var del = StartClick;
+            if (del != null)
+                del(this, new RoutedEventArgs());
+        }
+
+        private void buttonTakeoverGameRoom_Click(object sender, RoutedEventArgs e)
+        {
+            var del = TakeoverClick;
             if (del != null)
                 del(this, new RoutedEventArgs());
         }
@@ -117,6 +125,14 @@ namespace PointGaming.Lobby
         {
             get { return (bool)this.GetValue(IsJoinableProperty); }
             set { this.SetValue(IsJoinableProperty, value); }
+        }
+        
+        public static readonly DependencyProperty MembersProperty = DependencyProperty.Register(
+            "Members", typeof(PgUser[]), typeof(GameRoomPanel));
+        public PgUser[] Members
+        {
+            get { return (PgUser[])this.GetValue(MembersProperty); }
+            set { this.SetValue(MembersProperty, value); }
         }
     }
 }

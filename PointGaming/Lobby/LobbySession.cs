@@ -85,7 +85,7 @@ namespace PointGaming.Lobby
                 _allGameRooms.Add(fakeRoom);
         }
 
-        public void CreateRoomAt(int position, string description, Action<string> onCreated)
+        public void CreateRoomAt(int position, string description, Action<string> onCreated, bool takeover = false)
         {
             RestResponse<GameRoomSinglePoco> response = null;
             _userData.PgSession.BeginAndCallback(delegate
@@ -96,6 +96,7 @@ namespace PointGaming.Lobby
                 var poco = new GameRoomPoco {
                     position = position,
                     description = description,
+                    takeover_position = takeover,
                     max_member_count = DefaultMaxGameRoomMemberCount,
                     is_advertising = false,
                     game_id = GameInfo.Id,

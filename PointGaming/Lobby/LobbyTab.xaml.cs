@@ -238,6 +238,15 @@ namespace PointGaming.Lobby
             }
         }
 
+        private void GameRoomPanel_TakeoverClick(object sender, RoutedEventArgs e)
+        {
+            GameRoomItem item;
+            if (((DependencyObject)sender).TryGetPresentedParent(out item))
+            {
+                _lobbySession.CreateRoomAt(item.Position, "New game room", OnMyRoomCreated, true);
+            }
+        }
+
         private void OnMyRoomCreated(string id)
         {
             _userData.JoinChat(Chat.ChatManager.PrefixGameRoom + id);
