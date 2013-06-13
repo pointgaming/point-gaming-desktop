@@ -33,7 +33,6 @@ namespace PointGaming.Lobby
 
         private ChatWindow _chatWindow;
         private LobbySession _lobbySession;
-        private ObservableCollection<GameRoomItem> _gameRooms;
         private UserDataManager _userData = HomeWindow.UserData;
         private AutoScroller _autoScroller;
 

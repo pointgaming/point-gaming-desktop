@@ -1,6 +1,7 @@
 ﻿<Window x:Class="PointGaming.Lobby.GameRoomInfoDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:my="clr-namespace:PointGaming;assembly="
         x:Name="gameRoomInfoDialog"
         Title="Gameroom Info" Height="400" Width="300">
     <Grid>
@@ -9,8 +10,16 @@
             <Hyperlink>http://pointgaming.com</Hyperlink>
         </TextBlock>
         <TextBlock Width="198" Height="17" Margin="84,50,0,302"  TextWrapping="Wrap" Text="Take-over amount" HorizontalAlignment="Left" x:Name="textBlockTakeOverAmountLabel" VerticalAlignment="Center" />
-        <TextBlock Width="198" Height="25" Margin="84,80,0,260"  TextWrapping="Wrap" Text="{Binding ElementName=gameRoomInfoDialog, Path=TakeOverAmount}" HorizontalAlignment="Left" x:Name="textBlockTakeOverAmount" VerticalAlignment="Center" />
-        <TextBlock Width="272" Height="50"  TextWrapping="Wrap" Text="{Binding ElementName=gameRoomInfoDialog, Path=GameRoomDescription}" HorizontalAlignment="Left" x:Name="textBlockGameRoomDescription" VerticalAlignment="Center" Margin="10,114,0,205" />
+        <TextBlock Width="198" Height="20" Margin="84,68,0,281"  TextWrapping="Wrap" Text="{Binding ElementName=gameRoomInfoDialog, Path=TakeOverAmount}" HorizontalAlignment="Left" x:Name="textBlockTakeOverAmount" VerticalAlignment="Center" />
+        <TextBlock Width="272" Height="50"  TextWrapping="Wrap" Text="{Binding ElementName=gameRoomInfoDialog, Path=GameRoomDescription}" HorizontalAlignment="Left" x:Name="textBlockGameRoomDescription" VerticalAlignment="Center" Margin="10,93,0,226" />
+
+        <ListBox Grid.Row="0" Name="listBoxMembership" Margin="10,148,10,38">
+            <ListBox.Resources>
+                <DataTemplate DataType="{x:Type my:PgUser}" >
+                </DataTemplate>
+            </ListBox.Resources>
+        </ListBox>
+
         <Button Content="OK" Height="23" HorizontalAlignment="Center" Name="buttonOk" VerticalAlignment="Bottom" Width="76" Click="buttonOk_Click" Margin="84,0,82,10" />
     </Grid>
 </Window>
