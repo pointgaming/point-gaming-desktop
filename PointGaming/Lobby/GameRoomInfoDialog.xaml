@@ -16,6 +16,7 @@
         <ListBox Grid.Row="0" Name="listBoxMembership" Margin="10,148,10,38">
             <ListBox.Resources>
                 <DataTemplate DataType="{x:Type my:PgUser}" >
+                    <Label Content="{Binding Username}" Width="120" />
                 </DataTemplate>
             </ListBox.Resources>
         </ListBox>

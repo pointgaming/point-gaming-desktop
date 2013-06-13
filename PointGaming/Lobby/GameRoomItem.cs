@@ -188,6 +188,25 @@ namespace PointGaming.Lobby
                     return;
                 _owner = value;
                 NotifyChanged("Owner");
+                NotifyChanged("Members");
+            }
+        }
+        private PgUser[] _members = new PgUser[0];
+        public PgUser[] Members
+        {
+            get 
+            {
+                PgUser[] allMembers = new PgUser[_members.Length + 1];
+                _members.CopyTo(allMembers, 0);
+                allMembers[_members.Length] = Owner;
+                return allMembers; 
+            }
+            set
+            {
+                if (value == _members)
+                    return;
+                _members = value;
+                NotifyChanged("Members");
             }
         }
 

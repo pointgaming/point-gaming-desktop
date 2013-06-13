@@ -38,6 +38,7 @@ namespace PointGaming.Lobby
                 Title = item.DisplayName
             };
             info.InitChatroomMembers();
+            info.listBoxMembership.ItemsSource = item.Members;
             info.ShowDialog();
         }
         
