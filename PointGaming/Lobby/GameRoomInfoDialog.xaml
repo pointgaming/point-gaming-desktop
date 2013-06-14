@@ -17,21 +17,32 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type my:PgUser}">
                     <Grid>
-                        <TextBlock Text="{Binding Username}" HorizontalAlignment="Left" Margin="0,5,0,0" />
+                        <TextBlock Text="{Binding Username}" HorizontalAlignment="Left" Margin="15,5,0,0" />
                         <TextBlock Text="{Binding Points}" HorizontalAlignment="Right" Margin="0,5,0,0" />
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
             <ItemsControl.GroupStyle>
                 <GroupStyle>
-                    <GroupStyle.HeaderTemplate>
-                        <DataTemplate>
-                            <TextBlock>
-                                 <Run Text="{Binding Path=Name, Mode=OneWay}" />
-                                 <Run Text=" (" /><Run Text="{Binding Path=ItemCount, Mode=OneWay}" /><Run Text=")" />
-                            </TextBlock>
-                        </DataTemplate>
-                    </GroupStyle.HeaderTemplate>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <Expander IsExpanded="True">
+                                            <Expander.Header>
+                                                <TextBlock>
+                                                     <Run Text="{Binding Path=Name, Mode=OneWay}" />
+                                                     <Run Text=" (" /><Run Text="{Binding Path=ItemCount, Mode=OneWay}" /><Run Text=")" />
+                                                </TextBlock>
+                                            </Expander.Header>
+                                            <ItemsPresenter />
+                                        </Expander>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
                 </GroupStyle>
             </ItemsControl.GroupStyle>
 
