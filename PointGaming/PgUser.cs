@@ -104,6 +104,7 @@ namespace PointGaming
         }
 
         public string ShortDescription { get { return _username; } }
+        public string TeamName { get { return "Other"; } }
 
         private string _status;
         public string Status
@@ -115,6 +116,19 @@ namespace PointGaming
                     return;
                 _status = value;
                 NotifyChanged("Status");
+            }
+        }
+
+        private int _points;
+        public int Points
+        {
+            get { return _points; }
+            set
+            {
+                if (value == _points)
+                    return;
+                _points = value;
+                NotifyChanged("Points");
             }
         }
 

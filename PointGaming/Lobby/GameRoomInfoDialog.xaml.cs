@@ -19,6 +19,7 @@ namespace PointGaming.Lobby
     public partial class GameRoomInfoDialog : Window
     {
         public SocketSession UserSession;
+        public PgUser[] Members;
 
         public GameRoomInfoDialog()
         {
@@ -35,9 +36,15 @@ namespace PointGaming.Lobby
             GameRoomInfoDialog info = new GameRoomInfoDialog
             {
                 UserSession = session,
-                Title = item.DisplayName
+                Title = item.DisplayName,
+                Members = item.Members
             };
-            info.listBoxMembership.ItemsSource = item.Members;
+
+            System.ComponentModel.ICollectionView mv = CollectionViewSource.GetDefaultView(info.Members);
+            mv.GroupDescriptions.Add(new PropertyGroupDescription("TeamName"));
+            info.listBoxMembership.DataContext = mv;
+
+
             info.ShowDialog();
         }
         

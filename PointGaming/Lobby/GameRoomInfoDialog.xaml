@@ -13,13 +13,29 @@
         <TextBlock Width="198" Height="20" Margin="84,68,0,281"  TextWrapping="Wrap" Text="{Binding ElementName=gameRoomInfoDialog, Path=TakeOverAmount}" HorizontalAlignment="Left" x:Name="textBlockTakeOverAmount" VerticalAlignment="Center" />
         <TextBlock Width="272" Height="50"  TextWrapping="Wrap" Text="{Binding ElementName=gameRoomInfoDialog, Path=GameRoomDescription}" HorizontalAlignment="Left" x:Name="textBlockGameRoomDescription" VerticalAlignment="Center" Margin="10,93,0,226" />
 
-        <ListBox Grid.Row="0" Name="listBoxMembership" Margin="10,148,10,38">
-            <ListBox.Resources>
-                <DataTemplate DataType="{x:Type my:PgUser}" >
-                    <Label Content="{Binding Username}" Width="120" />
+        <ItemsControl Grid.Row="0" Name="listBoxMembership" Margin="10,148,10,38" ItemsSource="{Binding}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type my:PgUser}">
+                    <Grid>
+                        <TextBlock Text="{Binding Username}" HorizontalAlignment="Left" Margin="0,5,0,0" />
+                        <TextBlock Text="{Binding Points}" HorizontalAlignment="Right" Margin="0,5,0,0" />
+                    </Grid>
                 </DataTemplate>
-            </ListBox.Resources>
-        </ListBox>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                 <Run Text="{Binding Path=Name, Mode=OneWay}" />
+                                 <Run Text=" (" /><Run Text="{Binding Path=ItemCount, Mode=OneWay}" /><Run Text=")" />
+                            </TextBlock>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+            </ItemsControl.GroupStyle>
+
+        </ItemsControl>
 
         <Button Content="OK" Height="23" HorizontalAlignment="Center" Name="buttonOk" VerticalAlignment="Bottom" Width="76" Click="buttonOk_Click" Margin="84,0,82,10" />
     </Grid>
