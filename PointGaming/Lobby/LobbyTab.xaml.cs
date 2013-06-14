@@ -35,6 +35,7 @@ namespace PointGaming.Lobby
         private LobbySession _lobbySession;
         private UserDataManager _userData = HomeWindow.UserData;
         private AutoScroller _autoScroller;
+        private ObservableCollection<PgUser> _groupedUsers;
 
         public string Id { get { return _lobbySession.ChatroomId; } }
         public string Header { get { return _lobbySession.GameInfo.DisplayName; } }
@@ -77,11 +78,40 @@ namespace PointGaming.Lobby
             _chatWindow = window;
             _lobbySession = (LobbySession)lobbySession;
             _lobbySession.ReceivedMessage += ReceivedMessage;
-            listBoxMembership.ItemsSource = _lobbySession.Membership;
+            //listBoxMembership.ItemsSource = _lobbySession.Membership;
+            InitGroupedMembers( _lobbySession );
             itemsControlGameRoomList.ItemsSource = _lobbySession.AllGameRooms;
             itemsControlJoinedGameRoomList.ItemsSource = _lobbySession.JoinedGameRooms;
 
             PropertyChangedEventManager.AddListener(_lobbySession.GameInfo, this, "PropertyChanged");
+        }
+
+        private void InitGroupedMembers(ChatroomSession lobbySession)
+        {
+            _groupedUsers = new ObservableCollection<PgUser>();
+
+            foreach (PgUser user in lobbySession.Membership)
+            {
+                if (user.Teams != null & user.Teams.Length > 0)
+                {
+                    foreach (PgTeam team in user.Teams)
+                    {
+                        PgUser groupedUser = user.ShallowCopy();
+                        groupedUser.GroupName = team.Name;
+                        _groupedUsers.Add(groupedUser);
+                    }
+                }
+                else
+                {
+                    PgUser groupedUser = user.ShallowCopy();
+                    groupedUser.GroupName = "Other";
+                    _groupedUsers.Add(groupedUser);
+                }
+            }
+
+            System.ComponentModel.ICollectionView mv = CollectionViewSource.GetDefaultView(_groupedUsers);
+            mv.GroupDescriptions.Add(new PropertyGroupDescription("GroupName"));
+            listBoxMembership.DataContext = mv;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)

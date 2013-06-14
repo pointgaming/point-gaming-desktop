@@ -104,7 +104,8 @@ namespace PointGaming
         }
 
         public string ShortDescription { get { return _username; } }
-        public string TeamName { get { return "Other"; } }
+        public string TeamName { get { return Teams.Length > 0 ? Teams[0].Name : "Other"; } }
+        public string GroupName { get; set; }
 
         private string _status;
         public string Status
@@ -146,6 +147,19 @@ namespace PointGaming
             }
         }
 
+        private PgTeam[] _teams = new PgTeam[0];
+        public PgTeam[] Teams
+        {
+            get { return _teams; }
+            set
+            {
+                if (value == _teams)
+                    return;
+                _teams = value;
+                NotifyChanged("Teams");
+            }
+        }
+
         public UserBase ToUserBase()
         {
             return new UserBase { _id = Id, username = Username, };
@@ -165,6 +179,11 @@ namespace PointGaming
         public override string ToString()
         {
             return Username;
+        }
+
+        public PgUser ShallowCopy()
+        {
+            return (PgUser)this.MemberwiseClone();
         }
     }
 

@@ -96,12 +96,12 @@
                 <RowDefinition Height="100" />
             </Grid.RowDefinitions>
 
-            <ListBox Grid.Row="0" Name="listBoxMembership" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+            <ListView Grid.Row="0" Name="listBoxMembership" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding}"
                      PreviewMouseLeftButtonDown="listBoxMembership_PreviewMouseLeftButtonDown"
                      PreviewMouseLeftButtonUp="listBoxMembership_PreviewMouseLeftButtonUp"
                      PreviewMouseMove="listBoxMembership_PreviewMouseMove" Margin="0,4,0,0" Grid.RowSpan="2">
 
-                <ListBox.Resources>
+                <ListView.Resources>
                     <ContextMenu x:Key="UserMenu">
                         <MenuItem Header="Message"/>
                         <MenuItem Header="Send Friend Request"/>
@@ -142,9 +142,9 @@
                             </Label.ToolTip>
                         </Label>
                     </DataTemplate>
-                </ListBox.Resources>
+                </ListView.Resources>
 
-                <ListBox.ItemContainerStyle>
+                <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}" x:Name="styleForListBox">
                         <Setter Property="ContextMenu" Value="{StaticResource UserMenu}" />
                         <Style.Triggers>
@@ -153,8 +153,31 @@
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </ListBox.ItemContainerStyle>
-            </ListBox>
+                </ListView.ItemContainerStyle>
+                <ListView.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="{x:Type GroupItem}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <Expander IsExpanded="True">
+                                                <Expander.Header>
+                                                    <TextBlock>
+                                                     <Run Text="{Binding Path=Name, Mode=OneWay}" />
+                                                     <Run Text=" (" /><Run Text="{Binding Path=ItemCount, Mode=OneWay}" /><Run Text=")" />
+                                                    </TextBlock>
+                                                </Expander.Header>
+                                                <ItemsPresenter />
+                                            </Expander>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                    </GroupStyle>
+                </ListView.GroupStyle>
+            </ListView>
 
             <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 

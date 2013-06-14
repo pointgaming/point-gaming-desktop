@@ -44,7 +44,6 @@ namespace PointGaming.Lobby
             mv.GroupDescriptions.Add(new PropertyGroupDescription("TeamName"));
             info.listBoxMembership.DataContext = mv;
 
-
             info.ShowDialog();
         }
         

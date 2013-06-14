@@ -129,7 +129,27 @@
                      PreviewMouseMove="listBoxMembership_PreviewMouseMove" PreviewMouseRightButtonDown="listBoxMembership_PreviewMouseRightButtonDown">
             <ListBox.Resources>
                 <DataTemplate DataType="{x:Type my:PgUser}">
-                    <Label Content="{Binding Username}" MouseDoubleClick="Label_MouseDoubleClick" />
+                    <Label Content="{Binding Username}" MouseDoubleClick="Label_MouseDoubleClick">
+                        <Label.ToolTip>
+                            <ToolTip>
+                                <StackPanel>
+                                    <Image Height="48" Width="48" HorizontalAlignment="Left" Margin="0,0,5,0" Stretch="Fill" VerticalAlignment="Top" />
+                                    <TextBlock Text="{Binding Username}" VerticalAlignment="Top" />
+                                    <TextBlock Text="Full name" VerticalAlignment="Top" />
+                                    <TextBlock Text="Points" VerticalAlignment="Top" />
+                                    <Grid Height="30">
+                                        <ProgressBar IsIndeterminate="False" Maximum="100" Value="100" Height="30" />
+                                        <TextBlock Text="Reputation: 100%" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Grid>
+                                    <TextBlock Text="Joined On 05/26/2013" />
+                                    <TextBlock Text="Primary Game: Quake Live" />
+                                    <Image Grid.Row="0" Margin="3" Source="/PointGaming;component/Resources/Flags/us.png" HorizontalAlignment="Left" />
+                                    <TextBlock Text="US" />
+                                    <TextBlock Text="{Binding ShortDescription}" />
+                                </StackPanel>
+                            </ToolTip>
+                        </Label.ToolTip>
+                    </Label>
                 </DataTemplate>
 
                 <ContextMenu x:Key="MemberContextMenuOwner">
