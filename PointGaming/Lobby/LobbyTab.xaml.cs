@@ -92,21 +92,9 @@ namespace PointGaming.Lobby
 
             foreach (PgUser user in lobbySession.Membership)
             {
-                if (user.Teams != null & user.Teams.Length > 0)
-                {
-                    foreach (PgTeam team in user.Teams)
-                    {
-                        PgUser groupedUser = user.ShallowCopy();
-                        groupedUser.GroupName = team.Name;
-                        _groupedUsers.Add(groupedUser);
-                    }
-                }
-                else
-                {
-                    PgUser groupedUser = user.ShallowCopy();
-                    groupedUser.GroupName = "Other";
-                    _groupedUsers.Add(groupedUser);
-                }
+                PgUser groupedUser = user.ShallowCopy();
+                groupedUser.GroupName = user.TeamName;
+                _groupedUsers.Add(groupedUser);
             }
 
             System.ComponentModel.ICollectionView mv = CollectionViewSource.GetDefaultView(_groupedUsers);

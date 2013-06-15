@@ -103,8 +103,24 @@ namespace PointGaming
             }
         }
 
+        private string _rank;
+        public string Rank
+        {
+            get { return _rank; }
+            set
+            {
+                if (value == _rank)
+                    return;
+                _rank = value;
+                NotifyChanged("Rank");
+            }
+        }
+        
+        public string DisplayName
+        {
+            get { return Rank != null ? Rank + Username : Username; }
+        }
         public string ShortDescription { get { return _username; } }
-        public string TeamName { get { return Teams.Length > 0 ? Teams[0].Name : "Other"; } }
         public string GroupName { get; set; }
 
         private string _status;
@@ -147,17 +163,21 @@ namespace PointGaming
             }
         }
 
-        private PgTeam[] _teams = new PgTeam[0];
-        public PgTeam[] Teams
+        private PgTeam _team;
+        public PgTeam Team
         {
-            get { return _teams; }
+            get { return _team; }
             set
             {
-                if (value == _teams)
+                if (value == _team)
                     return;
-                _teams = value;
-                NotifyChanged("Teams");
+                _team = value;
+                NotifyChanged("Team");
             }
+        }
+        public string TeamName
+        {
+            get { return Team != null ? Team.Name : "Other"; }
         }
 
         public UserBase ToUserBase()
