@@ -95,7 +95,7 @@ namespace PointGaming
 
             SocketSession.BeginAndCallback(delegate
             {
-                var url = "https://dev.pointgaming.com/desktop_client/version";
+                var url = "http://dev.pointgaming.com/desktop_client/version";
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.GET);
                 response = (RestResponse<PgVersion>)client.Execute<PgVersion>(request);

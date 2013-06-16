@@ -41,7 +41,7 @@ namespace PointGaming.POCO
         public int max_member_count { get; set; }
         public string description { get; set; }
         public UserBase owner { get; set; }
-        public UserBase[] members { get; set; }
+        public List<UserBase> members { get; set; }
     }
 
     public class BetPoco

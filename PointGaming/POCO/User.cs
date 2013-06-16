@@ -12,7 +12,7 @@ namespace PointGaming.POCO
         public string username { get; set; }
         public string rank { get; set; }
         public int points { get; set; }
-        public TeamBase team;
+        public TeamBase team { get; set; }
 
         public override bool Equals(object obj)
         {

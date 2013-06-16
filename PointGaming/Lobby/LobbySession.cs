@@ -106,7 +106,7 @@ namespace PointGaming.Lobby
                 response = (RestResponse<GameRoomSinglePoco>)client.Execute<GameRoomSinglePoco>(request);
             }, delegate
             {
-                if (response.IsOk())
+                if (response.IsOk() && response.Data != null)
                 {
                     var gameRoom = response.Data.game_room;
                     if (onCreated != null)
