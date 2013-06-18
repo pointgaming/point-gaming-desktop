@@ -199,7 +199,6 @@
     <Compile Include="Lobby\LobbyTab.xaml.cs">
       <DependentUpon>LobbyTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="POCO\StratumPocos.cs" />
     <Compile Include="BitcoinMiner\StratumSession.cs" />
     <Compile Include="POCO\PgVersion.cs" />
     <Compile Include="PgFonts\FontChooser.xaml.cs">
@@ -395,10 +394,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="..\libraries\poclbm_py2exe_20120920\phatk.cl">
-      <Link>poclbm\phatk.cl</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="app.config" />
     <None Include="BitcoinMiner\src\General.cl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -443,22 +438,6 @@
     <Resource Include="Resources\PointGamingLogo256x256.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\libraries\poclbm_py2exe_20120920\msvcp90.dll">
-      <Link>poclbm\msvcp90.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\libraries\poclbm_py2exe_20120920\poclbm.exe">
-      <Link>poclbm\poclbm.exe</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\libraries\poclbm_py2exe_20120920\python26.dll">
-      <Link>poclbm\python26.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\libraries\poclbm_py2exe_20120920\w9xpopen.exe">
-      <Link>poclbm\w9xpopen.exe</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Resource Include="Resources\Flags\ad.png" />
     <Resource Include="Resources\Flags\ae.png" />
     <Resource Include="Resources\Flags\af.png" />
