@@ -87,7 +87,7 @@
       <Value Profile="(Default)">3334</Value>
     </Setting>
     <Setting Name="BitcoinMinerUserIdleMinutes" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0.166666666666</Value>
+      <Value Profile="(Default)">10</Value>
     </Setting>
   </Settings>
 </SettingsFile>

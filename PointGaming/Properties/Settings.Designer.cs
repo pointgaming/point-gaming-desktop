@@ -324,7 +324,7 @@ namespace PointGaming.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.166666666666")]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
         public double BitcoinMinerUserIdleMinutes {
             get {
                 return ((double)(this["BitcoinMinerUserIdleMinutes"]));
