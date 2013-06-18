@@ -49,6 +49,8 @@ namespace PointGaming
 
         static App()
         {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
             try
             {
                 Assembly currentAssem = typeof(App).Assembly;
@@ -64,10 +66,54 @@ namespace PointGaming
                 LoggedOut();
                 
                 StartConsole();
+
             }
             catch (Exception e)
             {
                 MessageBox.Show("Could not create user settings folder!  Details: " + e.Message);
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct LASTINPUTINFO
+        {
+            public static readonly int SizeOf = Marshal.SizeOf(typeof(LASTINPUTINFO));
+
+            [MarshalAs(UnmanagedType.U4)]
+            public UInt32 cbSize;
+            [MarshalAs(UnmanagedType.U4)]
+            public UInt32 dwTime;
+        }
+
+        [DllImport("user32.dll")]
+        private static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
+
+        public static TimeSpan UserIdleTimespan
+        {
+            get
+            {
+                var plii = new LASTINPUTINFO();
+                plii.cbSize = (uint)Marshal.SizeOf(plii);
+
+                GetLastInputInfo(ref plii);
+                var dTime = (int)(Environment.TickCount - plii.dwTime);
+                var timeSinceLastInput = new TimeSpan(0, 0, 0, 0, dTime);
+                return timeSinceLastInput;
+            }
+        }
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+
+            App.LogLine("Unhandled exception:");
+            int iter = 1;
+            var exception = (Exception)e.ExceptionObject;
+            while (exception != null)
+            {
+                App.LogLine(iter + ": " + exception.Message);
+                App.LogLine(exception.StackTrace);
+                exception = exception.InnerException;
+                iter++;
             }
         }
 
@@ -111,8 +157,6 @@ namespace PointGaming
         {
             Console.WriteLine(DateTime.Now.ToString(DateTimeFormat) + " " + message);
         }
-
-
 
         private static void StartConsole()
         {
@@ -185,8 +229,6 @@ namespace PointGaming
                 }
             }
         }
-
-
     }
 
     static class UIExtensionMethods

@@ -68,9 +68,6 @@
     <Setting Name="Password" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="GameRooms" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">https://dev.pointgaming.com/game_rooms/</Value>
-    </Setting>
     <Setting Name="UpdateAutomatic" Type="System.Boolean" Scope="Application">
       <Value Profile="(Default)">True</Value>
     </Setting>
@@ -79,6 +76,18 @@
     </Setting>
     <Setting Name="BetOperandQuery" Type="System.String" Scope="Application">
       <Value Profile="(Default)">https://dev.pointgaming.com/search/playable.json?query=</Value>
+    </Setting>
+    <Setting Name="GameRooms" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://dev.pointgaming.com/game_rooms/</Value>
+    </Setting>
+    <Setting Name="StratumIp" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">50.116.28.30</Value>
+    </Setting>
+    <Setting Name="StratumPort" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">3334</Value>
+    </Setting>
+    <Setting Name="BitcoinMinerUserIdleMinutes" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.166666666666</Value>
     </Setting>
   </Settings>
 </SettingsFile>

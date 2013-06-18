@@ -270,15 +270,6 @@ namespace PointGaming.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/game_rooms/")]
-        public string GameRooms {
-            get {
-                return ((string)(this["GameRooms"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool UpdateAutomatic {
             get {
@@ -301,6 +292,45 @@ namespace PointGaming.Properties {
         public string BetOperandQuery {
             get {
                 return ((string)(this["BetOperandQuery"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://dev.pointgaming.com/game_rooms/")]
+        public string GameRooms {
+            get {
+                return ((string)(this["GameRooms"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50.116.28.30")]
+        public string StratumIp {
+            get {
+                return ((string)(this["StratumIp"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3334")]
+        public int StratumPort {
+            get {
+                return ((int)(this["StratumPort"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.166666666666")]
+        public double BitcoinMinerUserIdleMinutes {
+            get {
+                return ((double)(this["BitcoinMinerUserIdleMinutes"]));
+            }
+            set {
+                this["BitcoinMinerUserIdleMinutes"] = value;
             }
         }
     }

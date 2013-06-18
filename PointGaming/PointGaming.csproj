@@ -78,6 +78,7 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>..\..\output\PointGaming-Release\</OutputPath>
@@ -92,6 +93,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Hardcodet.Wpf.TaskbarNotification">
@@ -99,6 +101,9 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenCLNet">
+      <HintPath>..\libraries\OpenCLNet.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.104.1\lib\net4-client\RestSharp.dll</HintPath>
@@ -110,6 +115,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Security" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -131,6 +137,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BitcoinMiner\CPUThreadMiner.cs" />
+    <Compile Include="BitcoinMiner\Miner.cs" />
+    <Compile Include="BitcoinMiner\Numerical.cs" />
+    <Compile Include="BitcoinMiner\OpenCLMiner.cs" />
+    <Compile Include="BitcoinMiner\Sha256Computer.cs" />
+    <Compile Include="BitcoinMiner\StratnumJob.cs" />
+    <Compile Include="BitcoinMiner\StratumHeaderBuilder.cs" />
+    <Compile Include="BitcoinMiner\UInt256.cs" />
     <Compile Include="Chat\AutoScroller.cs" />
     <Compile Include="Chat\ChatManager.cs" />
     <Compile Include="Chat\ChatroomSession.cs" />
@@ -185,6 +199,8 @@
     <Compile Include="Lobby\LobbyTab.xaml.cs">
       <DependentUpon>LobbyTab.xaml</DependentUpon>
     </Compile>
+    <Compile Include="POCO\StratumPocos.cs" />
+    <Compile Include="BitcoinMiner\StratumSession.cs" />
     <Compile Include="POCO\PgVersion.cs" />
     <Compile Include="PgFonts\FontChooser.xaml.cs">
       <DependentUpon>FontChooser.xaml</DependentUpon>
@@ -384,6 +400,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="app.config" />
+    <None Include="BitcoinMiner\src\General.cl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="PointGaming_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
