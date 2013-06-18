@@ -54,7 +54,7 @@ namespace PointGaming
 
             tab = new TabItem
             {
-                Header = "Points",
+                Header = "Better",
                 Content = new HomeTab.PaymentTab(),
             };
             tabControlMain.Items.Add(tab);
