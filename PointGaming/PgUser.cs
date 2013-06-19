@@ -179,6 +179,10 @@ namespace PointGaming
         {
             get { return Team != null ? Team.Name : "Other"; }
         }
+        public bool HasTeam
+        {
+            get { return Team != null; }
+        }
 
         public UserBase ToUserBase()
         {

@@ -107,6 +107,13 @@ namespace PointGaming
             set { this.SetValue(TeamPointsProperty, value); }
         }
 
+        public static readonly DependencyProperty HasTeamProperty = DependencyProperty.Register("HasTeam", typeof(bool), typeof(UserInfoTooltip));
+        public bool HasTeam
+        {
+            get { return (bool)this.GetValue(HasTeamProperty); }
+            set { this.SetValue(HasTeamProperty, value); }
+        }
+
         public static readonly DependencyProperty CountryProperty = DependencyProperty.Register("Country", typeof(string), typeof(UserInfoTooltip));
         public string Country
         {

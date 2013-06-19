@@ -89,13 +89,27 @@ namespace PointGaming.Lobby
         private void InitGroupedMembers(ChatroomSession lobbySession)
         {
             _groupedUsers = new ObservableCollection<PgUser>();
-
+            
+            // team groups
             foreach (PgUser user in lobbySession.Membership)
             {
                 PgUser groupedUser = user.ShallowCopy();
                 groupedUser.GroupName = user.TeamName;
                 _groupedUsers.Add(groupedUser);
             }
+
+            // admin group
+            foreach (PgUser user in lobbySession.Membership)
+            {
+                if (string.IsNullOrEmpty(user.Rank)) continue;
+
+                PgUser groupedUser = user.ShallowCopy();
+                groupedUser.GroupName = "Admin";
+                _groupedUsers.Add(groupedUser);
+            }
+
+            // friends group
+            // TODO: expose uesr data manager friend checking
 
             System.ComponentModel.ICollectionView mv = CollectionViewSource.GetDefaultView(_groupedUsers);
             mv.GroupDescriptions.Add(new PropertyGroupDescription("GroupName"));

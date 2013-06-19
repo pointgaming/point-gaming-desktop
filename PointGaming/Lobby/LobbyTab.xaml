@@ -125,6 +125,10 @@
                                 <my:UserInfoTooltip Margin="2" 
                                                     Username="{Binding DisplayName}" 
                                                     FullName="{Binding Username}" 
+                                                    HasTeam="{Binding HasTeam}"
+                                                    TeamName="{Binding TeamName}" 
+                                                    TeamSlug="{Binding TeamName}" 
+                                                    TeamPoints="0" 
                                                     Points="{Binding Points}" />
                             </Label.ToolTip>
                         </Label>
