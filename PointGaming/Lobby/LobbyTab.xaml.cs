@@ -146,7 +146,15 @@ namespace PointGaming.Lobby
 
         private void userContextMenuMessage_Click(object sender, RoutedEventArgs e)
         {
-            MessageDialog.Show(_chatWindow, "Message User", "TODO: show user message dialog");
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem != null)
+            {
+                PgUser user = menuItem.CommandParameter as PgUser;
+                if (user != null)
+                {
+                    _userData.ChatWith(user);
+                }
+            } 
         }
 
         private void userContextMenuViewProfile_Click(object sender, RoutedEventArgs e)
