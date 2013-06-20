@@ -5,9 +5,11 @@
         x:Name="gameRoomInfoDialog"
         Title="Gameroom Info" Height="400" Width="300">
     <Grid>
-        <Image Height="48" Width="48" HorizontalAlignment="Left" Margin="20,10,0,311" Stretch="Fill" VerticalAlignment="Center" Source="{Binding ElementName=gameRoomInfoDialog, Path=Avatar}" />
+        <Image Height="48" Width="48" HorizontalAlignment="Left" Margin="20,10,0,311" Stretch="Fill" VerticalAlignment="Center" Source="{Binding ElementName=gameRoomInfoDialog, Path=Logo}" />
         <TextBlock Height="18" Margin="84,27,0,324" HorizontalAlignment="Left" Name="hyperLinkInfo" VerticalAlignment="Center" Width="198">
-            <Hyperlink>http://pointgaming.com</Hyperlink>
+            <Hyperlink Click="gameRoomUrl_Click">
+                <TextBlock Text="{Binding ElementName=gameRoomInfoDialog, Path=URL}" />
+            </Hyperlink>
         </TextBlock>
         <TextBlock Width="198" Height="17" Margin="84,50,0,302"  TextWrapping="Wrap" Text="Take-over amount" HorizontalAlignment="Left" x:Name="textBlockTakeOverAmountLabel" VerticalAlignment="Center" />
         <TextBlock Width="198" Height="20" Margin="84,68,0,281"  TextWrapping="Wrap" Text="{Binding ElementName=gameRoomInfoDialog, Path=TakeOverAmount}" HorizontalAlignment="Left" x:Name="textBlockTakeOverAmount" VerticalAlignment="Center" />
