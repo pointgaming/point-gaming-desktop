@@ -78,7 +78,6 @@ namespace PointGaming.Lobby
             _chatWindow = window;
             _lobbySession = (LobbySession)lobbySession;
             _lobbySession.ReceivedMessage += ReceivedMessage;
-            //listBoxMembership.ItemsSource = _lobbySession.Membership;
             InitGroupedMembers( _lobbySession );
             itemsControlGameRoomList.ItemsSource = _lobbySession.AllGameRooms;
             itemsControlJoinedGameRoomList.ItemsSource = _lobbySession.JoinedGameRooms;
@@ -135,9 +134,43 @@ namespace PointGaming.Lobby
             SendInput();
         }
 
+        private void userContextMenuTaunt_Click(object sender, RoutedEventArgs e)
+        {
+            MessageDialog.Show(_chatWindow, "Taunt User", "TODO: show taunt selection UI");
+        }
+
+        private void userContextMenuBlock_Click(object sender, RoutedEventArgs e)
+        {
+            MessageDialog.Show(_chatWindow, "Block User", "TODO: ???");
+        }
+
+        private void userContextMenuMessage_Click(object sender, RoutedEventArgs e)
+        {
+            MessageDialog.Show(_chatWindow, "Message User", "TODO: show user message dialog");
+        }
+
+        private void userContextMenuViewProfile_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem != null)
+            {
+                PgUser user = menuItem.CommandParameter as PgUser;
+                if (user != null)
+                {
+                    var url = Properties.Settings.Default.UserProfile.Replace("%{username}", user.Username);
+                    System.Diagnostics.Process.Start(url);
+                }
+            } 
+        }
+
+        private void userContextMenuFriendRequest_Click(object sender, RoutedEventArgs e)
+        {
+            MessageDialog.Show(_chatWindow, "Send Friend Request", "TODO: post friend request to REST API");
+        }
+
         private void reportMatchWinnerButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageDialog.Show(_chatWindow, "Report Match Winner", "TODO: get list of pending user bets from REST API ");
+            MessageDialog.Show(_chatWindow, "Report Match Winner", "TODO: get list of pending user bets from REST API");
         }
 
         private void OnPendingBetsComplete(List<POCO.BetPoco> pocos)

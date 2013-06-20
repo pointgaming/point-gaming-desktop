@@ -106,16 +106,16 @@
 
                 <ListView.Resources>
                     <ContextMenu x:Key="UserMenu">
-                        <MenuItem Header="Message"/>
-                        <MenuItem Header="Send Friend Request"/>
-                        <MenuItem Header="View Profile"/>
-                        <MenuItem Header="Block (mute)"/>
-                        <MenuItem Header="Taunt (once a day)"/>
+                        <MenuItem Header="Message" Click="userContextMenuMessage_Click" />
+                        <MenuItem Header="Send Friend Request" Click="userContextMenuFriendRequest_Click" />
+                        <MenuItem Header="View Profile" Click="userContextMenuViewProfile_Click" CommandParameter="{Binding}" />
+                        <MenuItem Header="Block (mute)" Click="userContextMenuBlock_Click" />
+                        <MenuItem Header="Taunt (once a day)" Click="userContextMenuTaunt_Click" />
                     </ContextMenu>
                     <ContextMenu x:Key="AdminMenu">
-                        <MenuItem Header="Message"/>
-                        <MenuItem Header="Send Friend Request"/>
-                        <MenuItem Header="View Profile"/>
+                        <MenuItem Header="Message" Click="userContextMenuMessage_Click" />
+                        <MenuItem Header="Send Friend Request" Click="userContextMenuFriendRequest_Click" />
+                        <MenuItem Header="View Profile" Click="userContextMenuViewProfile_Click" />
                         <MenuItem Header="Send Warning"/>
                         <MenuItem Header="Kick From Lobby"/>
                         <MenuItem Header="Globally Mute (Main Chat)"/>
