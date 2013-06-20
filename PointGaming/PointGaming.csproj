@@ -194,6 +194,9 @@
     <Compile Include="Lobby\GameRoomPanel.xaml.cs">
       <DependentUpon>GameRoomPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Lobby\ReportBetsDialog.xaml.cs">
+      <DependentUpon>ReportBetsDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Lobby\VsGameRoomItemCollection.cs" />
     <Compile Include="Lobby\LobbySession.cs" />
     <Compile Include="Lobby\LobbyTab.xaml.cs">
@@ -346,6 +349,10 @@
     <Page Include="Lobby\LobbyTab.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Lobby\ReportBetsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="LoginWindow.xaml">
       <SubType>Designer</SubType>

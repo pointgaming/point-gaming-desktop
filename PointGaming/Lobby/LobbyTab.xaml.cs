@@ -84,6 +84,8 @@ namespace PointGaming.Lobby
             itemsControlJoinedGameRoomList.ItemsSource = _lobbySession.JoinedGameRooms;
 
             PropertyChangedEventManager.AddListener(_lobbySession.GameInfo, this, "PropertyChanged");
+
+            _userData.LookupPendingBets(OnPendingBetsComplete);
         }
 
         private void InitGroupedMembers(ChatroomSession lobbySession)
@@ -124,6 +126,17 @@ namespace PointGaming.Lobby
         private void buttonSendInput_Click(object sender, RoutedEventArgs e)
         {
             SendInput();
+        }
+
+        private void reportMatchWinnerButton_Click(object sender, RoutedEventArgs e)
+        {
+            MessageDialog.Show(_chatWindow, "Report Match Winner", "TODO: get list of pending user bets from REST API ");
+        }
+
+        private void OnPendingBetsComplete(List<POCO.BetPoco> pocos)
+        {
+            // TODO: open dialog showing all pending bets for user
+            reportMatchWinnerButton.Visibility = System.Windows.Visibility.Visible;
         }
 
         private void textBoxInput_PreviewKeyDown(object sender, KeyEventArgs e)

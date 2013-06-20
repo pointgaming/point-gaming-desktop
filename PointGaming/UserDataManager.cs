@@ -139,5 +139,12 @@ namespace PointGaming
                 }
             });
         }
+
+        public void LookupPendingBets(Action<List<BetPoco>> callback)
+        {
+            // TODO: get list of pending bets from rails API
+            List<BetPoco> bets = new List<BetPoco>();
+            callback(bets);
+        }
     }
 }
