@@ -91,11 +91,11 @@ namespace PointGaming.Lobby
         {
             _groupedUsers = new ObservableCollection<PgUser>();
             
-            // team groups
+            // players group
             foreach (PgUser user in lobbySession.Membership)
             {
                 PgUser groupedUser = user.ShallowCopy();
-                groupedUser.GroupName = user.TeamName;
+                groupedUser.GroupName = "Players";
                 _groupedUsers.Add(groupedUser);
             }
 
