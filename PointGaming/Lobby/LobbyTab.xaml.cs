@@ -111,7 +111,14 @@ namespace PointGaming.Lobby
             }
 
             // friends group
-            // TODO: expose uesr data manager friend checking
+            foreach (PgUser user in lobbySession.Membership)
+            {
+                if (!_userData.IsFriend(user.Id)) continue;
+
+                PgUser groupedUser = user.ShallowCopy();
+                groupedUser.GroupName = "Friends";
+                _groupedUsers.Add(groupedUser);
+            }
 
             System.ComponentModel.ICollectionView mv = CollectionViewSource.GetDefaultView(_groupedUsers);
             mv.GroupDescriptions.Add(new PropertyGroupDescription("GroupName"));
