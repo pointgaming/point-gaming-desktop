@@ -382,39 +382,29 @@ namespace PointGaming.HomeTab
 
         private void RequestFriend(string username)
         {
-            var friendRequest = new InitialFriendRequest { username = username };
-            var friendRequestRootObject = new InitialFriendRequestRoot { friend_request = friendRequest };
-
-            var request = new RestRequest(Method.POST);
-            request.RequestFormat = RestSharp.DataFormat.Json;
-            request.AddBody(friendRequestRootObject);
-
-            var friendsRequestApiCall = Properties.Settings.Default.FriendRequests + "?auth_token=" + _userData.PgSession.AuthToken;
-            var client = new RestClient(friendsRequestApiCall);
-
-            _userData.PgSession.Begin(delegate
+            _userData.Friendship.RequestFriend(username, OnRequestFriend);
+        }
+        
+        public void OnRequestFriend(string errorMessage)
+        {
+            if (!string.IsNullOrEmpty(errorMessage))
             {
-                var apiResponse = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
-
-                if (!apiResponse.IsOk())
+                App.LogLine("Error requesting friend: " + errorMessage);
+                if (errorMessage == "User not found")
                 {
-                    App.LogLine("Error requesting friend: " + apiResponse.Data.message);
-                    if (apiResponse.Data.message == "User not found")
+                    this.BeginInvokeUI(delegate
                     {
-                        this.BeginInvokeUI(delegate
-                        {
-                            MessageDialog.Show(HomeWindow.Home, "User not found", "User '" + username + "' not found");
-                        });
-                    }
-                    else if (apiResponse.Data.message == "You are already friends with that user")
-                    {
-                        this.BeginInvokeUI(delegate
-                        {
-                            MessageDialog.Show(HomeWindow.Home, "Already friends", "Already friends with '" + username + "'");
-                        });
-                    }
+                        MessageDialog.Show(HomeWindow.Home, "User not found", errorMessage);
+                    });
                 }
-            });
+                else if (errorMessage == "You are already friends with that user")
+                {
+                    this.BeginInvokeUI(delegate
+                    {
+                        MessageDialog.Show(HomeWindow.Home, "Already friends", errorMessage);
+                    });
+                }
+            }
         }
         #endregion
 

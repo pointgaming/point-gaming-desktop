@@ -23,6 +23,7 @@ namespace PointGaming
     {
         public readonly PgUser User;
         public readonly SocketSession PgSession;
+        public readonly FriendshipManager Friendship;
         private ChatManager _chatManager;
 
         private readonly ObservableCollection<PgUser> _friends = new ObservableCollection<PgUser>();
@@ -40,6 +41,7 @@ namespace PointGaming
             User = session.User;
             _userLookup[User.Id] = User;
             _chatManager = new Chat.ChatManager();
+            Friendship = new FriendshipManager(PgSession);
         }
 
         public void StartChat()
