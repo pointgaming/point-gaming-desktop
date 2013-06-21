@@ -173,12 +173,31 @@ namespace PointGaming.Lobby
 
         private void userContextMenuFriendRequest_Click(object sender, RoutedEventArgs e)
         {
-            MessageDialog.Show(_chatWindow, "Send Friend Request", "TODO: post friend request to REST API");
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem != null)
+            {
+                PgUser user = menuItem.CommandParameter as PgUser;
+                if (user != null)
+                {
+                    _userData.Friendship.RequestFriend(user.Username, OnRequestFriend);
+                }
+            } 
         }
 
         private void reportMatchWinnerButton_Click(object sender, RoutedEventArgs e)
         {
             MessageDialog.Show(_chatWindow, "Report Match Winner", "TODO: get list of pending user bets from REST API");
+        }
+
+        private void OnRequestFriend(string errorMessage)
+        {
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
+                this.BeginInvokeUI(delegate
+                {
+                    MessageDialog.Show(HomeWindow.Home, "Request Failed", errorMessage);
+                });
+            }
         }
 
         private void OnPendingBetsComplete(List<POCO.BetPoco> pocos)

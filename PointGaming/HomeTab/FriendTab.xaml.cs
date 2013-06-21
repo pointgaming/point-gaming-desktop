@@ -384,8 +384,8 @@ namespace PointGaming.HomeTab
         {
             _userData.Friendship.RequestFriend(username, OnRequestFriend);
         }
-        
-        public void OnRequestFriend(string errorMessage)
+
+        private void OnRequestFriend(string errorMessage)
         {
             if (!string.IsNullOrEmpty(errorMessage))
             {
