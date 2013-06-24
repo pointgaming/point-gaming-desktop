@@ -333,5 +333,17 @@ namespace PointGaming.Properties {
                 this["BitcoinMinerUserIdleMinutes"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool BitcoinMinerOnlyWheUserIdle {
+            get {
+                return ((bool)(this["BitcoinMinerOnlyWheUserIdle"]));
+            }
+            set {
+                this["BitcoinMinerOnlyWheUserIdle"] = value;
+            }
+        }
     }
 }

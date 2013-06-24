@@ -32,8 +32,7 @@ namespace PointGaming.BitcoinMiner
             Unknown,
             AMD,
             Intel,
-            NVidia,
-            
+            NVidia,   
         }
 
         public static List<Miner> GetAvailableMiners() {
@@ -71,7 +70,7 @@ namespace PointGaming.BitcoinMiner
                             OCLMan.RequireImageSupport = false;
                             // The Defines string gets prepended to any and all sources that are compiled
                             // and serve as a convenient way to pass configuration information to the compilation process
-                            OCLMan.Defines = "#define MyCompany_MyProject_Define 1";
+                            OCLMan.Defines = "";
                             // The BuildOptions string is passed directly to clBuild and can be used to do debug builds etc
                             OCLMan.BuildOptions = "";
 
@@ -88,7 +87,7 @@ namespace PointGaming.BitcoinMiner
                                 vendor = Vendor.AMD;
                             try
                             {
-                                available.Add(new OpenCLMiner(OCLMan, vendor, i));
+                                available.Add(new OpenCLMiner(OCLMan, vendor, i, false));
                             }
                             catch (Exception e)
                             {
@@ -120,27 +119,38 @@ namespace PointGaming.BitcoinMiner
         public bool Initialized { get; private set; }
 
         public override Miner Copy() {
-            return new OpenCLMiner(OCLMan, vendor, deviceIndex);
+            return new OpenCLMiner(OCLMan, vendor, deviceIndex, _shouldUseVectors);
         }
 
         Kernel searchKernel;
+        private readonly bool _shouldUseVectors;
 
-        public OpenCLMiner(OpenCLManager OCLMan, Vendor vendor, int deviceIndex)
+        public OpenCLMiner(OpenCLManager OCLMan, Vendor vendor, int deviceIndex, bool shouldUseVectors)
         {
             this.vendor = vendor;
             this.deviceIndex = deviceIndex;
-
-            if (vendor == Vendor.NVidia)
-                searchKernel = OCLMan.CompileFile("NVidia.cl")
-                .CreateKernel("searchNVidia");
-            else
-                searchKernel = OCLMan.CompileFile("General.cl")
-                .CreateKernel("searchGeneral");
 
             this.OCLMan = OCLMan;
             Device device = OCLMan.Context.Devices[deviceIndex];
             Name = device.Vendor + ":" + device.Name + " (" + deviceIndex + ")";
 
+            OCLMan.Defines += "\r\n#define OUTPUT_SIZE 256";
+            OCLMan.Defines += "\r\n#define OUTPUT_MASK 255";
+            if (device.Extensions.Contains("cl_amd_media_ops"))
+            {
+                OCLMan.Defines += "\r\n#define BITALIGN 1";
+                // note: defining BFI_INT resulted in invalid calculations on my Barts (8760)
+                //if (Array.IndexOf(AMD_Devices, device.Name) != -1)
+                //    OCLMan.Defines += "\r\n#define BFI_INT 1";
+            }
+
+            if (shouldUseVectors)
+                OCLMan.Defines += "\r\n#define VECTORS 1";
+            _shouldUseVectors = shouldUseVectors;
+
+
+            searchKernel = OCLMan.CompileFile("General.cl").CreateKernel("search");
+            
             unsafe
             {
                 IntPtr size = (IntPtr)8;
@@ -172,68 +182,115 @@ namespace PointGaming.BitcoinMiner
             var localhostUtc = DateTime.UtcNow;
             DateTime endLhutc = localhostUtc + new TimeSpan(0, 0, 1);
             long count = 0;
-            long countEnd = uint.MaxValue - md.nHashesDone;
+            long countEnd = ((long)uint.MaxValue) - md.nHashesDone + 1L;
 
             DateTime startSearchLoop = localhostUtc;
             DateTime ticksEnd = startSearchLoop + new TimeSpan(0, 0, 10);
             System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
-            while (true)
+
+            IntPtr[] CrossFadeGlobalWorkSize = new IntPtr[1];
+            IntPtr[] CrossFadeLocalWorkSize = new IntPtr[1];
+
+            uint[] output = new uint[257];
+            unsafe
             {
-                watch.Start();
-                if (globalThreads > 0)
-                    results.AddRange(DoSearch(globalThreads, workGroupSize, md, target));
-                watch.Stop();
-                TimeSpan kt = watch.Elapsed;
-                watch.Reset();
-                float kernelTime = (float)kt.TotalSeconds;
-                count += globalThreads;
-
-                FPS = 1.0f / kernelTime;
-
-
-                if (FPSLimit != 0)
+                fixed (uint* outputp = &output[0])
                 {
-                    float lower = FPSLimit * 0.95f;
-                    float upper = FPSLimit * 1.05f;
-                    if (FPS > lower)
-                        UM++;
-                    else if (FPS < upper)
-                        UM--;
-                    if (UM < 1) UM = 1;
-                    if (UM > UMLimit) UM = UMLimit;
-                }
-                else
-                {
-                    UM = UMLimit;
-                }
+                    Mem outputBuffer = OCLMan.Context.CreateBuffer(MemFlags.USE_HOST_PTR | MemFlags.WRITE_ONLY, sizeof(uint) * output.Length, outputp);
+                    searchKernel.SetArg(20, outputBuffer);
 
-                if (UsageLimitLast != UsageLimit)
-                {
-                    UsageLimitLast = UsageLimit;
-                    restTime = TimeSpan.Zero;
-                    workTime = TimeSpan.Zero;
-                }
-                else if (UsageLimit < 100)
-                {
-                    workTime += kt;
-                    // workTime = (PercentUsage/100) * (workTime + restTime)
-                    // workTime = (PercentUsage/100) * workTime + (PercentUsage/100) * restTime
-                    // workTime - (PercentUsage/100) * workTime = (PercentUsage/100) * restTime
-                    // restTime = (workTime - (PercentUsage/100) * workTime) / (PercentUsage/100)
-                    float fUsage = UsageLimit / 100.0f;
-                    if (fUsage <= 0) fUsage = 0.001f;
-                    double sleepTime = ((1 - fUsage) * workTime.TotalMilliseconds) / fUsage - restTime.TotalMilliseconds;
-                    watch.Start();
-                    if (sleepTime >= 10.0) System.Threading.Thread.Sleep((int)sleepTime);
-                    watch.Stop();
-                    restTime += watch.Elapsed;
-                    watch.Reset();
-                }
-                
+                    SetupWork(md);
 
-                globalThreads = (uint)(unit * UM);
+                    while (true)
+                    {
+                        watch.Start();
+                        if (globalThreads > 0)
+                        {
+                            CrossFadeGlobalWorkSize[0] = (IntPtr)globalThreads;
+                            CrossFadeLocalWorkSize[0] = (IntPtr)workGroupSize;
 
-                if (count > countEnd || DateTime.UtcNow > endLhutc) break;
+                            long hashCount = globalThreads;
+                            uint startNumber = (uint)md.nHashesDone;
+                            if (_shouldUseVectors)
+                            {
+                                startNumber = startNumber >> 1;
+                                hashCount *= 2;
+                            }
+                            searchKernel.SetArg(14, startNumber);
+                            md.nHashesDone += hashCount;
+                            count += hashCount;
+
+                            CommandQueue CQ = OCLMan.CQ[deviceIndex];
+                            CQ.EnqueueNDRangeKernel(searchKernel, 1, null, CrossFadeGlobalWorkSize, CrossFadeLocalWorkSize);
+                            CQ.EnqueueBarrier();
+                            CQ.Finish();
+                            CQ.EnqueueReadBuffer(outputBuffer, true, 0, (long)(sizeof(uint) * output.Length), (IntPtr)outputp);
+                            CQ.Finish();
+
+                            if (output[256] != 0)
+                            {
+                                for (int i = 0; i < 256; i++)
+                                {
+                                    if (output[i] != 0)
+                                    {
+                                        results.Add(output[i].ByteReverse());
+                                        output[i] = 0;
+                                    }
+                                }
+                                output[256] = 0;
+
+                                CQ.EnqueueWriteBuffer(outputBuffer, true, 0, (long)(sizeof(uint) * output.Length), (IntPtr)outputp);
+                            }
+                        }
+
+                        watch.Stop();
+                        TimeSpan kt = watch.Elapsed;
+                        watch.Reset();
+                        float kernelTime = (float)kt.TotalSeconds;
+                        FPS = 1.0f / kernelTime;
+
+                        if (FPSLimit != 0)
+                        {
+                            float lower = FPSLimit * 0.95f;
+                            float upper = FPSLimit * 1.05f;
+                            if (FPS > lower)
+                                UM++;
+                            else if (FPS < upper)
+                                UM--;
+                            if (UM < 1) UM = 1;
+                            if (UM > UMLimit) UM = UMLimit;
+                        }
+                        else
+                        {
+                            UM = UMLimit;
+                        }
+
+                        if (UsageLimitLast != UsageLimit)
+                        {
+                            UsageLimitLast = UsageLimit;
+                            restTime = TimeSpan.Zero;
+                            workTime = TimeSpan.Zero;
+                        }
+                        else if (UsageLimit < 100)
+                        {
+                            workTime += kt;
+                            float fUsage = UsageLimit / 100.0f;
+                            if (fUsage <= 0) fUsage = 0.001f;
+                            double sleepTime = ((1 - fUsage) * workTime.TotalMilliseconds) / fUsage - restTime.TotalMilliseconds;
+                            watch.Start();
+                            if (sleepTime >= 10.0) System.Threading.Thread.Sleep((int)sleepTime);
+                            watch.Stop();
+                            restTime += watch.Elapsed;
+                            watch.Reset();
+                        }
+
+                        globalThreads = (uint)(unit * UM);
+
+                        if (count > countEnd || DateTime.UtcNow > endLhutc) break;
+                    }
+
+                    outputBuffer.Dispose();
+                }
             }
 
             HashedSome(count);
@@ -242,69 +299,45 @@ namespace PointGaming.BitcoinMiner
         }
 
 
-
-        private List<uint> DoSearch(uint globalSize, uint localSize, MinerData md, UInt256 target)
+        private void SetupWork(MinerData md)
         {
-            List<uint> results = new List<uint>();
+            var f = new uint[8];
+            var secondHalf = new uint[3];
+            Buffer.BlockCopy(md.blockbuffer, 64, secondHalf, 0, 12);
+            secondHalf[0] = secondHalf[0].ByteReverse();
+            secondHalf[1] = secondHalf[1].ByteReverse();
+            secondHalf[2] = secondHalf[2].ByteReverse();
 
-            uint[] output = new uint[2];
+            var state = new uint[8];
+            Buffer.BlockCopy(md.midstatebuffer, 0, state, 0, 32);
+            var state2 = Sha256Computer.Partial(state, secondHalf, f);
+            Sha256Computer.CalculateF(state, secondHalf, f, state2);
 
-            uint target6 = target.getInt(6);
+            searchKernel.SetArg(0, state[0]);
+            searchKernel.SetArg(1, state[1]);
+            searchKernel.SetArg(2, state[2]);
+            searchKernel.SetArg(3, state[3]);
+            searchKernel.SetArg(4, state[4]);
+            searchKernel.SetArg(5, state[5]);
+            searchKernel.SetArg(6, state[6]);
+            searchKernel.SetArg(7, state[7]);
 
-            unsafe
-            {
-                fixed (uint* outputp = &output[0])
-                {
-                    outputp[0] = 0;
-                    outputp[1] = 1;
-                    //outputp[2] = 0;
+            searchKernel.SetArg(8, state2[1]);
+            searchKernel.SetArg(9, state2[2]);
+            searchKernel.SetArg(10, state2[3]);
+            searchKernel.SetArg(11, state2[5]);
+            searchKernel.SetArg(12, state2[6]);
+            searchKernel.SetArg(13, state2[7]);
 
-                    Mem outputBuffer = OCLMan.Context.CreateBuffer(MemFlags.USE_HOST_PTR | MemFlags.WRITE_ONLY, sizeof(uint) * output.Length, outputp);
+            // 14 is for the nonce
 
-                    IntPtr[] CrossFadeGlobalWorkSize = new IntPtr[1];
-                    CrossFadeGlobalWorkSize[0] = (IntPtr)globalSize;
-                    IntPtr[] CrossFadeLocalWorkSize = new IntPtr[1];
-                    CrossFadeLocalWorkSize[0] = (IntPtr)localSize;
+            searchKernel.SetArg(15, f[0]);
+            searchKernel.SetArg(16, f[1]);
+            searchKernel.SetArg(17, f[2]);
+            searchKernel.SetArg(18, f[3]);
+            searchKernel.SetArg(19, f[4]);
 
-                    byte[] tmp = new byte[4];
-                    SetArgReverse(tmp, 0, 16, md.blockbuffer);
-                    SetArgReverse(tmp, 1, 17, md.blockbuffer);
-                    SetArgReverse(tmp, 2, 18, md.blockbuffer);
-                    SetArg(tmp, 3, 0, md.midstatebuffer);
-                    SetArg(tmp, 4, 1, md.midstatebuffer);
-                    SetArg(tmp, 5, 2, md.midstatebuffer);
-                    SetArg(tmp, 6, 3, md.midstatebuffer);
-                    SetArg(tmp, 7, 4, md.midstatebuffer);
-                    SetArg(tmp, 8, 5, md.midstatebuffer);
-                    SetArg(tmp, 9, 6, md.midstatebuffer);
-                    SetArg(tmp, 10, 7, md.midstatebuffer);
-
-                    searchKernel.SetArg(11, target6);
-                    searchKernel.SetArg(12, (uint)md.nHashesDone);
-                    searchKernel.SetArg(13, outputBuffer);
-
-                    //Event clEvent;
-                    //Event event0 = OCLMan.Context.CreateUserEvent();
-                    
-                    CommandQueue CQ = OCLMan.CQ[deviceIndex];
-                    CQ.EnqueueNDRangeKernel(searchKernel, 1, null, CrossFadeGlobalWorkSize, CrossFadeLocalWorkSize);
-                    CQ.EnqueueBarrier();
-                    CQ.EnqueueReadBuffer(outputBuffer, true, 0, (long)(sizeof(uint) * output.Length), (IntPtr)outputp);//, 0, null, out clEvent
-                    //clEvent.SetCallback(ExecutionStatus.COMPLETE, TestUserEventCallback, this);
-                    //CQ.EnqueueBarrier();
-                    //areMineFinish.WaitOne();
-                    CQ.Finish();
-                    //OCLMan.Context.WaitForEvent(clEvent);
-                    
-                    if (output[0] == output[1]) results.Add(bytereverse(output[0]));
-
-                    md.nHashesDone += globalSize;
-
-                    outputBuffer.Dispose();
-                }
-            }
-            
-            return results;
+            // 20 is the output
         }
 
         unsafe private void SetArg(byte[] tmp, int argIndex, int bufferIndex, byte[] buffer)

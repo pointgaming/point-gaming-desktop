@@ -89,5 +89,8 @@
     <Setting Name="BitcoinMinerUserIdleMinutes" Type="System.Double" Scope="User">
       <Value Profile="(Default)">10</Value>
     </Setting>
+    <Setting Name="BitcoinMinerOnlyWheUserIdle" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -32,7 +32,6 @@ namespace PointGaming.BitcoinMiner
 
         public abstract string Name { get; protected set; }
         public string Performance { get {
-            double dHashesPerDay = HashesPerSecond * 60.0 * 60.0 * 24.0;
             string strStatus = Numerical.SIFormat(HashesPerSecond) + "hash/s";
             return strStatus;
         } }
@@ -71,21 +70,9 @@ namespace PointGaming.BitcoinMiner
         public static void SHA256Transform(byte[] pstate, byte[] pinput, byte[] pinit)
         {
             Sha256Computer ctx = new Sha256Computer();
-
-            for (int i = 7; i >= 0; i--) ctx._state[i] = (uint)BitConverter.ToInt32(pinit, i * 4);
-
+            Buffer.BlockCopy(pinit, 0, ctx._state, 0, 32);
             ctx.Process(pinput, 0, 64);
-
-            for (int i = 7; i >= 0; i--)
-            {
-                var a = ctx._state[i];
-                var b = BitConverter.GetBytes(a);
-                var i4 = i * 4;
-                pstate[i4] = b[0];
-                pstate[i4 + 1] = b[1];
-                pstate[i4 + 2] = b[2];
-                pstate[i4 + 3] = b[3];
-            }
+            Buffer.BlockCopy(ctx._state, 0, pstate, 0, 32);
         }
 
         protected class MinerData
@@ -108,10 +95,11 @@ namespace PointGaming.BitcoinMiner
                     
                 // Precalc the first half of the first hash, which stays constant
                 SHA256Transform(midstatebuffer, blockbuffer, SHA256InitStateBytes);
+                                
+                var myState = new uint[8];
+                Buffer.BlockCopy(midstatebuffer, 0, myState, 0, 32);
             }
         }
-                
-        //static readonly UInt256 _maxTarget = new UInt256("00000000ffff0000000000000000000000000000000000000000000000000000");
         
         protected static void Single(MinerData md, UInt256 hashResult, uint nonce, byte[] tmp)
         {
@@ -142,9 +130,24 @@ namespace PointGaming.BitcoinMiner
             return result;
         }
 
+        System.Diagnostics.Stopwatch _myWatch = new System.Diagnostics.Stopwatch();
+        private long _myCount = 0;
+        
         protected void HashedSome(long count)
         {
+            if (!_myWatch.IsRunning)
+                _myWatch.Start();
+            else
+                _myCount += count;
 
+            var dTime = _myWatch.Elapsed;
+            if (dTime.TotalSeconds >= 10)
+            {
+                HashesPerSecond = _myCount / dTime.TotalSeconds;
+                _myWatch.Restart();
+                _myCount = 0;
+                App.LogLine(Performance);
+            }
         }
 
 
@@ -178,7 +181,7 @@ namespace PointGaming.BitcoinMiner
 
             while (!IsStopRequested)
             {
-                if (!IsUserIdle || IsPaused)
+                if ((!IsUserIdle && PointGaming.Properties.Settings.Default.BitcoinMinerOnlyWheUserIdle) || IsPaused)
                 {
                     Thread.Sleep(1000);
                     continue;
@@ -201,13 +204,19 @@ namespace PointGaming.BitcoinMiner
 
                 List<uint> results = ScanHash_CryptoPP(md, latestWork.Job.Target);
 
-                if (results.Count > 0)
+                foreach (var nonce in results)
                 {
-                    uint nonce = (uint)results[0];
                     var nonceBytes = nonce.ToBytes();
-                    Array.Reverse(nonceBytes);
-                    var nonceHex2 = nonceBytes.ToHexString().ToLower();
-                    stratum.SubmitShare(latestWork, nonceHex2);
+                    Buffer.BlockCopy(nonceBytes, 0, md.blockbuffer, 76, 4);
+
+                    var hash = ComputeSha256Hash(md.blockbuffer, 0, 80);
+
+                    if (hash.CompareTo(latestWork.Job.Target) <= 0)
+                    {
+                        Array.Reverse(nonceBytes);
+                        var nonceHex2 = nonceBytes.ToHexString().ToLower();
+                        stratum.SubmitShare(latestWork, nonceHex2);
+                    }
                 }
             }
         }

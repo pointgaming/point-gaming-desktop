@@ -7,26 +7,35 @@ namespace PointGaming.BitcoinMiner
 {
     public class Sha256Computer
     {
+        public static readonly uint[] K = new uint[]
+        {
+            0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+            0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+            0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+            0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+            0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+            0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+            0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+            0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+        };
+
+        public static readonly uint[] STATE = new uint[] 
+        {
+            0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19 
+        };
+
         public ulong _total;
         public readonly uint[] _state = new uint[8];
         public readonly byte[] _buffer = new byte[64];
         private readonly byte[] _myBuffer = new byte[64];
         private readonly byte[] _messageLength = new byte[8];
 
-        public static void GET_UINT32(out uint n, byte[] b, int i)
-        {
-            (n) = ((uint)(b)[(i)] << 24)
-                | ((uint)(b)[(i) + 1] << 16)
-                | ((uint)(b)[(i) + 2] << 8)
-                | ((uint)(b)[(i) + 3]);
-        }
-
         public static void PUT_UINT32(uint n, byte[] b, int i)
         {
-            (b)[(i)] = (byte)((n) >> 24);
-            (b)[(i) + 1] = (byte)((n) >> 16);
-            (b)[(i) + 2] = (byte)((n) >> 8);
-            (b)[(i) + 3] = (byte)((n));
+            b[i + 0] = (byte)(n >> 24);
+            b[i + 1] = (byte)(n >> 16);
+            b[i + 2] = (byte)(n >> 8);
+            b[i + 3] = (byte)(n);
         }
 
         private static readonly byte[] sha256_padding =
@@ -87,7 +96,7 @@ namespace PointGaming.BitcoinMiner
             fill = 64 - left;
 
             _total += count;
-            
+
             var buffer = this._buffer;
 
             if (left != 0 && count >= fill)
@@ -163,6 +172,7 @@ namespace PointGaming.BitcoinMiner
             uint w48, w49, w50, w51, w52, w53, w54, w55;
             uint w56, w57, w58, w59, w60, w61, w62, w63;
 
+            // byte reverse
             w00 = (((uint)input[00]) << 24) | (((uint)input[01]) << 16) | (((uint)input[02]) << 8) | ((uint)input[03]);
             w01 = (((uint)input[04]) << 24) | (((uint)input[05]) << 16) | (((uint)input[06]) << 8) | ((uint)input[07]);
             w02 = (((uint)input[08]) << 24) | (((uint)input[09]) << 16) | (((uint)input[10]) << 8) | ((uint)input[11]);
@@ -180,6 +190,23 @@ namespace PointGaming.BitcoinMiner
             w14 = (((uint)input[56]) << 24) | (((uint)input[57]) << 16) | (((uint)input[58]) << 8) | ((uint)input[59]);
             w15 = (((uint)input[60]) << 24) | (((uint)input[61]) << 16) | (((uint)input[62]) << 8) | ((uint)input[63]);
 
+            //w00 = ((uint)input[00]) | (((uint)input[01]) << 8) | (((uint)input[02]) << 16) | (((uint)input[03]) << 24);
+            //w01 = ((uint)input[04]) | (((uint)input[05]) << 8) | (((uint)input[06]) << 16) | (((uint)input[07]) << 24);
+            //w02 = ((uint)input[08]) | (((uint)input[09]) << 8) | (((uint)input[10]) << 16) | (((uint)input[11]) << 24);
+            //w03 = ((uint)input[12]) | (((uint)input[13]) << 8) | (((uint)input[14]) << 16) | (((uint)input[15]) << 24);
+            //w04 = ((uint)input[16]) | (((uint)input[17]) << 8) | (((uint)input[18]) << 16) | (((uint)input[19]) << 24);
+            //w05 = ((uint)input[20]) | (((uint)input[21]) << 8) | (((uint)input[22]) << 16) | (((uint)input[23]) << 24);
+            //w06 = ((uint)input[24]) | (((uint)input[25]) << 8) | (((uint)input[26]) << 16) | (((uint)input[27]) << 24);
+            //w07 = ((uint)input[28]) | (((uint)input[29]) << 8) | (((uint)input[30]) << 16) | (((uint)input[31]) << 24);
+            //w08 = ((uint)input[32]) | (((uint)input[33]) << 8) | (((uint)input[34]) << 16) | (((uint)input[35]) << 24);
+            //w09 = ((uint)input[36]) | (((uint)input[37]) << 8) | (((uint)input[38]) << 16) | (((uint)input[39]) << 24);
+            //w10 = ((uint)input[40]) | (((uint)input[41]) << 8) | (((uint)input[42]) << 16) | (((uint)input[43]) << 24);
+            //w11 = ((uint)input[44]) | (((uint)input[45]) << 8) | (((uint)input[46]) << 16) | (((uint)input[47]) << 24);
+            //w12 = ((uint)input[48]) | (((uint)input[49]) << 8) | (((uint)input[50]) << 16) | (((uint)input[51]) << 24);
+            //w13 = ((uint)input[52]) | (((uint)input[53]) << 8) | (((uint)input[54]) << 16) | (((uint)input[55]) << 24);
+            //w14 = ((uint)input[56]) | (((uint)input[57]) << 8) | (((uint)input[58]) << 16) | (((uint)input[59]) << 24);
+            //w15 = ((uint)input[60]) | (((uint)input[61]) << 8) | (((uint)input[62]) << 16) | (((uint)input[63]) << 24);
+
             var state = this._state;
             A = state[0];
             B = state[1];
@@ -191,70 +218,216 @@ namespace PointGaming.BitcoinMiner
             H = state[7];
 
             #region hash
-            { temp1 = H + ((((E & 0xFFFFFFFF) >> 6) | (E << (32 - 6))) ^ (((E & 0xFFFFFFFF) >> 11) | (E << (32 - 11))) ^ (((E & 0xFFFFFFFF) >> 25) | (E << (32 - 25)))) + (G ^ (E & (F ^ G))) + 0x428A2F98 + w00; temp2 = ((((A & 0xFFFFFFFF) >> 2) | (A << (32 - 2))) ^ (((A & 0xFFFFFFFF) >> 13) | (A << (32 - 13))) ^ (((A & 0xFFFFFFFF) >> 22) | (A << (32 - 22)))) + ((A & B) | (C & (A | B))); D += temp1; H = temp1 + temp2; };
-            { temp1 = G + ((((D & 0xFFFFFFFF) >> 6) | (D << (32 - 6))) ^ (((D & 0xFFFFFFFF) >> 11) | (D << (32 - 11))) ^ (((D & 0xFFFFFFFF) >> 25) | (D << (32 - 25)))) + (F ^ (D & (E ^ F))) + 0x71374491 + w01; temp2 = ((((H & 0xFFFFFFFF) >> 2) | (H << (32 - 2))) ^ (((H & 0xFFFFFFFF) >> 13) | (H << (32 - 13))) ^ (((H & 0xFFFFFFFF) >> 22) | (H << (32 - 22)))) + ((H & A) | (B & (H | A))); C += temp1; G = temp1 + temp2; };
-            { temp1 = F + ((((C & 0xFFFFFFFF) >> 6) | (C << (32 - 6))) ^ (((C & 0xFFFFFFFF) >> 11) | (C << (32 - 11))) ^ (((C & 0xFFFFFFFF) >> 25) | (C << (32 - 25)))) + (E ^ (C & (D ^ E))) + 0xB5C0FBCF + w02; temp2 = ((((G & 0xFFFFFFFF) >> 2) | (G << (32 - 2))) ^ (((G & 0xFFFFFFFF) >> 13) | (G << (32 - 13))) ^ (((G & 0xFFFFFFFF) >> 22) | (G << (32 - 22)))) + ((G & H) | (A & (G | H))); B += temp1; F = temp1 + temp2; };
-            { temp1 = E + ((((B & 0xFFFFFFFF) >> 6) | (B << (32 - 6))) ^ (((B & 0xFFFFFFFF) >> 11) | (B << (32 - 11))) ^ (((B & 0xFFFFFFFF) >> 25) | (B << (32 - 25)))) + (D ^ (B & (C ^ D))) + 0xE9B5DBA5 + w03; temp2 = ((((F & 0xFFFFFFFF) >> 2) | (F << (32 - 2))) ^ (((F & 0xFFFFFFFF) >> 13) | (F << (32 - 13))) ^ (((F & 0xFFFFFFFF) >> 22) | (F << (32 - 22)))) + ((F & G) | (H & (F | G))); A += temp1; E = temp1 + temp2; };
-            { temp1 = D + ((((A & 0xFFFFFFFF) >> 6) | (A << (32 - 6))) ^ (((A & 0xFFFFFFFF) >> 11) | (A << (32 - 11))) ^ (((A & 0xFFFFFFFF) >> 25) | (A << (32 - 25)))) + (C ^ (A & (B ^ C))) + 0x3956C25B + w04; temp2 = ((((E & 0xFFFFFFFF) >> 2) | (E << (32 - 2))) ^ (((E & 0xFFFFFFFF) >> 13) | (E << (32 - 13))) ^ (((E & 0xFFFFFFFF) >> 22) | (E << (32 - 22)))) + ((E & F) | (G & (E | F))); H += temp1; D = temp1 + temp2; };
-            { temp1 = C + ((((H & 0xFFFFFFFF) >> 6) | (H << (32 - 6))) ^ (((H & 0xFFFFFFFF) >> 11) | (H << (32 - 11))) ^ (((H & 0xFFFFFFFF) >> 25) | (H << (32 - 25)))) + (B ^ (H & (A ^ B))) + 0x59F111F1 + w05; temp2 = ((((D & 0xFFFFFFFF) >> 2) | (D << (32 - 2))) ^ (((D & 0xFFFFFFFF) >> 13) | (D << (32 - 13))) ^ (((D & 0xFFFFFFFF) >> 22) | (D << (32 - 22)))) + ((D & E) | (F & (D | E))); G += temp1; C = temp1 + temp2; };
-            { temp1 = B + ((((G & 0xFFFFFFFF) >> 6) | (G << (32 - 6))) ^ (((G & 0xFFFFFFFF) >> 11) | (G << (32 - 11))) ^ (((G & 0xFFFFFFFF) >> 25) | (G << (32 - 25)))) + (A ^ (G & (H ^ A))) + 0x923F82A4 + w06; temp2 = ((((C & 0xFFFFFFFF) >> 2) | (C << (32 - 2))) ^ (((C & 0xFFFFFFFF) >> 13) | (C << (32 - 13))) ^ (((C & 0xFFFFFFFF) >> 22) | (C << (32 - 22)))) + ((C & D) | (E & (C | D))); F += temp1; B = temp1 + temp2; };
-            { temp1 = A + ((((F & 0xFFFFFFFF) >> 6) | (F << (32 - 6))) ^ (((F & 0xFFFFFFFF) >> 11) | (F << (32 - 11))) ^ (((F & 0xFFFFFFFF) >> 25) | (F << (32 - 25)))) + (H ^ (F & (G ^ H))) + 0xAB1C5ED5 + w07; temp2 = ((((B & 0xFFFFFFFF) >> 2) | (B << (32 - 2))) ^ (((B & 0xFFFFFFFF) >> 13) | (B << (32 - 13))) ^ (((B & 0xFFFFFFFF) >> 22) | (B << (32 - 22)))) + ((B & C) | (D & (B | C))); E += temp1; A = temp1 + temp2; };
-            { temp1 = H + ((((E & 0xFFFFFFFF) >> 6) | (E << (32 - 6))) ^ (((E & 0xFFFFFFFF) >> 11) | (E << (32 - 11))) ^ (((E & 0xFFFFFFFF) >> 25) | (E << (32 - 25)))) + (G ^ (E & (F ^ G))) + 0xD807AA98 + w08; temp2 = ((((A & 0xFFFFFFFF) >> 2) | (A << (32 - 2))) ^ (((A & 0xFFFFFFFF) >> 13) | (A << (32 - 13))) ^ (((A & 0xFFFFFFFF) >> 22) | (A << (32 - 22)))) + ((A & B) | (C & (A | B))); D += temp1; H = temp1 + temp2; };
-            { temp1 = G + ((((D & 0xFFFFFFFF) >> 6) | (D << (32 - 6))) ^ (((D & 0xFFFFFFFF) >> 11) | (D << (32 - 11))) ^ (((D & 0xFFFFFFFF) >> 25) | (D << (32 - 25)))) + (F ^ (D & (E ^ F))) + 0x12835B01 + w09; temp2 = ((((H & 0xFFFFFFFF) >> 2) | (H << (32 - 2))) ^ (((H & 0xFFFFFFFF) >> 13) | (H << (32 - 13))) ^ (((H & 0xFFFFFFFF) >> 22) | (H << (32 - 22)))) + ((H & A) | (B & (H | A))); C += temp1; G = temp1 + temp2; };
-            { temp1 = F + ((((C & 0xFFFFFFFF) >> 6) | (C << (32 - 6))) ^ (((C & 0xFFFFFFFF) >> 11) | (C << (32 - 11))) ^ (((C & 0xFFFFFFFF) >> 25) | (C << (32 - 25)))) + (E ^ (C & (D ^ E))) + 0x243185BE + w10; temp2 = ((((G & 0xFFFFFFFF) >> 2) | (G << (32 - 2))) ^ (((G & 0xFFFFFFFF) >> 13) | (G << (32 - 13))) ^ (((G & 0xFFFFFFFF) >> 22) | (G << (32 - 22)))) + ((G & H) | (A & (G | H))); B += temp1; F = temp1 + temp2; };
-            { temp1 = E + ((((B & 0xFFFFFFFF) >> 6) | (B << (32 - 6))) ^ (((B & 0xFFFFFFFF) >> 11) | (B << (32 - 11))) ^ (((B & 0xFFFFFFFF) >> 25) | (B << (32 - 25)))) + (D ^ (B & (C ^ D))) + 0x550C7DC3 + w11; temp2 = ((((F & 0xFFFFFFFF) >> 2) | (F << (32 - 2))) ^ (((F & 0xFFFFFFFF) >> 13) | (F << (32 - 13))) ^ (((F & 0xFFFFFFFF) >> 22) | (F << (32 - 22)))) + ((F & G) | (H & (F | G))); A += temp1; E = temp1 + temp2; };
-            { temp1 = D + ((((A & 0xFFFFFFFF) >> 6) | (A << (32 - 6))) ^ (((A & 0xFFFFFFFF) >> 11) | (A << (32 - 11))) ^ (((A & 0xFFFFFFFF) >> 25) | (A << (32 - 25)))) + (C ^ (A & (B ^ C))) + 0x72BE5D74 + w12; temp2 = ((((E & 0xFFFFFFFF) >> 2) | (E << (32 - 2))) ^ (((E & 0xFFFFFFFF) >> 13) | (E << (32 - 13))) ^ (((E & 0xFFFFFFFF) >> 22) | (E << (32 - 22)))) + ((E & F) | (G & (E | F))); H += temp1; D = temp1 + temp2; };
-            { temp1 = C + ((((H & 0xFFFFFFFF) >> 6) | (H << (32 - 6))) ^ (((H & 0xFFFFFFFF) >> 11) | (H << (32 - 11))) ^ (((H & 0xFFFFFFFF) >> 25) | (H << (32 - 25)))) + (B ^ (H & (A ^ B))) + 0x80DEB1FE + w13; temp2 = ((((D & 0xFFFFFFFF) >> 2) | (D << (32 - 2))) ^ (((D & 0xFFFFFFFF) >> 13) | (D << (32 - 13))) ^ (((D & 0xFFFFFFFF) >> 22) | (D << (32 - 22)))) + ((D & E) | (F & (D | E))); G += temp1; C = temp1 + temp2; };
-            { temp1 = B + ((((G & 0xFFFFFFFF) >> 6) | (G << (32 - 6))) ^ (((G & 0xFFFFFFFF) >> 11) | (G << (32 - 11))) ^ (((G & 0xFFFFFFFF) >> 25) | (G << (32 - 25)))) + (A ^ (G & (H ^ A))) + 0x9BDC06A7 + w14; temp2 = ((((C & 0xFFFFFFFF) >> 2) | (C << (32 - 2))) ^ (((C & 0xFFFFFFFF) >> 13) | (C << (32 - 13))) ^ (((C & 0xFFFFFFFF) >> 22) | (C << (32 - 22)))) + ((C & D) | (E & (C | D))); F += temp1; B = temp1 + temp2; };
-            { temp1 = A + ((((F & 0xFFFFFFFF) >> 6) | (F << (32 - 6))) ^ (((F & 0xFFFFFFFF) >> 11) | (F << (32 - 11))) ^ (((F & 0xFFFFFFFF) >> 25) | (F << (32 - 25)))) + (H ^ (F & (G ^ H))) + 0xC19BF174 + w15; temp2 = ((((B & 0xFFFFFFFF) >> 2) | (B << (32 - 2))) ^ (((B & 0xFFFFFFFF) >> 13) | (B << (32 - 13))) ^ (((B & 0xFFFFFFFF) >> 22) | (B << (32 - 22)))) + ((B & C) | (D & (B | C))); E += temp1; A = temp1 + temp2; };
-            { temp1 = H + ((((E & 0xFFFFFFFF) >> 6) | (E << (32 - 6))) ^ (((E & 0xFFFFFFFF) >> 11) | (E << (32 - 11))) ^ (((E & 0xFFFFFFFF) >> 25) | (E << (32 - 25)))) + (G ^ (E & (F ^ G))) + 0xE49B69C1 + (w16 = ((((w14 & 0xFFFFFFFF) >> 17) | (w14 << (32 - 17))) ^ (((w14 & 0xFFFFFFFF) >> 19) | (w14 << (32 - 19))) ^ ((w14 & 0xFFFFFFFF) >> 10)) + w09 + ((((w01 & 0xFFFFFFFF) >> 7) | (w01 << (32 - 7))) ^ (((w01 & 0xFFFFFFFF) >> 18) | (w01 << (32 - 18))) ^ ((w01 & 0xFFFFFFFF) >> 3)) + w00); temp2 = ((((A & 0xFFFFFFFF) >> 2) | (A << (32 - 2))) ^ (((A & 0xFFFFFFFF) >> 13) | (A << (32 - 13))) ^ (((A & 0xFFFFFFFF) >> 22) | (A << (32 - 22)))) + ((A & B) | (C & (A | B))); D += temp1; H = temp1 + temp2; };
-            { temp1 = G + ((((D & 0xFFFFFFFF) >> 6) | (D << (32 - 6))) ^ (((D & 0xFFFFFFFF) >> 11) | (D << (32 - 11))) ^ (((D & 0xFFFFFFFF) >> 25) | (D << (32 - 25)))) + (F ^ (D & (E ^ F))) + 0xEFBE4786 + (w17 = ((((w15 & 0xFFFFFFFF) >> 17) | (w15 << (32 - 17))) ^ (((w15 & 0xFFFFFFFF) >> 19) | (w15 << (32 - 19))) ^ ((w15 & 0xFFFFFFFF) >> 10)) + w10 + ((((w02 & 0xFFFFFFFF) >> 7) | (w02 << (32 - 7))) ^ (((w02 & 0xFFFFFFFF) >> 18) | (w02 << (32 - 18))) ^ ((w02 & 0xFFFFFFFF) >> 3)) + w01); temp2 = ((((H & 0xFFFFFFFF) >> 2) | (H << (32 - 2))) ^ (((H & 0xFFFFFFFF) >> 13) | (H << (32 - 13))) ^ (((H & 0xFFFFFFFF) >> 22) | (H << (32 - 22)))) + ((H & A) | (B & (H | A))); C += temp1; G = temp1 + temp2; };
-            { temp1 = F + ((((C & 0xFFFFFFFF) >> 6) | (C << (32 - 6))) ^ (((C & 0xFFFFFFFF) >> 11) | (C << (32 - 11))) ^ (((C & 0xFFFFFFFF) >> 25) | (C << (32 - 25)))) + (E ^ (C & (D ^ E))) + 0x0FC19DC6 + (w18 = ((((w16 & 0xFFFFFFFF) >> 17) | (w16 << (32 - 17))) ^ (((w16 & 0xFFFFFFFF) >> 19) | (w16 << (32 - 19))) ^ ((w16 & 0xFFFFFFFF) >> 10)) + w11 + ((((w03 & 0xFFFFFFFF) >> 7) | (w03 << (32 - 7))) ^ (((w03 & 0xFFFFFFFF) >> 18) | (w03 << (32 - 18))) ^ ((w03 & 0xFFFFFFFF) >> 3)) + w02); temp2 = ((((G & 0xFFFFFFFF) >> 2) | (G << (32 - 2))) ^ (((G & 0xFFFFFFFF) >> 13) | (G << (32 - 13))) ^ (((G & 0xFFFFFFFF) >> 22) | (G << (32 - 22)))) + ((G & H) | (A & (G | H))); B += temp1; F = temp1 + temp2; };
-            { temp1 = E + ((((B & 0xFFFFFFFF) >> 6) | (B << (32 - 6))) ^ (((B & 0xFFFFFFFF) >> 11) | (B << (32 - 11))) ^ (((B & 0xFFFFFFFF) >> 25) | (B << (32 - 25)))) + (D ^ (B & (C ^ D))) + 0x240CA1CC + (w19 = ((((w17 & 0xFFFFFFFF) >> 17) | (w17 << (32 - 17))) ^ (((w17 & 0xFFFFFFFF) >> 19) | (w17 << (32 - 19))) ^ ((w17 & 0xFFFFFFFF) >> 10)) + w12 + ((((w04 & 0xFFFFFFFF) >> 7) | (w04 << (32 - 7))) ^ (((w04 & 0xFFFFFFFF) >> 18) | (w04 << (32 - 18))) ^ ((w04 & 0xFFFFFFFF) >> 3)) + w03); temp2 = ((((F & 0xFFFFFFFF) >> 2) | (F << (32 - 2))) ^ (((F & 0xFFFFFFFF) >> 13) | (F << (32 - 13))) ^ (((F & 0xFFFFFFFF) >> 22) | (F << (32 - 22)))) + ((F & G) | (H & (F | G))); A += temp1; E = temp1 + temp2; };
-            { temp1 = D + ((((A & 0xFFFFFFFF) >> 6) | (A << (32 - 6))) ^ (((A & 0xFFFFFFFF) >> 11) | (A << (32 - 11))) ^ (((A & 0xFFFFFFFF) >> 25) | (A << (32 - 25)))) + (C ^ (A & (B ^ C))) + 0x2DE92C6F + (w20 = ((((w18 & 0xFFFFFFFF) >> 17) | (w18 << (32 - 17))) ^ (((w18 & 0xFFFFFFFF) >> 19) | (w18 << (32 - 19))) ^ ((w18 & 0xFFFFFFFF) >> 10)) + w13 + ((((w05 & 0xFFFFFFFF) >> 7) | (w05 << (32 - 7))) ^ (((w05 & 0xFFFFFFFF) >> 18) | (w05 << (32 - 18))) ^ ((w05 & 0xFFFFFFFF) >> 3)) + w04); temp2 = ((((E & 0xFFFFFFFF) >> 2) | (E << (32 - 2))) ^ (((E & 0xFFFFFFFF) >> 13) | (E << (32 - 13))) ^ (((E & 0xFFFFFFFF) >> 22) | (E << (32 - 22)))) + ((E & F) | (G & (E | F))); H += temp1; D = temp1 + temp2; };
-            { temp1 = C + ((((H & 0xFFFFFFFF) >> 6) | (H << (32 - 6))) ^ (((H & 0xFFFFFFFF) >> 11) | (H << (32 - 11))) ^ (((H & 0xFFFFFFFF) >> 25) | (H << (32 - 25)))) + (B ^ (H & (A ^ B))) + 0x4A7484AA + (w21 = ((((w19 & 0xFFFFFFFF) >> 17) | (w19 << (32 - 17))) ^ (((w19 & 0xFFFFFFFF) >> 19) | (w19 << (32 - 19))) ^ ((w19 & 0xFFFFFFFF) >> 10)) + w14 + ((((w06 & 0xFFFFFFFF) >> 7) | (w06 << (32 - 7))) ^ (((w06 & 0xFFFFFFFF) >> 18) | (w06 << (32 - 18))) ^ ((w06 & 0xFFFFFFFF) >> 3)) + w05); temp2 = ((((D & 0xFFFFFFFF) >> 2) | (D << (32 - 2))) ^ (((D & 0xFFFFFFFF) >> 13) | (D << (32 - 13))) ^ (((D & 0xFFFFFFFF) >> 22) | (D << (32 - 22)))) + ((D & E) | (F & (D | E))); G += temp1; C = temp1 + temp2; };
-            { temp1 = B + ((((G & 0xFFFFFFFF) >> 6) | (G << (32 - 6))) ^ (((G & 0xFFFFFFFF) >> 11) | (G << (32 - 11))) ^ (((G & 0xFFFFFFFF) >> 25) | (G << (32 - 25)))) + (A ^ (G & (H ^ A))) + 0x5CB0A9DC + (w22 = ((((w20 & 0xFFFFFFFF) >> 17) | (w20 << (32 - 17))) ^ (((w20 & 0xFFFFFFFF) >> 19) | (w20 << (32 - 19))) ^ ((w20 & 0xFFFFFFFF) >> 10)) + w15 + ((((w07 & 0xFFFFFFFF) >> 7) | (w07 << (32 - 7))) ^ (((w07 & 0xFFFFFFFF) >> 18) | (w07 << (32 - 18))) ^ ((w07 & 0xFFFFFFFF) >> 3)) + w06); temp2 = ((((C & 0xFFFFFFFF) >> 2) | (C << (32 - 2))) ^ (((C & 0xFFFFFFFF) >> 13) | (C << (32 - 13))) ^ (((C & 0xFFFFFFFF) >> 22) | (C << (32 - 22)))) + ((C & D) | (E & (C | D))); F += temp1; B = temp1 + temp2; };
-            { temp1 = A + ((((F & 0xFFFFFFFF) >> 6) | (F << (32 - 6))) ^ (((F & 0xFFFFFFFF) >> 11) | (F << (32 - 11))) ^ (((F & 0xFFFFFFFF) >> 25) | (F << (32 - 25)))) + (H ^ (F & (G ^ H))) + 0x76F988DA + (w23 = ((((w21 & 0xFFFFFFFF) >> 17) | (w21 << (32 - 17))) ^ (((w21 & 0xFFFFFFFF) >> 19) | (w21 << (32 - 19))) ^ ((w21 & 0xFFFFFFFF) >> 10)) + w16 + ((((w08 & 0xFFFFFFFF) >> 7) | (w08 << (32 - 7))) ^ (((w08 & 0xFFFFFFFF) >> 18) | (w08 << (32 - 18))) ^ ((w08 & 0xFFFFFFFF) >> 3)) + w07); temp2 = ((((B & 0xFFFFFFFF) >> 2) | (B << (32 - 2))) ^ (((B & 0xFFFFFFFF) >> 13) | (B << (32 - 13))) ^ (((B & 0xFFFFFFFF) >> 22) | (B << (32 - 22)))) + ((B & C) | (D & (B | C))); E += temp1; A = temp1 + temp2; };
-            { temp1 = H + ((((E & 0xFFFFFFFF) >> 6) | (E << (32 - 6))) ^ (((E & 0xFFFFFFFF) >> 11) | (E << (32 - 11))) ^ (((E & 0xFFFFFFFF) >> 25) | (E << (32 - 25)))) + (G ^ (E & (F ^ G))) + 0x983E5152 + (w24 = ((((w22 & 0xFFFFFFFF) >> 17) | (w22 << (32 - 17))) ^ (((w22 & 0xFFFFFFFF) >> 19) | (w22 << (32 - 19))) ^ ((w22 & 0xFFFFFFFF) >> 10)) + w17 + ((((w09 & 0xFFFFFFFF) >> 7) | (w09 << (32 - 7))) ^ (((w09 & 0xFFFFFFFF) >> 18) | (w09 << (32 - 18))) ^ ((w09 & 0xFFFFFFFF) >> 3)) + w08); temp2 = ((((A & 0xFFFFFFFF) >> 2) | (A << (32 - 2))) ^ (((A & 0xFFFFFFFF) >> 13) | (A << (32 - 13))) ^ (((A & 0xFFFFFFFF) >> 22) | (A << (32 - 22)))) + ((A & B) | (C & (A | B))); D += temp1; H = temp1 + temp2; };
-            { temp1 = G + ((((D & 0xFFFFFFFF) >> 6) | (D << (32 - 6))) ^ (((D & 0xFFFFFFFF) >> 11) | (D << (32 - 11))) ^ (((D & 0xFFFFFFFF) >> 25) | (D << (32 - 25)))) + (F ^ (D & (E ^ F))) + 0xA831C66D + (w25 = ((((w23 & 0xFFFFFFFF) >> 17) | (w23 << (32 - 17))) ^ (((w23 & 0xFFFFFFFF) >> 19) | (w23 << (32 - 19))) ^ ((w23 & 0xFFFFFFFF) >> 10)) + w18 + ((((w10 & 0xFFFFFFFF) >> 7) | (w10 << (32 - 7))) ^ (((w10 & 0xFFFFFFFF) >> 18) | (w10 << (32 - 18))) ^ ((w10 & 0xFFFFFFFF) >> 3)) + w09); temp2 = ((((H & 0xFFFFFFFF) >> 2) | (H << (32 - 2))) ^ (((H & 0xFFFFFFFF) >> 13) | (H << (32 - 13))) ^ (((H & 0xFFFFFFFF) >> 22) | (H << (32 - 22)))) + ((H & A) | (B & (H | A))); C += temp1; G = temp1 + temp2; };
-            { temp1 = F + ((((C & 0xFFFFFFFF) >> 6) | (C << (32 - 6))) ^ (((C & 0xFFFFFFFF) >> 11) | (C << (32 - 11))) ^ (((C & 0xFFFFFFFF) >> 25) | (C << (32 - 25)))) + (E ^ (C & (D ^ E))) + 0xB00327C8 + (w26 = ((((w24 & 0xFFFFFFFF) >> 17) | (w24 << (32 - 17))) ^ (((w24 & 0xFFFFFFFF) >> 19) | (w24 << (32 - 19))) ^ ((w24 & 0xFFFFFFFF) >> 10)) + w19 + ((((w11 & 0xFFFFFFFF) >> 7) | (w11 << (32 - 7))) ^ (((w11 & 0xFFFFFFFF) >> 18) | (w11 << (32 - 18))) ^ ((w11 & 0xFFFFFFFF) >> 3)) + w10); temp2 = ((((G & 0xFFFFFFFF) >> 2) | (G << (32 - 2))) ^ (((G & 0xFFFFFFFF) >> 13) | (G << (32 - 13))) ^ (((G & 0xFFFFFFFF) >> 22) | (G << (32 - 22)))) + ((G & H) | (A & (G | H))); B += temp1; F = temp1 + temp2; };
-            { temp1 = E + ((((B & 0xFFFFFFFF) >> 6) | (B << (32 - 6))) ^ (((B & 0xFFFFFFFF) >> 11) | (B << (32 - 11))) ^ (((B & 0xFFFFFFFF) >> 25) | (B << (32 - 25)))) + (D ^ (B & (C ^ D))) + 0xBF597FC7 + (w27 = ((((w25 & 0xFFFFFFFF) >> 17) | (w25 << (32 - 17))) ^ (((w25 & 0xFFFFFFFF) >> 19) | (w25 << (32 - 19))) ^ ((w25 & 0xFFFFFFFF) >> 10)) + w20 + ((((w12 & 0xFFFFFFFF) >> 7) | (w12 << (32 - 7))) ^ (((w12 & 0xFFFFFFFF) >> 18) | (w12 << (32 - 18))) ^ ((w12 & 0xFFFFFFFF) >> 3)) + w11); temp2 = ((((F & 0xFFFFFFFF) >> 2) | (F << (32 - 2))) ^ (((F & 0xFFFFFFFF) >> 13) | (F << (32 - 13))) ^ (((F & 0xFFFFFFFF) >> 22) | (F << (32 - 22)))) + ((F & G) | (H & (F | G))); A += temp1; E = temp1 + temp2; };
-            { temp1 = D + ((((A & 0xFFFFFFFF) >> 6) | (A << (32 - 6))) ^ (((A & 0xFFFFFFFF) >> 11) | (A << (32 - 11))) ^ (((A & 0xFFFFFFFF) >> 25) | (A << (32 - 25)))) + (C ^ (A & (B ^ C))) + 0xC6E00BF3 + (w28 = ((((w26 & 0xFFFFFFFF) >> 17) | (w26 << (32 - 17))) ^ (((w26 & 0xFFFFFFFF) >> 19) | (w26 << (32 - 19))) ^ ((w26 & 0xFFFFFFFF) >> 10)) + w21 + ((((w13 & 0xFFFFFFFF) >> 7) | (w13 << (32 - 7))) ^ (((w13 & 0xFFFFFFFF) >> 18) | (w13 << (32 - 18))) ^ ((w13 & 0xFFFFFFFF) >> 3)) + w12); temp2 = ((((E & 0xFFFFFFFF) >> 2) | (E << (32 - 2))) ^ (((E & 0xFFFFFFFF) >> 13) | (E << (32 - 13))) ^ (((E & 0xFFFFFFFF) >> 22) | (E << (32 - 22)))) + ((E & F) | (G & (E | F))); H += temp1; D = temp1 + temp2; };
-            { temp1 = C + ((((H & 0xFFFFFFFF) >> 6) | (H << (32 - 6))) ^ (((H & 0xFFFFFFFF) >> 11) | (H << (32 - 11))) ^ (((H & 0xFFFFFFFF) >> 25) | (H << (32 - 25)))) + (B ^ (H & (A ^ B))) + 0xD5A79147 + (w29 = ((((w27 & 0xFFFFFFFF) >> 17) | (w27 << (32 - 17))) ^ (((w27 & 0xFFFFFFFF) >> 19) | (w27 << (32 - 19))) ^ ((w27 & 0xFFFFFFFF) >> 10)) + w22 + ((((w14 & 0xFFFFFFFF) >> 7) | (w14 << (32 - 7))) ^ (((w14 & 0xFFFFFFFF) >> 18) | (w14 << (32 - 18))) ^ ((w14 & 0xFFFFFFFF) >> 3)) + w13); temp2 = ((((D & 0xFFFFFFFF) >> 2) | (D << (32 - 2))) ^ (((D & 0xFFFFFFFF) >> 13) | (D << (32 - 13))) ^ (((D & 0xFFFFFFFF) >> 22) | (D << (32 - 22)))) + ((D & E) | (F & (D | E))); G += temp1; C = temp1 + temp2; };
-            { temp1 = B + ((((G & 0xFFFFFFFF) >> 6) | (G << (32 - 6))) ^ (((G & 0xFFFFFFFF) >> 11) | (G << (32 - 11))) ^ (((G & 0xFFFFFFFF) >> 25) | (G << (32 - 25)))) + (A ^ (G & (H ^ A))) + 0x06CA6351 + (w30 = ((((w28 & 0xFFFFFFFF) >> 17) | (w28 << (32 - 17))) ^ (((w28 & 0xFFFFFFFF) >> 19) | (w28 << (32 - 19))) ^ ((w28 & 0xFFFFFFFF) >> 10)) + w23 + ((((w15 & 0xFFFFFFFF) >> 7) | (w15 << (32 - 7))) ^ (((w15 & 0xFFFFFFFF) >> 18) | (w15 << (32 - 18))) ^ ((w15 & 0xFFFFFFFF) >> 3)) + w14); temp2 = ((((C & 0xFFFFFFFF) >> 2) | (C << (32 - 2))) ^ (((C & 0xFFFFFFFF) >> 13) | (C << (32 - 13))) ^ (((C & 0xFFFFFFFF) >> 22) | (C << (32 - 22)))) + ((C & D) | (E & (C | D))); F += temp1; B = temp1 + temp2; };
-            { temp1 = A + ((((F & 0xFFFFFFFF) >> 6) | (F << (32 - 6))) ^ (((F & 0xFFFFFFFF) >> 11) | (F << (32 - 11))) ^ (((F & 0xFFFFFFFF) >> 25) | (F << (32 - 25)))) + (H ^ (F & (G ^ H))) + 0x14292967 + (w31 = ((((w29 & 0xFFFFFFFF) >> 17) | (w29 << (32 - 17))) ^ (((w29 & 0xFFFFFFFF) >> 19) | (w29 << (32 - 19))) ^ ((w29 & 0xFFFFFFFF) >> 10)) + w24 + ((((w16 & 0xFFFFFFFF) >> 7) | (w16 << (32 - 7))) ^ (((w16 & 0xFFFFFFFF) >> 18) | (w16 << (32 - 18))) ^ ((w16 & 0xFFFFFFFF) >> 3)) + w15); temp2 = ((((B & 0xFFFFFFFF) >> 2) | (B << (32 - 2))) ^ (((B & 0xFFFFFFFF) >> 13) | (B << (32 - 13))) ^ (((B & 0xFFFFFFFF) >> 22) | (B << (32 - 22)))) + ((B & C) | (D & (B | C))); E += temp1; A = temp1 + temp2; };
-            { temp1 = H + ((((E & 0xFFFFFFFF) >> 6) | (E << (32 - 6))) ^ (((E & 0xFFFFFFFF) >> 11) | (E << (32 - 11))) ^ (((E & 0xFFFFFFFF) >> 25) | (E << (32 - 25)))) + (G ^ (E & (F ^ G))) + 0x27B70A85 + (w32 = ((((w30 & 0xFFFFFFFF) >> 17) | (w30 << (32 - 17))) ^ (((w30 & 0xFFFFFFFF) >> 19) | (w30 << (32 - 19))) ^ ((w30 & 0xFFFFFFFF) >> 10)) + w25 + ((((w17 & 0xFFFFFFFF) >> 7) | (w17 << (32 - 7))) ^ (((w17 & 0xFFFFFFFF) >> 18) | (w17 << (32 - 18))) ^ ((w17 & 0xFFFFFFFF) >> 3)) + w16); temp2 = ((((A & 0xFFFFFFFF) >> 2) | (A << (32 - 2))) ^ (((A & 0xFFFFFFFF) >> 13) | (A << (32 - 13))) ^ (((A & 0xFFFFFFFF) >> 22) | (A << (32 - 22)))) + ((A & B) | (C & (A | B))); D += temp1; H = temp1 + temp2; };
-            { temp1 = G + ((((D & 0xFFFFFFFF) >> 6) | (D << (32 - 6))) ^ (((D & 0xFFFFFFFF) >> 11) | (D << (32 - 11))) ^ (((D & 0xFFFFFFFF) >> 25) | (D << (32 - 25)))) + (F ^ (D & (E ^ F))) + 0x2E1B2138 + (w33 = ((((w31 & 0xFFFFFFFF) >> 17) | (w31 << (32 - 17))) ^ (((w31 & 0xFFFFFFFF) >> 19) | (w31 << (32 - 19))) ^ ((w31 & 0xFFFFFFFF) >> 10)) + w26 + ((((w18 & 0xFFFFFFFF) >> 7) | (w18 << (32 - 7))) ^ (((w18 & 0xFFFFFFFF) >> 18) | (w18 << (32 - 18))) ^ ((w18 & 0xFFFFFFFF) >> 3)) + w17); temp2 = ((((H & 0xFFFFFFFF) >> 2) | (H << (32 - 2))) ^ (((H & 0xFFFFFFFF) >> 13) | (H << (32 - 13))) ^ (((H & 0xFFFFFFFF) >> 22) | (H << (32 - 22)))) + ((H & A) | (B & (H | A))); C += temp1; G = temp1 + temp2; };
-            { temp1 = F + ((((C & 0xFFFFFFFF) >> 6) | (C << (32 - 6))) ^ (((C & 0xFFFFFFFF) >> 11) | (C << (32 - 11))) ^ (((C & 0xFFFFFFFF) >> 25) | (C << (32 - 25)))) + (E ^ (C & (D ^ E))) + 0x4D2C6DFC + (w34 = ((((w32 & 0xFFFFFFFF) >> 17) | (w32 << (32 - 17))) ^ (((w32 & 0xFFFFFFFF) >> 19) | (w32 << (32 - 19))) ^ ((w32 & 0xFFFFFFFF) >> 10)) + w27 + ((((w19 & 0xFFFFFFFF) >> 7) | (w19 << (32 - 7))) ^ (((w19 & 0xFFFFFFFF) >> 18) | (w19 << (32 - 18))) ^ ((w19 & 0xFFFFFFFF) >> 3)) + w18); temp2 = ((((G & 0xFFFFFFFF) >> 2) | (G << (32 - 2))) ^ (((G & 0xFFFFFFFF) >> 13) | (G << (32 - 13))) ^ (((G & 0xFFFFFFFF) >> 22) | (G << (32 - 22)))) + ((G & H) | (A & (G | H))); B += temp1; F = temp1 + temp2; };
-            { temp1 = E + ((((B & 0xFFFFFFFF) >> 6) | (B << (32 - 6))) ^ (((B & 0xFFFFFFFF) >> 11) | (B << (32 - 11))) ^ (((B & 0xFFFFFFFF) >> 25) | (B << (32 - 25)))) + (D ^ (B & (C ^ D))) + 0x53380D13 + (w35 = ((((w33 & 0xFFFFFFFF) >> 17) | (w33 << (32 - 17))) ^ (((w33 & 0xFFFFFFFF) >> 19) | (w33 << (32 - 19))) ^ ((w33 & 0xFFFFFFFF) >> 10)) + w28 + ((((w20 & 0xFFFFFFFF) >> 7) | (w20 << (32 - 7))) ^ (((w20 & 0xFFFFFFFF) >> 18) | (w20 << (32 - 18))) ^ ((w20 & 0xFFFFFFFF) >> 3)) + w19); temp2 = ((((F & 0xFFFFFFFF) >> 2) | (F << (32 - 2))) ^ (((F & 0xFFFFFFFF) >> 13) | (F << (32 - 13))) ^ (((F & 0xFFFFFFFF) >> 22) | (F << (32 - 22)))) + ((F & G) | (H & (F | G))); A += temp1; E = temp1 + temp2; };
-            { temp1 = D + ((((A & 0xFFFFFFFF) >> 6) | (A << (32 - 6))) ^ (((A & 0xFFFFFFFF) >> 11) | (A << (32 - 11))) ^ (((A & 0xFFFFFFFF) >> 25) | (A << (32 - 25)))) + (C ^ (A & (B ^ C))) + 0x650A7354 + (w36 = ((((w34 & 0xFFFFFFFF) >> 17) | (w34 << (32 - 17))) ^ (((w34 & 0xFFFFFFFF) >> 19) | (w34 << (32 - 19))) ^ ((w34 & 0xFFFFFFFF) >> 10)) + w29 + ((((w21 & 0xFFFFFFFF) >> 7) | (w21 << (32 - 7))) ^ (((w21 & 0xFFFFFFFF) >> 18) | (w21 << (32 - 18))) ^ ((w21 & 0xFFFFFFFF) >> 3)) + w20); temp2 = ((((E & 0xFFFFFFFF) >> 2) | (E << (32 - 2))) ^ (((E & 0xFFFFFFFF) >> 13) | (E << (32 - 13))) ^ (((E & 0xFFFFFFFF) >> 22) | (E << (32 - 22)))) + ((E & F) | (G & (E | F))); H += temp1; D = temp1 + temp2; };
-            { temp1 = C + ((((H & 0xFFFFFFFF) >> 6) | (H << (32 - 6))) ^ (((H & 0xFFFFFFFF) >> 11) | (H << (32 - 11))) ^ (((H & 0xFFFFFFFF) >> 25) | (H << (32 - 25)))) + (B ^ (H & (A ^ B))) + 0x766A0ABB + (w37 = ((((w35 & 0xFFFFFFFF) >> 17) | (w35 << (32 - 17))) ^ (((w35 & 0xFFFFFFFF) >> 19) | (w35 << (32 - 19))) ^ ((w35 & 0xFFFFFFFF) >> 10)) + w30 + ((((w22 & 0xFFFFFFFF) >> 7) | (w22 << (32 - 7))) ^ (((w22 & 0xFFFFFFFF) >> 18) | (w22 << (32 - 18))) ^ ((w22 & 0xFFFFFFFF) >> 3)) + w21); temp2 = ((((D & 0xFFFFFFFF) >> 2) | (D << (32 - 2))) ^ (((D & 0xFFFFFFFF) >> 13) | (D << (32 - 13))) ^ (((D & 0xFFFFFFFF) >> 22) | (D << (32 - 22)))) + ((D & E) | (F & (D | E))); G += temp1; C = temp1 + temp2; };
-            { temp1 = B + ((((G & 0xFFFFFFFF) >> 6) | (G << (32 - 6))) ^ (((G & 0xFFFFFFFF) >> 11) | (G << (32 - 11))) ^ (((G & 0xFFFFFFFF) >> 25) | (G << (32 - 25)))) + (A ^ (G & (H ^ A))) + 0x81C2C92E + (w38 = ((((w36 & 0xFFFFFFFF) >> 17) | (w36 << (32 - 17))) ^ (((w36 & 0xFFFFFFFF) >> 19) | (w36 << (32 - 19))) ^ ((w36 & 0xFFFFFFFF) >> 10)) + w31 + ((((w23 & 0xFFFFFFFF) >> 7) | (w23 << (32 - 7))) ^ (((w23 & 0xFFFFFFFF) >> 18) | (w23 << (32 - 18))) ^ ((w23 & 0xFFFFFFFF) >> 3)) + w22); temp2 = ((((C & 0xFFFFFFFF) >> 2) | (C << (32 - 2))) ^ (((C & 0xFFFFFFFF) >> 13) | (C << (32 - 13))) ^ (((C & 0xFFFFFFFF) >> 22) | (C << (32 - 22)))) + ((C & D) | (E & (C | D))); F += temp1; B = temp1 + temp2; };
-            { temp1 = A + ((((F & 0xFFFFFFFF) >> 6) | (F << (32 - 6))) ^ (((F & 0xFFFFFFFF) >> 11) | (F << (32 - 11))) ^ (((F & 0xFFFFFFFF) >> 25) | (F << (32 - 25)))) + (H ^ (F & (G ^ H))) + 0x92722C85 + (w39 = ((((w37 & 0xFFFFFFFF) >> 17) | (w37 << (32 - 17))) ^ (((w37 & 0xFFFFFFFF) >> 19) | (w37 << (32 - 19))) ^ ((w37 & 0xFFFFFFFF) >> 10)) + w32 + ((((w24 & 0xFFFFFFFF) >> 7) | (w24 << (32 - 7))) ^ (((w24 & 0xFFFFFFFF) >> 18) | (w24 << (32 - 18))) ^ ((w24 & 0xFFFFFFFF) >> 3)) + w23); temp2 = ((((B & 0xFFFFFFFF) >> 2) | (B << (32 - 2))) ^ (((B & 0xFFFFFFFF) >> 13) | (B << (32 - 13))) ^ (((B & 0xFFFFFFFF) >> 22) | (B << (32 - 22)))) + ((B & C) | (D & (B | C))); E += temp1; A = temp1 + temp2; };
-            { temp1 = H + ((((E & 0xFFFFFFFF) >> 6) | (E << (32 - 6))) ^ (((E & 0xFFFFFFFF) >> 11) | (E << (32 - 11))) ^ (((E & 0xFFFFFFFF) >> 25) | (E << (32 - 25)))) + (G ^ (E & (F ^ G))) + 0xA2BFE8A1 + (w40 = ((((w38 & 0xFFFFFFFF) >> 17) | (w38 << (32 - 17))) ^ (((w38 & 0xFFFFFFFF) >> 19) | (w38 << (32 - 19))) ^ ((w38 & 0xFFFFFFFF) >> 10)) + w33 + ((((w25 & 0xFFFFFFFF) >> 7) | (w25 << (32 - 7))) ^ (((w25 & 0xFFFFFFFF) >> 18) | (w25 << (32 - 18))) ^ ((w25 & 0xFFFFFFFF) >> 3)) + w24); temp2 = ((((A & 0xFFFFFFFF) >> 2) | (A << (32 - 2))) ^ (((A & 0xFFFFFFFF) >> 13) | (A << (32 - 13))) ^ (((A & 0xFFFFFFFF) >> 22) | (A << (32 - 22)))) + ((A & B) | (C & (A | B))); D += temp1; H = temp1 + temp2; };
-            { temp1 = G + ((((D & 0xFFFFFFFF) >> 6) | (D << (32 - 6))) ^ (((D & 0xFFFFFFFF) >> 11) | (D << (32 - 11))) ^ (((D & 0xFFFFFFFF) >> 25) | (D << (32 - 25)))) + (F ^ (D & (E ^ F))) + 0xA81A664B + (w41 = ((((w39 & 0xFFFFFFFF) >> 17) | (w39 << (32 - 17))) ^ (((w39 & 0xFFFFFFFF) >> 19) | (w39 << (32 - 19))) ^ ((w39 & 0xFFFFFFFF) >> 10)) + w34 + ((((w26 & 0xFFFFFFFF) >> 7) | (w26 << (32 - 7))) ^ (((w26 & 0xFFFFFFFF) >> 18) | (w26 << (32 - 18))) ^ ((w26 & 0xFFFFFFFF) >> 3)) + w25); temp2 = ((((H & 0xFFFFFFFF) >> 2) | (H << (32 - 2))) ^ (((H & 0xFFFFFFFF) >> 13) | (H << (32 - 13))) ^ (((H & 0xFFFFFFFF) >> 22) | (H << (32 - 22)))) + ((H & A) | (B & (H | A))); C += temp1; G = temp1 + temp2; };
-            { temp1 = F + ((((C & 0xFFFFFFFF) >> 6) | (C << (32 - 6))) ^ (((C & 0xFFFFFFFF) >> 11) | (C << (32 - 11))) ^ (((C & 0xFFFFFFFF) >> 25) | (C << (32 - 25)))) + (E ^ (C & (D ^ E))) + 0xC24B8B70 + (w42 = ((((w40 & 0xFFFFFFFF) >> 17) | (w40 << (32 - 17))) ^ (((w40 & 0xFFFFFFFF) >> 19) | (w40 << (32 - 19))) ^ ((w40 & 0xFFFFFFFF) >> 10)) + w35 + ((((w27 & 0xFFFFFFFF) >> 7) | (w27 << (32 - 7))) ^ (((w27 & 0xFFFFFFFF) >> 18) | (w27 << (32 - 18))) ^ ((w27 & 0xFFFFFFFF) >> 3)) + w26); temp2 = ((((G & 0xFFFFFFFF) >> 2) | (G << (32 - 2))) ^ (((G & 0xFFFFFFFF) >> 13) | (G << (32 - 13))) ^ (((G & 0xFFFFFFFF) >> 22) | (G << (32 - 22)))) + ((G & H) | (A & (G | H))); B += temp1; F = temp1 + temp2; };
-            { temp1 = E + ((((B & 0xFFFFFFFF) >> 6) | (B << (32 - 6))) ^ (((B & 0xFFFFFFFF) >> 11) | (B << (32 - 11))) ^ (((B & 0xFFFFFFFF) >> 25) | (B << (32 - 25)))) + (D ^ (B & (C ^ D))) + 0xC76C51A3 + (w43 = ((((w41 & 0xFFFFFFFF) >> 17) | (w41 << (32 - 17))) ^ (((w41 & 0xFFFFFFFF) >> 19) | (w41 << (32 - 19))) ^ ((w41 & 0xFFFFFFFF) >> 10)) + w36 + ((((w28 & 0xFFFFFFFF) >> 7) | (w28 << (32 - 7))) ^ (((w28 & 0xFFFFFFFF) >> 18) | (w28 << (32 - 18))) ^ ((w28 & 0xFFFFFFFF) >> 3)) + w27); temp2 = ((((F & 0xFFFFFFFF) >> 2) | (F << (32 - 2))) ^ (((F & 0xFFFFFFFF) >> 13) | (F << (32 - 13))) ^ (((F & 0xFFFFFFFF) >> 22) | (F << (32 - 22)))) + ((F & G) | (H & (F | G))); A += temp1; E = temp1 + temp2; };
-            { temp1 = D + ((((A & 0xFFFFFFFF) >> 6) | (A << (32 - 6))) ^ (((A & 0xFFFFFFFF) >> 11) | (A << (32 - 11))) ^ (((A & 0xFFFFFFFF) >> 25) | (A << (32 - 25)))) + (C ^ (A & (B ^ C))) + 0xD192E819 + (w44 = ((((w42 & 0xFFFFFFFF) >> 17) | (w42 << (32 - 17))) ^ (((w42 & 0xFFFFFFFF) >> 19) | (w42 << (32 - 19))) ^ ((w42 & 0xFFFFFFFF) >> 10)) + w37 + ((((w29 & 0xFFFFFFFF) >> 7) | (w29 << (32 - 7))) ^ (((w29 & 0xFFFFFFFF) >> 18) | (w29 << (32 - 18))) ^ ((w29 & 0xFFFFFFFF) >> 3)) + w28); temp2 = ((((E & 0xFFFFFFFF) >> 2) | (E << (32 - 2))) ^ (((E & 0xFFFFFFFF) >> 13) | (E << (32 - 13))) ^ (((E & 0xFFFFFFFF) >> 22) | (E << (32 - 22)))) + ((E & F) | (G & (E | F))); H += temp1; D = temp1 + temp2; };
-            { temp1 = C + ((((H & 0xFFFFFFFF) >> 6) | (H << (32 - 6))) ^ (((H & 0xFFFFFFFF) >> 11) | (H << (32 - 11))) ^ (((H & 0xFFFFFFFF) >> 25) | (H << (32 - 25)))) + (B ^ (H & (A ^ B))) + 0xD6990624 + (w45 = ((((w43 & 0xFFFFFFFF) >> 17) | (w43 << (32 - 17))) ^ (((w43 & 0xFFFFFFFF) >> 19) | (w43 << (32 - 19))) ^ ((w43 & 0xFFFFFFFF) >> 10)) + w38 + ((((w30 & 0xFFFFFFFF) >> 7) | (w30 << (32 - 7))) ^ (((w30 & 0xFFFFFFFF) >> 18) | (w30 << (32 - 18))) ^ ((w30 & 0xFFFFFFFF) >> 3)) + w29); temp2 = ((((D & 0xFFFFFFFF) >> 2) | (D << (32 - 2))) ^ (((D & 0xFFFFFFFF) >> 13) | (D << (32 - 13))) ^ (((D & 0xFFFFFFFF) >> 22) | (D << (32 - 22)))) + ((D & E) | (F & (D | E))); G += temp1; C = temp1 + temp2; };
-            { temp1 = B + ((((G & 0xFFFFFFFF) >> 6) | (G << (32 - 6))) ^ (((G & 0xFFFFFFFF) >> 11) | (G << (32 - 11))) ^ (((G & 0xFFFFFFFF) >> 25) | (G << (32 - 25)))) + (A ^ (G & (H ^ A))) + 0xF40E3585 + (w46 = ((((w44 & 0xFFFFFFFF) >> 17) | (w44 << (32 - 17))) ^ (((w44 & 0xFFFFFFFF) >> 19) | (w44 << (32 - 19))) ^ ((w44 & 0xFFFFFFFF) >> 10)) + w39 + ((((w31 & 0xFFFFFFFF) >> 7) | (w31 << (32 - 7))) ^ (((w31 & 0xFFFFFFFF) >> 18) | (w31 << (32 - 18))) ^ ((w31 & 0xFFFFFFFF) >> 3)) + w30); temp2 = ((((C & 0xFFFFFFFF) >> 2) | (C << (32 - 2))) ^ (((C & 0xFFFFFFFF) >> 13) | (C << (32 - 13))) ^ (((C & 0xFFFFFFFF) >> 22) | (C << (32 - 22)))) + ((C & D) | (E & (C | D))); F += temp1; B = temp1 + temp2; };
-            { temp1 = A + ((((F & 0xFFFFFFFF) >> 6) | (F << (32 - 6))) ^ (((F & 0xFFFFFFFF) >> 11) | (F << (32 - 11))) ^ (((F & 0xFFFFFFFF) >> 25) | (F << (32 - 25)))) + (H ^ (F & (G ^ H))) + 0x106AA070 + (w47 = ((((w45 & 0xFFFFFFFF) >> 17) | (w45 << (32 - 17))) ^ (((w45 & 0xFFFFFFFF) >> 19) | (w45 << (32 - 19))) ^ ((w45 & 0xFFFFFFFF) >> 10)) + w40 + ((((w32 & 0xFFFFFFFF) >> 7) | (w32 << (32 - 7))) ^ (((w32 & 0xFFFFFFFF) >> 18) | (w32 << (32 - 18))) ^ ((w32 & 0xFFFFFFFF) >> 3)) + w31); temp2 = ((((B & 0xFFFFFFFF) >> 2) | (B << (32 - 2))) ^ (((B & 0xFFFFFFFF) >> 13) | (B << (32 - 13))) ^ (((B & 0xFFFFFFFF) >> 22) | (B << (32 - 22)))) + ((B & C) | (D & (B | C))); E += temp1; A = temp1 + temp2; };
-            { temp1 = H + ((((E & 0xFFFFFFFF) >> 6) | (E << (32 - 6))) ^ (((E & 0xFFFFFFFF) >> 11) | (E << (32 - 11))) ^ (((E & 0xFFFFFFFF) >> 25) | (E << (32 - 25)))) + (G ^ (E & (F ^ G))) + 0x19A4C116 + (w48 = ((((w46 & 0xFFFFFFFF) >> 17) | (w46 << (32 - 17))) ^ (((w46 & 0xFFFFFFFF) >> 19) | (w46 << (32 - 19))) ^ ((w46 & 0xFFFFFFFF) >> 10)) + w41 + ((((w33 & 0xFFFFFFFF) >> 7) | (w33 << (32 - 7))) ^ (((w33 & 0xFFFFFFFF) >> 18) | (w33 << (32 - 18))) ^ ((w33 & 0xFFFFFFFF) >> 3)) + w32); temp2 = ((((A & 0xFFFFFFFF) >> 2) | (A << (32 - 2))) ^ (((A & 0xFFFFFFFF) >> 13) | (A << (32 - 13))) ^ (((A & 0xFFFFFFFF) >> 22) | (A << (32 - 22)))) + ((A & B) | (C & (A | B))); D += temp1; H = temp1 + temp2; };
-            { temp1 = G + ((((D & 0xFFFFFFFF) >> 6) | (D << (32 - 6))) ^ (((D & 0xFFFFFFFF) >> 11) | (D << (32 - 11))) ^ (((D & 0xFFFFFFFF) >> 25) | (D << (32 - 25)))) + (F ^ (D & (E ^ F))) + 0x1E376C08 + (w49 = ((((w47 & 0xFFFFFFFF) >> 17) | (w47 << (32 - 17))) ^ (((w47 & 0xFFFFFFFF) >> 19) | (w47 << (32 - 19))) ^ ((w47 & 0xFFFFFFFF) >> 10)) + w42 + ((((w34 & 0xFFFFFFFF) >> 7) | (w34 << (32 - 7))) ^ (((w34 & 0xFFFFFFFF) >> 18) | (w34 << (32 - 18))) ^ ((w34 & 0xFFFFFFFF) >> 3)) + w33); temp2 = ((((H & 0xFFFFFFFF) >> 2) | (H << (32 - 2))) ^ (((H & 0xFFFFFFFF) >> 13) | (H << (32 - 13))) ^ (((H & 0xFFFFFFFF) >> 22) | (H << (32 - 22)))) + ((H & A) | (B & (H | A))); C += temp1; G = temp1 + temp2; };
-            { temp1 = F + ((((C & 0xFFFFFFFF) >> 6) | (C << (32 - 6))) ^ (((C & 0xFFFFFFFF) >> 11) | (C << (32 - 11))) ^ (((C & 0xFFFFFFFF) >> 25) | (C << (32 - 25)))) + (E ^ (C & (D ^ E))) + 0x2748774C + (w50 = ((((w48 & 0xFFFFFFFF) >> 17) | (w48 << (32 - 17))) ^ (((w48 & 0xFFFFFFFF) >> 19) | (w48 << (32 - 19))) ^ ((w48 & 0xFFFFFFFF) >> 10)) + w43 + ((((w35 & 0xFFFFFFFF) >> 7) | (w35 << (32 - 7))) ^ (((w35 & 0xFFFFFFFF) >> 18) | (w35 << (32 - 18))) ^ ((w35 & 0xFFFFFFFF) >> 3)) + w34); temp2 = ((((G & 0xFFFFFFFF) >> 2) | (G << (32 - 2))) ^ (((G & 0xFFFFFFFF) >> 13) | (G << (32 - 13))) ^ (((G & 0xFFFFFFFF) >> 22) | (G << (32 - 22)))) + ((G & H) | (A & (G | H))); B += temp1; F = temp1 + temp2; };
-            { temp1 = E + ((((B & 0xFFFFFFFF) >> 6) | (B << (32 - 6))) ^ (((B & 0xFFFFFFFF) >> 11) | (B << (32 - 11))) ^ (((B & 0xFFFFFFFF) >> 25) | (B << (32 - 25)))) + (D ^ (B & (C ^ D))) + 0x34B0BCB5 + (w51 = ((((w49 & 0xFFFFFFFF) >> 17) | (w49 << (32 - 17))) ^ (((w49 & 0xFFFFFFFF) >> 19) | (w49 << (32 - 19))) ^ ((w49 & 0xFFFFFFFF) >> 10)) + w44 + ((((w36 & 0xFFFFFFFF) >> 7) | (w36 << (32 - 7))) ^ (((w36 & 0xFFFFFFFF) >> 18) | (w36 << (32 - 18))) ^ ((w36 & 0xFFFFFFFF) >> 3)) + w35); temp2 = ((((F & 0xFFFFFFFF) >> 2) | (F << (32 - 2))) ^ (((F & 0xFFFFFFFF) >> 13) | (F << (32 - 13))) ^ (((F & 0xFFFFFFFF) >> 22) | (F << (32 - 22)))) + ((F & G) | (H & (F | G))); A += temp1; E = temp1 + temp2; };
-            { temp1 = D + ((((A & 0xFFFFFFFF) >> 6) | (A << (32 - 6))) ^ (((A & 0xFFFFFFFF) >> 11) | (A << (32 - 11))) ^ (((A & 0xFFFFFFFF) >> 25) | (A << (32 - 25)))) + (C ^ (A & (B ^ C))) + 0x391C0CB3 + (w52 = ((((w50 & 0xFFFFFFFF) >> 17) | (w50 << (32 - 17))) ^ (((w50 & 0xFFFFFFFF) >> 19) | (w50 << (32 - 19))) ^ ((w50 & 0xFFFFFFFF) >> 10)) + w45 + ((((w37 & 0xFFFFFFFF) >> 7) | (w37 << (32 - 7))) ^ (((w37 & 0xFFFFFFFF) >> 18) | (w37 << (32 - 18))) ^ ((w37 & 0xFFFFFFFF) >> 3)) + w36); temp2 = ((((E & 0xFFFFFFFF) >> 2) | (E << (32 - 2))) ^ (((E & 0xFFFFFFFF) >> 13) | (E << (32 - 13))) ^ (((E & 0xFFFFFFFF) >> 22) | (E << (32 - 22)))) + ((E & F) | (G & (E | F))); H += temp1; D = temp1 + temp2; };
-            { temp1 = C + ((((H & 0xFFFFFFFF) >> 6) | (H << (32 - 6))) ^ (((H & 0xFFFFFFFF) >> 11) | (H << (32 - 11))) ^ (((H & 0xFFFFFFFF) >> 25) | (H << (32 - 25)))) + (B ^ (H & (A ^ B))) + 0x4ED8AA4A + (w53 = ((((w51 & 0xFFFFFFFF) >> 17) | (w51 << (32 - 17))) ^ (((w51 & 0xFFFFFFFF) >> 19) | (w51 << (32 - 19))) ^ ((w51 & 0xFFFFFFFF) >> 10)) + w46 + ((((w38 & 0xFFFFFFFF) >> 7) | (w38 << (32 - 7))) ^ (((w38 & 0xFFFFFFFF) >> 18) | (w38 << (32 - 18))) ^ ((w38 & 0xFFFFFFFF) >> 3)) + w37); temp2 = ((((D & 0xFFFFFFFF) >> 2) | (D << (32 - 2))) ^ (((D & 0xFFFFFFFF) >> 13) | (D << (32 - 13))) ^ (((D & 0xFFFFFFFF) >> 22) | (D << (32 - 22)))) + ((D & E) | (F & (D | E))); G += temp1; C = temp1 + temp2; };
-            { temp1 = B + ((((G & 0xFFFFFFFF) >> 6) | (G << (32 - 6))) ^ (((G & 0xFFFFFFFF) >> 11) | (G << (32 - 11))) ^ (((G & 0xFFFFFFFF) >> 25) | (G << (32 - 25)))) + (A ^ (G & (H ^ A))) + 0x5B9CCA4F + (w54 = ((((w52 & 0xFFFFFFFF) >> 17) | (w52 << (32 - 17))) ^ (((w52 & 0xFFFFFFFF) >> 19) | (w52 << (32 - 19))) ^ ((w52 & 0xFFFFFFFF) >> 10)) + w47 + ((((w39 & 0xFFFFFFFF) >> 7) | (w39 << (32 - 7))) ^ (((w39 & 0xFFFFFFFF) >> 18) | (w39 << (32 - 18))) ^ ((w39 & 0xFFFFFFFF) >> 3)) + w38); temp2 = ((((C & 0xFFFFFFFF) >> 2) | (C << (32 - 2))) ^ (((C & 0xFFFFFFFF) >> 13) | (C << (32 - 13))) ^ (((C & 0xFFFFFFFF) >> 22) | (C << (32 - 22)))) + ((C & D) | (E & (C | D))); F += temp1; B = temp1 + temp2; };
-            { temp1 = A + ((((F & 0xFFFFFFFF) >> 6) | (F << (32 - 6))) ^ (((F & 0xFFFFFFFF) >> 11) | (F << (32 - 11))) ^ (((F & 0xFFFFFFFF) >> 25) | (F << (32 - 25)))) + (H ^ (F & (G ^ H))) + 0x682E6FF3 + (w55 = ((((w53 & 0xFFFFFFFF) >> 17) | (w53 << (32 - 17))) ^ (((w53 & 0xFFFFFFFF) >> 19) | (w53 << (32 - 19))) ^ ((w53 & 0xFFFFFFFF) >> 10)) + w48 + ((((w40 & 0xFFFFFFFF) >> 7) | (w40 << (32 - 7))) ^ (((w40 & 0xFFFFFFFF) >> 18) | (w40 << (32 - 18))) ^ ((w40 & 0xFFFFFFFF) >> 3)) + w39); temp2 = ((((B & 0xFFFFFFFF) >> 2) | (B << (32 - 2))) ^ (((B & 0xFFFFFFFF) >> 13) | (B << (32 - 13))) ^ (((B & 0xFFFFFFFF) >> 22) | (B << (32 - 22)))) + ((B & C) | (D & (B | C))); E += temp1; A = temp1 + temp2; };
-            { temp1 = H + ((((E & 0xFFFFFFFF) >> 6) | (E << (32 - 6))) ^ (((E & 0xFFFFFFFF) >> 11) | (E << (32 - 11))) ^ (((E & 0xFFFFFFFF) >> 25) | (E << (32 - 25)))) + (G ^ (E & (F ^ G))) + 0x748F82EE + (w56 = ((((w54 & 0xFFFFFFFF) >> 17) | (w54 << (32 - 17))) ^ (((w54 & 0xFFFFFFFF) >> 19) | (w54 << (32 - 19))) ^ ((w54 & 0xFFFFFFFF) >> 10)) + w49 + ((((w41 & 0xFFFFFFFF) >> 7) | (w41 << (32 - 7))) ^ (((w41 & 0xFFFFFFFF) >> 18) | (w41 << (32 - 18))) ^ ((w41 & 0xFFFFFFFF) >> 3)) + w40); temp2 = ((((A & 0xFFFFFFFF) >> 2) | (A << (32 - 2))) ^ (((A & 0xFFFFFFFF) >> 13) | (A << (32 - 13))) ^ (((A & 0xFFFFFFFF) >> 22) | (A << (32 - 22)))) + ((A & B) | (C & (A | B))); D += temp1; H = temp1 + temp2; };
-            { temp1 = G + ((((D & 0xFFFFFFFF) >> 6) | (D << (32 - 6))) ^ (((D & 0xFFFFFFFF) >> 11) | (D << (32 - 11))) ^ (((D & 0xFFFFFFFF) >> 25) | (D << (32 - 25)))) + (F ^ (D & (E ^ F))) + 0x78A5636F + (w57 = ((((w55 & 0xFFFFFFFF) >> 17) | (w55 << (32 - 17))) ^ (((w55 & 0xFFFFFFFF) >> 19) | (w55 << (32 - 19))) ^ ((w55 & 0xFFFFFFFF) >> 10)) + w50 + ((((w42 & 0xFFFFFFFF) >> 7) | (w42 << (32 - 7))) ^ (((w42 & 0xFFFFFFFF) >> 18) | (w42 << (32 - 18))) ^ ((w42 & 0xFFFFFFFF) >> 3)) + w41); temp2 = ((((H & 0xFFFFFFFF) >> 2) | (H << (32 - 2))) ^ (((H & 0xFFFFFFFF) >> 13) | (H << (32 - 13))) ^ (((H & 0xFFFFFFFF) >> 22) | (H << (32 - 22)))) + ((H & A) | (B & (H | A))); C += temp1; G = temp1 + temp2; };
-            { temp1 = F + ((((C & 0xFFFFFFFF) >> 6) | (C << (32 - 6))) ^ (((C & 0xFFFFFFFF) >> 11) | (C << (32 - 11))) ^ (((C & 0xFFFFFFFF) >> 25) | (C << (32 - 25)))) + (E ^ (C & (D ^ E))) + 0x84C87814 + (w58 = ((((w56 & 0xFFFFFFFF) >> 17) | (w56 << (32 - 17))) ^ (((w56 & 0xFFFFFFFF) >> 19) | (w56 << (32 - 19))) ^ ((w56 & 0xFFFFFFFF) >> 10)) + w51 + ((((w43 & 0xFFFFFFFF) >> 7) | (w43 << (32 - 7))) ^ (((w43 & 0xFFFFFFFF) >> 18) | (w43 << (32 - 18))) ^ ((w43 & 0xFFFFFFFF) >> 3)) + w42); temp2 = ((((G & 0xFFFFFFFF) >> 2) | (G << (32 - 2))) ^ (((G & 0xFFFFFFFF) >> 13) | (G << (32 - 13))) ^ (((G & 0xFFFFFFFF) >> 22) | (G << (32 - 22)))) + ((G & H) | (A & (G | H))); B += temp1; F = temp1 + temp2; };
-            { temp1 = E + ((((B & 0xFFFFFFFF) >> 6) | (B << (32 - 6))) ^ (((B & 0xFFFFFFFF) >> 11) | (B << (32 - 11))) ^ (((B & 0xFFFFFFFF) >> 25) | (B << (32 - 25)))) + (D ^ (B & (C ^ D))) + 0x8CC70208 + (w59 = ((((w57 & 0xFFFFFFFF) >> 17) | (w57 << (32 - 17))) ^ (((w57 & 0xFFFFFFFF) >> 19) | (w57 << (32 - 19))) ^ ((w57 & 0xFFFFFFFF) >> 10)) + w52 + ((((w44 & 0xFFFFFFFF) >> 7) | (w44 << (32 - 7))) ^ (((w44 & 0xFFFFFFFF) >> 18) | (w44 << (32 - 18))) ^ ((w44 & 0xFFFFFFFF) >> 3)) + w43); temp2 = ((((F & 0xFFFFFFFF) >> 2) | (F << (32 - 2))) ^ (((F & 0xFFFFFFFF) >> 13) | (F << (32 - 13))) ^ (((F & 0xFFFFFFFF) >> 22) | (F << (32 - 22)))) + ((F & G) | (H & (F | G))); A += temp1; E = temp1 + temp2; };
-            { temp1 = D + ((((A & 0xFFFFFFFF) >> 6) | (A << (32 - 6))) ^ (((A & 0xFFFFFFFF) >> 11) | (A << (32 - 11))) ^ (((A & 0xFFFFFFFF) >> 25) | (A << (32 - 25)))) + (C ^ (A & (B ^ C))) + 0x90BEFFFA + (w60 = ((((w58 & 0xFFFFFFFF) >> 17) | (w58 << (32 - 17))) ^ (((w58 & 0xFFFFFFFF) >> 19) | (w58 << (32 - 19))) ^ ((w58 & 0xFFFFFFFF) >> 10)) + w53 + ((((w45 & 0xFFFFFFFF) >> 7) | (w45 << (32 - 7))) ^ (((w45 & 0xFFFFFFFF) >> 18) | (w45 << (32 - 18))) ^ ((w45 & 0xFFFFFFFF) >> 3)) + w44); temp2 = ((((E & 0xFFFFFFFF) >> 2) | (E << (32 - 2))) ^ (((E & 0xFFFFFFFF) >> 13) | (E << (32 - 13))) ^ (((E & 0xFFFFFFFF) >> 22) | (E << (32 - 22)))) + ((E & F) | (G & (E | F))); H += temp1; D = temp1 + temp2; };
-            { temp1 = C + ((((H & 0xFFFFFFFF) >> 6) | (H << (32 - 6))) ^ (((H & 0xFFFFFFFF) >> 11) | (H << (32 - 11))) ^ (((H & 0xFFFFFFFF) >> 25) | (H << (32 - 25)))) + (B ^ (H & (A ^ B))) + 0xA4506CEB + (w61 = ((((w59 & 0xFFFFFFFF) >> 17) | (w59 << (32 - 17))) ^ (((w59 & 0xFFFFFFFF) >> 19) | (w59 << (32 - 19))) ^ ((w59 & 0xFFFFFFFF) >> 10)) + w54 + ((((w46 & 0xFFFFFFFF) >> 7) | (w46 << (32 - 7))) ^ (((w46 & 0xFFFFFFFF) >> 18) | (w46 << (32 - 18))) ^ ((w46 & 0xFFFFFFFF) >> 3)) + w45); temp2 = ((((D & 0xFFFFFFFF) >> 2) | (D << (32 - 2))) ^ (((D & 0xFFFFFFFF) >> 13) | (D << (32 - 13))) ^ (((D & 0xFFFFFFFF) >> 22) | (D << (32 - 22)))) + ((D & E) | (F & (D | E))); G += temp1; C = temp1 + temp2; };
-            { temp1 = B + ((((G & 0xFFFFFFFF) >> 6) | (G << (32 - 6))) ^ (((G & 0xFFFFFFFF) >> 11) | (G << (32 - 11))) ^ (((G & 0xFFFFFFFF) >> 25) | (G << (32 - 25)))) + (A ^ (G & (H ^ A))) + 0xBEF9A3F7 + (w62 = ((((w60 & 0xFFFFFFFF) >> 17) | (w60 << (32 - 17))) ^ (((w60 & 0xFFFFFFFF) >> 19) | (w60 << (32 - 19))) ^ ((w60 & 0xFFFFFFFF) >> 10)) + w55 + ((((w47 & 0xFFFFFFFF) >> 7) | (w47 << (32 - 7))) ^ (((w47 & 0xFFFFFFFF) >> 18) | (w47 << (32 - 18))) ^ ((w47 & 0xFFFFFFFF) >> 3)) + w46); temp2 = ((((C & 0xFFFFFFFF) >> 2) | (C << (32 - 2))) ^ (((C & 0xFFFFFFFF) >> 13) | (C << (32 - 13))) ^ (((C & 0xFFFFFFFF) >> 22) | (C << (32 - 22)))) + ((C & D) | (E & (C | D))); F += temp1; B = temp1 + temp2; };
-            { temp1 = A + ((((F & 0xFFFFFFFF) >> 6) | (F << (32 - 6))) ^ (((F & 0xFFFFFFFF) >> 11) | (F << (32 - 11))) ^ (((F & 0xFFFFFFFF) >> 25) | (F << (32 - 25)))) + (H ^ (F & (G ^ H))) + 0xC67178F2 + (w63 = ((((w61 & 0xFFFFFFFF) >> 17) | (w61 << (32 - 17))) ^ (((w61 & 0xFFFFFFFF) >> 19) | (w61 << (32 - 19))) ^ ((w61 & 0xFFFFFFFF) >> 10)) + w56 + ((((w48 & 0xFFFFFFFF) >> 7) | (w48 << (32 - 7))) ^ (((w48 & 0xFFFFFFFF) >> 18) | (w48 << (32 - 18))) ^ ((w48 & 0xFFFFFFFF) >> 3)) + w47); temp2 = ((((B & 0xFFFFFFFF) >> 2) | (B << (32 - 2))) ^ (((B & 0xFFFFFFFF) >> 13) | (B << (32 - 13))) ^ (((B & 0xFFFFFFFF) >> 22) | (B << (32 - 22)))) + ((B & C) | (D & (B | C))); E += temp1; A = temp1 + temp2; };
+            { temp1 = H + (((E >> 6) | (E << (32 - 6))) ^ ((E >> 11) | (E << (32 - 11))) ^ ((E >> 25) | (E << (32 - 25)))) + (G ^ (E & (F ^ G))) + 0x428A2F98 + w00; temp2 = (((A >> 2) | (A << (32 - 2))) ^ ((A >> 13) | (A << (32 - 13))) ^ ((A >> 22) | (A << (32 - 22)))) + ((A & B) | (C & (A | B))); D += temp1; H = temp1 + temp2; };
+            { temp1 = G + (((D >> 6) | (D << (32 - 6))) ^ ((D >> 11) | (D << (32 - 11))) ^ ((D >> 25) | (D << (32 - 25)))) + (F ^ (D & (E ^ F))) + 0x71374491 + w01; temp2 = (((H >> 2) | (H << (32 - 2))) ^ ((H >> 13) | (H << (32 - 13))) ^ ((H >> 22) | (H << (32 - 22)))) + ((H & A) | (B & (H | A))); C += temp1; G = temp1 + temp2; };
+            { temp1 = F + (((C >> 6) | (C << (32 - 6))) ^ ((C >> 11) | (C << (32 - 11))) ^ ((C >> 25) | (C << (32 - 25)))) + (E ^ (C & (D ^ E))) + 0xB5C0FBCF + w02; temp2 = (((G >> 2) | (G << (32 - 2))) ^ ((G >> 13) | (G << (32 - 13))) ^ ((G >> 22) | (G << (32 - 22)))) + ((G & H) | (A & (G | H))); B += temp1; F = temp1 + temp2; };
+            { temp1 = E + (((B >> 6) | (B << (32 - 6))) ^ ((B >> 11) | (B << (32 - 11))) ^ ((B >> 25) | (B << (32 - 25)))) + (D ^ (B & (C ^ D))) + 0xE9B5DBA5 + w03; temp2 = (((F >> 2) | (F << (32 - 2))) ^ ((F >> 13) | (F << (32 - 13))) ^ ((F >> 22) | (F << (32 - 22)))) + ((F & G) | (H & (F | G))); A += temp1; E = temp1 + temp2; };
+            { temp1 = D + (((A >> 6) | (A << (32 - 6))) ^ ((A >> 11) | (A << (32 - 11))) ^ ((A >> 25) | (A << (32 - 25)))) + (C ^ (A & (B ^ C))) + 0x3956C25B + w04; temp2 = (((E >> 2) | (E << (32 - 2))) ^ ((E >> 13) | (E << (32 - 13))) ^ ((E >> 22) | (E << (32 - 22)))) + ((E & F) | (G & (E | F))); H += temp1; D = temp1 + temp2; };
+            { temp1 = C + (((H >> 6) | (H << (32 - 6))) ^ ((H >> 11) | (H << (32 - 11))) ^ ((H >> 25) | (H << (32 - 25)))) + (B ^ (H & (A ^ B))) + 0x59F111F1 + w05; temp2 = (((D >> 2) | (D << (32 - 2))) ^ ((D >> 13) | (D << (32 - 13))) ^ ((D >> 22) | (D << (32 - 22)))) + ((D & E) | (F & (D | E))); G += temp1; C = temp1 + temp2; };
+            { temp1 = B + (((G >> 6) | (G << (32 - 6))) ^ ((G >> 11) | (G << (32 - 11))) ^ ((G >> 25) | (G << (32 - 25)))) + (A ^ (G & (H ^ A))) + 0x923F82A4 + w06; temp2 = (((C >> 2) | (C << (32 - 2))) ^ ((C >> 13) | (C << (32 - 13))) ^ ((C >> 22) | (C << (32 - 22)))) + ((C & D) | (E & (C | D))); F += temp1; B = temp1 + temp2; };
+            { temp1 = A + (((F >> 6) | (F << (32 - 6))) ^ ((F >> 11) | (F << (32 - 11))) ^ ((F >> 25) | (F << (32 - 25)))) + (H ^ (F & (G ^ H))) + 0xAB1C5ED5 + w07; temp2 = (((B >> 2) | (B << (32 - 2))) ^ ((B >> 13) | (B << (32 - 13))) ^ ((B >> 22) | (B << (32 - 22)))) + ((B & C) | (D & (B | C))); E += temp1; A = temp1 + temp2; };
+            { temp1 = H + (((E >> 6) | (E << (32 - 6))) ^ ((E >> 11) | (E << (32 - 11))) ^ ((E >> 25) | (E << (32 - 25)))) + (G ^ (E & (F ^ G))) + 0xD807AA98 + w08; temp2 = (((A >> 2) | (A << (32 - 2))) ^ ((A >> 13) | (A << (32 - 13))) ^ ((A >> 22) | (A << (32 - 22)))) + ((A & B) | (C & (A | B))); D += temp1; H = temp1 + temp2; };
+            { temp1 = G + (((D >> 6) | (D << (32 - 6))) ^ ((D >> 11) | (D << (32 - 11))) ^ ((D >> 25) | (D << (32 - 25)))) + (F ^ (D & (E ^ F))) + 0x12835B01 + w09; temp2 = (((H >> 2) | (H << (32 - 2))) ^ ((H >> 13) | (H << (32 - 13))) ^ ((H >> 22) | (H << (32 - 22)))) + ((H & A) | (B & (H | A))); C += temp1; G = temp1 + temp2; };
+            { temp1 = F + (((C >> 6) | (C << (32 - 6))) ^ ((C >> 11) | (C << (32 - 11))) ^ ((C >> 25) | (C << (32 - 25)))) + (E ^ (C & (D ^ E))) + 0x243185BE + w10; temp2 = (((G >> 2) | (G << (32 - 2))) ^ ((G >> 13) | (G << (32 - 13))) ^ ((G >> 22) | (G << (32 - 22)))) + ((G & H) | (A & (G | H))); B += temp1; F = temp1 + temp2; };
+            { temp1 = E + (((B >> 6) | (B << (32 - 6))) ^ ((B >> 11) | (B << (32 - 11))) ^ ((B >> 25) | (B << (32 - 25)))) + (D ^ (B & (C ^ D))) + 0x550C7DC3 + w11; temp2 = (((F >> 2) | (F << (32 - 2))) ^ ((F >> 13) | (F << (32 - 13))) ^ ((F >> 22) | (F << (32 - 22)))) + ((F & G) | (H & (F | G))); A += temp1; E = temp1 + temp2; };
+            { temp1 = D + (((A >> 6) | (A << (32 - 6))) ^ ((A >> 11) | (A << (32 - 11))) ^ ((A >> 25) | (A << (32 - 25)))) + (C ^ (A & (B ^ C))) + 0x72BE5D74 + w12; temp2 = (((E >> 2) | (E << (32 - 2))) ^ ((E >> 13) | (E << (32 - 13))) ^ ((E >> 22) | (E << (32 - 22)))) + ((E & F) | (G & (E | F))); H += temp1; D = temp1 + temp2; };
+            { temp1 = C + (((H >> 6) | (H << (32 - 6))) ^ ((H >> 11) | (H << (32 - 11))) ^ ((H >> 25) | (H << (32 - 25)))) + (B ^ (H & (A ^ B))) + 0x80DEB1FE + w13; temp2 = (((D >> 2) | (D << (32 - 2))) ^ ((D >> 13) | (D << (32 - 13))) ^ ((D >> 22) | (D << (32 - 22)))) + ((D & E) | (F & (D | E))); G += temp1; C = temp1 + temp2; };
+            { temp1 = B + (((G >> 6) | (G << (32 - 6))) ^ ((G >> 11) | (G << (32 - 11))) ^ ((G >> 25) | (G << (32 - 25)))) + (A ^ (G & (H ^ A))) + 0x9BDC06A7 + w14; temp2 = (((C >> 2) | (C << (32 - 2))) ^ ((C >> 13) | (C << (32 - 13))) ^ ((C >> 22) | (C << (32 - 22)))) + ((C & D) | (E & (C | D))); F += temp1; B = temp1 + temp2; };
+            { temp1 = A + (((F >> 6) | (F << (32 - 6))) ^ ((F >> 11) | (F << (32 - 11))) ^ ((F >> 25) | (F << (32 - 25)))) + (H ^ (F & (G ^ H))) + 0xC19BF174 + w15; temp2 = (((B >> 2) | (B << (32 - 2))) ^ ((B >> 13) | (B << (32 - 13))) ^ ((B >> 22) | (B << (32 - 22)))) + ((B & C) | (D & (B | C))); E += temp1; A = temp1 + temp2; };
+            {
+                w16 = ((((w14) >> 17) | (w14 << (32 - 17))) ^ (((w14) >> 19) | (w14 << (32 - 19))) ^ ((w14) >> 10)) + w09 + ((((w01) >> 7) | (w01 << (32 - 7))) ^ (((w01) >> 18) | (w01 << (32 - 18))) ^ ((w01) >> 3)) + w00;
+                temp1 = H + (((E >> 6) | (E << (32 - 6))) ^ ((E >> 11) | (E << (32 - 11))) ^ ((E >> 25) | (E << (32 - 25)))) + (G ^ (E & (F ^ G))) + 0xE49B69C1 + w16; temp2 = (((A >> 2) | (A << (32 - 2))) ^ ((A >> 13) | (A << (32 - 13))) ^ ((A >> 22) | (A << (32 - 22)))) + ((A & B) | (C & (A | B))); D += temp1; H = temp1 + temp2;
+            };
+            {
+                w17 = ((((w15) >> 17) | (w15 << (32 - 17))) ^ (((w15) >> 19) | (w15 << (32 - 19))) ^ ((w15) >> 10)) + w10 + ((((w02) >> 7) | (w02 << (32 - 7))) ^ (((w02) >> 18) | (w02 << (32 - 18))) ^ ((w02) >> 3)) + w01;
+                temp1 = G + (((D >> 6) | (D << (32 - 6))) ^ ((D >> 11) | (D << (32 - 11))) ^ ((D >> 25) | (D << (32 - 25)))) + (F ^ (D & (E ^ F))) + 0xEFBE4786 + w17; temp2 = (((H >> 2) | (H << (32 - 2))) ^ ((H >> 13) | (H << (32 - 13))) ^ ((H >> 22) | (H << (32 - 22)))) + ((H & A) | (B & (H | A))); C += temp1; G = temp1 + temp2;
+            };
+            {
+                w18 = ((((w16) >> 17) | (w16 << (32 - 17))) ^ (((w16) >> 19) | (w16 << (32 - 19))) ^ ((w16) >> 10)) + w11 + ((((w03) >> 7) | (w03 << (32 - 7))) ^ (((w03) >> 18) | (w03 << (32 - 18))) ^ ((w03) >> 3)) + w02;
+                temp1 = F + (((C >> 6) | (C << (32 - 6))) ^ ((C >> 11) | (C << (32 - 11))) ^ ((C >> 25) | (C << (32 - 25)))) + (E ^ (C & (D ^ E))) + 0x0FC19DC6 + w18; temp2 = (((G >> 2) | (G << (32 - 2))) ^ ((G >> 13) | (G << (32 - 13))) ^ ((G >> 22) | (G << (32 - 22)))) + ((G & H) | (A & (G | H))); B += temp1; F = temp1 + temp2;
+            };
+            {
+                w19 = ((((w17) >> 17) | (w17 << (32 - 17))) ^ (((w17) >> 19) | (w17 << (32 - 19))) ^ ((w17) >> 10)) + w12 + ((((w04) >> 7) | (w04 << (32 - 7))) ^ (((w04) >> 18) | (w04 << (32 - 18))) ^ ((w04) >> 3)) + w03;
+                temp1 = E + (((B >> 6) | (B << (32 - 6))) ^ ((B >> 11) | (B << (32 - 11))) ^ ((B >> 25) | (B << (32 - 25)))) + (D ^ (B & (C ^ D))) + 0x240CA1CC + w19; temp2 = (((F >> 2) | (F << (32 - 2))) ^ ((F >> 13) | (F << (32 - 13))) ^ ((F >> 22) | (F << (32 - 22)))) + ((F & G) | (H & (F | G))); A += temp1; E = temp1 + temp2;
+            };
+            {
+                w20 = ((((w18) >> 17) | (w18 << (32 - 17))) ^ (((w18) >> 19) | (w18 << (32 - 19))) ^ ((w18) >> 10)) + w13 + ((((w05) >> 7) | (w05 << (32 - 7))) ^ (((w05) >> 18) | (w05 << (32 - 18))) ^ ((w05) >> 3)) + w04;
+                temp1 = D + (((A >> 6) | (A << (32 - 6))) ^ ((A >> 11) | (A << (32 - 11))) ^ ((A >> 25) | (A << (32 - 25)))) + (C ^ (A & (B ^ C))) + 0x2DE92C6F + w20; temp2 = (((E >> 2) | (E << (32 - 2))) ^ ((E >> 13) | (E << (32 - 13))) ^ ((E >> 22) | (E << (32 - 22)))) + ((E & F) | (G & (E | F))); H += temp1; D = temp1 + temp2;
+            };
+            {
+                w21 = ((((w19) >> 17) | (w19 << (32 - 17))) ^ (((w19) >> 19) | (w19 << (32 - 19))) ^ ((w19) >> 10)) + w14 + ((((w06) >> 7) | (w06 << (32 - 7))) ^ (((w06) >> 18) | (w06 << (32 - 18))) ^ ((w06) >> 3)) + w05;
+                temp1 = C + (((H >> 6) | (H << (32 - 6))) ^ ((H >> 11) | (H << (32 - 11))) ^ ((H >> 25) | (H << (32 - 25)))) + (B ^ (H & (A ^ B))) + 0x4A7484AA + w21; temp2 = (((D >> 2) | (D << (32 - 2))) ^ ((D >> 13) | (D << (32 - 13))) ^ ((D >> 22) | (D << (32 - 22)))) + ((D & E) | (F & (D | E))); G += temp1; C = temp1 + temp2;
+            };
+            {
+                w22 = ((((w20) >> 17) | (w20 << (32 - 17))) ^ (((w20) >> 19) | (w20 << (32 - 19))) ^ ((w20) >> 10)) + w15 + ((((w07) >> 7) | (w07 << (32 - 7))) ^ (((w07) >> 18) | (w07 << (32 - 18))) ^ ((w07) >> 3)) + w06;
+                temp1 = B + (((G >> 6) | (G << (32 - 6))) ^ ((G >> 11) | (G << (32 - 11))) ^ ((G >> 25) | (G << (32 - 25)))) + (A ^ (G & (H ^ A))) + 0x5CB0A9DC + w22; temp2 = (((C >> 2) | (C << (32 - 2))) ^ ((C >> 13) | (C << (32 - 13))) ^ ((C >> 22) | (C << (32 - 22)))) + ((C & D) | (E & (C | D))); F += temp1; B = temp1 + temp2;
+            };
+            {
+                w23 = ((((w21) >> 17) | (w21 << (32 - 17))) ^ (((w21) >> 19) | (w21 << (32 - 19))) ^ ((w21) >> 10)) + w16 + ((((w08) >> 7) | (w08 << (32 - 7))) ^ (((w08) >> 18) | (w08 << (32 - 18))) ^ ((w08) >> 3)) + w07;
+                temp1 = A + (((F >> 6) | (F << (32 - 6))) ^ ((F >> 11) | (F << (32 - 11))) ^ ((F >> 25) | (F << (32 - 25)))) + (H ^ (F & (G ^ H))) + 0x76F988DA + w23; temp2 = (((B >> 2) | (B << (32 - 2))) ^ ((B >> 13) | (B << (32 - 13))) ^ ((B >> 22) | (B << (32 - 22)))) + ((B & C) | (D & (B | C))); E += temp1; A = temp1 + temp2;
+            };
+            {
+                w24 = ((((w22) >> 17) | (w22 << (32 - 17))) ^ (((w22) >> 19) | (w22 << (32 - 19))) ^ ((w22) >> 10)) + w17 + ((((w09) >> 7) | (w09 << (32 - 7))) ^ (((w09) >> 18) | (w09 << (32 - 18))) ^ ((w09) >> 3)) + w08;
+                temp1 = H + (((E >> 6) | (E << (32 - 6))) ^ ((E >> 11) | (E << (32 - 11))) ^ ((E >> 25) | (E << (32 - 25)))) + (G ^ (E & (F ^ G))) + 0x983E5152 + w24; temp2 = (((A >> 2) | (A << (32 - 2))) ^ ((A >> 13) | (A << (32 - 13))) ^ ((A >> 22) | (A << (32 - 22)))) + ((A & B) | (C & (A | B))); D += temp1; H = temp1 + temp2;
+            };
+            {
+                w25 = ((((w23) >> 17) | (w23 << (32 - 17))) ^ (((w23) >> 19) | (w23 << (32 - 19))) ^ ((w23) >> 10)) + w18 + ((((w10) >> 7) | (w10 << (32 - 7))) ^ (((w10) >> 18) | (w10 << (32 - 18))) ^ ((w10) >> 3)) + w09;
+                temp1 = G + (((D >> 6) | (D << (32 - 6))) ^ ((D >> 11) | (D << (32 - 11))) ^ ((D >> 25) | (D << (32 - 25)))) + (F ^ (D & (E ^ F))) + 0xA831C66D + w25; temp2 = (((H >> 2) | (H << (32 - 2))) ^ ((H >> 13) | (H << (32 - 13))) ^ ((H >> 22) | (H << (32 - 22)))) + ((H & A) | (B & (H | A))); C += temp1; G = temp1 + temp2;
+            };
+            {
+                w26 = ((((w24) >> 17) | (w24 << (32 - 17))) ^ (((w24) >> 19) | (w24 << (32 - 19))) ^ ((w24) >> 10)) + w19 + ((((w11) >> 7) | (w11 << (32 - 7))) ^ (((w11) >> 18) | (w11 << (32 - 18))) ^ ((w11) >> 3)) + w10;
+                temp1 = F + (((C >> 6) | (C << (32 - 6))) ^ ((C >> 11) | (C << (32 - 11))) ^ ((C >> 25) | (C << (32 - 25)))) + (E ^ (C & (D ^ E))) + 0xB00327C8 + w26; temp2 = (((G >> 2) | (G << (32 - 2))) ^ ((G >> 13) | (G << (32 - 13))) ^ ((G >> 22) | (G << (32 - 22)))) + ((G & H) | (A & (G | H))); B += temp1; F = temp1 + temp2;
+            };
+            {
+                w27 = ((((w25) >> 17) | (w25 << (32 - 17))) ^ (((w25) >> 19) | (w25 << (32 - 19))) ^ ((w25) >> 10)) + w20 + ((((w12) >> 7) | (w12 << (32 - 7))) ^ (((w12) >> 18) | (w12 << (32 - 18))) ^ ((w12) >> 3)) + w11;
+                temp1 = E + (((B >> 6) | (B << (32 - 6))) ^ ((B >> 11) | (B << (32 - 11))) ^ ((B >> 25) | (B << (32 - 25)))) + (D ^ (B & (C ^ D))) + 0xBF597FC7 + w27; temp2 = (((F >> 2) | (F << (32 - 2))) ^ ((F >> 13) | (F << (32 - 13))) ^ ((F >> 22) | (F << (32 - 22)))) + ((F & G) | (H & (F | G))); A += temp1; E = temp1 + temp2;
+            };
+            {
+                w28 = ((((w26) >> 17) | (w26 << (32 - 17))) ^ (((w26) >> 19) | (w26 << (32 - 19))) ^ ((w26) >> 10)) + w21 + ((((w13) >> 7) | (w13 << (32 - 7))) ^ (((w13) >> 18) | (w13 << (32 - 18))) ^ ((w13) >> 3)) + w12;
+                temp1 = D + (((A >> 6) | (A << (32 - 6))) ^ ((A >> 11) | (A << (32 - 11))) ^ ((A >> 25) | (A << (32 - 25)))) + (C ^ (A & (B ^ C))) + 0xC6E00BF3 + w28; temp2 = (((E >> 2) | (E << (32 - 2))) ^ ((E >> 13) | (E << (32 - 13))) ^ ((E >> 22) | (E << (32 - 22)))) + ((E & F) | (G & (E | F))); H += temp1; D = temp1 + temp2;
+            };
+            {
+                w29 = ((((w27) >> 17) | (w27 << (32 - 17))) ^ (((w27) >> 19) | (w27 << (32 - 19))) ^ ((w27) >> 10)) + w22 + ((((w14) >> 7) | (w14 << (32 - 7))) ^ (((w14) >> 18) | (w14 << (32 - 18))) ^ ((w14) >> 3)) + w13;
+                temp1 = C + (((H >> 6) | (H << (32 - 6))) ^ ((H >> 11) | (H << (32 - 11))) ^ ((H >> 25) | (H << (32 - 25)))) + (B ^ (H & (A ^ B))) + 0xD5A79147 + w29; temp2 = (((D >> 2) | (D << (32 - 2))) ^ ((D >> 13) | (D << (32 - 13))) ^ ((D >> 22) | (D << (32 - 22)))) + ((D & E) | (F & (D | E))); G += temp1; C = temp1 + temp2;
+            };
+            {
+                w30 = ((((w28) >> 17) | (w28 << (32 - 17))) ^ (((w28) >> 19) | (w28 << (32 - 19))) ^ ((w28) >> 10)) + w23 + ((((w15) >> 7) | (w15 << (32 - 7))) ^ (((w15) >> 18) | (w15 << (32 - 18))) ^ ((w15) >> 3)) + w14;
+                temp1 = B + (((G >> 6) | (G << (32 - 6))) ^ ((G >> 11) | (G << (32 - 11))) ^ ((G >> 25) | (G << (32 - 25)))) + (A ^ (G & (H ^ A))) + 0x06CA6351 + w30; temp2 = (((C >> 2) | (C << (32 - 2))) ^ ((C >> 13) | (C << (32 - 13))) ^ ((C >> 22) | (C << (32 - 22)))) + ((C & D) | (E & (C | D))); F += temp1; B = temp1 + temp2;
+            };
+            {
+                w31 = ((((w29) >> 17) | (w29 << (32 - 17))) ^ (((w29) >> 19) | (w29 << (32 - 19))) ^ ((w29) >> 10)) + w24 + ((((w16) >> 7) | (w16 << (32 - 7))) ^ (((w16) >> 18) | (w16 << (32 - 18))) ^ ((w16) >> 3)) + w15;
+                temp1 = A + (((F >> 6) | (F << (32 - 6))) ^ ((F >> 11) | (F << (32 - 11))) ^ ((F >> 25) | (F << (32 - 25)))) + (H ^ (F & (G ^ H))) + 0x14292967 + w31; temp2 = (((B >> 2) | (B << (32 - 2))) ^ ((B >> 13) | (B << (32 - 13))) ^ ((B >> 22) | (B << (32 - 22)))) + ((B & C) | (D & (B | C))); E += temp1; A = temp1 + temp2;
+            };
+            {
+                w32 = ((((w30) >> 17) | (w30 << (32 - 17))) ^ (((w30) >> 19) | (w30 << (32 - 19))) ^ ((w30) >> 10)) + w25 + ((((w17) >> 7) | (w17 << (32 - 7))) ^ (((w17) >> 18) | (w17 << (32 - 18))) ^ ((w17) >> 3)) + w16;
+                temp1 = H + (((E >> 6) | (E << (32 - 6))) ^ ((E >> 11) | (E << (32 - 11))) ^ ((E >> 25) | (E << (32 - 25)))) + (G ^ (E & (F ^ G))) + 0x27B70A85 + w32; temp2 = (((A >> 2) | (A << (32 - 2))) ^ ((A >> 13) | (A << (32 - 13))) ^ ((A >> 22) | (A << (32 - 22)))) + ((A & B) | (C & (A | B))); D += temp1; H = temp1 + temp2;
+            };
+            {
+                w33 = ((((w31) >> 17) | (w31 << (32 - 17))) ^ (((w31) >> 19) | (w31 << (32 - 19))) ^ ((w31) >> 10)) + w26 + ((((w18) >> 7) | (w18 << (32 - 7))) ^ (((w18) >> 18) | (w18 << (32 - 18))) ^ ((w18) >> 3)) + w17;
+                temp1 = G + (((D >> 6) | (D << (32 - 6))) ^ ((D >> 11) | (D << (32 - 11))) ^ ((D >> 25) | (D << (32 - 25)))) + (F ^ (D & (E ^ F))) + 0x2E1B2138 + w33; temp2 = (((H >> 2) | (H << (32 - 2))) ^ ((H >> 13) | (H << (32 - 13))) ^ ((H >> 22) | (H << (32 - 22)))) + ((H & A) | (B & (H | A))); C += temp1; G = temp1 + temp2;
+            };
+            {
+                w34 = ((((w32) >> 17) | (w32 << (32 - 17))) ^ (((w32) >> 19) | (w32 << (32 - 19))) ^ ((w32) >> 10)) + w27 + ((((w19) >> 7) | (w19 << (32 - 7))) ^ (((w19) >> 18) | (w19 << (32 - 18))) ^ ((w19) >> 3)) + w18;
+                temp1 = F + (((C >> 6) | (C << (32 - 6))) ^ ((C >> 11) | (C << (32 - 11))) ^ ((C >> 25) | (C << (32 - 25)))) + (E ^ (C & (D ^ E))) + 0x4D2C6DFC + w34; temp2 = (((G >> 2) | (G << (32 - 2))) ^ ((G >> 13) | (G << (32 - 13))) ^ ((G >> 22) | (G << (32 - 22)))) + ((G & H) | (A & (G | H))); B += temp1; F = temp1 + temp2;
+            };
+            {
+                w35 = ((((w33) >> 17) | (w33 << (32 - 17))) ^ (((w33) >> 19) | (w33 << (32 - 19))) ^ ((w33) >> 10)) + w28 + ((((w20) >> 7) | (w20 << (32 - 7))) ^ (((w20) >> 18) | (w20 << (32 - 18))) ^ ((w20) >> 3)) + w19;
+                temp1 = E + (((B >> 6) | (B << (32 - 6))) ^ ((B >> 11) | (B << (32 - 11))) ^ ((B >> 25) | (B << (32 - 25)))) + (D ^ (B & (C ^ D))) + 0x53380D13 + w35; temp2 = (((F >> 2) | (F << (32 - 2))) ^ ((F >> 13) | (F << (32 - 13))) ^ ((F >> 22) | (F << (32 - 22)))) + ((F & G) | (H & (F | G))); A += temp1; E = temp1 + temp2;
+            };
+            {
+                w36 = ((((w34) >> 17) | (w34 << (32 - 17))) ^ (((w34) >> 19) | (w34 << (32 - 19))) ^ ((w34) >> 10)) + w29 + ((((w21) >> 7) | (w21 << (32 - 7))) ^ (((w21) >> 18) | (w21 << (32 - 18))) ^ ((w21) >> 3)) + w20;
+                temp1 = D + (((A >> 6) | (A << (32 - 6))) ^ ((A >> 11) | (A << (32 - 11))) ^ ((A >> 25) | (A << (32 - 25)))) + (C ^ (A & (B ^ C))) + 0x650A7354 + w36; temp2 = (((E >> 2) | (E << (32 - 2))) ^ ((E >> 13) | (E << (32 - 13))) ^ ((E >> 22) | (E << (32 - 22)))) + ((E & F) | (G & (E | F))); H += temp1; D = temp1 + temp2;
+            };
+            {
+                w37 = ((((w35) >> 17) | (w35 << (32 - 17))) ^ (((w35) >> 19) | (w35 << (32 - 19))) ^ ((w35) >> 10)) + w30 + ((((w22) >> 7) | (w22 << (32 - 7))) ^ (((w22) >> 18) | (w22 << (32 - 18))) ^ ((w22) >> 3)) + w21;
+                temp1 = C + (((H >> 6) | (H << (32 - 6))) ^ ((H >> 11) | (H << (32 - 11))) ^ ((H >> 25) | (H << (32 - 25)))) + (B ^ (H & (A ^ B))) + 0x766A0ABB + w37; temp2 = (((D >> 2) | (D << (32 - 2))) ^ ((D >> 13) | (D << (32 - 13))) ^ ((D >> 22) | (D << (32 - 22)))) + ((D & E) | (F & (D | E))); G += temp1; C = temp1 + temp2;
+            };
+            {
+                w38 = ((((w36) >> 17) | (w36 << (32 - 17))) ^ (((w36) >> 19) | (w36 << (32 - 19))) ^ ((w36) >> 10)) + w31 + ((((w23) >> 7) | (w23 << (32 - 7))) ^ (((w23) >> 18) | (w23 << (32 - 18))) ^ ((w23) >> 3)) + w22;
+                temp1 = B + (((G >> 6) | (G << (32 - 6))) ^ ((G >> 11) | (G << (32 - 11))) ^ ((G >> 25) | (G << (32 - 25)))) + (A ^ (G & (H ^ A))) + 0x81C2C92E + w38; temp2 = (((C >> 2) | (C << (32 - 2))) ^ ((C >> 13) | (C << (32 - 13))) ^ ((C >> 22) | (C << (32 - 22)))) + ((C & D) | (E & (C | D))); F += temp1; B = temp1 + temp2;
+            };
+            {
+                w39 = ((((w37) >> 17) | (w37 << (32 - 17))) ^ (((w37) >> 19) | (w37 << (32 - 19))) ^ ((w37) >> 10)) + w32 + ((((w24) >> 7) | (w24 << (32 - 7))) ^ (((w24) >> 18) | (w24 << (32 - 18))) ^ ((w24) >> 3)) + w23;
+                temp1 = A + (((F >> 6) | (F << (32 - 6))) ^ ((F >> 11) | (F << (32 - 11))) ^ ((F >> 25) | (F << (32 - 25)))) + (H ^ (F & (G ^ H))) + 0x92722C85 + w39; temp2 = (((B >> 2) | (B << (32 - 2))) ^ ((B >> 13) | (B << (32 - 13))) ^ ((B >> 22) | (B << (32 - 22)))) + ((B & C) | (D & (B | C))); E += temp1; A = temp1 + temp2;
+            };
+            {
+                w40 = ((((w38) >> 17) | (w38 << (32 - 17))) ^ (((w38) >> 19) | (w38 << (32 - 19))) ^ ((w38) >> 10)) + w33 + ((((w25) >> 7) | (w25 << (32 - 7))) ^ (((w25) >> 18) | (w25 << (32 - 18))) ^ ((w25) >> 3)) + w24;
+                temp1 = H + (((E >> 6) | (E << (32 - 6))) ^ ((E >> 11) | (E << (32 - 11))) ^ ((E >> 25) | (E << (32 - 25)))) + (G ^ (E & (F ^ G))) + 0xA2BFE8A1 + w40; temp2 = (((A >> 2) | (A << (32 - 2))) ^ ((A >> 13) | (A << (32 - 13))) ^ ((A >> 22) | (A << (32 - 22)))) + ((A & B) | (C & (A | B))); D += temp1; H = temp1 + temp2;
+            };
+            {
+                w41 = ((((w39) >> 17) | (w39 << (32 - 17))) ^ (((w39) >> 19) | (w39 << (32 - 19))) ^ ((w39) >> 10)) + w34 + ((((w26) >> 7) | (w26 << (32 - 7))) ^ (((w26) >> 18) | (w26 << (32 - 18))) ^ ((w26) >> 3)) + w25;
+                temp1 = G + (((D >> 6) | (D << (32 - 6))) ^ ((D >> 11) | (D << (32 - 11))) ^ ((D >> 25) | (D << (32 - 25)))) + (F ^ (D & (E ^ F))) + 0xA81A664B + w41; temp2 = (((H >> 2) | (H << (32 - 2))) ^ ((H >> 13) | (H << (32 - 13))) ^ ((H >> 22) | (H << (32 - 22)))) + ((H & A) | (B & (H | A))); C += temp1; G = temp1 + temp2;
+            };
+            {
+                w42 = ((((w40) >> 17) | (w40 << (32 - 17))) ^ (((w40) >> 19) | (w40 << (32 - 19))) ^ ((w40) >> 10)) + w35 + ((((w27) >> 7) | (w27 << (32 - 7))) ^ (((w27) >> 18) | (w27 << (32 - 18))) ^ ((w27) >> 3)) + w26;
+                temp1 = F + (((C >> 6) | (C << (32 - 6))) ^ ((C >> 11) | (C << (32 - 11))) ^ ((C >> 25) | (C << (32 - 25)))) + (E ^ (C & (D ^ E))) + 0xC24B8B70 + w42; temp2 = (((G >> 2) | (G << (32 - 2))) ^ ((G >> 13) | (G << (32 - 13))) ^ ((G >> 22) | (G << (32 - 22)))) + ((G & H) | (A & (G | H))); B += temp1; F = temp1 + temp2;
+            };
+            {
+                w43 = ((((w41) >> 17) | (w41 << (32 - 17))) ^ (((w41) >> 19) | (w41 << (32 - 19))) ^ ((w41) >> 10)) + w36 + ((((w28) >> 7) | (w28 << (32 - 7))) ^ (((w28) >> 18) | (w28 << (32 - 18))) ^ ((w28) >> 3)) + w27;
+                temp1 = E + (((B >> 6) | (B << (32 - 6))) ^ ((B >> 11) | (B << (32 - 11))) ^ ((B >> 25) | (B << (32 - 25)))) + (D ^ (B & (C ^ D))) + 0xC76C51A3 + w43; temp2 = (((F >> 2) | (F << (32 - 2))) ^ ((F >> 13) | (F << (32 - 13))) ^ ((F >> 22) | (F << (32 - 22)))) + ((F & G) | (H & (F | G))); A += temp1; E = temp1 + temp2;
+            };
+            {
+                w44 = ((((w42) >> 17) | (w42 << (32 - 17))) ^ (((w42) >> 19) | (w42 << (32 - 19))) ^ ((w42) >> 10)) + w37 + ((((w29) >> 7) | (w29 << (32 - 7))) ^ (((w29) >> 18) | (w29 << (32 - 18))) ^ ((w29) >> 3)) + w28;
+                temp1 = D + (((A >> 6) | (A << (32 - 6))) ^ ((A >> 11) | (A << (32 - 11))) ^ ((A >> 25) | (A << (32 - 25)))) + (C ^ (A & (B ^ C))) + 0xD192E819 + w44; temp2 = (((E >> 2) | (E << (32 - 2))) ^ ((E >> 13) | (E << (32 - 13))) ^ ((E >> 22) | (E << (32 - 22)))) + ((E & F) | (G & (E | F))); H += temp1; D = temp1 + temp2;
+            };
+            {
+                w45 = ((((w43) >> 17) | (w43 << (32 - 17))) ^ (((w43) >> 19) | (w43 << (32 - 19))) ^ ((w43) >> 10)) + w38 + ((((w30) >> 7) | (w30 << (32 - 7))) ^ (((w30) >> 18) | (w30 << (32 - 18))) ^ ((w30) >> 3)) + w29;
+                temp1 = C + (((H >> 6) | (H << (32 - 6))) ^ ((H >> 11) | (H << (32 - 11))) ^ ((H >> 25) | (H << (32 - 25)))) + (B ^ (H & (A ^ B))) + 0xD6990624 + w45; temp2 = (((D >> 2) | (D << (32 - 2))) ^ ((D >> 13) | (D << (32 - 13))) ^ ((D >> 22) | (D << (32 - 22)))) + ((D & E) | (F & (D | E))); G += temp1; C = temp1 + temp2;
+            };
+            {
+                w46 = ((((w44) >> 17) | (w44 << (32 - 17))) ^ (((w44) >> 19) | (w44 << (32 - 19))) ^ ((w44) >> 10)) + w39 + ((((w31) >> 7) | (w31 << (32 - 7))) ^ (((w31) >> 18) | (w31 << (32 - 18))) ^ ((w31) >> 3)) + w30;
+                temp1 = B + (((G >> 6) | (G << (32 - 6))) ^ ((G >> 11) | (G << (32 - 11))) ^ ((G >> 25) | (G << (32 - 25)))) + (A ^ (G & (H ^ A))) + 0xF40E3585 + w46; temp2 = (((C >> 2) | (C << (32 - 2))) ^ ((C >> 13) | (C << (32 - 13))) ^ ((C >> 22) | (C << (32 - 22)))) + ((C & D) | (E & (C | D))); F += temp1; B = temp1 + temp2;
+            };
+            {
+                w47 = ((((w45) >> 17) | (w45 << (32 - 17))) ^ (((w45) >> 19) | (w45 << (32 - 19))) ^ ((w45) >> 10)) + w40 + ((((w32) >> 7) | (w32 << (32 - 7))) ^ (((w32) >> 18) | (w32 << (32 - 18))) ^ ((w32) >> 3)) + w31;
+                temp1 = A + (((F >> 6) | (F << (32 - 6))) ^ ((F >> 11) | (F << (32 - 11))) ^ ((F >> 25) | (F << (32 - 25)))) + (H ^ (F & (G ^ H))) + 0x106AA070 + w47; temp2 = (((B >> 2) | (B << (32 - 2))) ^ ((B >> 13) | (B << (32 - 13))) ^ ((B >> 22) | (B << (32 - 22)))) + ((B & C) | (D & (B | C))); E += temp1; A = temp1 + temp2;
+            };
+            {
+                w48 = ((((w46) >> 17) | (w46 << (32 - 17))) ^ (((w46) >> 19) | (w46 << (32 - 19))) ^ ((w46) >> 10)) + w41 + ((((w33) >> 7) | (w33 << (32 - 7))) ^ (((w33) >> 18) | (w33 << (32 - 18))) ^ ((w33) >> 3)) + w32;
+                temp1 = H + (((E >> 6) | (E << (32 - 6))) ^ ((E >> 11) | (E << (32 - 11))) ^ ((E >> 25) | (E << (32 - 25)))) + (G ^ (E & (F ^ G))) + 0x19A4C116 + w48; temp2 = (((A >> 2) | (A << (32 - 2))) ^ ((A >> 13) | (A << (32 - 13))) ^ ((A >> 22) | (A << (32 - 22)))) + ((A & B) | (C & (A | B))); D += temp1; H = temp1 + temp2;
+            };
+            {
+                w49 = ((((w47) >> 17) | (w47 << (32 - 17))) ^ (((w47) >> 19) | (w47 << (32 - 19))) ^ ((w47) >> 10)) + w42 + ((((w34) >> 7) | (w34 << (32 - 7))) ^ (((w34) >> 18) | (w34 << (32 - 18))) ^ ((w34) >> 3)) + w33;
+                temp1 = G + (((D >> 6) | (D << (32 - 6))) ^ ((D >> 11) | (D << (32 - 11))) ^ ((D >> 25) | (D << (32 - 25)))) + (F ^ (D & (E ^ F))) + 0x1E376C08 + w49; temp2 = (((H >> 2) | (H << (32 - 2))) ^ ((H >> 13) | (H << (32 - 13))) ^ ((H >> 22) | (H << (32 - 22)))) + ((H & A) | (B & (H | A))); C += temp1; G = temp1 + temp2;
+            };
+            {
+                w50 = ((((w48) >> 17) | (w48 << (32 - 17))) ^ (((w48) >> 19) | (w48 << (32 - 19))) ^ ((w48) >> 10)) + w43 + ((((w35) >> 7) | (w35 << (32 - 7))) ^ (((w35) >> 18) | (w35 << (32 - 18))) ^ ((w35) >> 3)) + w34;
+                temp1 = F + (((C >> 6) | (C << (32 - 6))) ^ ((C >> 11) | (C << (32 - 11))) ^ ((C >> 25) | (C << (32 - 25)))) + (E ^ (C & (D ^ E))) + 0x2748774C + w50; temp2 = (((G >> 2) | (G << (32 - 2))) ^ ((G >> 13) | (G << (32 - 13))) ^ ((G >> 22) | (G << (32 - 22)))) + ((G & H) | (A & (G | H))); B += temp1; F = temp1 + temp2;
+            };
+            {
+                w51 = ((((w49) >> 17) | (w49 << (32 - 17))) ^ (((w49) >> 19) | (w49 << (32 - 19))) ^ ((w49) >> 10)) + w44 + ((((w36) >> 7) | (w36 << (32 - 7))) ^ (((w36) >> 18) | (w36 << (32 - 18))) ^ ((w36) >> 3)) + w35;
+                temp1 = E + (((B >> 6) | (B << (32 - 6))) ^ ((B >> 11) | (B << (32 - 11))) ^ ((B >> 25) | (B << (32 - 25)))) + (D ^ (B & (C ^ D))) + 0x34B0BCB5 + w51; temp2 = (((F >> 2) | (F << (32 - 2))) ^ ((F >> 13) | (F << (32 - 13))) ^ ((F >> 22) | (F << (32 - 22)))) + ((F & G) | (H & (F | G))); A += temp1; E = temp1 + temp2;
+            };
+            {
+                w52 = ((((w50) >> 17) | (w50 << (32 - 17))) ^ (((w50) >> 19) | (w50 << (32 - 19))) ^ ((w50) >> 10)) + w45 + ((((w37) >> 7) | (w37 << (32 - 7))) ^ (((w37) >> 18) | (w37 << (32 - 18))) ^ ((w37) >> 3)) + w36;
+                temp1 = D + (((A >> 6) | (A << (32 - 6))) ^ ((A >> 11) | (A << (32 - 11))) ^ ((A >> 25) | (A << (32 - 25)))) + (C ^ (A & (B ^ C))) + 0x391C0CB3 + w52; temp2 = (((E >> 2) | (E << (32 - 2))) ^ ((E >> 13) | (E << (32 - 13))) ^ ((E >> 22) | (E << (32 - 22)))) + ((E & F) | (G & (E | F))); H += temp1; D = temp1 + temp2;
+            };
+            {
+                w53 = ((((w51) >> 17) | (w51 << (32 - 17))) ^ (((w51) >> 19) | (w51 << (32 - 19))) ^ ((w51) >> 10)) + w46 + ((((w38) >> 7) | (w38 << (32 - 7))) ^ (((w38) >> 18) | (w38 << (32 - 18))) ^ ((w38) >> 3)) + w37;
+                temp1 = C + (((H >> 6) | (H << (32 - 6))) ^ ((H >> 11) | (H << (32 - 11))) ^ ((H >> 25) | (H << (32 - 25)))) + (B ^ (H & (A ^ B))) + 0x4ED8AA4A + w53; temp2 = (((D >> 2) | (D << (32 - 2))) ^ ((D >> 13) | (D << (32 - 13))) ^ ((D >> 22) | (D << (32 - 22)))) + ((D & E) | (F & (D | E))); G += temp1; C = temp1 + temp2;
+            };
+            {
+                w54 = ((((w52) >> 17) | (w52 << (32 - 17))) ^ (((w52) >> 19) | (w52 << (32 - 19))) ^ ((w52) >> 10)) + w47 + ((((w39) >> 7) | (w39 << (32 - 7))) ^ (((w39) >> 18) | (w39 << (32 - 18))) ^ ((w39) >> 3)) + w38;
+                temp1 = B + (((G >> 6) | (G << (32 - 6))) ^ ((G >> 11) | (G << (32 - 11))) ^ ((G >> 25) | (G << (32 - 25)))) + (A ^ (G & (H ^ A))) + 0x5B9CCA4F + w54; temp2 = (((C >> 2) | (C << (32 - 2))) ^ ((C >> 13) | (C << (32 - 13))) ^ ((C >> 22) | (C << (32 - 22)))) + ((C & D) | (E & (C | D))); F += temp1; B = temp1 + temp2;
+            };
+            {
+                w55 = ((((w53) >> 17) | (w53 << (32 - 17))) ^ (((w53) >> 19) | (w53 << (32 - 19))) ^ ((w53) >> 10)) + w48 + ((((w40) >> 7) | (w40 << (32 - 7))) ^ (((w40) >> 18) | (w40 << (32 - 18))) ^ ((w40) >> 3)) + w39;
+                temp1 = A + (((F >> 6) | (F << (32 - 6))) ^ ((F >> 11) | (F << (32 - 11))) ^ ((F >> 25) | (F << (32 - 25)))) + (H ^ (F & (G ^ H))) + 0x682E6FF3 + w55; temp2 = (((B >> 2) | (B << (32 - 2))) ^ ((B >> 13) | (B << (32 - 13))) ^ ((B >> 22) | (B << (32 - 22)))) + ((B & C) | (D & (B | C))); E += temp1; A = temp1 + temp2;
+            };
+            {
+                w56 = ((((w54) >> 17) | (w54 << (32 - 17))) ^ (((w54) >> 19) | (w54 << (32 - 19))) ^ ((w54) >> 10)) + w49 + ((((w41) >> 7) | (w41 << (32 - 7))) ^ (((w41) >> 18) | (w41 << (32 - 18))) ^ ((w41) >> 3)) + w40;
+                temp1 = H + (((E >> 6) | (E << (32 - 6))) ^ ((E >> 11) | (E << (32 - 11))) ^ ((E >> 25) | (E << (32 - 25)))) + (G ^ (E & (F ^ G))) + 0x748F82EE + w56; temp2 = (((A >> 2) | (A << (32 - 2))) ^ ((A >> 13) | (A << (32 - 13))) ^ ((A >> 22) | (A << (32 - 22)))) + ((A & B) | (C & (A | B))); D += temp1; H = temp1 + temp2;
+            };
+            {
+                w57 = ((((w55) >> 17) | (w55 << (32 - 17))) ^ (((w55) >> 19) | (w55 << (32 - 19))) ^ ((w55) >> 10)) + w50 + ((((w42) >> 7) | (w42 << (32 - 7))) ^ (((w42) >> 18) | (w42 << (32 - 18))) ^ ((w42) >> 3)) + w41;
+                temp1 = G + (((D >> 6) | (D << (32 - 6))) ^ ((D >> 11) | (D << (32 - 11))) ^ ((D >> 25) | (D << (32 - 25)))) + (F ^ (D & (E ^ F))) + 0x78A5636F + w57; temp2 = (((H >> 2) | (H << (32 - 2))) ^ ((H >> 13) | (H << (32 - 13))) ^ ((H >> 22) | (H << (32 - 22)))) + ((H & A) | (B & (H | A))); C += temp1; G = temp1 + temp2;
+            };
+            {
+                w58 = ((((w56) >> 17) | (w56 << (32 - 17))) ^ (((w56) >> 19) | (w56 << (32 - 19))) ^ ((w56) >> 10)) + w51 + ((((w43) >> 7) | (w43 << (32 - 7))) ^ (((w43) >> 18) | (w43 << (32 - 18))) ^ ((w43) >> 3)) + w42;
+                temp1 = F + (((C >> 6) | (C << (32 - 6))) ^ ((C >> 11) | (C << (32 - 11))) ^ ((C >> 25) | (C << (32 - 25)))) + (E ^ (C & (D ^ E))) + 0x84C87814 + w58; temp2 = (((G >> 2) | (G << (32 - 2))) ^ ((G >> 13) | (G << (32 - 13))) ^ ((G >> 22) | (G << (32 - 22)))) + ((G & H) | (A & (G | H))); B += temp1; F = temp1 + temp2;
+            };
+            {
+                w59 = ((((w57) >> 17) | (w57 << (32 - 17))) ^ (((w57) >> 19) | (w57 << (32 - 19))) ^ ((w57) >> 10)) + w52 + ((((w44) >> 7) | (w44 << (32 - 7))) ^ (((w44) >> 18) | (w44 << (32 - 18))) ^ ((w44) >> 3)) + w43;
+                temp1 = E + (((B >> 6) | (B << (32 - 6))) ^ ((B >> 11) | (B << (32 - 11))) ^ ((B >> 25) | (B << (32 - 25)))) + (D ^ (B & (C ^ D))) + 0x8CC70208 + w59; temp2 = (((F >> 2) | (F << (32 - 2))) ^ ((F >> 13) | (F << (32 - 13))) ^ ((F >> 22) | (F << (32 - 22)))) + ((F & G) | (H & (F | G))); A += temp1; E = temp1 + temp2;
+            };
+            {
+                w60 = ((((w58) >> 17) | (w58 << (32 - 17))) ^ (((w58) >> 19) | (w58 << (32 - 19))) ^ ((w58) >> 10)) + w53 + ((((w45) >> 7) | (w45 << (32 - 7))) ^ (((w45) >> 18) | (w45 << (32 - 18))) ^ ((w45) >> 3)) + w44;
+                temp1 = D + (((A >> 6) | (A << (32 - 6))) ^ ((A >> 11) | (A << (32 - 11))) ^ ((A >> 25) | (A << (32 - 25)))) + (C ^ (A & (B ^ C))) + 0x90BEFFFA + w60; temp2 = (((E >> 2) | (E << (32 - 2))) ^ ((E >> 13) | (E << (32 - 13))) ^ ((E >> 22) | (E << (32 - 22)))) + ((E & F) | (G & (E | F))); H += temp1; D = temp1 + temp2;
+            };
+            {
+                w61 = ((((w59) >> 17) | (w59 << (32 - 17))) ^ (((w59) >> 19) | (w59 << (32 - 19))) ^ ((w59) >> 10)) + w54 + ((((w46) >> 7) | (w46 << (32 - 7))) ^ (((w46) >> 18) | (w46 << (32 - 18))) ^ ((w46) >> 3)) + w45;
+                temp1 = C + (((H >> 6) | (H << (32 - 6))) ^ ((H >> 11) | (H << (32 - 11))) ^ ((H >> 25) | (H << (32 - 25)))) + (B ^ (H & (A ^ B))) + 0xA4506CEB + w61; temp2 = (((D >> 2) | (D << (32 - 2))) ^ ((D >> 13) | (D << (32 - 13))) ^ ((D >> 22) | (D << (32 - 22)))) + ((D & E) | (F & (D | E))); G += temp1; C = temp1 + temp2;
+            };
+            {
+                w62 = ((((w60) >> 17) | (w60 << (32 - 17))) ^ (((w60) >> 19) | (w60 << (32 - 19))) ^ ((w60) >> 10)) + w55 + ((((w47) >> 7) | (w47 << (32 - 7))) ^ (((w47) >> 18) | (w47 << (32 - 18))) ^ ((w47) >> 3)) + w46;
+                temp1 = B + (((G >> 6) | (G << (32 - 6))) ^ ((G >> 11) | (G << (32 - 11))) ^ ((G >> 25) | (G << (32 - 25)))) + (A ^ (G & (H ^ A))) + 0xBEF9A3F7 + w62; temp2 = (((C >> 2) | (C << (32 - 2))) ^ ((C >> 13) | (C << (32 - 13))) ^ ((C >> 22) | (C << (32 - 22)))) + ((C & D) | (E & (C | D))); F += temp1; B = temp1 + temp2;
+            };
+            {
+                w63 = ((((w61) >> 17) | (w61 << (32 - 17))) ^ (((w61) >> 19) | (w61 << (32 - 19))) ^ ((w61) >> 10)) + w56 + ((((w48) >> 7) | (w48 << (32 - 7))) ^ (((w48) >> 18) | (w48 << (32 - 18))) ^ ((w48) >> 3)) + w47;
+                temp1 = A + (((F >> 6) | (F << (32 - 6))) ^ ((F >> 11) | (F << (32 - 11))) ^ ((F >> 25) | (F << (32 - 25)))) + (H ^ (F & (G ^ H))) + 0xC67178F2 + w63; temp2 = (((B >> 2) | (B << (32 - 2))) ^ ((B >> 13) | (B << (32 - 13))) ^ ((B >> 22) | (B << (32 - 22)))) + ((B & C) | (D & (B | C))); E += temp1; A = temp1 + temp2;
+            };
+
+
 
             #endregion
 
@@ -268,5 +441,72 @@ namespace PointGaming.BitcoinMiner
             state[7] += H;
         }
 
+
+
+        private static uint Rotr(uint x, int y)
+        {
+            return (x >> y | x << (32 - y));
+        }
+
+        private static uint Rot(uint x, int y)
+        {
+            return (x << y | x >> (32 - y));
+        }
+
+        private static uint R(uint x2, uint x7, uint x15, uint x16)
+        {
+            return (uint)((Rot(x2, 15) ^ Rot(x2, 13) ^ ((x2) >> 10)) + x7 + (Rot(x15, 25) ^ Rot(x15, 14) ^ ((x15) >> 3)) + x16);
+        }
+
+        private static void Sharound(uint a, uint b, uint c, uint d, uint e, uint f, uint g, uint h, uint x, uint K, out uint r0, out uint r1)
+        {
+            var t1 = h + (Rot(e, 26) ^ Rot(e, 21) ^ Rot(e, 7)) + (g ^ (e & (f ^ g))) + K + x;
+            var t2 = (Rot(a, 30) ^ Rot(a, 19) ^ Rot(a, 10)) + ((a & b) | (c & (a | b)));
+
+            r0 = (uint)(d + t1);
+            r1 = (uint)(t1 + t2);
+        }
+
+        public static uint[] Partial(uint[] state, uint[] secondHalf, uint[] f)
+        {
+            var state2 = new uint[8];
+            Buffer.BlockCopy(state, 0, state2, 0, 32);
+
+            for (int i = 0; i < 3; i++)
+            {
+                uint r0, r1;
+                Sharound(state2[(~(i - 1) & 7)], state2[~(i - 2) & 7], state2[~(i - 3) & 7], state2[~(i - 4) & 7], state2[~(i - 5) & 7],
+                    state2[~(i - 6) & 7], state2[~(i - 7) & 7], state2[~(i - 8) & 7], secondHalf[i], K[i],
+                    out r0, out r1);
+                state2[~(i - 4) & 7] = r0;
+                state2[~(i - 8) & 7] = r1;
+            }
+
+            f[0] = (uint)(secondHalf[0] + (Rotr(secondHalf[1], 7) ^ Rotr(secondHalf[1], 18) ^ (secondHalf[1] >> 3)));
+            f[1] = (uint)(secondHalf[1] + (Rotr(secondHalf[2], 7) ^ Rotr(secondHalf[2], 18) ^ (secondHalf[2] >> 3)) + 0x01100000);
+            f[2] = (uint)(secondHalf[2] + (Rotr(f[0], 17) ^ Rotr(f[0], 19) ^ (f[0] >> 10)));
+            f[3] = (uint)(0x11002000 + (Rotr(f[1], 17) ^ Rotr(f[1], 19) ^ (f[1] >> 10)));
+            f[4] = (uint)(0x00000280 + (Rotr(f[0], 7) ^ Rotr(f[0], 18) ^ (f[0] >> 3)));
+            f[5] = (uint)(f[0] + (Rotr(f[1], 7) ^ Rotr(f[1], 18) ^ (f[1] >> 3)));
+            f[6] = (uint)(state[4] + (Rotr(state2[1], 6) ^ Rotr(state2[1], 11) ^ Rotr(state2[1], 25)) + (state2[3] ^ (state2[1] & (state2[2] ^ state2[3]))) + 0xe9b5dba5);
+            f[7] = (uint)((Rotr(state2[5], 2) ^ Rotr(state2[5], 13) ^ Rotr(state2[5], 22)) + ((state2[5] & state2[6]) | (state2[7] & (state2[5] | state2[6]))));
+
+            return state2;
+        }
+
+        public static void CalculateF(uint[] state, uint[] secondHalf, uint[] f, uint[] state2)
+        {
+            //W2
+            f[0] = (uint)(secondHalf[2]);
+
+            //W16
+            f[1] = (uint)(secondHalf[0] + (Rotr(secondHalf[1], 7) ^ Rotr(secondHalf[1], 18) ^ (secondHalf[1] >> 3)));
+            //W17
+            f[2] = (uint)(secondHalf[1] + (Rotr(secondHalf[2], 7) ^ Rotr(secondHalf[2], 18) ^ (secondHalf[2] >> 3)) + 0x01100000);
+
+            //2 parts of the first SHA round
+            f[3] = (uint)(state[4] + (Rotr(state2[1], 6) ^ Rotr(state2[1], 11) ^ Rotr(state2[1], 25)) + (state2[3] ^ (state2[1] & (state2[2] ^ state2[3]))) + 0xe9b5dba5);
+            f[4] = (uint)((Rotr(state2[5], 2) ^ Rotr(state2[5], 13) ^ Rotr(state2[5], 22)) + ((state2[5] & state2[6]) | (state2[7] & (state2[5] | state2[6]))));
+        }
     }
 }

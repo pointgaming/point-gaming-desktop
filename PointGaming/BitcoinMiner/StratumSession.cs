@@ -154,6 +154,8 @@ namespace PointGaming.BitcoinMiner
                         System.Threading.Thread.Sleep(100);
                 }
             }
+            catch
+            { }
             finally
             {
                 IsRunning = false;
@@ -258,7 +260,6 @@ namespace PointGaming.BitcoinMiner
             lock (outgoingShares)
             {
                 outgoingShares.Add(submitShareMessage);
-                App.LogLine("Stratum found: " + submitShareMessage.Trim() + " @ " + DateTime.Now);
             }
         }
 

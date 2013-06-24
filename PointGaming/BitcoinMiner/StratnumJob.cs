@@ -13,7 +13,13 @@ namespace PointGaming.BitcoinMiner
         public string CoinB2;
         public string[] MerkleBranch;
         public string Version;
+        /// <summary>
+        /// network difficulty
+        /// </summary>
         public string NBits;
+        /// <summary>
+        /// network time
+        /// </summary>
         public uint NTime;
         public DateTime ReceiveTime;
         public UInt256 Target;

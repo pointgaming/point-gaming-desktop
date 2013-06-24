@@ -75,9 +75,13 @@ namespace PointGaming.HomeTab
             if (_stratumSession == null)
                 return;
 
-            foreach (var miner in _miners)
-                miner.IsStopRequested = true;
-            _miners = null;
+            if (_miners != null)
+            {
+                foreach (var miner in _miners)
+                    miner.IsStopRequested = true;
+                _miners = null;
+            }
+
             _stratumSession.Dispose();
             _stratumSession = null;
         }
