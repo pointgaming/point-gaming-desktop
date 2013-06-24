@@ -65,6 +65,11 @@ namespace PointGaming.Lobby
             return false;
         }
 
+        public bool CanAdminUser
+        {
+            get { return _userData.User.IsAdmin; }
+        }
+
         private void UpdateChatFont()
         {
             flowDocumentLog.Document.Background = Brushes.White;
@@ -91,18 +96,18 @@ namespace PointGaming.Lobby
         {
             _groupedUsers = new ObservableCollection<PgUser>();
             
-            // team groups
+            // players group
             foreach (PgUser user in lobbySession.Membership)
             {
                 PgUser groupedUser = user.ShallowCopy();
-                groupedUser.GroupName = user.TeamName;
+                groupedUser.GroupName = "Players";
                 _groupedUsers.Add(groupedUser);
             }
 
             // admin group
             foreach (PgUser user in lobbySession.Membership)
             {
-                if (string.IsNullOrEmpty(user.Rank)) continue;
+                if (!user.IsAdmin) continue;
 
                 PgUser groupedUser = user.ShallowCopy();
                 groupedUser.GroupName = "Admin";
@@ -173,12 +178,31 @@ namespace PointGaming.Lobby
 
         private void userContextMenuFriendRequest_Click(object sender, RoutedEventArgs e)
         {
-            MessageDialog.Show(_chatWindow, "Send Friend Request", "TODO: post friend request to REST API");
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem != null)
+            {
+                PgUser user = menuItem.CommandParameter as PgUser;
+                if (user != null)
+                {
+                    _userData.Friendship.RequestFriend(user.Username, OnRequestFriend);
+                }
+            } 
         }
 
         private void reportMatchWinnerButton_Click(object sender, RoutedEventArgs e)
         {
             MessageDialog.Show(_chatWindow, "Report Match Winner", "TODO: get list of pending user bets from REST API");
+        }
+
+        private void OnRequestFriend(string errorMessage)
+        {
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
+                this.BeginInvokeUI(delegate
+                {
+                    MessageDialog.Show(HomeWindow.Home, "Request Failed", errorMessage);
+                });
+            }
         }
 
         private void OnPendingBetsComplete(List<POCO.BetPoco> pocos)

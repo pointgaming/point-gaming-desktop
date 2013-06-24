@@ -6,6 +6,7 @@
              xmlns:my="clr-namespace:PointGaming;assembly="
              xmlns:Lobby="clr-namespace:PointGaming.Lobby;assembly="
              mc:Ignorable="d" 
+             Name="lobbyTab" 
              d:DesignHeight="400" d:DesignWidth="800" Loaded="UserControl_Loaded"
              AllowDrop="True" PreviewDrop="TabPreviewDrop" PreviewDragEnter="TabPreviewDragQuery"
              PreviewDragOver="TabPreviewDragQuery" PreviewDragLeave="TabPreviewDragQuery">
@@ -74,7 +75,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0" HorizontalAlignment="Stretch" Name="textBoxInput" VerticalAlignment="Stretch" PreviewKeyDown="textBoxInput_PreviewKeyDown" MaxLength="1024" TextWrapping="Wrap" AcceptsReturn="True" />
+                            <TextBox Grid.Column="0" HorizontalAlignment="Stretch" Name="textBoxInput" VerticalAlignment="Stretch" PreviewKeyDown="textBoxInput_PreviewKeyDown" MaxLength="1024" TextWrapping="Wrap" AcceptsReturn="True" Margin="-5,0,5,0" />
                             <Button Grid.Column="1" Content="Send" Grid.Row="1" Height="23" HorizontalAlignment="Left" Name="buttonSendInput" VerticalAlignment="Bottom" Width="75" Click="buttonSendInput_Click" />
                         </Grid>
                     </Grid>
@@ -140,9 +141,11 @@
 
                 <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}" x:Name="styleForListBox">
-                        <Setter Property="ContextMenu" Value="{StaticResource UserMenu}" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding CanAdminUsers}" Value="False">
+                            <DataTrigger Binding="{Binding ElementName=lobbyTab, Path=CanAdminUser}" Value="false">
+                                <Setter Property="ContextMenu" Value="{StaticResource UserMenu}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=lobbyTab, Path=CanAdminUser}" Value="true">
                                 <Setter Property="ContextMenu" Value="{StaticResource AdminMenu}" />
                             </DataTrigger>
                         </Style.Triggers>
