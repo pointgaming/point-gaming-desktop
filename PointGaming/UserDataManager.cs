@@ -96,7 +96,13 @@ namespace PointGaming
 
         public PgUser GetPgUser(UserBase userBase)
         {
-            PgUser user = new PgUser { Id = userBase._id, Username = userBase.username, Status = "unknown", Team = GetPgTeam(userBase.team) };
+            PgUser user = new PgUser { 
+                Id = userBase._id, 
+                Username = userBase.username, 
+                Status = "unknown", 
+                Rank = userBase.rank, 
+                Team = GetPgTeam(userBase.team) 
+            };
             return user;
         }
         public PgTeam GetPgTeam(TeamBase teamBase)

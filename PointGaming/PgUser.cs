@@ -115,6 +115,9 @@ namespace PointGaming
                 NotifyChanged("Rank");
             }
         }
+        public bool IsAdmin { 
+            get { return !string.IsNullOrEmpty(Rank); } 
+        } 
         
         public string DisplayName
         {

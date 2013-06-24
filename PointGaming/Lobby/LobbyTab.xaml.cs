@@ -65,6 +65,11 @@ namespace PointGaming.Lobby
             return false;
         }
 
+        public bool CanAdminUser
+        {
+            get { return _userData.User.IsAdmin; }
+        }
+
         private void UpdateChatFont()
         {
             flowDocumentLog.Document.Background = Brushes.White;
@@ -102,7 +107,7 @@ namespace PointGaming.Lobby
             // admin group
             foreach (PgUser user in lobbySession.Membership)
             {
-                if (string.IsNullOrEmpty(user.Rank)) continue;
+                if (!user.IsAdmin) continue;
 
                 PgUser groupedUser = user.ShallowCopy();
                 groupedUser.GroupName = "Admin";
