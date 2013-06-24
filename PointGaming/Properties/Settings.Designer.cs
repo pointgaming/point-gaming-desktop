@@ -343,6 +343,7 @@ namespace PointGaming.Properties {
             }
             set {
                 this["BitcoinMinerOnlyWheUserIdle"] = value;
+            }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
