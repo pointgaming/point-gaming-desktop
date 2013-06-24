@@ -24,6 +24,7 @@ namespace PointGaming.Chat
 
         private UserDataManager _userData;
         private ChatWindow _chatWindow;
+        private Dictionary<string, ChatWindow> _gameRoomWindows;
 
         private readonly Dictionary<string, ChatroomSession> _chatroomUsage = new Dictionary<string, ChatroomSession>();
 
