@@ -60,6 +60,11 @@ namespace PointGaming.HomeTab
                     miner.UMLimit = 1000;
                     miner.BeginWorkFor(_stratumSession);
                 }
+
+                this.BeginInvokeUI(delegate
+                {
+                    SaveMinerEnabled(true);
+                });
             }
             else
             {
@@ -70,8 +75,19 @@ namespace PointGaming.HomeTab
             }
         }
 
+        private static void SaveMinerEnabled(bool isEnabled)
+        {
+            if (isEnabled != PointGaming.Properties.Settings.Default.BitcoinMinerEnabled)
+            {
+                PointGaming.Properties.Settings.Default.BitcoinMinerEnabled = isEnabled;
+                Properties.Settings.Default.Save();
+            }
+        }
+
         private void checkBoxFreeProAccount_Unchecked(object sender, RoutedEventArgs e)
         {
+            SaveMinerEnabled(false);
+
             if (_stratumSession == null)
                 return;
 
@@ -84,6 +100,12 @@ namespace PointGaming.HomeTab
 
             _stratumSession.Dispose();
             _stratumSession = null;
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            bool isEnabled = PointGaming.Properties.Settings.Default.BitcoinMinerEnabled;
+            checkBoxFreeBetterAccount.IsChecked = isEnabled;
         }
     }
 }
