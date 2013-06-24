@@ -20,7 +20,7 @@ namespace PointGaming.HomeTab
 
         private void buttonLearnMore_Click(object sender, RoutedEventArgs e)
         {
-
+            System.Diagnostics.Process.Start(Properties.Settings.Default.WebServerUrl);
         }
 
         private void hyperLinkDisclaimer_Click(object sender, RoutedEventArgs e)

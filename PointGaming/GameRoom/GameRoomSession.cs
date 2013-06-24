@@ -43,7 +43,7 @@ namespace PointGaming.GameRoom
 
         public void SetGameRoomSettings(object poco)
         {
-            var url = Properties.Settings.Default.GameRooms + GameRoom.Id + "?auth_token=" + _userData.PgSession.AuthToken;
+            var url = _userData.PgSession.GetWebAppFunction("", "/game_rooms/" + GameRoom.Id);
             var root = new { game_room = poco };
             RestResponse<GameRoomSinglePoco> response = null;
             _userData.PgSession.BeginAndCallback(delegate
@@ -73,8 +73,7 @@ namespace PointGaming.GameRoom
             if (string.IsNullOrWhiteSpace(GameRoom.MatchId))
                 return;
 
-            var url = Properties.Settings.Default.Matches + GameRoom.MatchId + ".json?include_bets=true&auth_token=" + _userData.PgSession.AuthToken;
-
+            var url = _userData.PgSession.GetWebApiV1Function("/matches/" + GameRoom.MatchId + ".json", "include_bets=true");
             RestResponse<MatchAndBetsPoco> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
@@ -97,7 +96,7 @@ namespace PointGaming.GameRoom
         {
             MyMatch.IsEditable = false;
 
-            var url = Properties.Settings.Default.GameRooms + GameRoom.Id + "/matches.json?auth_token=" + _userData.PgSession.AuthToken;
+            var url = _userData.PgSession.GetWebAppFunction("", "/game_rooms/" + GameRoom.Id + "/matches.json");
             var poco = new //POCO.MatchPoco
             {
                 game_id = m.GameId,
@@ -132,7 +131,7 @@ namespace PointGaming.GameRoom
         {
             MyMatch.IsEditable = false;
 
-            var url = Properties.Settings.Default.Matches + m.Id + ".json?auth_token=" + _userData.PgSession.AuthToken;
+            var url = _userData.PgSession.GetWebApiV1Function("/matches/" + m.Id + ".json");
             var poco = new //POCO.MatchPoco
             {
                 game_id = m.GameId,
@@ -167,7 +166,7 @@ namespace PointGaming.GameRoom
         {
             MyMatch.IsEditable = false;
 
-            var url = Properties.Settings.Default.Matches + MyMatch.Id + "/start.json?auth_token=" + _userData.PgSession.AuthToken;
+            var url = _userData.PgSession.GetWebApiV1Function("/matches/" + MyMatch.Id + "/start.json");
             RestResponse<ApiResponse> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
@@ -185,7 +184,7 @@ namespace PointGaming.GameRoom
         {
             MyMatch.IsEditable = false;
 
-            var url = Properties.Settings.Default.Matches + MyMatch.Id + "/cancel.json?auth_token=" + _userData.PgSession.AuthToken;
+            var url = _userData.PgSession.GetWebApiV1Function("/matches/" + MyMatch.Id + "/cancel.json");
             RestResponse<ApiResponse> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
@@ -203,7 +202,7 @@ namespace PointGaming.GameRoom
         {
             MyMatch.IsEditable = false;
 
-            var url = Properties.Settings.Default.Matches + MyMatch.Id + ".json?auth_token=" + _userData.PgSession.AuthToken;
+            var url = _userData.PgSession.GetWebApiV1Function("/matches/" + MyMatch.Id + ".json");
             var poco = new
             {
                 winner_id = winner.Id,
@@ -247,7 +246,7 @@ namespace PointGaming.GameRoom
             RestResponse<ApiResponse> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
-                var url = Properties.Settings.Default.Matches + MyMatch.Id + "/bets?auth_token=" + _userData.PgSession.AuthToken;
+                var url = _userData.PgSession.GetWebApiV1Function("/matches/" + MyMatch.Id + "/bets");
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.POST) { RequestFormat = RestSharp.DataFormat.Json };
                 var root = new { bet = poco };
@@ -268,7 +267,7 @@ namespace PointGaming.GameRoom
             RestResponse<ApiResponse> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
-                var url = Properties.Settings.Default.Matches + MyMatch.Id + "/bets/" + bet.Id + ".json?auth_token=" + _userData.PgSession.AuthToken;
+                var url = _userData.PgSession.GetWebApiV1Function("/matches/" + MyMatch.Id + "/bets/" + bet.Id + ".json");
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.PUT);
                 response = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
@@ -286,7 +285,7 @@ namespace PointGaming.GameRoom
             RestResponse<ApiResponse> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
-                var url = Properties.Settings.Default.Matches + MyMatch.Id + "/bets/" + bet.Id + ".json?auth_token=" + _userData.PgSession.AuthToken;
+                var url = _userData.PgSession.GetWebApiV1Function("/matches/" +  MyMatch.Id + "/bets/" + bet.Id + ".json");
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.DELETE);
                 response = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);

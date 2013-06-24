@@ -49,7 +49,7 @@ namespace PointGaming.HomeTab
             RestResponse<GameList> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
-                var url = Properties.Settings.Default.Games + "?auth_token=" + _userData.PgSession.AuthToken;
+                var url = _userData.PgSession.GetWebApiV1Function("/games");
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.GET);
                 response = (RestResponse<GameList>)client.Execute<GameList>(request);

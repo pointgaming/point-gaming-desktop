@@ -99,6 +99,9 @@ namespace PointGaming
         }
         public PgTeam GetPgTeam(TeamBase teamBase)
         {
+            if (teamBase == null)
+                return null;
+
             PgTeam team;
             if (_teamLookup.TryGetValue(teamBase._id, out team))
                 return team;
@@ -127,7 +130,7 @@ namespace PointGaming
             RestResponse<List<BetOperandPoco>> response = null;
             PgSession.BeginAndCallback(delegate
             {
-                var url = Properties.Settings.Default.BetOperandQuery + query + "&auth_token=" + PgSession.AuthToken;
+                var url = PgSession.GetWebAppFunction("", "/search/playable.json", "query=" + query);
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
                 response = (RestResponse<List<BetOperandPoco>>)client.Execute<List<BetOperandPoco>>(request);

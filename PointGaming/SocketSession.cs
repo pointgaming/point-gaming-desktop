@@ -32,6 +32,29 @@ namespace PointGaming
 
         public PgUser User;
 
+        public string GetWebAppFunction(string apiPath, string function, params string[] arguments)
+        {
+            var result = Properties.Settings.Default.WebServerUrl + apiPath + function;
+
+            var args = new List<string>(arguments);
+            if (!string.IsNullOrEmpty(AuthToken))
+                args.Add("auth_token=" + AuthToken);
+
+            for (int i = 0; i < args.Count; i++)
+            {
+                var prefix = "&";
+                if (i == 0)
+                    prefix = "?";
+                result = result + prefix + args[i];
+            }
+            return result;
+        }
+
+        public string GetWebApiV1Function(string function, params string[] arguments)
+        {
+            return GetWebAppFunction("/api/v1", function, arguments);
+        }
+
         public SocketSession()
         {
             var t = new Thread(DoWork);
@@ -180,10 +203,10 @@ namespace PointGaming
             bool isSuccess = false;
             try
             {
-                var baseUrl = Properties.Settings.Default.BaseUrl;
+                var baseUrl = GetWebApiV1Function("/sessions");
                 var client = new RestClient(baseUrl);
 
-                var request = new RestRequest("sessions", Method.POST);
+                var request = new RestRequest(Method.POST);
                 request.RequestFormat = RestSharp.DataFormat.Json;
                 request.AddBody(new UserLogin { username = username, password = password });
 
@@ -227,7 +250,7 @@ namespace PointGaming
         {
             try
             {
-                var baseUrl = Properties.Settings.Default.BaseUrl + "sessions/destroy?auth_token=" + AuthToken;
+                var baseUrl = GetWebApiV1Function("/sessions/destroy");
                 var client = new RestClient(baseUrl);
                 var request = new RestRequest(Method.DELETE);
                 client.Execute<ApiResponse>(request);

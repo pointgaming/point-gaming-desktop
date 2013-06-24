@@ -43,7 +43,7 @@ namespace PointGaming.Lobby
             RestResponse<GameRoomListPoco> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
-                var url = Properties.Settings.Default.GameRooms + "?game_id=" + GameInfo.Id + "&auth_token=" + _userData.PgSession.AuthToken;
+                var url = _userData.PgSession.GetWebAppFunction("", "/game_rooms", "game_id=" + GameInfo.Id);
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.GET);
                 response = (RestResponse<GameRoomListPoco>)client.Execute<GameRoomListPoco>(request);
@@ -90,7 +90,7 @@ namespace PointGaming.Lobby
             RestResponse<GameRoomSinglePoco> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
-                var url = Properties.Settings.Default.GameRooms + "?auth_token=" + _userData.PgSession.AuthToken;
+                var url = _userData.PgSession.GetWebAppFunction("", "/game_rooms");
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.POST) { RequestFormat = RestSharp.DataFormat.Json };
                 var poco = new GameRoomPoco {
@@ -125,7 +125,7 @@ namespace PointGaming.Lobby
             RestResponse<GameRoomSinglePoco> response = null;
             userData.PgSession.BeginAndCallback(delegate
             {
-                var url = Properties.Settings.Default.GameRooms + id + "?auth_token=" + userData.PgSession.AuthToken;
+                var url = userData.PgSession.GetWebAppFunction("", "/game_rooms/" + id);
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.GET);
                 response = (RestResponse<GameRoomSinglePoco>)client.Execute<GameRoomSinglePoco>(request);

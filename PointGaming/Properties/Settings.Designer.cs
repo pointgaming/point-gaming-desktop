@@ -23,33 +23,6 @@ namespace PointGaming.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/api/v1/")]
-        public string BaseUrl {
-            get {
-                return ((string)(this["BaseUrl"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/api/v1/friend_requests/")]
-        public string FriendRequests {
-            get {
-                return ((string)(this["FriendRequests"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/api/v1/friends/")]
-        public string Friends {
-            get {
-                return ((string)(this["Friends"]));
-            }
-        }
-        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
@@ -124,15 +97,6 @@ namespace PointGaming.Properties {
             }
             set {
                 this["LaunchList"] = value;
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/api/v1/games/")]
-        public string Games {
-            get {
-                return ((string)(this["Games"]));
             }
         }
         
@@ -279,33 +243,6 @@ namespace PointGaming.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/matches/")]
-        public string Matches {
-            get {
-                return ((string)(this["Matches"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/search/playable.json?query=")]
-        public string BetOperandQuery {
-            get {
-                return ((string)(this["BetOperandQuery"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://dev.pointgaming.com/game_rooms/")]
-        public string GameRooms {
-            get {
-                return ((string)(this["GameRooms"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("50.116.28.30")]
         public string StratumIp {
             get {
@@ -346,24 +283,6 @@ namespace PointGaming.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://dev.pointgaming.com/u/%{username}/profile")]
-        public string UserProfile {
-            get {
-                return ((string)(this["UserProfile"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com/api/v1/bet_history/")]
-        public string BetHistory {
-            get {
-                return ((string)(this["BetHistory"]));
-            }
-        }
-        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
@@ -373,6 +292,15 @@ namespace PointGaming.Properties {
             }
             set {
                 this["BitcoinMinerEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://dev.pointgaming.com")]
+        public string WebServerUrl {
+            get {
+                return ((string)(this["WebServerUrl"]));
             }
         }
     }

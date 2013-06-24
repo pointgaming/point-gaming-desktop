@@ -95,7 +95,7 @@ namespace PointGaming.Lobby
         private string _url;
         public string URL
         {
-            get { return string.IsNullOrEmpty(_url) ? "http://dev.pointgaming.com" : _url; }
+            get { return string.IsNullOrEmpty(_url) ? Properties.Settings.Default.WebServerUrl : _url; }
             set
             {
                 if (value == _url)

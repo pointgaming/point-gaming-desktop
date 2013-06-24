@@ -147,7 +147,7 @@ namespace PointGaming.HomeTab
             RestResponse<FriendList> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
-                var friendsRequestCall = Properties.Settings.Default.Friends + "?auth_token=" + _userData.PgSession.AuthToken;
+                var friendsRequestCall = _userData.PgSession.GetWebApiV1Function("/friends");
                 var friendClient = new RestClient(friendsRequestCall);
                 var fRequest = new RestRequest(Method.GET);
                 response = (RestResponse<FriendList>)friendClient.Execute<FriendList>(fRequest);
@@ -256,7 +256,7 @@ namespace PointGaming.HomeTab
             bool isSuccess = false;
             _userData.PgSession.BeginAndCallback(delegate
             {
-                var friendsRequestCall = Properties.Settings.Default.FriendRequests + "?sent=1&auth_token=" + _userData.PgSession.AuthToken;
+                var friendsRequestCall = _userData.PgSession.GetWebApiV1Function("/friend_requests", "sent=1");
                 var friendClient = new RestClient(friendsRequestCall);
                 var fRequest = new RestRequest(Method.GET);
                 var response = (RestResponse<FriendRequestRoot>)
@@ -290,7 +290,7 @@ namespace PointGaming.HomeTab
             string id = source.FriendRequestId;
             _userData.PgSession.Begin(delegate
             {
-                var apiCall = Properties.Settings.Default.FriendRequests + id + "?auth_token=" + _userData.PgSession.AuthToken;
+                var apiCall = _userData.PgSession.GetWebApiV1Function("/friend_requests/" + id);
                 var client = new RestClient(apiCall);
                 var request = new RestRequest(Method.DELETE);
                 client.Execute<ApiResponse>(request);
@@ -305,7 +305,7 @@ namespace PointGaming.HomeTab
             bool isSuccess = false;
             _userData.PgSession.BeginAndCallback(delegate
             {
-                var friendsRequestCall = Properties.Settings.Default.FriendRequests + "?auth_token=" + _userData.PgSession.AuthToken;
+                var friendsRequestCall = _userData.PgSession.GetWebApiV1Function("/friend_requests");
                 var friendClient = new RestClient(friendsRequestCall);
                 var fRequest = new RestRequest(Method.GET);
                 var response = (RestResponse<FriendRequestRoot>)
@@ -339,7 +339,7 @@ namespace PointGaming.HomeTab
             string id = source.FriendRequestId;
             _userData.PgSession.Begin(delegate
             {
-                var apiCall = Properties.Settings.Default.FriendRequests + id + "?auth_token=" + _userData.PgSession.AuthToken;
+                var apiCall = _userData.PgSession.GetWebApiV1Function("/friend_requests/" + id);
                 var client = new RestClient(apiCall);
                 var request = new RestRequest(Method.PUT) { RequestFormat = RestSharp.DataFormat.Json };
 
@@ -389,7 +389,7 @@ namespace PointGaming.HomeTab
             request.RequestFormat = RestSharp.DataFormat.Json;
             request.AddBody(friendRequestRootObject);
 
-            var friendsRequestApiCall = Properties.Settings.Default.FriendRequests + "?auth_token=" + _userData.PgSession.AuthToken;
+            var friendsRequestApiCall = _userData.PgSession.GetWebApiV1Function("/friend_requests");
             var client = new RestClient(friendsRequestApiCall);
 
             _userData.PgSession.Begin(delegate
@@ -424,8 +424,8 @@ namespace PointGaming.HomeTab
             _userData.PgSession.Begin(delegate
             {
                 var request = new RestRequest(Method.DELETE);
-                var baseUrl = Properties.Settings.Default.Friends + friend.Id + "?auth_token=" + _userData.PgSession.AuthToken;
-                var client = new RestClient(baseUrl);
+                var friendsUrl = _userData.PgSession.GetWebApiV1Function("/friends/" + friend.Id);
+                var client = new RestClient(friendsUrl);
                 client.Execute<ApiResponse>(request);
             });
         }

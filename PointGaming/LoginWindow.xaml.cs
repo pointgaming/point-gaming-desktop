@@ -32,7 +32,7 @@ namespace PointGaming
             {
                 using (WebClient Client = new WebClient())
                 {
-                    Client.DownloadFile("https://dev.pointgaming.com/system/desktop_client/PointGaming.msp", tempPath);
+                    Client.DownloadFile(Properties.Settings.Default.WebServerUrl + "/system/desktop_client/PointGaming.msp", tempPath);
 
                     var processName = Process.GetCurrentProcess().ProcessName;
 
@@ -95,7 +95,7 @@ namespace PointGaming
 
             SocketSession.BeginAndCallback(delegate
             {
-                var url = "http://dev.pointgaming.com/desktop_client/version";
+                var url = Properties.Settings.Default.WebServerUrl + "/desktop_client/version";
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.GET);
                 response = (RestResponse<PgVersion>)client.Execute<PgVersion>(request);

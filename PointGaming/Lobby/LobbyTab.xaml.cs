@@ -165,7 +165,7 @@ namespace PointGaming.Lobby
                 PgUser user = menuItem.CommandParameter as PgUser;
                 if (user != null)
                 {
-                    var url = Properties.Settings.Default.UserProfile.Replace("%{username}", user.Username);
+                    var url = Properties.Settings.Default.WebServerUrl + "/u/" + user.Username + "/profile";
                     System.Diagnostics.Process.Start(url);
                 }
             } 
