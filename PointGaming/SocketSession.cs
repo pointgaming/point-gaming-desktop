@@ -16,6 +16,7 @@ namespace PointGaming
     {
         public Client MyClient;
         private AuthEmit _authEmit;
+        private bool _processWorkQueue = true;
         
         private AutoResetEvent socketWorker = new AutoResetEvent(false);
         public string AuthToken { get; set; }
@@ -145,7 +146,7 @@ namespace PointGaming
 
         private void DoWork()
         {
-            while (!App.IsShuttingDown)
+            while (_processWorkQueue && !App.IsShuttingDown)
             {
                 socketWorker.WaitOne();
 
@@ -244,20 +245,24 @@ namespace PointGaming
         {
             Disconnect();
             DestroySession();
+            _processWorkQueue = false;
         }
 
         private void DestroySession()
         {
-            try
+            if (!string.IsNullOrEmpty(AuthToken))
             {
-                var baseUrl = GetWebApiV1Function("/sessions/destroy");
-                var client = new RestClient(baseUrl);
-                var request = new RestRequest(Method.DELETE);
-                client.Execute<ApiResponse>(request);
-            }
-            catch (Exception e)
-            {
-                App.LogLine(e.Message);
+                try
+                {
+                    var baseUrl = GetWebApiV1Function("/sessions/destroy");
+                    var client = new RestClient(baseUrl);
+                    var request = new RestRequest(Method.DELETE);
+                    client.Execute<ApiResponse>(request);
+                }
+                catch (Exception e)
+                {
+                    App.LogLine(e.Message);
+                }
             }
 
             AuthToken = "";
