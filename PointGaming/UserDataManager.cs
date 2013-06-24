@@ -94,12 +94,7 @@ namespace PointGaming
 
         public PgUser GetPgUser(UserBase userBase)
         {
-            PgUser user;
-            if (_userLookup.TryGetValue(userBase._id, out user))
-                return user;
-            user = new PgUser { Id = userBase._id, Username = userBase.username, Status = "unknown" };
-            _userLookup[userBase._id] = user;
-            // todo dean gores 2013-02-26: should probably look this user up so that real info can be shown
+            PgUser user = new PgUser { Id = userBase._id, Username = userBase.username, Status = "unknown", Team = GetPgTeam(userBase.team) };
             return user;
         }
         public PgTeam GetPgTeam(TeamBase teamBase)
@@ -143,6 +138,13 @@ namespace PointGaming
                     callback(response.Data);
                 }
             });
+        }
+
+        public void LookupPendingBets(Action<List<BetPoco>> callback)
+        {
+            // TODO: get list of pending bets from rails API
+            List<BetPoco> bets = new List<BetPoco>();
+            callback(bets);
         }
     }
 }

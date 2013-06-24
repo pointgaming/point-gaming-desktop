@@ -91,28 +91,31 @@
 
         <Grid Grid.Column="2" Name="gridUserAndJoinedGameRoomLists">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="4" />
                 <RowDefinition Height="100" />
             </Grid.RowDefinitions>
 
-            <ListView Grid.Row="0" Name="listBoxMembership" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding}"
+            <Button Grid.Row="0" Content="Report Match Winner" Height="75" Visibility="Collapsed" Name="reportMatchWinnerButton" Click="reportMatchWinnerButton_Click" />
+
+            <ListView Grid.Row="1" Name="listBoxMembership" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding}"
                      PreviewMouseLeftButtonDown="listBoxMembership_PreviewMouseLeftButtonDown"
                      PreviewMouseLeftButtonUp="listBoxMembership_PreviewMouseLeftButtonUp"
                      PreviewMouseMove="listBoxMembership_PreviewMouseMove" Margin="0,4,0,0" Grid.RowSpan="2">
 
                 <ListView.Resources>
                     <ContextMenu x:Key="UserMenu">
-                        <MenuItem Header="Message"/>
-                        <MenuItem Header="Send Friend Request"/>
-                        <MenuItem Header="View Profile"/>
-                        <MenuItem Header="Block (mute)"/>
-                        <MenuItem Header="Taunt (once a day)"/>
+                        <MenuItem Header="Message" Click="userContextMenuMessage_Click" CommandParameter="{Binding}" />
+                        <MenuItem Header="Send Friend Request" Click="userContextMenuFriendRequest_Click" CommandParameter="{Binding}" />
+                        <MenuItem Header="View Profile" Click="userContextMenuViewProfile_Click" CommandParameter="{Binding}" />
+                        <MenuItem Header="Block (mute)" Click="userContextMenuBlock_Click" />
+                        <MenuItem Header="Taunt (once a day)" Click="userContextMenuTaunt_Click" />
                     </ContextMenu>
                     <ContextMenu x:Key="AdminMenu">
-                        <MenuItem Header="Message"/>
-                        <MenuItem Header="Send Friend Request"/>
-                        <MenuItem Header="View Profile"/>
+                        <MenuItem Header="Message" Click="userContextMenuMessage_Click" />
+                        <MenuItem Header="Send Friend Request" Click="userContextMenuFriendRequest_Click" />
+                        <MenuItem Header="View Profile" Click="userContextMenuViewProfile_Click" />
                         <MenuItem Header="Send Warning"/>
                         <MenuItem Header="Kick From Lobby"/>
                         <MenuItem Header="Globally Mute (Main Chat)"/>
@@ -125,6 +128,10 @@
                                 <my:UserInfoTooltip Margin="2" 
                                                     Username="{Binding DisplayName}" 
                                                     FullName="{Binding Username}" 
+                                                    HasTeam="{Binding HasTeam}"
+                                                    TeamName="{Binding TeamName}" 
+                                                    TeamSlug="{Binding TeamName}" 
+                                                    TeamPoints="0" 
                                                     Points="{Binding Points}" />
                             </Label.ToolTip>
                         </Label>
@@ -166,10 +173,10 @@
                 </ListView.GroupStyle>
             </ListView>
 
-            <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 
 
-            <ScrollViewer Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <ItemsControl Name="itemsControlJoinedGameRoomList" MouseDoubleClick="itemsControlJoinedGameRoomList_MouseDoubleClick">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>

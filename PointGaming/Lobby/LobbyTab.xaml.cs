@@ -78,22 +78,44 @@ namespace PointGaming.Lobby
             _chatWindow = window;
             _lobbySession = (LobbySession)lobbySession;
             _lobbySession.ReceivedMessage += ReceivedMessage;
-            //listBoxMembership.ItemsSource = _lobbySession.Membership;
             InitGroupedMembers( _lobbySession );
             itemsControlGameRoomList.ItemsSource = _lobbySession.AllGameRooms;
             itemsControlJoinedGameRoomList.ItemsSource = _lobbySession.JoinedGameRooms;
 
             PropertyChangedEventManager.AddListener(_lobbySession.GameInfo, this, "PropertyChanged");
+
+            _userData.LookupPendingBets(OnPendingBetsComplete);
         }
 
         private void InitGroupedMembers(ChatroomSession lobbySession)
         {
             _groupedUsers = new ObservableCollection<PgUser>();
-
+            
+            // team groups
             foreach (PgUser user in lobbySession.Membership)
             {
                 PgUser groupedUser = user.ShallowCopy();
                 groupedUser.GroupName = user.TeamName;
+                _groupedUsers.Add(groupedUser);
+            }
+
+            // admin group
+            foreach (PgUser user in lobbySession.Membership)
+            {
+                if (string.IsNullOrEmpty(user.Rank)) continue;
+
+                PgUser groupedUser = user.ShallowCopy();
+                groupedUser.GroupName = "Admin";
+                _groupedUsers.Add(groupedUser);
+            }
+
+            // friends group
+            foreach (PgUser user in lobbySession.Membership)
+            {
+                if (!_userData.IsFriend(user.Id)) continue;
+
+                PgUser groupedUser = user.ShallowCopy();
+                groupedUser.GroupName = "Friends";
                 _groupedUsers.Add(groupedUser);
             }
 
@@ -110,6 +132,59 @@ namespace PointGaming.Lobby
         private void buttonSendInput_Click(object sender, RoutedEventArgs e)
         {
             SendInput();
+        }
+
+        private void userContextMenuTaunt_Click(object sender, RoutedEventArgs e)
+        {
+            MessageDialog.Show(_chatWindow, "Taunt User", "TODO: show taunt selection UI");
+        }
+
+        private void userContextMenuBlock_Click(object sender, RoutedEventArgs e)
+        {
+            MessageDialog.Show(_chatWindow, "Block User", "TODO: ???");
+        }
+
+        private void userContextMenuMessage_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem != null)
+            {
+                PgUser user = menuItem.CommandParameter as PgUser;
+                if (user != null)
+                {
+                    _userData.ChatWith(user);
+                }
+            } 
+        }
+
+        private void userContextMenuViewProfile_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem != null)
+            {
+                PgUser user = menuItem.CommandParameter as PgUser;
+                if (user != null)
+                {
+                    var url = Properties.Settings.Default.UserProfile.Replace("%{username}", user.Username);
+                    System.Diagnostics.Process.Start(url);
+                }
+            } 
+        }
+
+        private void userContextMenuFriendRequest_Click(object sender, RoutedEventArgs e)
+        {
+            MessageDialog.Show(_chatWindow, "Send Friend Request", "TODO: post friend request to REST API");
+        }
+
+        private void reportMatchWinnerButton_Click(object sender, RoutedEventArgs e)
+        {
+            MessageDialog.Show(_chatWindow, "Report Match Winner", "TODO: get list of pending user bets from REST API");
+        }
+
+        private void OnPendingBetsComplete(List<POCO.BetPoco> pocos)
+        {
+            // TODO: open dialog showing all pending bets for user
+            reportMatchWinnerButton.Visibility = System.Windows.Visibility.Visible;
         }
 
         private void textBoxInput_PreviewKeyDown(object sender, KeyEventArgs e)

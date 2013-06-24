@@ -6,6 +6,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="250"
              x:Name="userInfoTooltip">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BtVC" />
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -20,8 +23,12 @@
             <TextBlock Text="{Binding FullName, ElementName=userInfoTooltip}" VerticalAlignment="Top" Margin="55,15,0,0" Grid.Row="0" />
             <TextBlock Text="{Binding DisplayPoints, ElementName=userInfoTooltip}" VerticalAlignment="Center" Margin="55,30,0,0" Grid.Row="0" />
         </Grid>
-        
-        <Grid Grid.Row="1">
+
+        <Grid Grid.Row="1" Visibility="{Binding HasTeam, Converter={StaticResource BtVC}}">
+            <Image Source="{Binding Avatar}" Height="48" Width="48" HorizontalAlignment="Left" Margin="0,0,5,0" Stretch="Fill" VerticalAlignment="Top" Grid.Row="0" />
+            <TextBlock Text="{Binding TeamSlug, ElementName=userInfoTooltip}" VerticalAlignment="Top" Margin="55,0,0,0" Grid.Row="0" />
+            <TextBlock Text="{Binding TeamName, ElementName=userInfoTooltip}" VerticalAlignment="Top" Margin="55,15,0,0" Grid.Row="0" />
+            <TextBlock Text="{Binding TeamPoints, ElementName=userInfoTooltip}" VerticalAlignment="Center" Margin="55,30,0,0" Grid.Row="0" />
         </Grid>
 
         <StackPanel Grid.Row="2">

@@ -78,6 +78,33 @@ namespace PointGaming.Lobby
                 NotifyChanged("DisplayName");
             }
         }
+
+        private string _logo;
+        public string Logo
+        {
+            get { return _logo; }
+            set
+            {
+                if (value == _logo)
+                    return;
+                _logo = value;
+                NotifyChanged("Logo");
+            }
+        }
+
+        private string _url;
+        public string URL
+        {
+            get { return string.IsNullOrEmpty(_url) ? "http://dev.pointgaming.com" : _url; }
+            set
+            {
+                if (value == _url)
+                    return;
+                _url = value;
+                NotifyChanged("URL");
+            }
+        }
+
         private bool _isLocked;
         public bool IsLocked
         {

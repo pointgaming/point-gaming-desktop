@@ -92,5 +92,11 @@
     <Setting Name="BitcoinMinerOnlyWheUserIdle" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="UserProfile" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://dev.pointgaming.com/u/%{username}/profile</Value>
+    </Setting>
+    <Setting Name="BetHistory" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">https://dev.pointgaming.com/api/v1/bet_history/</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
