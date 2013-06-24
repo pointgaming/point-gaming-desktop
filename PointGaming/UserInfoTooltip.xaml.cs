@@ -71,7 +71,7 @@ namespace PointGaming
             set { this.SetValue(JoinDateProperty, value); }
         }
 
-        public static readonly DependencyProperty PointsProperty = DependencyProperty.Register("Points", typeof(string), typeof(UserInfoTooltip));
+        public static readonly DependencyProperty PointsProperty = DependencyProperty.Register("Points", typeof(int), typeof(UserInfoTooltip));
         public int Points
         {
             get { return (int)this.GetValue(PointsProperty); }
