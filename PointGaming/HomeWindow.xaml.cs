@@ -26,6 +26,8 @@ namespace PointGaming
 
         private WindowBoundsPersistor _windowBoundsPersistor;
 
+        private HomeTab.PaymentTab _paymentTab;
+
         public HomeWindow()
         {
             InitializeComponent();
@@ -52,10 +54,11 @@ namespace PointGaming
             };
             tabControlMain.Items.Add(tab);
 
+            _paymentTab = new HomeTab.PaymentTab();
             tab = new TabItem
             {
                 Header = "Better",
-                Content = new HomeTab.PaymentTab(),
+                Content = _paymentTab,
             };
             tabControlMain.Items.Add(tab);
 
@@ -113,12 +116,12 @@ namespace PointGaming
             _childWindows.Remove(window);
         }
         
-        public void LogOut(bool shouldShowLogInWindow)
+        public void LogOut(bool shouldShowLogInWindow, bool isFromWindowClosingEvent)
         {
             if (UserData == null)
                 return;
 
-            _shouldClose = true;
+            _allowClose = true;
 
             taskbarIcon.Visibility = System.Windows.Visibility.Collapsed;
             
@@ -126,6 +129,8 @@ namespace PointGaming
             foreach (var window in childWindows)
                 window.Close();
             _childWindows.Clear();
+
+            _paymentTab.LoggingOut();
 
             App.DebugBox = null;
 
@@ -144,29 +149,37 @@ namespace PointGaming
                 App.IsShuttingDown = true;
             }
 
-            if (!_windowClosing)
+            if (!isFromWindowClosingEvent)
                 Close();
+
+            if (!shouldShowLogInWindow)
+                WaitForThreadsToDie();
         }
-        private bool _windowClosing;
+
+        private static void WaitForThreadsToDie()
+        {
+            var now = DateTime.UtcNow;
+            while ((DateTime.UtcNow - now).TotalMilliseconds < 200)
+                Thread.Sleep(50);
+        }
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            if (!_shouldClose)
+            if (!_allowClose)
             {
                 e.Cancel = true;
                 WindowState = System.Windows.WindowState.Minimized;
                 return;
             }
 
-            _windowClosing = true;
-            LogOut(false);
+            LogOut(false, true);
             _windowBoundsPersistor.Save();
         }
         private void ExitClick(object sender, RoutedEventArgs e)
         {
-            _shouldClose = true;
+            _allowClose = true;
             Close();
         }
-        private bool _shouldClose = false;
+        private bool _allowClose = false;
 
         private class HomeWindowBoundsPersistor : WindowBoundsPersistor
         {

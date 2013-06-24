@@ -174,13 +174,17 @@ namespace PointGaming
             var ms = new SynchronizedMemoryStream();
             var sw = new StreamWriter(ms);
 
+            var originalOut = Console.Out;
+
             Console.SetOut(sw);
 
             while (!App.IsShuttingDown)
             {
-                Thread.Sleep(250);
-                string text;
+                Thread.Sleep(100);
+                if (App.IsShuttingDown)
+                    break;
 
+                string text;
                 lock (ms.WriteSynch)
                 {
                     sw.Flush();
@@ -190,11 +194,16 @@ namespace PointGaming
                     text = Encoding.UTF8.GetString(ms.GetBuffer(), 0, (int)end);
                 }
 
-                if (text.Length > 0 && _logWriter != null)
+                try
                 {
-                    _logWriter.Write(text);
-                    _logWriter.Flush();
+                    var logWriter = _logWriter;
+                    if (text.Length > 0 && logWriter != null)
+                    {
+                        logWriter.Write(text);
+                        logWriter.Flush();
+                    }
                 }
+                catch { }
 
                 if (DebugBox != null)
                 {
@@ -208,6 +217,19 @@ namespace PointGaming
                     }), text);
                 }
             }
+
+            Console.SetOut(originalOut);
+            sw.Close();
+
+            try
+            {
+                var logWriter = _logWriter;
+                if (logWriter != null)
+                {
+                    logWriter.Close();
+                }
+            }
+            catch { }
         }
 
 

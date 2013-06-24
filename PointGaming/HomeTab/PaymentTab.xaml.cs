@@ -87,7 +87,11 @@ namespace PointGaming.HomeTab
         private void checkBoxFreeProAccount_Unchecked(object sender, RoutedEventArgs e)
         {
             SaveMinerEnabled(false);
+            StopMining();
+        }
 
+        private void StopMining()
+        {
             if (_stratumSession == null)
                 return;
 
@@ -106,6 +110,11 @@ namespace PointGaming.HomeTab
         {
             bool isEnabled = PointGaming.Properties.Settings.Default.BitcoinMinerEnabled;
             checkBoxFreeBetterAccount.IsChecked = isEnabled;
+        }
+
+        public void LoggingOut()
+        {
+            StopMining();
         }
     }
 }

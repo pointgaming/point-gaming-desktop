@@ -38,7 +38,7 @@ namespace PointGaming.BitcoinMiner
         public static List<Miner> GetAvailableMiners() {
             List<Miner> available = new List<Miner>();
 
-            DeviceType[] types = { DeviceType.GPU }; // DeviceType.CPU intel processor seems to make program unstable
+            DeviceType[] types = { DeviceType.GPU }; // DeviceType.CPU prevents GPU from working to full potential... and it makes your CPU hot and a waste of energy
             foreach (DeviceType type in types)
             {
 
@@ -83,6 +83,11 @@ namespace PointGaming.BitcoinMiner
                                 vendor = Vendor.NVidia;
                             else if (svendor == "GenuineIntel")
                                 vendor = Vendor.Intel;
+                            else if (svendor == "Intel(R) Corporation")
+                            {
+                                i++;
+                                continue;// Dean Gores: for some reason this device causes the thread to get stuck on my computer
+                            }
                             else if (svendor == "Advanced Micro Devices, Inc.")
                                 vendor = Vendor.AMD;
                             try

@@ -51,7 +51,7 @@ namespace PointGaming.HomeTab
         {
             Properties.Settings.Default.Password = "";
             Properties.Settings.Default.Save();
-            HomeWindow.Home.LogOut(true);
+            HomeWindow.Home.LogOut(true, false);
         }
 
         private void checkBoxSyncGameConfigs_Checked(object sender, RoutedEventArgs e)
