@@ -27,6 +27,7 @@ namespace PointGaming.BitcoinMiner
         private Socket MySocket;
 
         public event Action<bool> ConnectionConcluded;
+        public event Action ConnectionFailure;
 
         private DateTime _connectTimeout;
 
@@ -46,12 +47,28 @@ namespace PointGaming.BitcoinMiner
 
         private void Connect()
         {
-            MySocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            MySocket.Connect(Endpoint);
+            try
+            {
+                EnableSleep = false;
 
-            Subscribe();
-            Authorize();
-            MonitorSocket();
+
+                MySocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                MySocket.Connect(Endpoint);
+
+                Subscribe();
+                Authorize();
+                MonitorSocket();
+            }
+            catch (Exception e)
+            {
+                App.LogLine("Stratum socket monitor threw exception: " + e.Message);
+                FireConnectionFailure();
+            }
+            finally
+            {
+                IsRunning = false;
+                EnableSleep = true;
+            }
         }
 
         public void Dispose()
@@ -86,80 +103,68 @@ namespace PointGaming.BitcoinMiner
 
         private void MonitorSocket()
         {
-            try
+            var myShares = new List<string>();
+            var buffer = new byte[32768];// 32kB, a generous buffer size
+            int offset = 0;
+
+            bool isConnected = false;
+
+            while (ShouldBeConnected)
             {
-                EnableSleep = false;
-
-                var myShares = new List<string>();
-                var buffer = new byte[32768];// 32kB, a generous buffer size
-                int offset = 0;
-
-                bool isConnected = false;
-
-                while (ShouldBeConnected)
+                if (!isConnected)
                 {
-                    if (!isConnected)
+                    if (IsSubscribed == false || IsAuthorized == false)
                     {
-                        if (IsSubscribed == false || IsAuthorized == false)
-                        {
-                            FireConnect(false);
-                            break;
-                        }
-
-                        if (IsSubscribed == true && IsAuthorized == true)
-                        {
-                            FireConnect(true);
-                            isConnected = true;
-                        }
-                        else if (DateTime.UtcNow > _connectTimeout)
-                        {
-                            FireConnect(false);
-                            break;
-                        }
+                        FireConnect(false);
+                        break;
                     }
 
-                    int byteCount = 0;
-
-                    int readAmount = MySocket.Available;
-                    if (readAmount > 0)
+                    if (IsSubscribed == true && IsAuthorized == true)
                     {
-                        int maxReadable = buffer.Length - offset;
-                        if (readAmount < maxReadable)
-                            maxReadable = readAmount;
-                        byteCount = MySocket.Receive(buffer, offset, maxReadable, SocketFlags.None);
-                        ScanLine(buffer, ref offset, byteCount);
+                        FireConnect(true);
+                        isConnected = true;
                     }
-
-                    lock (outgoingShares)
+                    else if (DateTime.UtcNow > _connectTimeout)
                     {
-                        if (outgoingShares.Count > 0)
-                        {
-                            myShares.AddRange(outgoingShares);
-                            outgoingShares.Clear();
-                        }
+                        FireConnect(false);
+                        break;
                     }
-
-                    if (myShares.Count > 0)
-                    {
-                        foreach (var share in myShares)
-                        {
-                            var submitShareBytes = System.Text.Encoding.ASCII.GetBytes(share);
-                            var sent = MySocket.Send(submitShareBytes);
-                        }
-
-                        myShares.Clear();
-                    }
-
-                    if (byteCount <= 0)
-                        System.Threading.Thread.Sleep(100);
                 }
-            }
-            catch
-            { }
-            finally
-            {
-                IsRunning = false;
-                EnableSleep = true;
+
+                int byteCount = 0;
+
+                int readAmount = MySocket.Available;
+                if (readAmount > 0)
+                {
+                    int maxReadable = buffer.Length - offset;
+                    if (readAmount < maxReadable)
+                        maxReadable = readAmount;
+                    byteCount = MySocket.Receive(buffer, offset, maxReadable, SocketFlags.None);
+                    ScanLine(buffer, ref offset, byteCount);
+                }
+
+                lock (outgoingShares)
+                {
+                    if (outgoingShares.Count > 0)
+                    {
+                        myShares.AddRange(outgoingShares);
+                        outgoingShares.Clear();
+                    }
+                }
+
+                if (myShares.Count > 0)
+                {
+                    foreach (var share in myShares)
+                    {
+                        var submitShareBytes = System.Text.Encoding.ASCII.GetBytes(share);
+                        var sent = MySocket.Send(submitShareBytes);
+                    }
+
+                    myShares.Clear();
+                }
+
+                if (byteCount <= 0)
+                    System.Threading.Thread.Sleep(100);
             }
         }
 
@@ -168,6 +173,13 @@ namespace PointGaming.BitcoinMiner
             var cc = ConnectionConcluded;
             if (cc != null)
                 cc(isConnected);
+        }
+
+        private void FireConnectionFailure()
+        {
+            var cc = ConnectionFailure;
+            if (cc != null)
+                cc();
         }
 
         private void Authorize()

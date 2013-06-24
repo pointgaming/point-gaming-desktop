@@ -150,16 +150,16 @@ namespace PointGaming.BitcoinMiner
             }
         }
 
+        private StratumSession _stratumSession;
 
-        internal void BeginWorkFor(StratumSession stratum)
+        internal void BeginMining(StratumSession stratum)
         {
-            var t = new Thread(WorkFor);
+            _stratumSession = stratum;
+            var t = new Thread(Mine);
             t.IsBackground = true;
             t.Name = "OpenCL Miner";
-            t.Start(stratum);
+            t.Start();
         }
-
-
 
         public static bool IsUserIdle
         {
@@ -171,10 +171,8 @@ namespace PointGaming.BitcoinMiner
             }
         }
 
-        private void WorkFor(object o)
+        private void Mine()
         {
-            StratumSession stratum = (StratumSession)o;
-
             MinerData md = new MinerData();
 
             StratumHeaderBuilder latestWork = null;
@@ -193,7 +191,7 @@ namespace PointGaming.BitcoinMiner
                     md.nHashesDone = 0;
                 }
 
-                latestWork = stratum.GetLatestBuilder(latestWork);
+                latestWork = _stratumSession.GetLatestBuilder(latestWork);
                 if (latestWork == null)
                 {
                     Thread.Sleep(100);
@@ -215,7 +213,7 @@ namespace PointGaming.BitcoinMiner
                     {
                         Array.Reverse(nonceBytes);
                         var nonceHex2 = nonceBytes.ToHexString().ToLower();
-                        stratum.SubmitShare(latestWork, nonceHex2);
+                        _stratumSession.SubmitShare(latestWork, nonceHex2);
                     }
                 }
             }
