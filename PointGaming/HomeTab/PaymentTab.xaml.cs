@@ -44,6 +44,9 @@ namespace PointGaming.HomeTab
 
         private void StartMining()
         {
+            if (_stratumSession != null)
+                return;
+
             _stratumSession = new BitcoinMiner.StratumSession();
             _stratumSession.ConnectionConcluded += _stratumSession_ConnectionConcluded;
             _stratumSession.ConnectionFailure += _stratumSession_ConnectionFailure;
@@ -54,7 +57,7 @@ namespace PointGaming.HomeTab
             var workerName = HomeWindow.UserData.User.Username;
             var workerPassword = "";
 
-            TimeSpan timeoutTimespan = new TimeSpan(0, 0, 1);
+            TimeSpan timeoutTimespan = new TimeSpan(0, 0, 30);
             _stratumSession.Connect(endpoint, workerName, workerPassword, timeoutTimespan);
         }
 
