@@ -75,6 +75,11 @@ namespace PointGaming.GameRoom
                 NotifyChanged("IsAdvertising");
             }
         }
+
+        public bool HasChangedSettings(Lobby.GameRoomItem item)
+        {
+            return Description != item.Description || IsAdvertising != item.IsAdvertising || Password != item.Password;
+        }
         
         public GameRoomAdminDialog()
         {

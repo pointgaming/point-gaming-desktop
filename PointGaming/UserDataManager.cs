@@ -56,6 +56,10 @@ namespace PointGaming
         {
             _chatManager.JoinChatroom(id);
         }
+        public void JoinGameRoom(string id)
+        {
+            _chatManager.JoinGameRoom(id);
+        }
 
         public Chat.ChatWindow GetChatWindow()
         {

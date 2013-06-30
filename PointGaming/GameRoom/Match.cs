@@ -164,6 +164,10 @@ namespace PointGaming.GameRoom
                 NotifyChanged("Player1");
             }
         }
+        public string Player1Description
+        {
+            get { return Player1 == null ? "" : Player1.ShortDescription; }
+        }
 
         private IBetOperand _player2;
         public IBetOperand Player2
@@ -177,6 +181,10 @@ namespace PointGaming.GameRoom
                 NotifyChanged("Player2");
             }
         }
+        public string Player2Description
+        {
+            get { return Player2 == null ? "" : Player2.ShortDescription; }
+        }
 
         private IBetOperand _winner;
         public IBetOperand Winner
@@ -189,6 +197,10 @@ namespace PointGaming.GameRoom
                 _winner = value;
                 NotifyChanged("Winner");
             }
+        }
+        public string WinnerDescription
+        {
+            get { return Winner == null ? "" : Winner.ShortDescription; }
         }
 
         public void Update(UserDataManager manager, POCO.MatchPoco poco)

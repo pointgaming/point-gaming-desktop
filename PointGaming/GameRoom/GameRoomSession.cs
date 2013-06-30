@@ -51,7 +51,13 @@ namespace PointGaming.GameRoom
                 response = SocketSession.Rest<GameRoomSinglePoco>(url, Method.PUT, root);
             }, delegate
             {
-                if (!response.IsOk())
+                if (response.IsOk())
+                {
+                    GameRoom.Description = response.Data.game_room.description;
+                    GameRoom.IsAdvertising = response.Data.game_room.is_advertising;
+                    GameRoom.Password = response.Data.game_room.password;
+                }
+                else
                 {
                     MessageDialog.Show(_userData.GetChatWindow(), "Failed to set Settings", "Sorry, failed to set settings.\r\nDetails: " + response.ErrorMessage);
                 }

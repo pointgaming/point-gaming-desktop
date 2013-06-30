@@ -351,7 +351,9 @@ namespace PointGaming.Lobby
                     _lobbySession.CreateRoomAt(item.Position, "New game room", OnMyRoomCreated);
                 }
                 else
-                    _userData.JoinChat(Chat.ChatManager.PrefixGameRoom + item.Id);
+                {
+                    _userData.JoinGameRoom(Chat.ChatManager.PrefixGameRoom + item.Id);
+                }
             }
         }
 
@@ -366,7 +368,7 @@ namespace PointGaming.Lobby
 
         private void OnMyRoomCreated(string id)
         {
-            _userData.JoinChat(Chat.ChatManager.PrefixGameRoom + id);
+            _userData.JoinGameRoom(Chat.ChatManager.PrefixGameRoom + id);
         }
 
         private void GameRoomPanel_InfoClick(object sender, RoutedEventArgs e)

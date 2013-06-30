@@ -99,6 +99,7 @@
     <Reference Include="Hardcodet.Wpf.TaskbarNotification">
       <HintPath>..\libraries\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -117,6 +118,7 @@
     <Reference Include="System.Net" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -171,6 +173,10 @@
     <Compile Include="GameRoom\BetProposalDialog.xaml.cs">
       <DependentUpon>BetProposalDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GameRoom\GameRoomWindowModelView.cs" />
+    <Compile Include="GameRoom\GameRoomWindowView.xaml.cs">
+      <DependentUpon>GameRoomWindowView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GameRoom\Match.cs" />
     <Compile Include="GameRoom\GameRoomAdminDialog.xaml.cs">
       <DependentUpon>GameRoomAdminDialog.xaml</DependentUpon>
@@ -204,6 +210,7 @@
       <DependentUpon>LobbyTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="BitcoinMiner\StratumSession.cs" />
+    <Compile Include="MVVM\ViewModelBase.cs" />
     <Compile Include="POCO\PgVersion.cs" />
     <Compile Include="PgFonts\FontChooser.xaml.cs">
       <DependentUpon>FontChooser.xaml</DependentUpon>
@@ -266,6 +273,10 @@
     <Page Include="GameRoom\GameRoomTab.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GameRoom\GameRoomWindowView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GameRoom\PasswordDialog.xaml">
       <Generator>MSBuild:Compile</Generator>

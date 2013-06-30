@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using PointGaming.POCO;
+using PointGaming.GameRoom;
 using SocketIOClient;
 using SocketIOClient.Messages;
 using RestSharp;
@@ -24,7 +25,7 @@ namespace PointGaming.Chat
 
         private UserDataManager _userData;
         private ChatWindow _chatWindow;
-        private Dictionary<string, ChatWindow> _gameRoomWindows;
+        private Dictionary<string, GameRoomWindow> _gameRoomWindowViews = new Dictionary<string, GameRoomWindow>();
 
         private readonly Dictionary<string, ChatroomSession> _chatroomUsage = new Dictionary<string, ChatroomSession>();
 
@@ -183,7 +184,18 @@ namespace PointGaming.Chat
                     chatroomSession.Membership.Add(pgUser);
             }
 
-            ChatWindow.Show(chatroomSession);
+            if (chatroomSession is GameRoomSession)
+            {
+                GameRoomWindow window;
+                if (_gameRoomWindowViews.TryGetValue(chatroomSession.ChatroomId, out window))
+                {
+                    window.Show();
+                }
+            }
+            else
+            {
+                ChatWindow.Show(chatroomSession);
+            }
         }
         private void OnChatroomMemberChange(IMessage message)
         {
@@ -374,6 +386,126 @@ namespace PointGaming.Chat
         #endregion
 
         #region game room
+
+        private bool TryGetGameRoomAndSession(string id, out Lobby.LobbySession session, out Lobby.GameRoomItem room)
+        {
+            foreach (var chatSession in _chatroomUsage.Values)
+            {
+                if (chatSession is Lobby.LobbySession)
+                {
+                    session = chatSession as Lobby.LobbySession;
+                    if (session.GameRoomLookup.TryGetValue(id, out room))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            session = null;
+            room = null;
+            return false;
+        }
+
+        public void JoinGameRoom(string id)
+        {
+            Lobby.LobbySession session;
+            GameRoomWindow window;
+
+            if (_gameRoomWindowViews.TryGetValue(id, out window))
+            {
+                // game room window already open
+                window.Show();
+                return;
+            }
+
+            var gameRoomId = id.Substring(PrefixGameRoom.Length);
+            Lobby.GameRoomItem room;
+            if (!TryGetGameRoomAndSession(gameRoomId, out session, out room))
+            {
+                // game room data still needs to be retrieved from rest API
+                Lobby.LobbySession.LookupGameRoom(_userData, gameRoomId, JoinLobbyAndGameRoom);
+                return;
+            }
+
+            // start new game room session
+            var gameRoomSession = new GameRoom.GameRoomSession(this, session, room);
+            gameRoomSession.LoadMatch();
+            gameRoomSession.ChatroomId = id;
+            gameRoomSession.State = ChatroomState.New;
+
+            // create new game window (but only show after OnChatroomMemberList resolves)
+            GameRoomWindowModelView modelView = new GameRoomWindowModelView();
+            modelView.Init(this, gameRoomSession);
+            window = new GameRoomWindow();
+            window.DataContext = modelView;
+
+            // update lookups
+            _chatroomUsage.Add(id, gameRoomSession);
+            _gameRoomWindowViews.Add(id, window);
+
+            // connect
+            var chatroom = new Chatroom { _id = id };
+            ChatroomUserJoin(chatroom);
+            ChatroomMemberGetList(chatroom);
+        }
+
+        public void AdminGameRoom(string id)
+        {
+            GameRoomWindow window;
+            if (_gameRoomWindowViews.TryGetValue(id, out window))
+            {
+                ChatroomSession session;
+                if (_chatroomUsage.TryGetValue(id, out session))
+                {
+                    GameRoomSession gameRoomSession = session as GameRoomSession;
+                    var dialog = new GameRoomAdminDialog();
+
+                    dialog.Init(window, gameRoomSession);
+                    dialog.ShowDialog();
+
+                    if (dialog.HasChangedSettings(gameRoomSession.GameRoom))
+                    {
+                        var poco = new
+                        {
+                            _id = gameRoomSession.GameRoom.Id,
+                            description = dialog.Description,
+                            is_advertising = dialog.IsAdvertising,
+                            password = dialog.Password,
+                        };
+                        gameRoomSession.SetGameRoomSettings(poco);
+                    }
+                }
+            }
+        }
+
+        public void GameRoomWindowClosed(string id)
+        {
+            ChatroomSession session;
+            if (_chatroomUsage.TryGetValue(id, out session)) {
+                if (session.State == ChatroomState.Connected)
+                    Disconnect(session);
+            }
+            _chatroomUsage.Remove(id);
+            _gameRoomWindowViews.Remove(id);
+        }
+
+        public void OpenBetting(string id)
+        {
+            ChatroomSession session;
+            if (_chatroomUsage.TryGetValue(id, out session))
+            {
+                GameRoomSession gameRoomSession = session as GameRoomSession;
+                var dialog = new BetProposalDialog();
+                dialog.Owner = _chatWindow;
+                dialog.SetMatch(gameRoomSession.MyMatch);
+                dialog.ShowDialog();
+                if (dialog.DialogResult == true)
+                {
+                    gameRoomSession.CreateBet(dialog.ToBet());
+                }
+            }
+        }
+
         private void OnGameRoomNew(IMessage message)
         {
             var received = message.Json.GetFirstArgAs<GameRoomSinglePoco>();
@@ -439,6 +571,7 @@ namespace PointGaming.Chat
         }
         #endregion
 
+        #region betting
 
         private void OnMatchNew(IMessage message)
         {
@@ -515,5 +648,6 @@ namespace PointGaming.Chat
             if (TryGetGameRoom(gameId, out gameRoom))
                 gameRoom.OnBetDestroy(bet);
         }
+        #endregion
     }
 }
