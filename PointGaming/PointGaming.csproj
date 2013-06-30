@@ -234,8 +234,8 @@
     <Compile Include="SocketSession.cs" />
     <Compile Include="UrlMatcher.cs" />
     <Compile Include="UserDataManager.cs" />
-    <Compile Include="UserInfoTooltip.xaml.cs">
-      <DependentUpon>UserInfoTooltip.xaml</DependentUpon>
+    <Compile Include="Users\UserProfileTooltip.xaml.cs">
+      <DependentUpon>UserProfileTooltip.xaml</DependentUpon>
     </Compile>
     <Compile Include="WindowBoundsPersistor.cs" />
     <Page Include="Chat\ChatWindow.xaml">
@@ -378,7 +378,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserInfoTooltip.xaml">
+    <Page Include="Users\UserProfileTooltip.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

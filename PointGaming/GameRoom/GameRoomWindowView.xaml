@@ -100,6 +100,11 @@
             <ListView.Resources>
                 <DataTemplate DataType="{x:Type pg:PgUser}" >
                     <Label Content="{Binding DisplayName}" HorizontalAlignment="Stretch" Width="120">
+                        <Label.ToolTip>
+                            <ToolTip>
+                                <pg:UserProfileTooltip UserProfile="{Binding}" />
+                            </ToolTip>
+                        </Label.ToolTip>
                     </Label>
                 </DataTemplate>
             </ListView.Resources>

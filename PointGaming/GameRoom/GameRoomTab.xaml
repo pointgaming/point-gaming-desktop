@@ -130,14 +130,6 @@
             <ListBox.Resources>
                 <DataTemplate DataType="{x:Type my:PgUser}">
                     <Label Content="{Binding Username}" MouseDoubleClick="Label_MouseDoubleClick">
-                        <Label.ToolTip>
-                            <ToolTip>
-                                <my:UserInfoTooltip Margin="2" 
-                                                    Username="{Binding DisplayName}" 
-                                                    FullName="{Binding Username}" 
-                                                    Points="{Binding Points}" />
-                            </ToolTip>
-                        </Label.ToolTip>
                     </Label>
                 </DataTemplate>
 

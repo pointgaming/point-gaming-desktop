@@ -43,6 +43,10 @@ namespace PointGaming.GameRoom
             get { return _session.GameRoom.DescriptionDocument; }
         }
 
+        private void MyMatch_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged("MatchDescription");
+        }
         public string MatchDescription
         {
             get
@@ -94,7 +98,6 @@ namespace PointGaming.GameRoom
                 PgUser groupedUser = user.ShallowCopy();
                 groupedUser.GroupName = "Players";
                 _groupedMembership.AddNewItem(groupedUser);
-                _groupedMembership.CommitNew();
             }
 
             // admin group
@@ -105,7 +108,6 @@ namespace PointGaming.GameRoom
                 PgUser groupedUser = user.ShallowCopy();
                 groupedUser.GroupName = "Admin";
                 _groupedMembership.AddNewItem(groupedUser);
-                _groupedMembership.CommitNew();
             }
 
             // friends group
@@ -116,9 +118,9 @@ namespace PointGaming.GameRoom
                 PgUser groupedUser = user.ShallowCopy();
                 groupedUser.GroupName = "Friends";
                 _groupedMembership.AddNewItem(groupedUser);
-                _groupedMembership.CommitNew();
             }
 
+            _groupedMembership.CommitNew();
             _groupedMembership.GroupDescriptions.Add(new PropertyGroupDescription("GroupName"));
             OnPropertyChanged("Membership");
         }
@@ -127,10 +129,6 @@ namespace PointGaming.GameRoom
         {
             // route all game room model changes to any MV listeners (i.e. the UI)
             OnPropertyChanged(e);
-        }
-
-        private void MyMatch_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
         }
 
         public ICommand WindowClosed { get { return new ActionCommand(ExitGameRoom); } }
