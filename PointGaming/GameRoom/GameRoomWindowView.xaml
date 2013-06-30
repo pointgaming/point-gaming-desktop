@@ -46,7 +46,7 @@
 
                 <FlowDocumentScrollViewer Grid.Row="1" 
                                           Name="flowDocumentDescription"  
-                                          Document="{Binding GameRoomDescription}"
+                                          Document="{Binding DescriptionDocument}"
                                           HorizontalAlignment="Stretch" 
                                           VerticalAlignment="Stretch"
                                           VerticalScrollBarVisibility="Auto" 
@@ -66,14 +66,23 @@
                 <Border Grid.Row="2" Margin="0,5,0,5" BorderThickness="1" BorderBrush="#FF828790">
                     <Grid Name="gridBetting">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="23"/>
+                            <RowDefinition Height="23"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <TextBox Grid.Row="0" Height="23" Name="textBoxMatchDescription" IsReadOnly="True" HorizontalAlignment="Stretch" Text="{Binding MatchDescription, Mode=OneWay}" />
+                        <TextBox Grid.Row="0" Name="textBoxMatchDescription" IsReadOnly="True" HorizontalAlignment="Stretch" Text="{Binding MatchDescription, Mode=OneWay}" />
 
-                        <Button Grid.Row="1" Content="Propose a bet..." Height="23" HorizontalAlignment="Left" Name="buttonProposeABet" VerticalAlignment="Top" Width="150" Command="{Binding ProposeBet}" />
+                        <Button Grid.Row="1" Content="Propose a bet..." HorizontalAlignment="Left" Name="buttonProposeABet" VerticalAlignment="Top" Width="150" Command="{Binding ProposeBet}" />
+
+                        <ScrollViewer Grid.Row="2" Height="150" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <ItemsControl Name="itemsControlBets" ItemsSource="{Binding RoomBets}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
                     </Grid>
                 </Border>
 

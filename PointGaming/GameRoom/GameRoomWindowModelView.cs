@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -32,9 +33,12 @@ namespace PointGaming.GameRoom
 
             // socket membership messages trigger on the session, so update room's membership when session members change
             _session.Membership.CollectionChanged += Membership_CollectionChanged;
+
+            _session.GameRoom.PropertyChanged += GameRoom_PropertyChanged;
+            _session.MyMatch.PropertyChanged += MyMatch_PropertyChanged;
         }
 
-        public FlowDocument GameRoomDescription 
+        public FlowDocument DescriptionDocument 
         {
             get { return _session.GameRoom.DescriptionDocument; }
         }
@@ -69,13 +73,18 @@ namespace PointGaming.GameRoom
             }
         }
 
+        public ObservableCollection<Bet> RoomBets
+        {
+            get { return _session.RoomBets; }
+        }
+
         private ListCollectionView _groupedMembership = new ListCollectionView(new ObservableCollection<PgUser>());
         public ListCollectionView Membership
         {
             get { return _groupedMembership; }
         }
 
-        private void Membership_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void Membership_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             _groupedMembership.Refresh();
 
@@ -112,6 +121,16 @@ namespace PointGaming.GameRoom
 
             _groupedMembership.GroupDescriptions.Add(new PropertyGroupDescription("GroupName"));
             OnPropertyChanged("Membership");
+        }
+
+        private void GameRoom_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // route all game room model changes to any MV listeners (i.e. the UI)
+            OnPropertyChanged(e);
+        }
+
+        private void MyMatch_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
         }
 
         public ICommand WindowClosed { get { return new ActionCommand(ExitGameRoom); } }
