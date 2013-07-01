@@ -14,9 +14,6 @@ using PointGaming;
 
 namespace PointGaming.GameRoom
 {
-    /// <summary>
-    /// Interaction logic for GameRoomWindow.xaml
-    /// </summary>
     public partial class GameRoomWindow : Window
     {
         public GameRoomWindow()

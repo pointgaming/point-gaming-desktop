@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.ComponentModel;
 using PointGaming;
@@ -38,7 +39,7 @@ namespace PointGaming.GameRoom
             _session.MyMatch.PropertyChanged += MyMatch_PropertyChanged;
         }
 
-        public FlowDocument DescriptionDocument 
+        public FlowDocument DescriptionDocument
         {
             get { return _session.GameRoom.DescriptionDocument; }
         }
@@ -154,9 +155,27 @@ namespace PointGaming.GameRoom
         {
             get
             {
-                return _session.MyMatch.IsBetting && 
+                return _session.MyMatch.IsBetting &&
                        _session.MyMatch.State == MatchState.created;
             }
+        }
+
+        public bool IsGameRoomOwner
+        {
+            get { return _session.GameRoom.Owner.Equals(_userData.User); }
+        }
+
+        private bool _canAdmin = false;
+        public bool CanAdmin
+        {
+            get { return _canAdmin; }
+        }
+
+        public ICommand CheckUserCanAdmin { get { return new ActionCommand(CheckCanAdmin); } }
+        private void CheckCanAdmin(object sender)
+        {
+            _canAdmin = IsGameRoomOwner && !sender.Equals(_userData.User);
+            OnPropertyChanged("CanAdmin");
         }
     }
 }

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:pg="clr-namespace:PointGaming"
-        Name="chatWindow"
+        Name="This"
         WindowStartupLocation="CenterOwner"
         Title="GameRoom Chat" 
         Icon="/PointGaming;component/PointGaming.ico" 
@@ -100,6 +100,12 @@
             <ListView.Resources>
                 <DataTemplate DataType="{x:Type pg:PgUser}" >
                     <Label Content="{Binding DisplayName}" HorizontalAlignment="Stretch" Width="120">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="ContextMenuOpening">
+                                <i:InvokeCommandAction Command="{Binding DataContext.CheckUserCanAdmin, ElementName=This}" CommandParameter="{Binding}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        
                         <Label.ToolTip>
                             <ToolTip>
                                 <pg:UserProfileTooltip UserProfile="{Binding}" />
@@ -108,6 +114,25 @@
                     </Label>
                 </DataTemplate>
             </ListView.Resources>
+            
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="ContextMenu">
+                        <Setter.Value>
+                            <ContextMenu>
+                                <MenuItem Header="Kick" />
+                                <MenuItem Header="Ban" />
+                                <MenuItem Header="Promote to owner" />
+                            </ContextMenu>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding DataContext.CanAdmin, ElementName=This}" Value="False">
+                            <Setter Property="ContextMenu" Value="{x:Null}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
         </ListView>
     </Grid>
 </Window>
