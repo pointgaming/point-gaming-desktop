@@ -177,5 +177,20 @@ namespace PointGaming.GameRoom
             _canAdmin = IsGameRoomOwner && !sender.Equals(_userData.User);
             OnPropertyChanged("CanAdmin");
         }
+
+        public ICommand KickUser { get { return new ActionCommand(KickUserFromRoom); } }
+        private void KickUserFromRoom(object sender)
+        {
+        }
+
+        public ICommand BanUser { get { return new ActionCommand(BanUserFromRoom); } }
+        private void BanUserFromRoom(object sender)
+        {
+        }
+
+        public ICommand PromoteUser { get { return new ActionCommand(PromoteUserToRoomOwner); } }
+        private void PromoteUserToRoomOwner(object sender)
+        {
+        }
     }
 }

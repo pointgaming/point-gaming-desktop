@@ -95,10 +95,10 @@
                  Name="listBoxMembership"
                  ItemsSource="{Binding Membership}"
                  Width="125"
-                 HorizontalAlignment="Stretch" 
+                 HorizontalAlignment="Stretch"
                  VerticalAlignment="Stretch">
             <ListView.Resources>
-                <DataTemplate DataType="{x:Type pg:PgUser}" >
+                <DataTemplate DataType="{x:Type pg:PgUser}">
                     <Label Content="{Binding DisplayName}" HorizontalAlignment="Stretch" Width="120">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="ContextMenuOpening">
@@ -113,19 +113,25 @@
                         </Label.ToolTip>
                     </Label>
                 </DataTemplate>
+                
+                <pg:DataBindingProxy x:Key="dataContextProxy" Data="{Binding}" />
+
+                <ContextMenu Name="adminUserContextMenu" x:Key="adminUserContextMenu">
+                    <MenuItem Header="Kick" 
+                              Command="{Binding Source={StaticResource dataContextProxy}, Path=Data.KickUser}" 
+                              CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
+                    <MenuItem Header="Ban" 
+                              Command="{Binding Source={StaticResource dataContextProxy}, Path=Data.BanUser}" 
+                              CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
+                    <MenuItem Header="Promote to owner" 
+                              Command="{Binding Source={StaticResource dataContextProxy}, Path=Data.PromoteUser}" 
+                              CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
+                </ContextMenu>
             </ListView.Resources>
             
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
-                    <Setter Property="ContextMenu">
-                        <Setter.Value>
-                            <ContextMenu>
-                                <MenuItem Header="Kick" />
-                                <MenuItem Header="Ban" />
-                                <MenuItem Header="Promote to owner" />
-                            </ContextMenu>
-                        </Setter.Value>
-                    </Setter>
+                    <Setter Property="ContextMenu" Value="{DynamicResource adminUserContextMenu}" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding DataContext.CanAdmin, ElementName=This}" Value="False">
                             <Setter Property="ContextMenu" Value="{x:Null}" />

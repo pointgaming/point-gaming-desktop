@@ -210,6 +210,7 @@
       <DependentUpon>LobbyTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="BitcoinMiner\StratumSession.cs" />
+    <Compile Include="MVVM\DataBindingProxy.cs" />
     <Compile Include="MVVM\ViewModelBase.cs" />
     <Compile Include="POCO\PgVersion.cs" />
     <Compile Include="PgFonts\FontChooser.xaml.cs">
