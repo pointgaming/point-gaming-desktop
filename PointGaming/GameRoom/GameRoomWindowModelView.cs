@@ -191,6 +191,13 @@ namespace PointGaming.GameRoom
         public ICommand PromoteUser { get { return new ActionCommand(PromoteUserToRoomOwner); } }
         private void PromoteUserToRoomOwner(object sender)
         {
+            PgUser user = sender as PgUser;
+            var poco = new
+            {
+                _id = _session.GameRoom.Id,
+                owner_id = user.Id,
+            };
+            _session.SetGameRoomSettings(poco);
         }
     }
 }
