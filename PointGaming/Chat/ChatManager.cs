@@ -84,6 +84,12 @@ namespace PointGaming.Chat
 
             _chatWindow = null;
             HomeWindow.Home.RemoveChildWindow(_chatWindow);
+
+            // Close any open game room windows when lobby closes
+            foreach (KeyValuePair<string, GameRoomWindow> kv in _gameRoomWindowViews)
+            {
+               kv.Value.Close();
+            }
         }
         public void Leave(string id)
         {
@@ -486,7 +492,6 @@ namespace PointGaming.Chat
                     Disconnect(session);
             }
             _chatroomUsage.Remove(id);
-            _gameRoomWindowViews.Remove(id);
         }
 
         public void OpenBetting(string id)
