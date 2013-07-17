@@ -9,7 +9,7 @@
         Icon="/PointGaming;component/PointGaming.ico" 
         WindowStyle="SingleBorderWindow" 
         ResizeMode="CanResize"
-        Height="792" 
+        Height="592" 
         Width="900">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closed">
@@ -85,8 +85,46 @@
                         </ScrollViewer>
                     </Grid>
                 </Border>
-
             </Grid>
+
+            <Grid Grid.Row="1" Name="gridChat">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="1"  Margin="0,0,0,5" BorderBrush="#FF828790" BorderThickness="1">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <FlowDocumentScrollViewer Document="{Binding ChatMessages}"   
+                                                  Grid.Row="0"
+                                                  HorizontalAlignment="Stretch" 
+                                                  VerticalAlignment="Stretch" 
+                                                  VerticalScrollBarVisibility="Auto" >
+                            <FlowDocumentScrollViewer.Resources>
+                                <Style TargetType="{x:Type Paragraph}">
+                                    <Setter Property="Margin" Value="0"/>
+                                </Style>
+                            </FlowDocumentScrollViewer.Resources>
+                        </FlowDocumentScrollViewer>
+
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox Name="ChatTextBox" PreviewKeyDown="ChatTextBox_PreviewKeyDown" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxLength="1024" TextWrapping="Wrap" AcceptsReturn="True" />
+                            <Button Name="SendChatButton" Command="{Binding SendChat}" CommandParameter="{Binding Text, ElementName=ChatTextBox}" Click="SendChatButton_Click" Grid.Column="1" Content="Send" Height="23" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="75" />
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Grid>
+
         </Grid>
 
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Name="gridSplitter" VerticalAlignment="Stretch" Width="4" Margin="3,0,3,0"/>

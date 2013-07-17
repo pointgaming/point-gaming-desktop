@@ -10,6 +10,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Automation.Peers;
+using System.Windows.Automation.Provider;
 using PointGaming;
 
 namespace PointGaming.GameRoom
@@ -19,6 +21,27 @@ namespace PointGaming.GameRoom
         public GameRoomWindow()
         {
             InitializeComponent();
+        }
+
+        private void ChatTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            bool isShiftDown = e.KeyboardDevice.IsKeyDown(Key.LeftShift) || e.KeyboardDevice.IsKeyDown(Key.RightShift);
+
+            // Treat the chatbox enter input as a send button click
+            if (e.Key == Key.Enter && !isShiftDown)
+            {
+                SendChatButton.Command.Execute(ChatTextBox.Text);
+
+                ChatTextBox.Text = null;
+                e.Handled = true;
+            }
+        }
+
+        private void SendChatButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Clear input after text sent
+            ChatTextBox.Text = null;
+            e.Handled = true;
         }
     }
 }

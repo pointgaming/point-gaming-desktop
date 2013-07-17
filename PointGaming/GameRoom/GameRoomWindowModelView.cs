@@ -37,6 +37,7 @@ namespace PointGaming.GameRoom
 
             _session.GameRoom.PropertyChanged += GameRoom_PropertyChanged;
             _session.MyMatch.PropertyChanged += MyMatch_PropertyChanged;
+            _session.ReceivedMessage += ChatMessages_ReceivedMessage;
         }
 
         public FlowDocument DescriptionDocument
@@ -76,6 +77,44 @@ namespace PointGaming.GameRoom
                 }
                 return description;
             }
+        }
+
+        private FlowDocument _chatDocument;
+        private ObservableCollection<Paragraph> _chatMessages = new ObservableCollection<Paragraph>();
+        public FlowDocument ChatMessages {
+            get
+            {
+                _chatDocument = new FlowDocument();
+                foreach (Paragraph p in _chatMessages) 
+                {
+                    _chatDocument.Blocks.Add(p);
+                }
+                return _chatDocument;
+            }
+        }
+
+        private void ChatMessages_ReceivedMessage(UserBase fromUser, string message)
+        {
+            AddChatMessage(fromUser.username, message);
+        }
+
+        public ICommand SendChat { get { return new ActionCommand<string>(SendChatMessage); } }
+        private void SendChatMessage(string messageText)
+        {
+            _session.SendMessage(messageText);
+        }
+
+        private void AddChatMessage(string username, string message)
+        {
+            var time = DateTime.Now;
+            string timeString = time.ToString("HH:mm");
+            var p = new Paragraph();
+
+            p.Inlines.Add(new Run(timeString + " "));
+            p.Inlines.Add(new Bold(new Run(username + ": ")));
+            ChatTabCommon.Format(message, p.Inlines);
+            _chatMessages.Add(p);
+            OnPropertyChanged("ChatMessages");
         }
 
         public ObservableCollection<Bet> RoomBets

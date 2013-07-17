@@ -127,6 +127,7 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="UIAutomationProvider" />
     <Reference Include="WebSocket4Net">
       <HintPath>..\packages\SocketIO4Net.Client.0.6.26\lib\net40\WebSocket4Net.dll</HintPath>
     </Reference>
@@ -210,6 +211,7 @@
       <DependentUpon>LobbyTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="BitcoinMiner\StratumSession.cs" />
+    <Compile Include="MVVM\ActionCommand.cs" />
     <Compile Include="MVVM\DataBindingProxy.cs" />
     <Compile Include="MVVM\ViewModelBase.cs" />
     <Compile Include="POCO\PgVersion.cs" />
