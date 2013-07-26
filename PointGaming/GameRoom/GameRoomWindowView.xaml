@@ -39,7 +39,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                
+
                 <TextBlock Grid.Row="0" Height="18" Margin="2" HorizontalAlignment="Right" Name="hyperLinkRoomInfo" VerticalAlignment="Center">
                     <Hyperlink Command="{Binding ShowAdmin}">Room Admin</Hyperlink>
                 </TextBlock>
@@ -65,17 +65,21 @@
 
                 <Border Grid.Row="2" Margin="0,5,0,5" BorderThickness="1" BorderBrush="#FF828790">
                     <Grid Name="gridBetting">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="213*"/>
+                            <ColumnDefinition Width="542*"/>
+                        </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="23"/>
                             <RowDefinition Height="23"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <TextBox Grid.Row="0" Name="textBoxMatchDescription" IsReadOnly="True" HorizontalAlignment="Stretch" Text="{Binding MatchDescription, Mode=OneWay}" />
+                        <TextBox Grid.Row="0" Name="textBoxMatchDescription" IsReadOnly="True" HorizontalAlignment="Stretch" Text="{Binding MatchDescription, Mode=OneWay}" Grid.ColumnSpan="2" />
 
                         <Button Grid.Row="1" Content="Propose a bet..." HorizontalAlignment="Left" Name="buttonProposeABet" VerticalAlignment="Top" Width="150" Command="{Binding ProposeBet}" />
 
-                        <ScrollViewer Grid.Row="2" Height="150" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                        <ScrollViewer Grid.Row="2" Height="150" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.ColumnSpan="2">
                             <ItemsControl Name="itemsControlBets" ItemsSource="{Binding RoomBets}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
@@ -98,8 +102,9 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        
+
                         <FlowDocumentScrollViewer Document="{Binding ChatMessages}"   
                                                   Grid.Row="0"
                                                   HorizontalAlignment="Stretch" 
@@ -121,6 +126,14 @@
                             <TextBox Name="ChatTextBox" PreviewKeyDown="ChatTextBox_PreviewKeyDown" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxLength="1024" TextWrapping="Wrap" AcceptsReturn="True" />
                             <Button Name="SendChatButton" Command="{Binding SendChat}" CommandParameter="{Binding Text, ElementName=ChatTextBox}" Click="SendChatButton_Click" Grid.Column="1" Content="Send" Height="23" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="75" />
                         </Grid>
+                        
+                        <StackPanel Grid.Row="2" Name="chatControls" Orientation="Horizontal">
+                            <CheckBox Content="Mute" Height="16" Name="checkBoxMute" Margin="3" IsChecked="{Binding IsChatMuted}" Command="{Binding ToggleChatMuted}" />
+                            <CheckBox Content="Mute Microphone" Height="16" Name="checkBoxMuteMicrophone" Margin="3" IsChecked="{Binding IsMicMuted}" Command="{Binding ToggleChatMicMuted}" />
+                            <CheckBox Content="Team-Only Chat" Height="16" Name="checkBoxTeamOnlyChat" Margin="3" IsChecked="{Binding IsTeamOnlyChat}" Command="{Binding ToggleTeamOnlyChat}" />
+                        </StackPanel>
+
+                        <Button Grid.Row="2" Name="CloseChatButton" Command="{Binding CloseChat}" Content="Close" Height="23" HorizontalAlignment="Right" Width="75" />
                     </Grid>
                 </Border>
             </Grid>
@@ -128,7 +141,7 @@
         </Grid>
 
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Name="gridSplitter" VerticalAlignment="Stretch" Width="4" Margin="3,0,3,0"/>
-        
+
         <ListView Grid.Column="2" 
                  Name="listBoxMembership"
                  ItemsSource="{Binding Membership}"
@@ -137,13 +150,13 @@
                  VerticalAlignment="Stretch">
             <ListView.Resources>
                 <DataTemplate DataType="{x:Type pg:PgUser}">
-                    <Label Content="{Binding DisplayName}" HorizontalAlignment="Stretch" Width="120">
+                    <Label Content="{Binding DisplayName}" HorizontalAlignment="Stretch" Width="Auto">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="ContextMenuOpening">
                                 <i:InvokeCommandAction Command="{Binding DataContext.CheckUserCanAdmin, ElementName=This}" CommandParameter="{Binding}" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-                        
+
                         <Label.ToolTip>
                             <ToolTip>
                                 <pg:UserProfileTooltip UserProfile="{Binding}" />
@@ -151,7 +164,7 @@
                         </Label.ToolTip>
                     </Label>
                 </DataTemplate>
-                
+
                 <pg:DataBindingProxy x:Key="dataContextProxy" Data="{Binding}" />
 
                 <ContextMenu Name="adminUserContextMenu" x:Key="adminUserContextMenu">
@@ -166,7 +179,7 @@
                               CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
                 </ContextMenu>
             </ListView.Resources>
-            
+
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="ContextMenu" Value="{DynamicResource adminUserContextMenu}" />
@@ -177,6 +190,30 @@
                     </Style.Triggers>
                 </Style>
             </ListView.ItemContainerStyle>
+
+            <ListView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <Expander IsExpanded="True">
+                                            <Expander.Header>
+                                                <TextBlock>
+                                                     <Run Text="{Binding Path=Name, Mode=OneWay}" />
+                                                     <Run Text=" (" /><Run Text="{Binding Path=ItemCount, Mode=OneWay}" /><Run Text=")" />
+                                                </TextBlock>
+                                            </Expander.Header>
+                                            <ItemsPresenter />
+                                        </Expander>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+                </GroupStyle>
+            </ListView.GroupStyle>
         </ListView>
     </Grid>
 </Window>

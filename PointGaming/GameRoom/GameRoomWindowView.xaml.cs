@@ -39,6 +39,8 @@ namespace PointGaming.GameRoom
 
         private void SendChatButton_Click(object sender, RoutedEventArgs e)
         {
+            SendChatButton.Command.Execute(ChatTextBox.Text);
+
             // Clear input after text sent
             ChatTextBox.Text = null;
             e.Handled = true;

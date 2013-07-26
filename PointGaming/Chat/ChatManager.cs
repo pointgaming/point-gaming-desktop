@@ -511,6 +511,15 @@ namespace PointGaming.Chat
             }
         }
 
+        public void ShowMessage(string id, string title, string message)
+        {
+            GameRoomWindow window;
+            if (_gameRoomWindowViews.TryGetValue(id, out window))
+            {
+                MessageDialog.Show(window, title, message);
+            }
+        }
+
         private void OnGameRoomNew(IMessage message)
         {
             var received = message.Json.GetFirstArgAs<GameRoomSinglePoco>();

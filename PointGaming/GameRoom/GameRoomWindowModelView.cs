@@ -101,7 +101,10 @@ namespace PointGaming.GameRoom
         public ICommand SendChat { get { return new ActionCommand<string>(SendChatMessage); } }
         private void SendChatMessage(string messageText)
         {
-            _session.SendMessage(messageText);
+            if (messageText.Length > 0)
+            {
+                _session.SendMessage(messageText);
+            }
         }
 
         private void AddChatMessage(string username, string message)
@@ -131,32 +134,23 @@ namespace PointGaming.GameRoom
         private void Membership_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             _groupedMembership.Refresh();
+            _groupedMembership.GroupDescriptions.Clear();
 
-            // players group
-            foreach (PgUser user in _session.Membership)
+            // placeholder bot group; TODO: get bot(s) from socket API
+            if (_session.Membership.Count > 0)
             {
-                PgUser groupedUser = user.ShallowCopy();
-                groupedUser.GroupName = "Players";
-                _groupedMembership.AddNewItem(groupedUser);
+                PgUser botUser = new PgUser();
+                botUser.Id = "mock";
+                botUser.Username = "dProductions";
+                botUser.GroupName = "Game Room Team Bot";
+                _groupedMembership.AddNewItem(botUser);
             }
 
-            // admin group
+            // team groups
             foreach (PgUser user in _session.Membership)
             {
-                if (!user.IsAdmin) continue;
-
                 PgUser groupedUser = user.ShallowCopy();
-                groupedUser.GroupName = "Admin";
-                _groupedMembership.AddNewItem(groupedUser);
-            }
-
-            // friends group
-            foreach (PgUser user in _session.Membership)
-            {
-                if (!_userData.IsFriend(user.Id)) continue;
-
-                PgUser groupedUser = user.ShallowCopy();
-                groupedUser.GroupName = "Friends";
+                groupedUser.GroupName = groupedUser.HasTeam ? groupedUser.TeamName : "Other (No Team)";
                 _groupedMembership.AddNewItem(groupedUser);
             }
 
@@ -186,10 +180,16 @@ namespace PointGaming.GameRoom
         public ICommand ProposeBet { get { return new ActionCommand(ShowBetDialog); } }
         public void ShowBetDialog()
         {
-            if (!CanBet) return;
-
-            _manager.OpenBetting(_session.ChatroomId);
+            if (CanBet)
+            {
+                _manager.OpenBetting(_session.ChatroomId);
+            }
+            else
+            {
+                _manager.ShowMessage(_session.ChatroomId, "Cannot Bet", "Betting is not allowed. Current Match State: " + _session.MyMatch.State);
+            }
         }
+
         private bool CanBet
         {
             get
@@ -208,6 +208,45 @@ namespace PointGaming.GameRoom
         public bool CanAdmin
         {
             get { return _canAdmin; }
+        }
+
+        private bool _isChatMuted = false;
+        public bool IsChatMuted
+        {
+            get { return _isChatMuted; } // TODO: load mute status from API
+            set { }
+        }
+        
+        public ICommand ToggleChatMuted { get { return new ActionCommand(MuteChat); } }
+        private void MuteChat(object sender)
+        {
+            _manager.ShowMessage(_session.ChatroomId, "Mute/Unmute Chat", "TODO: mute chat in socket API");
+        }
+
+        private bool _isMicMuted = false;
+        public bool IsMicMuted
+        {
+            get { return _isMicMuted; } // TODO: load mic mute status from API
+            set { }
+        }
+
+        public ICommand ToggleChatMicMuted { get { return new ActionCommand(MuteMicChat); } }
+        private void MuteMicChat(object sender)
+        {
+            _manager.ShowMessage(_session.ChatroomId, "Mute/Unmute Chat Microphone", "TODO: mute chat microphone");
+        }
+
+        private bool _isTeamOnlyChat = false;
+        public bool IsTeamOnlyChat
+        {
+            get { return _isTeamOnlyChat; } // TODO: load team chat status from API
+            set { }
+        }
+
+        public ICommand ToggleTeamOnlyChat { get { return new ActionCommand(ChatTeamOnly); } }
+        private void ChatTeamOnly(object sender)
+        {
+            _manager.ShowMessage(_session.ChatroomId, "Change Team Only Requirement", "TODO: change chat's team only status in socket API");
         }
 
         public ICommand CheckUserCanAdmin { get { return new ActionCommand(CheckCanAdmin); } }
