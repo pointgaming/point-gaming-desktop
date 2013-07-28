@@ -52,22 +52,6 @@ namespace PointGaming.GameRoom
             set { }
         }
 
-        public bool IsBetting
-        {
-            get { return _session.GameRoom.IsBetting; }
-            set
-            {
-                var poco = new
-                {
-                    _id = _session.GameRoom.Id,
-                    betting = value,
-                };
-                _session.GameRoom.IsBetting = value;
-                _session.SetGameRoomSettings(poco);
-                OnPropertyChanged("IsBetting");
-            }
-        }
-
         public FlowDocument DescriptionDocument
         {
             get { return _session.GameRoom.DescriptionDocument; }
@@ -252,16 +236,37 @@ namespace PointGaming.GameRoom
             get { return _canAdmin; }
         }
 
-        private bool _isAdvertising = false;
+
+        public bool IsBetting
+        {
+            get { return _session.GameRoom.IsBetting; }
+            set
+            {
+                var poco = new
+                {
+                    _id = _session.GameRoom.Id,
+                    betting = value,
+                };
+                _session.GameRoom.IsBetting = value;
+                _session.SetGameRoomSettings(poco);
+                OnPropertyChanged("IsBetting");
+            }
+        }
+
         public bool IsAdvertising
         {
-            get { return _isAdvertising; } 
-            set { }
-        }
-        public ICommand Advertise { get { return new ActionCommand(AdvertiseGameRoom); } }
-        private void AdvertiseGameRoom(object sender)
-        {
-            _manager.ShowMessage(_session.ChatroomId, "Advertise Game Room", "TODO: toggling advertising in REST API");
+            get { return _session.GameRoom.IsAdvertising; }
+            set
+            {
+                var poco = new
+                {
+                    _id = _session.GameRoom.Id,
+                    is_advertising = value,
+                };
+                _session.GameRoom.IsAdvertising = value;
+                _session.SetGameRoomSettings(poco);
+                OnPropertyChanged("IsAdvertising");
+            }
         }
 
         private bool _isChatMuted = false;

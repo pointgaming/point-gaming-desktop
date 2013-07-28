@@ -61,7 +61,7 @@
 
             <StackPanel Grid.Row="0" Background="LightGray" Orientation="Horizontal">
                 <TextBlock Height="25" Margin="3,3,30,3" HorizontalAlignment="Stretch" VerticalAlignment="Top" Text="Description" />
-                <CheckBox Content="Advertise" Height="16" Margin="3" IsChecked="{Binding IsAdvertising}" Command="{Binding Advertise}" />
+                <CheckBox Content="Advertise" Height="16" Margin="3" IsChecked="{Binding IsAdvertising}" IsEnabled="{Binding IsGameRoomOwner}" />
             </StackPanel>
 
             <Border Grid.Row="2" Margin="0,0,0,5" BorderThickness="1" BorderBrush="#FF828790">
@@ -96,7 +96,7 @@
 
             <StackPanel Grid.Row="0" Background="LightGray" Orientation="Horizontal">
                 <TextBlock Height="25" Margin="3,3,30,3" HorizontalAlignment="Stretch" VerticalAlignment="Top" Text="Betting" />
-                <CheckBox Content="Enabled" Height="16" Margin="3" IsChecked="{Binding IsBetting}" />
+                <CheckBox Content="Enabled" Height="16" Margin="3" IsChecked="{Binding IsBetting}" IsEnabled="{Binding IsGameRoomOwner}" />
             </StackPanel>
 
             <Border Grid.Row="2" Margin="0,0,0,5" BorderThickness="1" BorderBrush="#FF828790">
