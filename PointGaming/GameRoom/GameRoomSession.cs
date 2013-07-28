@@ -56,6 +56,7 @@ namespace PointGaming.GameRoom
                     GameRoom.Description = response.Data.game_room.description;
                     GameRoom.IsAdvertising = response.Data.game_room.is_advertising;
                     GameRoom.Password = response.Data.game_room.password;
+                    GameRoom.IsBetting = response.Data.game_room.betting;
                 }
                 else
                 {

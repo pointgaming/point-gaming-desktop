@@ -36,6 +36,7 @@ namespace PointGaming.POCO
         public bool takeover_position { get; set; }
         public bool is_advertising { get; set; }
         public bool is_locked { get; set; }
+        public bool betting{ get; set; }
         public string password { get; set; }
         public int member_count { get; set; }
         public int max_member_count { get; set; }

@@ -40,6 +40,34 @@ namespace PointGaming.GameRoom
             _session.ReceivedMessage += ChatMessages_ReceivedMessage;
         }
 
+        public string TeamAvatar
+        {
+            get { return "http://forums.pointgaming.com/assets/logo-3b643498dc7635d6ce4598843b5fcf0e.png"; }
+            set { }
+        }
+
+        public string TeamName
+        {
+            get { return "[team name]"; }
+            set { }
+        }
+
+        public bool IsBetting
+        {
+            get { return _session.GameRoom.IsBetting; }
+            set
+            {
+                var poco = new
+                {
+                    _id = _session.GameRoom.Id,
+                    betting = value,
+                };
+                _session.GameRoom.IsBetting = value;
+                _session.SetGameRoomSettings(poco);
+                OnPropertyChanged("IsBetting");
+            }
+        }
+
         public FlowDocument DescriptionDocument
         {
             get { return _session.GameRoom.DescriptionDocument; }
@@ -176,6 +204,20 @@ namespace PointGaming.GameRoom
         {
             _manager.AdminGameRoom(_session.ChatroomId);
         }
+        
+        /*public ICommand EnableBets { get { return new ActionCommand(EnableBetting); } }
+        public void EnableBetting()
+        {
+            var poco = new
+            {
+                _id = _session.GameRoom.Id,
+                description = _session.GameRoom.Description,
+                is_advertising = _session.GameRoom.IsAdvertising,
+                betting = dialog.Password,
+            };
+            _session.SetGameRoomSettings(poco);
+
+        }*/
 
         public ICommand ProposeBet { get { return new ActionCommand(ShowBetDialog); } }
         public void ShowBetDialog()
@@ -194,7 +236,7 @@ namespace PointGaming.GameRoom
         {
             get
             {
-                return _session.MyMatch.IsBetting &&
+                return _session.GameRoom.IsBetting &&
                        _session.MyMatch.State == MatchState.created;
             }
         }
@@ -208,6 +250,18 @@ namespace PointGaming.GameRoom
         public bool CanAdmin
         {
             get { return _canAdmin; }
+        }
+
+        private bool _isAdvertising = false;
+        public bool IsAdvertising
+        {
+            get { return _isAdvertising; } 
+            set { }
+        }
+        public ICommand Advertise { get { return new ActionCommand(AdvertiseGameRoom); } }
+        private void AdvertiseGameRoom(object sender)
+        {
+            _manager.ShowMessage(_session.ChatroomId, "Advertise Game Room", "TODO: toggling advertising in REST API");
         }
 
         private bool _isChatMuted = false;

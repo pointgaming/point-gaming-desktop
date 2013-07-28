@@ -32,27 +32,40 @@
             <RowDefinition Height="30" />
         </Grid.RowDefinitions>
 
-
         <StackPanel Name="headerPanel" 
                     Grid.Column="0" 
                     Grid.ColumnSpan="2"
                     Orientation="Horizontal">
+            <Image Source="{Binding TeamAvatar}" Height="48" Width="48" HorizontalAlignment="Left" Margin="0,0,5,0" Stretch="Fill" VerticalAlignment="Top" />
 
+            <TextBlock Height="18" Margin="2,2,20,2" VerticalAlignment="Top" Width="Auto" Text="{Binding TeamName}" />
             <TextBlock Name="hyperLinkRoomInfo" Height="18" Margin="2" HorizontalAlignment="Right" VerticalAlignment="Top">
                 <Hyperlink Command="{Binding ShowAdmin}">Room Admin</Hyperlink>
+            </TextBlock>
+            <TextBlock Height="Auto" Margin="5" VerticalAlignment="Top" Width="100">
+                <Run Text="Take Over Amount" />
+                <LineBreak/>
+                <Run Text="{Binding Points}" />
             </TextBlock>
         </StackPanel>
 
         <Grid Name="descriptionGrid"  
-              Height="175"
+              Height="175" 
+              Margin="0,0,3,0"
               Grid.Column="0" 
               Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="30"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <FlowDocumentScrollViewer Grid.Row="1"
+            <StackPanel Grid.Row="0" Background="LightGray" Orientation="Horizontal">
+                <TextBlock Height="25" Margin="3,3,30,3" HorizontalAlignment="Stretch" VerticalAlignment="Top" Text="Description" />
+                <CheckBox Content="Advertise" Height="16" Margin="3" IsChecked="{Binding IsAdvertising}" Command="{Binding Advertise}" />
+            </StackPanel>
+
+            <Border Grid.Row="2" Margin="0,0,0,5" BorderThickness="1" BorderBrush="#FF828790">
+                <FlowDocumentScrollViewer Grid.Row="1"
                                           Name="flowDocumentDescription"  
                                           Document="{Binding DescriptionDocument}"
                                           HorizontalAlignment="Stretch" 
@@ -61,27 +74,32 @@
                                           Background="White" 
                                           Height="Auto" 
                                           MaxHeight="100" 
-                                          MinHeight="22" 
-                                          BorderBrush="#FF828790" 
-                                          BorderThickness="1">
-                <FlowDocumentScrollViewer.Resources>
-                    <Style TargetType="{x:Type Paragraph}">
-                        <Setter Property="Margin" Value="0"/>
-                    </Style>
-                </FlowDocumentScrollViewer.Resources>
-            </FlowDocumentScrollViewer>
+                                          MinHeight="22" >
+                    <FlowDocumentScrollViewer.Resources>
+                        <Style TargetType="{x:Type Paragraph}">
+                            <Setter Property="Margin" Value="0"/>
+                        </Style>
+                    </FlowDocumentScrollViewer.Resources>
+                </FlowDocumentScrollViewer>
+            </Border>
         </Grid>
-        
+
         <Grid Name="bettingGrid"  
               Height="175"
+              Margin="3,0,0,0"
               Grid.Column="1" 
               Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="30"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="2" Margin="0,5,0,5" BorderThickness="1" BorderBrush="#FF828790">
+            <StackPanel Grid.Row="0" Background="LightGray" Orientation="Horizontal">
+                <TextBlock Height="25" Margin="3,3,30,3" HorizontalAlignment="Stretch" VerticalAlignment="Top" Text="Betting" />
+                <CheckBox Content="Enabled" Height="16" Margin="3" IsChecked="{Binding IsBetting}" />
+            </StackPanel>
+
+            <Border Grid.Row="2" Margin="0,0,0,5" BorderThickness="1" BorderBrush="#FF828790">
                 <Grid Name="gridBetting">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="213*"/>
@@ -93,11 +111,9 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBox Grid.Row="0" Name="textBoxMatchDescription" IsReadOnly="True" HorizontalAlignment="Stretch" Text="{Binding MatchDescription, Mode=OneWay}" Grid.ColumnSpan="2" />
-
-                    <Button Grid.Row="1" Content="Propose a bet..." HorizontalAlignment="Left" Name="buttonProposeABet" VerticalAlignment="Top" Width="100" Command="{Binding ProposeBet}" />
-
-                    <ScrollViewer Grid.Row="2" Height="150" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.ColumnSpan="2">
+                    <Button Grid.Row="0" Content="Propose a bet..." HorizontalAlignment="Left" Name="buttonProposeABet" Margin="3" VerticalAlignment="Top" Width="113" Command="{Binding ProposeBet}" Grid.ColumnSpan="2" />
+                
+                    <ScrollViewer Grid.Row="2" Height="150" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.ColumnSpan="2">
                         <ItemsControl Name="itemsControlBets" ItemsSource="{Binding RoomBets}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -114,7 +130,7 @@
               Grid.ColumnSpan="2"
               Grid.Row="2"
               VerticalAlignment="Stretch">
-            
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="30"/>
@@ -140,7 +156,7 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBox Name="ChatTextBox" PreviewKeyDown="ChatTextBox_PreviewKeyDown" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxLength="1024" TextWrapping="Wrap" AcceptsReturn="True" />
-                <Button Name="SendChatButton" Command="{Binding SendChat}" CommandParameter="{Binding Text, ElementName=ChatTextBox}" Click="SendChatButton_Click" Grid.Column="1" Content="Send" Height="23" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="75" />
+                <Button Name="SendChatButton" Command="{Binding SendChat}" CommandParameter="{Binding Text, ElementName=ChatTextBox}" Click="SendChatButton_Click" Grid.Column="1" Content="Send" Height="23" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="75" Margin="5,0,3,3" />
             </Grid>
         </Grid>
 
