@@ -186,7 +186,14 @@ namespace PointGaming.GameRoom
         public ICommand ShowAdmin { get { return new ActionCommand(ShowAdminDialog); } }
         public void ShowAdminDialog()
         {
-            _manager.AdminGameRoom(_session.ChatroomId);
+            if (IsGameRoomOwner)
+            {
+                _manager.AdminGameRoom(_session.ChatroomId);
+            }
+            else
+            {
+                _manager.ShowMessage(_session.ChatroomId, "Admin Game Room", "Only the game room's owner can admin this room. Take over the room for admin rights.");
+            }
         }
 
         public ICommand ProposeBet { get { return new ActionCommand(ShowBetDialog); } }
