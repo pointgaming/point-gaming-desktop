@@ -1,0 +1,71 @@
+﻿<Window x:Class="PointGaming.GameRoom.GameRoomAdminDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:actb="clr-namespace:Aviad.WPF.Controls;assembly=Aviad.WPF.Controls"
+        Title="Gameroom Admin" 
+        Height="300" Width="450" Padding="5" 
+        Icon="/PointGaming;component/PointGaming.ico"
+        WindowStyle="ToolWindow" ResizeMode="NoResize"
+        Name="This" 
+        WindowStartupLocation="CenterOwner">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closed">
+            <i:InvokeCommandAction Command="{Binding WindowClosed}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    
+    <Window.Resources>
+        <DataTemplate x:Key="TheItemTemplate">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding ShortDescription}"/>
+                <TextBlock Text=" ("/>
+                <TextBlock Text="{Binding PocoType}"/>
+                <TextBlock Text=")"/>
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+    
+    
+    <TabControl Padding="5,10,5,0" Margin="0,10,0,0">
+        <TabItem Header="{Binding GameRoomTitle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Content="Description" Height="28" HorizontalAlignment="Right" Name="label5" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="0" Grid.Column="1" Height="75" VerticalScrollBarVisibility="Auto"
+                     HorizontalAlignment="Stretch" Name="textBoxDescription" VerticalAlignment="Center"
+                     Text="{Binding Description, Mode=TwoWay}"
+                     AcceptsReturn="True" TextWrapping="Wrap" />
+
+                    <Label Grid.Row="1" Grid.Column="0" Content="Password" Height="28" HorizontalAlignment="Right" Name="label6" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Height="23" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding Password, Mode=TwoWay}" />
+
+                    <Label Grid.Row="2" Grid.Column="0" Content="Bet Type" Height="28" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    <RadioButton Grid.Row="2" Grid.Column="1" Margin="15,5,0,0" GroupName="betTypeRadio" Content="1 vs. 1"  IsChecked="{Binding IsOneOnOneBetting, Mode=TwoWay}" />
+                    <RadioButton Grid.Row="2" Grid.Column="1" Margin="125,5,0,0" GroupName="betTypeRadio" Content="team vs. team"  IsChecked="{Binding IsTeamBetting, Mode=TwoWay}" />
+                </Grid>
+
+                <StackPanel Grid.Row="2" Orientation="Vertical">
+                    <CheckBox Content="Advertise in lobby's active games" Height="16" Margin="3" IsChecked="{Binding IsAdvertising, Mode=TwoWay}" />
+                    <CheckBox Content="Enable Betting" Height="16" Margin="3"  IsChecked="{Binding IsBetting, Mode=TwoWay}" />
+                </StackPanel>
+            </Grid>
+        </TabItem>
+    </TabControl>
+</Window>

@@ -457,30 +457,17 @@ namespace PointGaming.Chat
 
         public void AdminGameRoom(string id)
         {
-            GameRoomWindow window;
-            if (_gameRoomWindowViews.TryGetValue(id, out window))
+            ChatroomSession session;
+            if (_chatroomUsage.TryGetValue(id, out session))
             {
-                ChatroomSession session;
-                if (_chatroomUsage.TryGetValue(id, out session))
-                {
-                    GameRoomSession gameRoomSession = session as GameRoomSession;
-                    var dialog = new GameRoomAdminDialog();
+                GameRoomSession gameRoomSession = session as GameRoomSession;
 
-                    dialog.Init(window, gameRoomSession);
-                    dialog.ShowDialog();
+                GameRoomAdminDialogModelView modelView = new GameRoomAdminDialogModelView();
+                modelView.Init(this, gameRoomSession);
 
-                    if (dialog.HasChangedSettings(gameRoomSession.GameRoom))
-                    {
-                        var poco = new
-                        {
-                            _id = gameRoomSession.GameRoom.Id,
-                            description = dialog.Description,
-                            is_advertising = dialog.IsAdvertising,
-                            password = dialog.Password,
-                        };
-                        gameRoomSession.SetGameRoomSettings(poco);
-                    }
-                }
+                GameRoomAdminDialog dialog = new GameRoomAdminDialog();
+                dialog.DataContext = modelView;
+                dialog.ShowDialog();
             }
         }
 

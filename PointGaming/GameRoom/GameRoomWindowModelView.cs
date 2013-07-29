@@ -188,20 +188,6 @@ namespace PointGaming.GameRoom
         {
             _manager.AdminGameRoom(_session.ChatroomId);
         }
-        
-        /*public ICommand EnableBets { get { return new ActionCommand(EnableBetting); } }
-        public void EnableBetting()
-        {
-            var poco = new
-            {
-                _id = _session.GameRoom.Id,
-                description = _session.GameRoom.Description,
-                is_advertising = _session.GameRoom.IsAdvertising,
-                betting = dialog.Password,
-            };
-            _session.SetGameRoomSettings(poco);
-
-        }*/
 
         public ICommand ProposeBet { get { return new ActionCommand(ShowBetDialog); } }
         public void ShowBetDialog()
@@ -234,23 +220,6 @@ namespace PointGaming.GameRoom
         public bool CanAdmin
         {
             get { return _canAdmin; }
-        }
-
-
-        public bool IsBetting
-        {
-            get { return _session.GameRoom.IsBetting; }
-            set
-            {
-                var poco = new
-                {
-                    _id = _session.GameRoom.Id,
-                    betting = value,
-                };
-                _session.GameRoom.IsBetting = value;
-                _session.SetGameRoomSettings(poco);
-                OnPropertyChanged("IsBetting");
-            }
         }
 
         public bool IsAdvertising

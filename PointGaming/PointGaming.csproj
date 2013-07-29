@@ -174,18 +174,19 @@
     <Compile Include="GameRoom\BetProposalDialog.xaml.cs">
       <DependentUpon>BetProposalDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GameRoom\GameRoomAdminDialogModelView.cs" />
+    <Compile Include="GameRoom\GameRoomTab.xaml.cs">
+      <DependentUpon>GameRoomTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GameRoom\GameRoomWindowModelView.cs" />
     <Compile Include="GameRoom\GameRoomWindowView.xaml.cs">
       <DependentUpon>GameRoomWindowView.xaml</DependentUpon>
     </Compile>
     <Compile Include="GameRoom\Match.cs" />
-    <Compile Include="GameRoom\GameRoomAdminDialog.xaml.cs">
-      <DependentUpon>GameRoomAdminDialog.xaml</DependentUpon>
+    <Compile Include="GameRoom\GameRoomAdminDialogView.xaml.cs">
+      <DependentUpon>GameRoomAdminDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="GameRoom\GameRoomSession.cs" />
-    <Compile Include="GameRoom\GameRoomTab.xaml.cs">
-      <DependentUpon>GameRoomTab.xaml</DependentUpon>
-    </Compile>
     <Compile Include="GameRoom\PasswordDialog.xaml.cs">
       <DependentUpon>PasswordDialog.xaml</DependentUpon>
     </Compile>
@@ -269,7 +270,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GameRoom\GameRoomAdminDialog.xaml">
+    <Page Include="GameRoom\GameRoomAdminDialogView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

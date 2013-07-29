@@ -126,7 +126,7 @@ namespace PointGaming.GameRoom
             }
         }
 
-        public MatchState _state = MatchState.invalid;
+        public MatchState _state = MatchState.created;
         public MatchState State
         {
             get { return _state; }

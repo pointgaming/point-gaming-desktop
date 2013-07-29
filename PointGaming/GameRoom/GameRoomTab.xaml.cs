@@ -291,7 +291,7 @@ namespace PointGaming.GameRoom
 
         private void hyperLinkRoomInfoClick(object sender, RoutedEventArgs e)
         {
-            var dialog = new GameRoomAdminDialog();
+            /*var dialog = new GameRoomAdminDialog();
 
             dialog.Init(_chatWindow, _gameRoomSession);
             dialog.ShowDialog();
@@ -308,7 +308,7 @@ namespace PointGaming.GameRoom
                     password = dialog.Password,
                 };
                 _gameRoomSession.SetGameRoomSettings(poco);
-            }
+            }*/
         }
 
         private void buttonProposeABet_Click(object sender, RoutedEventArgs e)

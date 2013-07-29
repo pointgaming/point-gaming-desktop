@@ -105,19 +105,6 @@ namespace PointGaming.Lobby
             }
         }
 
-        private bool _isBetting;
-        public bool IsBetting
-        {
-            get { return _isBetting; }
-            set
-            {
-                if (value == _isBetting)
-                    return;
-                _isBetting = value;
-                NotifyChanged("IsBetting");
-            }
-        }
-
         private bool _isLocked;
         public bool IsLocked
         {
@@ -263,6 +250,32 @@ namespace PointGaming.Lobby
             }
         }
 
+        private bool _isBetting;
+        public bool IsBetting
+        {
+            get { return _isBetting; }
+            set
+            {
+                if (value == _isBetting)
+                    return;
+                _isBetting = value;
+                NotifyChanged("IsBetting");
+            }
+        }
+
+        private string _bettingType;
+        public string BettingType
+        {
+            get { return _bettingType; }
+            set
+            {
+                if (value == _bettingType)
+                    return;
+                _bettingType = value;
+                NotifyChanged("BettingType");
+            }
+        }
+
         public FlowDocument DescriptionDocument
         {
             get
@@ -290,6 +303,8 @@ namespace PointGaming.Lobby
             IsLocked = poco.is_locked;
             Password = poco.password;
             IsAdvertising = poco.is_advertising;
+            IsBetting = poco.betting;
+            BettingType = poco.betting_type;
             Owner = HomeWindow.UserData.GetPgUser(poco.owner);
         }
 
@@ -305,6 +320,7 @@ namespace PointGaming.Lobby
                 is_advertising = IsAdvertising,
                 is_locked = IsLocked,
                 betting = IsBetting,
+                betting_type = BettingType,
                 password = Password,
                 max_member_count = MaxMemberCount,
                 member_count = MemberCount,
@@ -320,6 +336,7 @@ namespace PointGaming.Lobby
             Password = poco.password;
             IsLocked = poco.is_locked;
             IsBetting = poco.betting;
+            BettingType = poco.betting_type;
             IsAdvertising = poco.is_advertising;
             Owner = HomeWindow.UserData.GetPgUser(poco.owner);
             MatchId = poco.match_id;
