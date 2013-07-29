@@ -100,13 +100,19 @@ namespace PointGaming
 
         public PgUser GetPgUser(UserBase userBase)
         {
-            PgUser user = new PgUser { 
+            PgUser user;
+            //if (_userLookup.TryGetValue(userBase._id, out user))
+               // return user;
+
+            user = new PgUser { 
                 Id = userBase._id, 
                 Username = userBase.username, 
                 Status = "unknown", 
                 Rank = userBase.rank, 
                 Team = GetPgTeam(userBase.team) 
             };
+            _userLookup[userBase._id] = user;
+            LookupUserData(userBase._id);
             return user;
         }
         public PgTeam GetPgTeam(TeamBase teamBase)
@@ -135,6 +141,30 @@ namespace PointGaming
             }
             info = null;
             return false;
+        }
+
+        public void LookupUserData(string userId)
+        {
+            RestResponse<UserBase> response = null;
+            PgSession.BeginAndCallback(delegate
+            {
+                var url = PgSession.GetWebAppFunction("/api/v1", "/users/" + userId + ".json");
+                var client = new RestClient(url);
+                var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+                response = (RestResponse<UserBase>)client.Execute<UserBase>(request);
+            }, delegate
+            {
+                if (response.IsOk())
+                {
+                    PgUser user;
+                    if (_userLookup.TryGetValue(userId, out user))
+                    {
+                        user.Rank = response.Data.rank;
+                        user.Username = response.Data.username;
+                        user.Points = response.Data.points;
+                    }
+                }
+            });
         }
 
         public void LookupBetOperand(string query, Action<List<BetOperandPoco>> callback)
