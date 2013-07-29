@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Data;
+using System.Windows.Media;
 using PointGaming.POCO;
 using RestSharp;
 using SocketIOClient;
@@ -12,6 +14,32 @@ using SocketIOClient.Messages;
 
 namespace PointGaming.HomeTab
 {
+    public class OnlineConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var assembly = typeof(LauncherInfo).Assembly;
+            var defaultUri = "pack://application:,,,/" + assembly.GetName().Name + ";component/Resources/";
+
+            if ((string)value == "online")
+            {
+                defaultUri += "online.png";
+            }
+            else
+            {
+                defaultUri += "offline.png";
+            }
+
+            var source = new ImageSourceConverter().ConvertFromString(defaultUri) as ImageSource;
+            return source;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public partial class FriendTab : UserControl
     {
         private const string FriendStatusOffline = "offline";
