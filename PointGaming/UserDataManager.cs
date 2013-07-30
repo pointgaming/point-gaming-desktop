@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using PointGaming.POCO;
 using RestSharp;
 using SocketIOClient;
@@ -25,6 +26,8 @@ namespace PointGaming
         public readonly SocketSession PgSession;
         public readonly FriendshipManager Friendship;
         private SessionManager _sessionManager;
+        private DispatcherTimer timer;
+
 
         private readonly ObservableCollection<PgUser> _friends = new ObservableCollection<PgUser>();
         public ObservableCollection<PgUser> Friends { get { return _friends; } }
@@ -42,6 +45,13 @@ namespace PointGaming
             _userLookup[User.Id] = User;
             _sessionManager = new SessionManager();
             Friendship = new FriendshipManager(PgSession);
+
+            User.Status = "online";
+
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(5);
+            timer.Tick += new EventHandler(CheckIdle);
+            timer.Start();
         }
 
         public void StartChat()
@@ -64,12 +74,24 @@ namespace PointGaming
         {
             _sessionManager.JoinChatroom(id);
         }
+
+        private void CheckIdle(object sender, EventArgs e)
+        {
+            var isIdle = App.UserIdleTimespan.TotalMinutes > PointGaming.Properties.Settings.Default.UserIdleMinutes;
+            if ((User.Status == "online" && isIdle) || (User.Status == "idle" && !isIdle))
+            {
+                User.Status = isIdle ? "idle" : "online";
+                PgSession.EmitLater("idle", new { idle = (isIdle ? "1" : "0") });
+            }
+        }
         
         public void LoggedOut()
         {
             _userLookup.Clear();
             _friends.Clear();
             _friendLookup.Clear();
+
+            timer.Stop();
 
             PgSession.Begin(PgSession.Logout);
             _sessionManager = null;

@@ -166,7 +166,7 @@ namespace PointGaming.BitcoinMiner
             get
             {
                 var dTime = App.UserIdleTimespan;
-                var isIdle = dTime.TotalMinutes > PointGaming.Properties.Settings.Default.BitcoinMinerUserIdleMinutes;
+                var isIdle = dTime.TotalMinutes > PointGaming.Properties.Settings.Default.UserIdleMinutes;
                 return isIdle;
             }
         }

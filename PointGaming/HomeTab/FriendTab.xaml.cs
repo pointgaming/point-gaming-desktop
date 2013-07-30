@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -22,13 +22,11 @@ namespace PointGaming.HomeTab
             var defaultUri = "pack://application:,,,/" + assembly.GetName().Name + ";component/Resources/";
 
             if ((string)value == "online")
-            {
                 defaultUri += "online.png";
-            }
+            else if ((string)value == "idle")
+                defaultUri += "idle.png";
             else
-            {
                 defaultUri += "offline.png";
-            }
 
             var source = new ImageSourceConverter().ConvertFromString(defaultUri) as ImageSource;
             return source;
@@ -202,8 +200,12 @@ namespace PointGaming.HomeTab
             }
             else
             {
-                var newFriend = _userData.GetPgUser(friend);
-                newFriend.Status = friend.status;
+                var newFriend = new PgUser
+                {
+                    Username = friend.username,
+                    Status = friend.status,
+                    Id = friend._id,
+                };
                 _userData.AddFriend(newFriend);
             }
         }
