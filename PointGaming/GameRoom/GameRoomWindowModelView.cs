@@ -192,6 +192,7 @@ namespace PointGaming.GameRoom
             var window = _session.Window;
             if (window.WindowState == System.Windows.WindowState.Minimized)
             {
+                // DisableProcessing prevents a flicker activate of another window
                 using (var d = window.Dispatcher.DisableProcessing())
                 {
                     _session.ShowLobby(true);
