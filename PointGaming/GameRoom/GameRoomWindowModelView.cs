@@ -157,20 +157,18 @@ namespace PointGaming.GameRoom
                 PgUser botUser = new PgUser();
                 botUser.Id = "mock";
                 botUser.Username = "dProductions";
-                botUser.GroupName = "Game Room Team Bot";
+                botUser.Team = new PgTeam{ Name="Game Room Team Bot"};
                 _groupedMembership.AddNewItem(botUser);
             }
 
             // team groups
             foreach (PgUser user in _session.Membership)
             {
-                PgUser groupedUser = user.ShallowCopy();
-                groupedUser.GroupName = groupedUser.HasTeam ? groupedUser.TeamName : "Other (No Team)";
-                _groupedMembership.AddNewItem(groupedUser);
+                _groupedMembership.AddNewItem(user);
             }
 
             _groupedMembership.CommitNew();
-            _groupedMembership.GroupDescriptions.Add(new PropertyGroupDescription("GroupName"));
+            _groupedMembership.GroupDescriptions.Add(new PropertyGroupDescription("GameRoomGroupName"));
             OnPropertyChanged("Membership");
         }
 

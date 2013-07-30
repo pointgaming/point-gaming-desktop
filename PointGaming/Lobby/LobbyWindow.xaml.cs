@@ -10,6 +10,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -36,7 +37,8 @@ namespace PointGaming.Lobby
         private LobbySession _lobbySession;
         private UserDataManager _userData = HomeWindow.UserData;
         private AutoScroller _autoScroller;
-        private ObservableCollection<PgUser> _groupedUsers;
+        private DispatcherTimer _membershipViewRefresher;
+        System.ComponentModel.ICollectionView _membershipView;
 
         public LobbyWindow()
         {
@@ -91,6 +93,16 @@ namespace PointGaming.Lobby
             _userData.LookupPendingBets(OnPendingBetsComplete);
 
             _lobbySession.ChatMessages.CollectionChanged += ChatMessages_CollectionChanged;
+
+            _membershipViewRefresher = new DispatcherTimer();
+            _membershipViewRefresher.Interval = TimeSpan.FromSeconds(3);
+            _membershipViewRefresher.Tick += RefreshMembership;
+            _membershipViewRefresher.Start();
+        }
+
+        void RefreshMembership(object sender, EventArgs e)
+        {
+            _membershipView.Refresh();
         }
 
         void ChatMessages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -101,39 +113,9 @@ namespace PointGaming.Lobby
 
         private void InitGroupedMembers(ChatroomSessionBase lobbySession)
         {
-            _groupedUsers = new ObservableCollection<PgUser>();
-            
-            // players group
-            foreach (PgUser user in lobbySession.Membership)
-            {
-                PgUser groupedUser = user.ShallowCopy();
-                groupedUser.GroupName = "Players";
-                _groupedUsers.Add(groupedUser);
-            }
-
-            // admin group
-            foreach (PgUser user in lobbySession.Membership)
-            {
-                if (!user.IsAdmin) continue;
-
-                PgUser groupedUser = user.ShallowCopy();
-                groupedUser.GroupName = "Admin";
-                _groupedUsers.Add(groupedUser);
-            }
-
-            // friends group
-            foreach (PgUser user in lobbySession.Membership)
-            {
-                if (!_userData.IsFriend(user.Id)) continue;
-
-                PgUser groupedUser = user.ShallowCopy();
-                groupedUser.GroupName = "Friends";
-                _groupedUsers.Add(groupedUser);
-            }
-
-            System.ComponentModel.ICollectionView mv = CollectionViewSource.GetDefaultView(_groupedUsers);
-            mv.GroupDescriptions.Add(new PropertyGroupDescription("GroupName"));
-            listBoxMembership.DataContext = mv;
+            _membershipView = CollectionViewSource.GetDefaultView(lobbySession.Membership);
+            _membershipView.GroupDescriptions.Add(new PropertyGroupDescription("LobbyGroupName"));
+            listBoxMembership.DataContext = _membershipView;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)

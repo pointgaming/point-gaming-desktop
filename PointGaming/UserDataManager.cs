@@ -88,7 +88,7 @@ namespace PointGaming
         public void LoggedOut()
         {
             _userLookup.Clear();
-            _friends.Clear();
+            Friends.Clear();
             _friendLookup.Clear();
 
             timer.Stop();
@@ -99,15 +99,16 @@ namespace PointGaming
 
         public void AddFriend(PgUser friend)
         {
-            _friends.Add(friend);
+            friend.IsFriend = true;
+            Friends.Add(friend);
             _friendLookup[friend.Id] = friend;
             _userLookup[friend.Id] = friend;
         }
         public void RemoveFriend(PgUser friend)
         {
-            _friends.Remove(friend);
+            friend.IsFriend = false;
+            Friends.Remove(friend);
             _friendLookup.Remove(friend.Id);
-            _userLookup.Remove(friend.Id);
         }
 
         public bool IsFriend(string id)

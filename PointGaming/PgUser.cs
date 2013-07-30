@@ -105,6 +105,7 @@ namespace PointGaming
                 _username = value;
                 NotifyChanged("Username");
                 NotifyChanged("ShortDescription");
+                NotifyChanged("DisplayName");
             }
         }
 
@@ -118,18 +119,57 @@ namespace PointGaming
                     return;
                 _rank = value;
                 NotifyChanged("Rank");
+                NotifyChanged("IsAdmin");
+                NotifyChanged("LobbyGroupName");
+                NotifyChanged("DisplayName");
             }
         }
         public bool IsAdmin { 
             get { return !string.IsNullOrEmpty(Rank); } 
-        } 
+        }
+
+        private bool _isFriend;
+        public bool IsFriend
+        {
+            get { return _isFriend; }
+            set
+            {
+                if (value == _isFriend)
+                    return;
+                _isFriend = value;
+                NotifyChanged("IsFriend");
+                NotifyChanged("LobbyGroupName");
+            }
+        }
         
         public string DisplayName
         {
             get { return Rank != null ? Rank + Username : Username; }
         }
         public string ShortDescription { get { return _username; } }
-        public string GroupName { get; set; }
+
+        public string GameRoomGroupName
+        {
+            get
+            {
+                if (HasTeam)
+                    return TeamName;
+                return "Other (No Team)";
+            }
+        }
+        public string LobbyGroupName
+        {
+            get
+            {
+                if (HomeWindow.UserData.User == this)
+                    return "Total";
+                if (IsFriend)
+                    return "Friends";
+                if (IsAdmin)
+                    return "Admins";
+                return "Players";
+            }
+        }
 
         private string _status;
         public string Status
@@ -179,8 +219,23 @@ namespace PointGaming
             {
                 if (value == _team)
                     return;
+                if (_team != null)
+                    _team.PropertyChanged -= _team_PropertyChanged;
                 _team = value;
                 NotifyChanged("Team");
+                NotifyChanged("TeamName");
+                NotifyChanged("HasTeam");
+                NotifyChanged("GameRoomGroupName");
+                if (_team != null)
+                    _team.PropertyChanged += _team_PropertyChanged;
+            }
+        }
+
+        void _team_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Name")
+            {
+                NotifyChanged("TeamName");
             }
         }
         public string TeamName
@@ -211,11 +266,6 @@ namespace PointGaming
         public override string ToString()
         {
             return Username;
-        }
-
-        public PgUser ShallowCopy()
-        {
-            return (PgUser)this.MemberwiseClone();
         }
     }
 
