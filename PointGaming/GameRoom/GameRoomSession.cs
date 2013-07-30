@@ -53,6 +53,11 @@ namespace PointGaming.GameRoom
             _window.ShowNormal(shouldActivate);
         }
 
+        public void ShowLobby(bool shouldActivate)
+        {
+            _lobbySession.ShowControl(shouldActivate);
+        }
+
         public void SetGameRoomSettings(object poco)
         {
             var url = _userData.PgSession.GetWebAppFunction("", "/game_rooms/" + GameRoom.Id);

@@ -11,10 +11,13 @@
         ShowInTaskbar="False"
         ResizeMode="CanResize"
         Height="592" 
-        Width="900" StateChanged="This_StateChanged">
+        Width="900">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closed">
             <i:InvokeCommandAction Command="{Binding WindowClosed}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="StateChanged">
+            <i:InvokeCommandAction Command="{Binding WindowStateChanged}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid>

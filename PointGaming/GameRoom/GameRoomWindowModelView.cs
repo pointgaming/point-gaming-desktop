@@ -186,6 +186,22 @@ namespace PointGaming.GameRoom
             _session.Leave();
         }
 
+        public ICommand WindowStateChanged { get { return new ActionCommand(HandleWindowState); } }
+        public void HandleWindowState()
+        {
+            var window = _session.Window;
+            if (window.WindowState == System.Windows.WindowState.Minimized)
+            {
+                using (var d = window.Dispatcher.DisableProcessing())
+                {
+                    _session.ShowLobby(true);
+                    window.Hide();
+                }
+            }
+            else
+                window.Show();
+        }
+
         public ICommand ShowAdmin { get { return new ActionCommand(ShowAdminDialog); } }
         public void ShowAdminDialog()
         {
