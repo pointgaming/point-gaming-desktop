@@ -32,6 +32,7 @@ namespace PointGaming.GameRoom
         {
             _lobbySession = lobbySession;
             GameRoom = gameRoom;
+            _lobbySession.GameRoomJoining(this);
         }
 
         public override void ShowControl(bool shouldActivate)
@@ -43,6 +44,7 @@ namespace PointGaming.GameRoom
 
                 _window = new GameRoomWindow();
                 _window.DataContext = modelView;
+                _window.Owner = _lobbySession.Window;
 
                 LoadMatch();
             }

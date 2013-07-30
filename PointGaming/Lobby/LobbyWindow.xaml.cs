@@ -397,6 +397,8 @@ namespace PointGaming.Lobby
 
         private void itemsControlJoinedGameRoomList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            if (_joinedItemMouseOver == null)
+                return;
             _userData.JoinChat(SessionManager.PrefixGameRoom + _joinedItemMouseOver.Id);
             _joinedItemMouseOver = null;
         }

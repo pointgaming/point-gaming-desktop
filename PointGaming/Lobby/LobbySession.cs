@@ -215,5 +215,19 @@ namespace PointGaming.Lobby
 
             DeleteRoom(item);
         }
+
+        public void GameRoomJoining(GameRoomSession gameRoomSession)
+        {
+            gameRoomSession.SessionStateChanged += gameRoomSession_SessionStateChanged;
+        }
+
+        void gameRoomSession_SessionStateChanged(object sender, EventArgs e)
+        {
+            var gameRoomSession = sender as GameRoomSession;
+            if (gameRoomSession.State == ChatroomState.Connected)
+                JoinedGameRooms.Add(gameRoomSession.GameRoom);
+            else
+                JoinedGameRooms.Remove(gameRoomSession.GameRoom);
+        }
     }
 }

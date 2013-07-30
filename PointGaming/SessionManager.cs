@@ -155,11 +155,31 @@ namespace PointGaming
         private void OnChatroomUserList(IMessage message)
         {
             var received = message.Json.GetFirstArgAs<ChatroomUserList>();
+
+            var chatrooms = new List<string>();
+            var lobbies = new List<string>();
+            var gameRooms = new List<string>();
+
             foreach (var id in received.chatrooms)
             {
-                ChatroomSessionBase usage;
-                if (!_chatroomUsage.TryGetValue(id, out usage))
-                    JoinChatroom(id);
+                if (id.StartsWith(PrefixGameLobby))
+                    lobbies.Add(id);
+                else if (id.StartsWith(PrefixGameRoom))
+                    gameRooms.Add(id);
+                else
+                    chatrooms.Add(id);
+            }
+
+            // client needs to join lobbies before game rooms
+            var all = new[] { chatrooms, lobbies, gameRooms };
+            foreach (var type in all) 
+            {
+                foreach (var id in type)
+                {
+                    ChatroomSessionBase usage;
+                    if (!_chatroomUsage.TryGetValue(id, out usage))
+                        JoinChatroom(id);
+                }
             }
         }
 
@@ -301,7 +321,6 @@ namespace PointGaming
                 chatroomSession = new ChatroomSession(this);
             
             chatroomSession.ChatroomId = id;
-            chatroomSession.State = ChatroomState.New;
 
             _chatroomUsage[id] = chatroomSession;
 

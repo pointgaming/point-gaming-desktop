@@ -47,5 +47,13 @@ namespace PointGaming.GameRoom
             ChatTextBox.Text = null;
             e.Handled = true;
         }
+
+        private void This_StateChanged(object sender, EventArgs e)
+        {
+            if (WindowState == System.Windows.WindowState.Minimized)
+                Hide();
+            else
+                Show();
+        }
     }
 }

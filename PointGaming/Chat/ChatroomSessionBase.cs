@@ -16,11 +16,29 @@ namespace PointGaming.Chat
         Disconnected,
     }
 
-
     public abstract class ChatroomSessionBase : ChatSessionBase
     {
+        public event EventHandler SessionStateChanged;
         public string ChatroomId;
-        public ChatroomState State;
+        private ChatroomState _state = ChatroomState.New;
+        public ChatroomState State
+        {
+            get { return _state; }
+            set
+            {
+                if (value == _state)
+                    return;
+                _state = value;
+                OnSessionStateChanged();
+            }
+        }
+        internal void OnSessionStateChanged()
+        {
+            var func = SessionStateChanged;
+            if (func != null)
+                func(this, new EventArgs());
+        }
+
         public readonly ObservableCollection<PgUser> Membership = new ObservableCollection<PgUser>();
         
         public ChatroomSessionBase(SessionManager manager) : base(manager)

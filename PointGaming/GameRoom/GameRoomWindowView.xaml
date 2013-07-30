@@ -8,9 +8,10 @@
         Title="GameRoom Chat" 
         Icon="/PointGaming;component/PointGaming.ico" 
         WindowStyle="SingleBorderWindow" 
+        ShowInTaskbar="False"
         ResizeMode="CanResize"
         Height="592" 
-        Width="900">
+        Width="900" StateChanged="This_StateChanged">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closed">
             <i:InvokeCommandAction Command="{Binding WindowClosed}" />
