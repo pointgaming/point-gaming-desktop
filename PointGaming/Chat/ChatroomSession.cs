@@ -9,7 +9,7 @@ namespace PointGaming.Chat
 {
     public class ChatroomSession : ChatroomSessionBase
     {
-        private ChatroomTab _window;
+        private ChatroomWindow _window;
         public ChatroomSession(SessionManager manager) : base(manager) { }
 
 
@@ -17,7 +17,7 @@ namespace PointGaming.Chat
         {
             if (_window == null)
             {
-                _window = new ChatroomTab();
+                _window = new ChatroomWindow();
                 _window.Init(this);
             }
             _window.ShowNormal(shouldActivate);

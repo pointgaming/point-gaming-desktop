@@ -237,13 +237,13 @@ namespace PointGaming
             }
         }
 
-        private RoomInviteTab _inviteTab = null;
+        private RoomInviteWindow _inviteTab = null;
 
         public void AddInvite(ChatroomInviteNew invite)
         {
             if (_inviteTab == null)
             {
-                _inviteTab = new RoomInviteTab();
+                _inviteTab = new RoomInviteWindow();
                 _inviteTab.Closed += _inviteTab_Closed;
                 _inviteTab.ShowNormal(false);
             }

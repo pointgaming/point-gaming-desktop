@@ -18,7 +18,7 @@ using PointGaming.POCO;
 
 namespace PointGaming.Chat
 {
-    public partial class ChatroomTab : Window, IWeakEventListener
+    public partial class ChatroomWindow : Window, IWeakEventListener
     {
         public WindowTreeManager WindowTreeManager;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -35,7 +35,7 @@ namespace PointGaming.Chat
         private UserDataManager _userData = HomeWindow.UserData;
         private AutoScroller _autoScroller;
 
-        public ChatroomTab()
+        public ChatroomWindow()
         {
             InitializeComponent();
             flowDocumentLog.Document = new FlowDocument();
@@ -92,7 +92,7 @@ namespace PointGaming.Chat
         private void SendInput()
         {
             string send, remain;
-            if (!ChatTabCommon.FilterMessage(textBoxInput.Text, out send, out remain))
+            if (!ChatCommon.FilterMessage(textBoxInput.Text, out send, out remain))
                 return;
             textBoxInput.Text = remain;
 
@@ -124,7 +124,7 @@ namespace PointGaming.Chat
             var p = new Paragraph();
             p.Inlines.Add(new Run(timeString + " "));
             p.Inlines.Add(new Bold(new Run(username + ": ")));
-            ChatTabCommon.Format(message, p.Inlines);
+            ChatCommon.Format(message, p.Inlines);
             flowDocumentLog.Document.Blocks.Add(p);
 
             _autoScroller.PostAppend();

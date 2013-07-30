@@ -17,7 +17,7 @@ using PointGaming.POCO;
 
 namespace PointGaming.Chat
 {
-    public partial class RoomInviteTab : Window
+    public partial class RoomInviteWindow : Window
     {
         public WindowTreeManager WindowTreeManager;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -34,7 +34,7 @@ namespace PointGaming.Chat
         private readonly ObservableCollection<ChatroomInviteNew> _invites = new ObservableCollection<ChatroomInviteNew>();
         public ObservableCollection<ChatroomInviteNew> Invites { get { return _invites; } }
 
-        public RoomInviteTab()
+        public RoomInviteWindow()
         {
             InitializeComponent();
             WindowTreeManager = new WindowTreeManager(this, HomeWindow.Home.WindowTreeManager);

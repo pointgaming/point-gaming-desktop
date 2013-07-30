@@ -130,7 +130,7 @@ namespace PointGaming.GameRoom
 
             p.Inlines.Add(new Run(timeString + " "));
             p.Inlines.Add(new Bold(new Run(username + ": ")));
-            ChatTabCommon.Format(message, p.Inlines);
+            ChatCommon.Format(message, p.Inlines);
             _chatMessages.Add(p);
             OnPropertyChanged("ChatMessages");
         }

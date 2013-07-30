@@ -19,7 +19,7 @@ using PointGaming.Chat;
 
 namespace PointGaming.Lobby
 {
-    public partial class LobbyTab : Window, IWeakEventListener
+    public partial class LobbyWindow : Window, IWeakEventListener
     {
         public WindowTreeManager WindowTreeManager;
 
@@ -38,7 +38,7 @@ namespace PointGaming.Lobby
         private AutoScroller _autoScroller;
         private ObservableCollection<PgUser> _groupedUsers;
 
-        public LobbyTab()
+        public LobbyWindow()
         {
             InitializeComponent();
             flowDocumentLog.Document = new FlowDocument();
@@ -233,7 +233,7 @@ namespace PointGaming.Lobby
         private void SendInput()
         {
             string send, remain;
-            if (!ChatTabCommon.FilterMessage(textBoxInput.Text, out send, out remain))
+            if (!ChatCommon.FilterMessage(textBoxInput.Text, out send, out remain))
                 return;
             textBoxInput.Text = remain;
 
@@ -251,7 +251,7 @@ namespace PointGaming.Lobby
             var p = new Paragraph();
             p.Inlines.Add(new Run(timeString + " "));
             p.Inlines.Add(new Bold(new Run(username + ": ")));
-            ChatTabCommon.Format(message, p.Inlines);
+            ChatCommon.Format(message, p.Inlines);
             flowDocumentLog.Document.Blocks.Add(p);
 
             _autoScroller.PostAppend();

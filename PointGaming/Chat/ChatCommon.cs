@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace PointGaming.Chat
 {
-    public class ChatTabCommon
+    public class ChatCommon
     {
         public static bool FilterMessage(string messageIn, out string send, out string remain)
         {

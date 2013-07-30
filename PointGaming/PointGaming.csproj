@@ -155,12 +155,12 @@
     <Compile Include="WindowTreeManager.cs" />
     <Compile Include="SessionManager.cs" />
     <Compile Include="Chat\ChatroomSession.cs" />
-    <Compile Include="Chat\ChatroomTab.xaml.cs">
-      <DependentUpon>ChatroomTab.xaml</DependentUpon>
+    <Compile Include="Chat\ChatroomWindow.xaml.cs">
+      <DependentUpon>ChatroomWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Chat\ChatTabCommon.cs" />
-    <Compile Include="Chat\RoomInviteTab.xaml.cs">
-      <DependentUpon>RoomInviteTab.xaml</DependentUpon>
+    <Compile Include="Chat\ChatCommon.cs" />
+    <Compile Include="Chat\RoomInviteWindow.xaml.cs">
+      <DependentUpon>RoomInviteWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ClosableTab.xaml.cs">
       <DependentUpon>ClosableTab.xaml</DependentUpon>
@@ -211,8 +211,8 @@
     </Compile>
     <Compile Include="Lobby\VsGameRoomItemCollection.cs" />
     <Compile Include="Lobby\LobbySession.cs" />
-    <Compile Include="Lobby\LobbyTab.xaml.cs">
-      <DependentUpon>LobbyTab.xaml</DependentUpon>
+    <Compile Include="Lobby\LobbyWindow.xaml.cs">
+      <DependentUpon>LobbyWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="BitcoinMiner\StratumSession.cs" />
     <Compile Include="MVVM\ActionCommand.cs" />
@@ -245,19 +245,15 @@
       <DependentUpon>UserProfileTooltip.xaml</DependentUpon>
     </Compile>
     <Compile Include="WindowBoundsPersistor.cs" />
-    <Page Include="Chat\ChatWindowDeleteMe.xaml">
+    <Page Include="Chat\PrivateChatWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Chat\ChatTab.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Chat\ChatroomTab.xaml">
+    <Page Include="Chat\ChatroomWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Chat\RoomInviteTab.xaml">
+    <Page Include="Chat\RoomInviteWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -337,11 +333,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Chat\ChatWindowDeleteMe.xaml.cs">
-      <DependentUpon>ChatWindowDeleteMe.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Chat\ChatTab.xaml.cs">
-      <DependentUpon>ChatTab.xaml</DependentUpon>
+    <Compile Include="Chat\PrivateChatWindow.xaml.cs">
+      <DependentUpon>PrivateChatWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="HomeTab\DebugTab.xaml.cs">
       <DependentUpon>DebugTab.xaml</DependentUpon>
@@ -365,7 +358,7 @@
       <DependentUpon>HomeWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Lobby\LobbyTab.xaml">
+    <Page Include="Lobby\LobbyWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

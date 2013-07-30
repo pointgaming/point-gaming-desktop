@@ -53,7 +53,7 @@ namespace PointGaming.GameRoom
             
             var p = new Paragraph();
             p.Inlines.Add(new Bold(new Run("Description: ")));
-            Chat.ChatTabCommon.Format("5 vs 5 Dust 2 No Scrubs\r\nWill ban for being bad\r\nNo 8 digs\r\n\r\n\r\n\r\n\r\n\r\n", p.Inlines);
+            Chat.ChatCommon.Format("5 vs 5 Dust 2 No Scrubs\r\nWill ban for being bad\r\nNo 8 digs\r\n\r\n\r\n\r\n\r\n\r\n", p.Inlines);
             _descriptionDocument.Blocks.Add(p);
         }
 
@@ -171,7 +171,7 @@ namespace PointGaming.GameRoom
         private void SendInput()
         {
             string send, remain;
-            if (!ChatTabCommon.FilterMessage(textBoxInput.Text, out send, out remain))
+            if (!ChatCommon.FilterMessage(textBoxInput.Text, out send, out remain))
                 return;
             textBoxInput.Text = remain;
 
@@ -194,7 +194,7 @@ namespace PointGaming.GameRoom
             var p = new Paragraph();
             p.Inlines.Add(new Run(timeString + " "));
             p.Inlines.Add(new Bold(new Run(username + ": ")));
-            ChatTabCommon.Format(message, p.Inlines);
+            ChatCommon.Format(message, p.Inlines);
             flowDocumentLog.Document.Blocks.Add(p);
 
             _autoScroller.PostAppend();

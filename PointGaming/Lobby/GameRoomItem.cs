@@ -281,7 +281,7 @@ namespace PointGaming.Lobby
             get
             {
                 var p = new Paragraph();
-                Chat.ChatTabCommon.Format(_description, p.Inlines);
+                Chat.ChatCommon.Format(_description, p.Inlines);
 
                 var doc = new FlowDocument();
                 doc.SetPointGamingDefaults();

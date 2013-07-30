@@ -30,8 +30,8 @@ namespace PointGaming.Lobby
 
         public event Action<LobbySession> LoadGameRoomsComplete;
 
-        private LobbyTab _window;
-        public LobbyTab Window { get { return _window; } }
+        private LobbyWindow _window;
+        public LobbyWindow Window { get { return _window; } }
         
         public LobbySession(SessionManager manager, HomeTab.LauncherInfo gameInfo)
             : base(manager)
@@ -43,7 +43,7 @@ namespace PointGaming.Lobby
         {
             if (_window == null)
             {
-                _window = new LobbyTab();
+                _window = new LobbyWindow();
                 _window.Init(this);
             }
 

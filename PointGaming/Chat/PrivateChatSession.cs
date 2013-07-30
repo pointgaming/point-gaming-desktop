@@ -10,7 +10,7 @@ namespace PointGaming.Chat
     public class PrivateChatSession : ChatSessionBase
     {
         private PgUser _otherUser;
-        private ChatTab _window;
+        private PrivateChatWindow _window;
 
         public PrivateChatSession(SessionManager manager, PgUser otherUser) : base(manager)
         {
@@ -21,7 +21,7 @@ namespace PointGaming.Chat
         {
             if (_window == null)
             {
-                _window = new ChatTab();
+                _window = new PrivateChatWindow();
                 _window.Init(this, _otherUser);
             }
 
@@ -38,5 +38,6 @@ namespace PointGaming.Chat
         {
             _manager.LeavePrivateChat(_otherUser);
         }
+
     }
 }
