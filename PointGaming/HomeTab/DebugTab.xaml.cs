@@ -9,9 +9,6 @@ using System.Windows.Threading;
 
 namespace PointGaming.HomeTab
 {
-    /// <summary>
-    /// Interaction logic for DebugTab.xaml
-    /// </summary>
     public partial class DebugTab : UserControl
     {
         public DebugTab()
@@ -27,5 +24,29 @@ namespace PointGaming.HomeTab
             App.DebugBox = textBoxConsole;
         }
 
+        public string ProgramVersion { get { return "Version " + App.Version; } }
+
+        private void buttonChooseChatFont_Click(object sender, RoutedEventArgs e)
+        {
+            PgFonts.FontChooser fontChooser = new PgFonts.FontChooser();
+            fontChooser.Owner = HomeWindow.Home;
+
+            if (Properties.Settings.Default.ChatFontFamily != "")
+                textBoxFontChoice.FontFamily = new System.Windows.Media.FontFamily(Properties.Settings.Default.ChatFontFamily + ", " + textBoxFontChoice.FontFamily);
+            if (Properties.Settings.Default.ChatFontSize != 0)
+                textBoxFontChoice.FontSize = Properties.Settings.Default.ChatFontSize;
+            fontChooser.SetPropertiesFromObject(textBoxFontChoice);
+            fontChooser.PreviewSampleText = textBoxFontChoice.Text;
+
+            if (fontChooser.ShowDialog().Value)
+            {
+                fontChooser.ApplyPropertiesToObject(textBoxFontChoice);
+                var family = textBoxFontChoice.FontFamily.ToString();
+                var size = textBoxFontChoice.FontSize;
+                Properties.Settings.Default.ChatFontFamily = family;
+                Properties.Settings.Default.ChatFontSize = size;
+                Properties.Settings.Default.Save();
+            }
+        }
     }
 }
