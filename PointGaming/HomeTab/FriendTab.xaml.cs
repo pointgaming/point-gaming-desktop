@@ -92,11 +92,14 @@ namespace PointGaming.HomeTab
         {
             PgUser friend;
             if (dataGridFriends.TryGetRowItem(e, out friend))
+                ChatWith(friend);
+        }
+
+        private void ChatWith(PgUser friend)
+        {
+            if (CanChatWith(friend))
             {
-                if (CanChatWith(friend))
-                {
-                    _userData.ChatWith(friend);
-                }
+                _userData.ChatWith(friend);
             }
         }
 
@@ -104,6 +107,19 @@ namespace PointGaming.HomeTab
         {
             var status = friend.Status;
             return ChatAvailableStatuses.Contains(status);
+        }
+
+        private void userContextMenuMessage_Click(object sender, RoutedEventArgs e)
+        {
+            PgUser friend = _rightClickedFriend;
+            ChatWith(friend);
+        }
+
+        private void userContextMenuViewProfile_Click(object sender, RoutedEventArgs e)
+        {
+            PgUser friend = _rightClickedFriend;
+            var url = Properties.Settings.Default.WebServerUrl + "/u/" + friend.Username + "/profile";
+            System.Diagnostics.Process.Start(url);
         }
 
         #region friend status
