@@ -171,80 +171,85 @@
                       VerticalAlignment="Stretch"
                       ResizeDirection="Columns" />
 
-        <ListView Name="listBoxMembership"
-                  Grid.Column="3" 
-                  Grid.RowSpan="3"
+        <Grid Grid.Column="3" Grid.RowSpan="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Content="{Binding MembershipCount, FallbackValue=Total (0)}" Height="28" HorizontalAlignment="Left" Name="labelMembershipTotal" VerticalAlignment="Top" />
+            <ListView Grid.Row="1" Name="listBoxMembership"
                   ItemsSource="{Binding Membership}"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch">
-            <ListView.Resources>
-                <DataTemplate DataType="{x:Type pg:PgUser}">
-                    <Label Content="{Binding DisplayName}" HorizontalAlignment="Stretch" Width="Auto">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="ContextMenuOpening">
-                                <i:InvokeCommandAction Command="{Binding DataContext.CheckUserCanAdmin, ElementName=This}" CommandParameter="{Binding}" />
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
+                <ListView.Resources>
+                    <DataTemplate DataType="{x:Type pg:PgUser}">
+                        <Label Content="{Binding DisplayName}" HorizontalAlignment="Stretch" Width="Auto">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="ContextMenuOpening">
+                                    <i:InvokeCommandAction Command="{Binding DataContext.CheckUserCanAdmin, ElementName=This}" CommandParameter="{Binding}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
 
-                        <Label.ToolTip>
-                            <ToolTip>
-                                <pg:UserProfileTooltip UserProfile="{Binding}" />
-                            </ToolTip>
-                        </Label.ToolTip>
-                    </Label>
+                            <Label.ToolTip>
+                                <ToolTip>
+                                    <pg:UserProfileTooltip UserProfile="{Binding}" />
+                                </ToolTip>
+                            </Label.ToolTip>
+                        </Label>
 
-                </DataTemplate>
+                    </DataTemplate>
 
-                <pg:DataBindingProxy x:Key="dataContextProxy" Data="{Binding}" />
+                    <pg:DataBindingProxy x:Key="dataContextProxy" Data="{Binding}" />
 
-                <ContextMenu Name="adminUserContextMenu" x:Key="adminUserContextMenu">
-                    <MenuItem Header="Kick" 
+                    <ContextMenu Name="adminUserContextMenu" x:Key="adminUserContextMenu">
+                        <MenuItem Header="Kick" 
                               Command="{Binding Source={StaticResource dataContextProxy}, Path=Data.KickUser}" 
                               CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
-                    <MenuItem Header="Ban" 
+                        <MenuItem Header="Ban" 
                               Command="{Binding Source={StaticResource dataContextProxy}, Path=Data.BanUser}" 
                               CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
-                    <MenuItem Header="Promote to owner" 
+                        <MenuItem Header="Promote to owner" 
                               Command="{Binding Source={StaticResource dataContextProxy}, Path=Data.PromoteUser}" 
                               CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
-                </ContextMenu>
-            </ListView.Resources>
+                    </ContextMenu>
+                </ListView.Resources>
 
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="ContextMenu" Value="{DynamicResource adminUserContextMenu}" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding DataContext.CanAdmin, ElementName=This}" Value="False">
-                            <Setter Property="ContextMenu" Value="{x:Null}" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ListView.ItemContainerStyle>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="ContextMenu" Value="{DynamicResource adminUserContextMenu}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding DataContext.CanAdmin, ElementName=This}" Value="False">
+                                <Setter Property="ContextMenu" Value="{x:Null}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.ItemContainerStyle>
 
-            <ListView.GroupStyle>
-                <GroupStyle>
-                    <GroupStyle.ContainerStyle>
-                        <Style TargetType="{x:Type GroupItem}">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate>
-                                        <Expander IsExpanded="True">
-                                            <Expander.Header>
-                                                <TextBlock>
+                <ListView.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="{x:Type GroupItem}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <Expander IsExpanded="True">
+                                                <Expander.Header>
+                                                    <TextBlock>
                                                      <Run Text="{Binding Path=Name, Mode=OneWay}" />
                                                      <Run Text=" (" /><Run Text="{Binding Path=ItemCount, Mode=OneWay}" /><Run Text=")" />
-                                                </TextBlock>
-                                            </Expander.Header>
-                                            <ItemsPresenter />
-                                        </Expander>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </GroupStyle.ContainerStyle>
-                </GroupStyle>
-            </ListView.GroupStyle>
-        </ListView>
+                                                    </TextBlock>
+                                                </Expander.Header>
+                                                <ItemsPresenter />
+                                            </Expander>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                    </GroupStyle>
+                </ListView.GroupStyle>
+            </ListView>
+        </Grid>
 
         <GridSplitter Height="5" 
                       Grid.ColumnSpan="4" 

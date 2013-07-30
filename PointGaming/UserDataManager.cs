@@ -47,6 +47,7 @@ namespace PointGaming
             Friendship = new FriendshipManager(PgSession);
 
             User.Status = "online";
+            LookupUserData(User.Id);
 
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(5);
@@ -188,6 +189,7 @@ namespace PointGaming
                         user.Rank = response.Data.rank;
                         user.Username = response.Data.username;
                         user.Points = response.Data.points;
+                        user.Team = GetPgTeam(response.Data.team);
                     }
                 }
             });

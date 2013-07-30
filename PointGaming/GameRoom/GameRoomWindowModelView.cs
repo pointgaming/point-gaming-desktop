@@ -27,12 +27,28 @@ namespace PointGaming.GameRoom
         private ActiveGroupingCollectionView _groupedMembership;
         public ActiveGroupingCollectionView Membership
         {
-            get { return _groupedMembership; }
+            get {
+                if (_groupedMembership == null)
+                    _groupedMembership = new ActiveGroupingCollectionView(_groupedMembershipList);
+                return _groupedMembership; 
+            }
+        }
+
+        private string _MembershipCount = "Total (0)";
+        public string MembershipCount
+        {
+            get { return _MembershipCount; }
+            set
+            {
+                if (value == _MembershipCount)
+                    return;
+                _MembershipCount = value;
+                OnPropertyChanged("MembershipCount");
+            }
         }
 
         public GameRoomWindowModelView()
         {
-            _groupedMembership = new ActiveGroupingCollectionView(_groupedMembershipList);
         }
 
         public void Init(SessionManager manager, GameRoom.GameRoomSession session)
@@ -42,10 +58,24 @@ namespace PointGaming.GameRoom
 
             // socket membership messages trigger on the session, so update room's membership when session members change
             _session.Membership.CollectionChanged += Membership_CollectionChanged;
-
             _session.GameRoom.PropertyChanged += GameRoom_PropertyChanged;
             _session.MyMatch.PropertyChanged += MyMatch_PropertyChanged;
             _session.ChatMessages.CollectionChanged += ChatMessages_CollectionChanged;
+            
+            InitMembership();
+        }
+
+        private void InitMembership()
+        {
+            Membership.GroupDescriptions.Add(new PropertyGroupDescription("GameRoomGroupName"));
+            Membership.CustomSort = PgUser.GetGameRoomMemberSorter();
+
+            foreach (var item in _session.Membership)
+                _groupedMembershipList.Add(item);
+
+            CheckBots();
+
+            SetMembershipCount();
         }
 
         public string TeamAvatar
@@ -148,31 +178,83 @@ namespace PointGaming.GameRoom
             get { return _session.RoomBets; }
         }
 
-        
+        private readonly List<PgUser> _teamBots = new List<PgUser>();
 
         private void Membership_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            _groupedMembership.Refresh();
-            _groupedMembership.GroupDescriptions.Clear();
+            if (e.OldItems != null)
+                foreach (var item in e.OldItems)
+                    _groupedMembershipList.Remove(item as PgUser);
+            if (e.NewItems != null)
+                foreach (var item in e.NewItems)
+                    _groupedMembershipList.Add(item as PgUser);
+            
+            CheckBots();
 
+            SetMembershipCount();
+        }
+
+        private void CheckBots()
+        {
+            List<PgUser> removes = new List<PgUser>();
+
+            foreach (var teamBot in _teamBots)
+            {
+                bool shouldPlace = false;
+                foreach (var user in _session.Membership)
+                {
+                    if (user.HasTeam && user.Team == teamBot.Team)
+                    {
+                        shouldPlace = true;
+                        break;
+                    }
+                }
+                if (!shouldPlace)
+                    removes.Add(teamBot);
+            }
+
+            foreach (var bot in removes)
+            {
+                _teamBots.Remove(bot);
+                _groupedMembershipList.Remove(bot);
+            }
+
+            foreach (var user in _session.Membership)
+            {
+                if (!user.HasTeam)
+                    continue;
+
+                bool shouldPlace = true;
+                foreach (var teamBot in _teamBots)
+                {
+                    if (user.Team == teamBot.Team)
+                    {
+                        shouldPlace = false;
+                        break;
+                    }
+                }
+                if (shouldPlace)
+                {
+                    var newBot = CreateBotForTeam(user);
+                    _teamBots.Add(newBot);
+                    _groupedMembershipList.Add(newBot);
+                }
+            }
+        }
+
+        private PgUser CreateBotForTeam(PgUser user)
+        {
             // placeholder bot group; TODO: get bot(s) from socket API
-            if (_session.Membership.Count > 0)
-            {
-                PgUser botUser = new PgUser();
-                botUser.Id = "mock";
-                botUser.Username = "dProductions";
-                botUser.Team = new PgTeam{ Name="Game Room Team Bot"};
-                _groupedMembershipList.Add(botUser);
-            }
+            PgUser botUser = new PgUser();
+            botUser.Id = "bot_" + user.Team.Id;
+            botUser.Username = "bot_" + user.Team.Name;
+            botUser.Team = user.Team;
+            return botUser;
+        }
 
-            // team groups
-            foreach (PgUser user in _session.Membership)
-            {
-                _groupedMembershipList.Add(user);
-            }
-
-            _groupedMembership.GroupDescriptions.Add(new PropertyGroupDescription("GameRoomGroupName"));
-            OnPropertyChanged("Membership");
+        private void SetMembershipCount()
+        {
+            MembershipCount = "Total (" + _session.Membership.Count + ")";
         }
 
         private void GameRoom_PropertyChanged(object sender, PropertyChangedEventArgs e)

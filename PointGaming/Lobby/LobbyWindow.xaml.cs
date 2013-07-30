@@ -20,7 +20,7 @@ using PointGaming.Chat;
 
 namespace PointGaming.Lobby
 {
-    public partial class LobbyWindow : Window, IWeakEventListener
+    public partial class LobbyWindow : Window, IWeakEventListener, INotifyPropertyChanged
     {
         public WindowTreeManager WindowTreeManager;
 
@@ -46,6 +46,19 @@ namespace PointGaming.Lobby
             _autoScroller = new AutoScroller(flowDocumentLog);
             PropertyChangedEventManager.AddListener(Properties.Settings.Default, this, "PropertyChanged");
             WindowTreeManager = new WindowTreeManager(this, HomeWindow.Home.WindowTreeManager);
+        }
+
+        private string _MembershipCount = "Total (0)";
+        public string MembershipCount
+        {
+            get { return _MembershipCount; }
+            set
+            {
+                if (value == _MembershipCount)
+                    return;
+                _MembershipCount = value;
+                NotifyChanged("MembershipCount");
+            }
         }
 
         public bool ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
@@ -102,10 +115,18 @@ namespace PointGaming.Lobby
         private void InitGroupedMembers(ChatroomSessionBase lobbySession)
         {
             var membershipView = new ActiveGroupingCollectionView(lobbySession.Membership);
+            membershipView.CustomSort = PgUser.GetLobbyMemberSorter();
             membershipView.GroupDescriptions.Add(new PropertyGroupDescription("LobbyGroupName"));
             listBoxMembership.DataContext = membershipView;
+            lobbySession.Membership.CollectionChanged += Membership_CollectionChanged;
+            Membership_CollectionChanged(null, null);
         }
 
+        void Membership_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            MembershipCount = "Total (" + _lobbySession.Membership.Count + ")";
+        }
+        
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             textBoxInput.Focus();

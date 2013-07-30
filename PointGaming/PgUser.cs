@@ -161,13 +161,49 @@ namespace PointGaming
         {
             get
             {
-                if (HomeWindow.UserData.User == this)
-                    return "Total";
-                if (IsFriend)
-                    return "Friends";
                 if (IsAdmin)
                     return "Admins";
+                if (IsFriend || HomeWindow.UserData.User == this)
+                    return "Friends";
                 return "Players";
+            }
+        }
+
+        private static readonly string[] LobbyGroupNames = new string[] { "Total", "Friends", "Admins", "Players", };
+        public static System.Collections.IComparer GetLobbyMemberSorter()
+        {
+            return new LobbyMemberSorter();
+        }
+        private class LobbyMemberSorter : System.Collections.IComparer
+        {
+            public int Compare(object x, object y)
+            {
+                PgUser a = x as PgUser;
+                PgUser b = y as PgUser;
+                if (a.LobbyGroupName == b.LobbyGroupName)
+                {
+                    return -1 * a.Points.CompareTo(b.Points);
+                }
+                var aix = Array.IndexOf(LobbyGroupNames, a.LobbyGroupName);
+                var bix = Array.IndexOf(LobbyGroupNames, b.LobbyGroupName);
+                return aix.CompareTo(bix);
+            }
+        }
+
+        public static System.Collections.IComparer GetGameRoomMemberSorter()
+        {
+            return new GameRoomMemberSorter();
+        }
+        private class GameRoomMemberSorter : System.Collections.IComparer
+        {
+            public int Compare(object x, object y)
+            {
+                PgUser a = x as PgUser;
+                PgUser b = y as PgUser;
+                var groupCmp = a.GameRoomGroupName.CompareTo(b.GameRoomGroupName);
+                if (groupCmp != 0)
+                    return groupCmp;
+                return -1 * a.Points.CompareTo(b.Points);
             }
         }
 
