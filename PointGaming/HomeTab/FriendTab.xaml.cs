@@ -22,13 +22,11 @@ namespace PointGaming.HomeTab
             var defaultUri = "pack://application:,,,/" + assembly.GetName().Name + ";component/Resources/";
 
             if ((string)value == "online")
-            {
                 defaultUri += "online.png";
-            }
+            else if ((string)value == "idle")
+                defaultUri += "idle.png";
             else
-            {
                 defaultUri += "offline.png";
-            }
 
             var source = new ImageSourceConverter().ConvertFromString(defaultUri) as ImageSource;
             return source;
