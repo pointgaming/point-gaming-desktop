@@ -174,12 +174,8 @@ namespace PointGaming.HomeTab
             }
             else
             {
-                var newFriend = new PgUser
-                {
-                    Username = friend.username,
-                    Status = friend.status,
-                    Id = friend._id,
-                };
+                var newFriend = _userData.GetPgUser(friend);
+                newFriend.Status = friend.status;
                 _userData.AddFriend(newFriend);
             }
         }

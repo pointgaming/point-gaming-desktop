@@ -17,9 +17,12 @@ namespace PointGaming.GameRoom
 {
     public partial class GameRoomWindow : Window
     {
+        public WindowTreeManager WindowTreeManager;
+
         public GameRoomWindow()
         {
             InitializeComponent();
+            WindowTreeManager = new WindowTreeManager(this, null);
         }
 
         private void ChatTextBox_PreviewKeyDown(object sender, KeyEventArgs e)

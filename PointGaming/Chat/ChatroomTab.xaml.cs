@@ -18,8 +18,9 @@ using PointGaming.POCO;
 
 namespace PointGaming.Chat
 {
-    public partial class ChatroomTab : UserControl, IWeakEventListener, IChatroomTab
+    public partial class ChatroomTab : Window, IWeakEventListener
     {
+        public WindowTreeManager WindowTreeManager;
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyChanged(string propertyName)
         {
@@ -30,13 +31,9 @@ namespace PointGaming.Chat
             changedCallback(this, args);
         }
 
-        private ChatWindow _chatWindow;
-        private ChatroomSession _roomManager;
+        private ChatroomSession _chatroomSession;
         private UserDataManager _userData = HomeWindow.UserData;
         private AutoScroller _autoScroller;
-
-        public string Id { get { return _roomManager.ChatroomId; } }
-        public string Header { get { return _roomManager.ChatroomId; } }
 
         public ChatroomTab()
         {
@@ -45,6 +42,7 @@ namespace PointGaming.Chat
             UpdateChatFont();
             _autoScroller = new AutoScroller(flowDocumentLog);
             PropertyChangedEventManager.AddListener(Properties.Settings.Default, this, "PropertyChanged");
+            WindowTreeManager = new WindowTreeManager(this, HomeWindow.Home.WindowTreeManager);
         }
 
         public bool ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
@@ -61,12 +59,12 @@ namespace PointGaming.Chat
             flowDocumentLog.Document.FontSize = Properties.Settings.Default.ChatFontSize;
         }
 
-        public void Init(ChatWindow window, ChatroomSession roomManager)
+        public void Init(ChatroomSession roomManager)
         {
-            _chatWindow = window;
-            _roomManager = roomManager;
-            _roomManager.ReceivedMessage += ReceivedMessage;
-            listBoxMembership.ItemsSource = _roomManager.Membership;
+            _chatroomSession = roomManager;
+            listBoxMembership.ItemsSource = _chatroomSession.Membership;
+            Title = roomManager.ChatroomId;
+            _chatroomSession.ChatMessages.CollectionChanged += ChatMessages_CollectionChanged;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -98,13 +96,21 @@ namespace PointGaming.Chat
                 return;
             textBoxInput.Text = remain;
 
-            _roomManager.SendMessage(send);
+            _chatroomSession.SendMessage(send);
         }
 
-        private void ReceivedMessage(UserBase fromUser, string message)
+
+        void ChatMessages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            _chatWindow.StartFlashingTab(this.GetType(), _roomManager.ChatroomId);
-            AppendUserMessage(fromUser.username, message);
+            bool allFromSelf = true;
+            foreach (ChatMessage item in e.NewItems)
+            {
+                AppendUserMessage(item.Author.Username, item.Message);
+                if (item.Author != _userData.User)
+                    allFromSelf = false;
+            }
+            if (!allFromSelf)
+                this.FlashWindowSmartly();
         }
         
         private void AppendUserMessage(string username, string message)
@@ -204,10 +210,20 @@ namespace PointGaming.Chat
             if (e.Data.GetDataPresent(typeof(PgUser).FullName))
             {
                 PgUser anotherUser = e.Data.GetData(typeof(PgUser).FullName) as PgUser;
-                _roomManager.Invite(anotherUser);
+                _chatroomSession.Invite(anotherUser);
                 e.Handled = true;
             }
         }
         #endregion
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            _chatroomSession.Leave();
+        }
+
+        private void Window_Activated(object sender, EventArgs e)
+        {
+            this.StopFlashingWindow();
+        }
     }
 }

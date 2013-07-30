@@ -13,7 +13,7 @@ using SocketIOClient.Messages;
 
 namespace PointGaming.Lobby
 {
-    public class LobbySession : ChatroomSession
+    public class LobbySession : ChatroomSessionBase
     {
         private const int DefaultMaxGameRoomMemberCount = 50;
         private const int MinRoomCount = 100;
@@ -30,10 +30,24 @@ namespace PointGaming.Lobby
 
         public event Action<LobbySession> LoadGameRoomsComplete;
 
-        public LobbySession(ChatManager manager, HomeTab.LauncherInfo gameInfo)
+        private LobbyTab _window;
+        public LobbyTab Window { get { return _window; } }
+        
+        public LobbySession(SessionManager manager, HomeTab.LauncherInfo gameInfo)
             : base(manager)
         {
             GameInfo = gameInfo;
+        }
+
+        public override void ShowControl(bool shouldActivate)
+        {
+            if (_window == null)
+            {
+                _window = new LobbyTab();
+                _window.Init(this);
+            }
+
+            _window.ShowNormal(shouldActivate);
         }
 
         public void LoadGameRooms()
@@ -115,7 +129,7 @@ namespace PointGaming.Lobby
                 else
                 {
                     string reason = String.IsNullOrEmpty(response.ErrorMessage) ? response.Content : response.ErrorMessage;
-                    MessageDialog.Show(_userData.GetChatWindow(), "Join Failed", reason);
+                    MessageDialog.Show(_window, "Join Failed", reason);
                 }
             });
         }
@@ -168,17 +182,7 @@ namespace PointGaming.Lobby
                 }
             }
         }
-
-        public override Type GetUserControlType()
-        {
-            return typeof(LobbyTab);
-        }
-
-        public override IChatroomTab GetNewUserControl()
-        {
-            return new LobbyTab();
-        }
-
+        
         public void OnGameRoomNew(GameRoomPoco poco)
         {
             var item = new GameRoomItem(poco);

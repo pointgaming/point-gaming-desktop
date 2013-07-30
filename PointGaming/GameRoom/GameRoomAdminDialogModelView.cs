@@ -20,13 +20,13 @@ namespace PointGaming.GameRoom
     class GameRoomAdminDialogModelView : ViewModelBase
     {
         private GameRoom.GameRoomSession _session;
-        private ChatManager _manager;
+        private SessionManager _manager;
 
         public GameRoomAdminDialogModelView()
         {
         }
 
-        public void Init(ChatManager manager, GameRoom.GameRoomSession session)
+        public void Init(SessionManager manager, GameRoom.GameRoomSession session)
         {
             _manager = manager;
             _session = session;

@@ -11,7 +11,7 @@ using System.Collections.ObjectModel;
 
 namespace PointGaming.GameRoom
 {
-    public class GameRoomSession : ChatroomSession
+    public class GameRoomSession : ChatroomSessionBase
     {
         private readonly UserDataManager _userData = HomeWindow.UserData;
 
@@ -21,24 +21,34 @@ namespace PointGaming.GameRoom
         public readonly Match MyMatch = new Match();
         public readonly ObservableCollection<Bet> RoomBets = new ObservableCollection<Bet>();
 
+        private GameRoomWindow _window;
+        public GameRoomWindow Window { get { return _window; } }
+
         public string GameId { get { return GameRoom.GameId; } }
         public string GameRoomId { get { return GameRoom.Id; } }
 
-        public GameRoomSession(ChatManager manager, Lobby.LobbySession lobbySession, Lobby.GameRoomItem gameRoom)
+        public GameRoomSession(SessionManager manager, Lobby.LobbySession lobbySession, Lobby.GameRoomItem gameRoom)
             : base(manager)
         {
             _lobbySession = lobbySession;
             GameRoom = gameRoom;
         }
 
-        public override Type GetUserControlType()
+        public override void ShowControl(bool shouldActivate)
         {
-            return typeof(GameRoomTab);
-        }
+            if (_window == null)
+            {
+                GameRoomWindowModelView modelView = new GameRoomWindowModelView();
+                modelView.Init(_manager, this);
 
-        public override IChatroomTab GetNewUserControl()
-        {
-            return new GameRoomTab();
+                _window = new GameRoomWindow();
+                _window.DataContext = modelView;
+
+                LoadMatch();
+            }
+
+            _window.WindowTreeManager.Parent = _lobbySession.Window.WindowTreeManager;
+            _window.ShowNormal(shouldActivate);
         }
 
         public void SetGameRoomSettings(object poco)
@@ -60,7 +70,7 @@ namespace PointGaming.GameRoom
                 }
                 else
                 {
-                    MessageDialog.Show(_userData.GetChatWindow(), "Failed to set Settings", "Sorry, failed to set settings.\r\nDetails: " + response.ErrorMessage);
+                    MessageDialog.Show(_window, "Failed to set Settings", "Sorry, failed to set settings.\r\nDetails: " + response.ErrorMessage);
                 }
             });
         }
@@ -71,7 +81,11 @@ namespace PointGaming.GameRoom
         }
         public void OnDestroy(GameRoomPoco poco)
         {
-            _manager.ChatWindow.CloseTab(typeof(GameRoomTab), ChatroomId);
+            if (_window != null)
+            {
+                _window.Close();
+                _window = null;
+            }
         }
 
         #region match
@@ -130,7 +144,7 @@ namespace PointGaming.GameRoom
                 if (!response.IsOk())
                 {
                     MyMatch.IsEditable = true;
-                    MessageDialog.Show(_userData.GetChatWindow(), "Failed to create match", "Sorry, failed to create match.\r\nDetails: " + response.ErrorMessage);
+                    MessageDialog.Show(_window, "Failed to create match", "Sorry, failed to create match.\r\nDetails: " + response.ErrorMessage);
                 }
             });
         }
@@ -165,7 +179,7 @@ namespace PointGaming.GameRoom
                 if (!response.IsOk())
                 {
                     MyMatch.IsEditable = true;
-                    MessageDialog.Show(_userData.GetChatWindow(), "Failed to update match", "Sorry, failed to update match.\r\nDetails: " + response.ErrorMessage);
+                    MessageDialog.Show(_window, "Failed to update match", "Sorry, failed to update match.\r\nDetails: " + response.ErrorMessage);
                 }
             });
         }
@@ -183,7 +197,7 @@ namespace PointGaming.GameRoom
                 if (!response.IsOk())
                 {
                     MyMatch.IsEditable = true;
-                    MessageDialog.Show(_userData.GetChatWindow(), "Failed to start match", "Sorry, failed to start match.\r\nDetails: " + response.ErrorMessage);
+                    MessageDialog.Show(_window, "Failed to start match", "Sorry, failed to start match.\r\nDetails: " + response.ErrorMessage);
                 }
             });
         }
@@ -201,7 +215,7 @@ namespace PointGaming.GameRoom
                 if (!response.IsOk())
                 {
                     MyMatch.IsEditable = true;
-                    MessageDialog.Show(_userData.GetChatWindow(), "Failed to cancel match", "Sorry, failed to cancel match.\r\nDetails: " + response.ErrorMessage);
+                    MessageDialog.Show(_window, "Failed to cancel match", "Sorry, failed to cancel match.\r\nDetails: " + response.ErrorMessage);
                 }
             });
         }
@@ -226,7 +240,7 @@ namespace PointGaming.GameRoom
                 if (!response.IsOk())
                 {
                     MyMatch.IsEditable = true;
-                    MessageDialog.Show(_userData.GetChatWindow(), "Failed to finish match", "Sorry, failed to finish match.\r\nDetails: " + response.ErrorMessage);
+                    MessageDialog.Show(_window, "Failed to finish match", "Sorry, failed to finish match.\r\nDetails: " + response.ErrorMessage);
                 }
             });
         }
@@ -263,7 +277,7 @@ namespace PointGaming.GameRoom
             {
                 if (!response.IsOk())
                 {
-                    MessageDialog.Show(_userData.GetChatWindow(), "Failed to create bet", 
+                    MessageDialog.Show(_window, "Failed to create bet", 
                         string.Concat(response.Data.errors));
                 }
             });
@@ -282,7 +296,7 @@ namespace PointGaming.GameRoom
             {
                 if (!response.IsOk())
                 {
-                    MessageDialog.Show(_userData.GetChatWindow(), "Failed to accept bet", response.ErrorMessage);
+                    MessageDialog.Show(_window, "Failed to accept bet", response.ErrorMessage);
                 }
             });
         }
@@ -300,7 +314,7 @@ namespace PointGaming.GameRoom
             {
                 if (!response.IsOk())
                 {
-                    MessageDialog.Show(_userData.GetChatWindow(), "Failed to delete bet", response.ErrorMessage);
+                    MessageDialog.Show(_window, "Failed to delete bet", response.ErrorMessage);
                 }
             });
         }

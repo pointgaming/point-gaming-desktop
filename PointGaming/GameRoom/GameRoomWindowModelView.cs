@@ -21,13 +21,13 @@ namespace PointGaming.GameRoom
     {
         private UserDataManager _userData = HomeWindow.UserData;
         private GameRoom.GameRoomSession _session;
-        private ChatManager _manager;
+        private SessionManager _manager;
 
         public GameRoomWindowModelView()
         {
         }
 
-        public void Init(ChatManager manager, GameRoom.GameRoomSession session)
+        public void Init(SessionManager manager, GameRoom.GameRoomSession session)
         {
             _manager = manager; // the mediator and messaging service (sort of)
             _session = session; // the model (sort of)
@@ -37,7 +37,7 @@ namespace PointGaming.GameRoom
 
             _session.GameRoom.PropertyChanged += GameRoom_PropertyChanged;
             _session.MyMatch.PropertyChanged += MyMatch_PropertyChanged;
-            _session.ReceivedMessage += ChatMessages_ReceivedMessage;
+            _session.ChatMessages.CollectionChanged += ChatMessages_CollectionChanged;
         }
 
         public string TeamAvatar
@@ -105,9 +105,12 @@ namespace PointGaming.GameRoom
             }
         }
 
-        private void ChatMessages_ReceivedMessage(UserBase fromUser, string message)
+        private void ChatMessages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            AddChatMessage(fromUser.username, message);
+            foreach (ChatMessage item in e.NewItems)
+            {
+                AddChatMessage(item.Author.Username, item.Message);
+            }
         }
 
         public ICommand SendChat { get { return new ActionCommand<string>(SendChatMessage); } }
@@ -180,7 +183,7 @@ namespace PointGaming.GameRoom
         public ICommand WindowClosed { get { return new ActionCommand(ExitGameRoom); } }
         public void ExitGameRoom()
         {
-            _manager.GameRoomWindowClosed(_session.ChatroomId);
+            _session.Leave();
         }
 
         public ICommand ShowAdmin { get { return new ActionCommand(ShowAdminDialog); } }

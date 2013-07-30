@@ -17,8 +17,9 @@ using PointGaming.POCO;
 
 namespace PointGaming.Chat
 {
-    public partial class ChatTab : UserControl, IWeakEventListener, ITabWithId
+    public partial class ChatTab : Window, IWeakEventListener
     {
+        public WindowTreeManager WindowTreeManager;
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyChanged(string propertyName)
         {
@@ -28,13 +29,11 @@ namespace PointGaming.Chat
             var args = new PropertyChangedEventArgs(propertyName);
             changedCallback(this, args);
         }
-        private ChatWindow _chatWindow;
         private PgUser _otherUser;
         private UserDataManager _userData = HomeWindow.UserData;
         private AutoScroller _autoScroller;
 
-        public string Id { get { return _otherUser.Id; } }
-        public string Header { get { return _otherUser.Username; } }
+        private PrivateChatSession _session;
 
         public ChatTab()
         {
@@ -43,6 +42,30 @@ namespace PointGaming.Chat
             UpdateChatFont();
             _autoScroller = new AutoScroller(flowDocumentLog);
             PropertyChangedEventManager.AddListener(Properties.Settings.Default, this, "PropertyChanged");
+            WindowTreeManager = new WindowTreeManager(this, HomeWindow.Home.WindowTreeManager);
+        }
+
+        public void Init(PrivateChatSession session, PgUser otherUser)
+        {
+            _session = session;
+            _otherUser = otherUser;
+            PropertyChangedEventManager.AddListener(_otherUser, this, "PropertyChanged");
+            Title = otherUser.Username;
+
+            _session.ChatMessages.CollectionChanged += ChatMessages_CollectionChanged;
+        }
+
+        void ChatMessages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            bool allFromSelf = true;
+            foreach (ChatMessage item in e.NewItems)
+            {
+                AppendUserMessage(item.Author.Username, item.Message);
+                if (item.Author != _userData.User)
+                    allFromSelf = false;
+            }
+            if (!allFromSelf)
+                this.FlashWindowSmartly();
         }
 
         bool IWeakEventListener.ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
@@ -55,7 +78,7 @@ namespace PointGaming.Chat
             else if (sender == _otherUser)
             {
                 if (((PropertyChangedEventArgs)e).PropertyName == "Username")
-                    NotifyChanged("Header");
+                    Title = _otherUser.Username;
                 return true;
             }
             return false;
@@ -74,13 +97,6 @@ namespace PointGaming.Chat
             textBoxInput.Focus();
         }
         
-        public void Init(ChatWindow window, PgUser otherUser)
-        {
-            _chatWindow = window;
-            _otherUser = otherUser;
-            PropertyChangedEventManager.AddListener(_otherUser, this, "PropertyChanged");
-        }
-
         private void buttonSendInput_Click(object sender, RoutedEventArgs e)
         {
             SendInput();
@@ -105,20 +121,9 @@ namespace PointGaming.Chat
                 return;
             textBoxInput.Text = remain;
 
-            var privateMessage = new PrivateMessageOut{ _id = _otherUser.Id, message = send };
-            _chatWindow.SendMessage(privateMessage);
+            _session.SendMessage(send);
         }
-
-        public void MessageReceived(PrivateMessageIn message)
-        {
-            _chatWindow.StartFlashingTab(this.GetType(), _otherUser.Id);
-            AppendUserMessage(_otherUser.Username, message.message);
-        }
-        public void MessageSent(PrivateMessageSent message)
-        {
-            AppendUserMessage(_userData.User.Username, message.message);
-        }
-
+        
         private void AppendUserMessage(string username, string message)
         {
             var time = DateTime.Now;
@@ -165,10 +170,20 @@ namespace PointGaming.Chat
             if (e.Data.GetDataPresent(typeof(PgUser).FullName))
             {
                 PgUser anotherUser = e.Data.GetData(typeof(PgUser).FullName) as PgUser;
-                _chatWindow.CreateChatroomWith(_otherUser, anotherUser);
+                HomeWindow.UserData.CreateChatroomWith(_otherUser, anotherUser);
                 e.Handled = true;
             }
         }
         #endregion
+
+        private void Window_Activated(object sender, EventArgs e)
+        {
+            this.StopFlashingWindow();
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            _session.Leave();
+        }
     }
 }

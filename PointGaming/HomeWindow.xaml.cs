@@ -22,11 +22,10 @@ namespace PointGaming
         public static HomeWindow Home;
         public static UserDataManager UserData;
 
-        private readonly List<Window> _childWindows = new List<Window>();
-
+        public WindowTreeManager WindowTreeManager;
         private WindowBoundsPersistor _windowBoundsPersistor;
-
         private HomeTab.PaymentTab _paymentTab;
+        
 
         public HomeWindow()
         {
@@ -34,6 +33,7 @@ namespace PointGaming
             Home = this;
             _windowBoundsPersistor = new HomeWindowBoundsPersistor(this);
             _windowBoundsPersistor.Load();
+            WindowTreeManager = new WindowTreeManager(this, null, false);
         }
 
         public void Init(SocketSession session)
@@ -106,16 +106,7 @@ namespace PointGaming
                 this.Hide();
             }
         }
-
-        public void AddChildWindow(Window window)
-        {
-            _childWindows.Add(window);
-        }
-        public void RemoveChildWindow(Window window)
-        {
-            _childWindows.Remove(window);
-        }
-        
+                
         public void LogOut(bool shouldShowLogInWindow, bool isFromWindowClosingEvent)
         {
             if (UserData == null)
@@ -124,12 +115,9 @@ namespace PointGaming
             _allowClose = true;
 
             taskbarIcon.Visibility = System.Windows.Visibility.Collapsed;
-            
-            var childWindows = new List<Window>(_childWindows);
-            foreach (var window in childWindows)
-                window.Close();
-            _childWindows.Clear();
 
+            WindowTreeManager.CloseChildren();
+            
             _paymentTab.LoggingOut();
 
             App.DebugBox = null;

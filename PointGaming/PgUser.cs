@@ -76,6 +76,11 @@ namespace PointGaming
             changedCallback(this, args);
         }
 
+        /// <summary>
+        /// Warning: you should probably be using UserDataManager.GetPgUser() so that only one PgUser is initalized per user._id
+        /// </summary>
+        public PgUser() { }
+
         private string _id;
         public string Id
         {

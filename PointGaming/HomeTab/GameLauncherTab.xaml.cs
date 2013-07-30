@@ -164,7 +164,7 @@ namespace PointGaming.HomeTab
         {
             if (!launcher.IsOfficialGame)
                 return;
-            _userData.JoinChat(Chat.ChatManager.PrefixGameLobby + launcher.Id);
+            _userData.JoinChat(SessionManager.PrefixGameLobby + launcher.Id);
         }
 
         private void LaunchExecutableClick(object sender, RoutedEventArgs e)

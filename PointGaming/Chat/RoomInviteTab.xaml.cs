@@ -17,8 +17,9 @@ using PointGaming.POCO;
 
 namespace PointGaming.Chat
 {
-    public partial class RoomInviteTab : UserControl, ITabWithId
+    public partial class RoomInviteTab : Window
     {
+        public WindowTreeManager WindowTreeManager;
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyChanged(string propertyName)
         {
@@ -28,25 +29,15 @@ namespace PointGaming.Chat
             var args = new PropertyChangedEventArgs(propertyName);
             changedCallback(this, args);
         }
-        private ChatWindow _chatWindow;
         private UserDataManager _userData = HomeWindow.UserData;
-
-        public const string TabId = "@%%^&^#&)):hgdf";
-        public const string HeaderString = "Invites";
-        public string Id { get { return TabId; } }
-        public string Header { get { return HeaderString; } }
-
+        
         private readonly ObservableCollection<ChatroomInviteNew> _invites = new ObservableCollection<ChatroomInviteNew>();
         public ObservableCollection<ChatroomInviteNew> Invites { get { return _invites; } }
 
         public RoomInviteTab()
         {
             InitializeComponent();
-        }
-
-        public void Init(ChatWindow window)
-        {
-            _chatWindow = window;
+            WindowTreeManager = new WindowTreeManager(this, HomeWindow.Home.WindowTreeManager);
         }
 
         public void AddInvite(ChatroomInviteNew invite)
@@ -78,7 +69,12 @@ namespace PointGaming.Chat
         {
             if (_invites.Count != 0)
                 return;
-            _chatWindow.CloseTab(typeof(RoomInviteTab), Id);
+            Close();
+        }
+
+        private void myUserControl_Activated(object sender, EventArgs e)
+        {
+            this.StopFlashingWindow();
         }
     }
 }

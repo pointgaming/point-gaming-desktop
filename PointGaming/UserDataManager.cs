@@ -24,7 +24,7 @@ namespace PointGaming
         public readonly PgUser User;
         public readonly SocketSession PgSession;
         public readonly FriendshipManager Friendship;
-        private ChatManager _chatManager;
+        private SessionManager _sessionManager;
 
         private readonly ObservableCollection<PgUser> _friends = new ObservableCollection<PgUser>();
         public ObservableCollection<PgUser> Friends { get { return _friends; } }
@@ -40,30 +40,29 @@ namespace PointGaming
             PgSession = session;
             User = session.User;
             _userLookup[User.Id] = User;
-            _chatManager = new Chat.ChatManager();
+            _sessionManager = new SessionManager();
             Friendship = new FriendshipManager(PgSession);
         }
 
         public void StartChat()
         {
-            _chatManager.Init(this);
+            _sessionManager.Init(this);
         }
         public void ChatWith(PgUser friend)
         {
-            _chatManager.ChatWith(friend);
+            _sessionManager.ChatWith(friend);
+        }
+        public void CreateChatroomWith(PgUser a, PgUser b)
+        {
+            Guid g = Guid.NewGuid();
+            var id = "client_" + g.ToString().Replace("-", "");
+            _sessionManager.JoinChatroom(id);
+            _sessionManager.SendChatroomInvite(new ChatroomInviteOut { _id = id, toUser = a.ToUserBase(), });
+            _sessionManager.SendChatroomInvite(new ChatroomInviteOut { _id = id, toUser = b.ToUserBase(), });
         }
         public void JoinChat(string id)
         {
-            _chatManager.JoinChatroom(id);
-        }
-        public void JoinGameRoom(string id)
-        {
-            _chatManager.JoinGameRoom(id);
-        }
-
-        public Chat.ChatWindow GetChatWindow()
-        {
-            return _chatManager.ChatWindow;
+            _sessionManager.JoinChatroom(id);
         }
         
         public void LoggedOut()
@@ -73,7 +72,7 @@ namespace PointGaming
             _friendLookup.Clear();
 
             PgSession.Begin(PgSession.Logout);
-            _chatManager = null;
+            _sessionManager = null;
         }
 
         public void AddFriend(PgUser friend)
@@ -100,15 +99,24 @@ namespace PointGaming
 
         public PgUser GetPgUser(UserBase userBase)
         {
-            PgUser user = new PgUser { 
-                Id = userBase._id, 
-                Username = userBase.username, 
-                Status = "unknown", 
-                Rank = userBase.rank, 
-                Team = GetPgTeam(userBase.team) 
+            PgUser user;
+            if (_userLookup.TryGetValue(userBase._id, out user))
+                return user;
+
+            user = new PgUser
+            {
+                Id = userBase._id,
+                Username = userBase.username ?? "unknown",
+                Status = "unknown",
+                Rank = userBase.rank,
+                Team = GetPgTeam(userBase.team)
             };
+
+            _userLookup[userBase._id] = user;
+            // todo dean gores 2013-02-26: should probably look this user up so that real info can be shown
             return user;
         }
+
         public PgTeam GetPgTeam(TeamBase teamBase)
         {
             if (teamBase == null)

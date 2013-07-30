@@ -19,7 +19,7 @@ using PointGaming.Chat;
 
 namespace PointGaming.GameRoom
 {
-    public partial class GameRoomTab : UserControl, IWeakEventListener, IChatroomTab, INotifyPropertyChanged
+    public partial class GameRoomTab : Window, IWeakEventListener, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyChanged(string propertyName)
@@ -31,7 +31,6 @@ namespace PointGaming.GameRoom
             changedCallback(this, args);
         }
 
-        private ChatWindow _chatWindow;
         private GameRoomSession _gameRoomSession;
         private UserDataManager _userData = HomeWindow.UserData;
         private AutoScroller _autoScroller;
@@ -95,11 +94,9 @@ namespace PointGaming.GameRoom
             flowDocumentLog.Document.FontSize = Properties.Settings.Default.ChatFontSize;
         }
 
-        public void Init(ChatWindow window, ChatroomSession gameRoomSession)
+        public void Init(ChatroomSessionBase gameRoomSession)
         {
-            _chatWindow = window;
             _gameRoomSession = (GameRoomSession)gameRoomSession;
-            _gameRoomSession.ReceivedMessage += ReceivedMessage;
             listBoxMembership.ItemsSource = _gameRoomSession.Membership;
 
             Binding b = new Binding("DescriptionDocument");
@@ -317,7 +314,7 @@ namespace PointGaming.GameRoom
                 return;
 
             var dialog = new BetProposalDialog();
-            dialog.Owner = _chatWindow;
+            dialog.Owner = this;
             dialog.SetMatch(_gameRoomSession.MyMatch);
             dialog.ShowDialog();
             if (dialog.DialogResult == true)
@@ -328,12 +325,12 @@ namespace PointGaming.GameRoom
 
         private void KickMemberClick(object sender, RoutedEventArgs e)
         {
-            MessageDialog.Show(_chatWindow, "Todo", "Todo: kick");
+            MessageDialog.Show(this, "Todo", "Todo: kick");
         }
 
         private void BanMemberClick(object sender, RoutedEventArgs e)
         {
-            MessageDialog.Show(_chatWindow, "Todo", "Todo: ban");
+            MessageDialog.Show(this, "Todo", "Todo: ban");
         }
 
         private void PromoteToOwnerMemberClick(object sender, RoutedEventArgs e)

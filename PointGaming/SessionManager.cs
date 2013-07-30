@@ -8,14 +8,15 @@ using PointGaming.GameRoom;
 using SocketIOClient;
 using SocketIOClient.Messages;
 using RestSharp;
+using PointGaming.Chat;
 
-namespace PointGaming.Chat
+namespace PointGaming
 {
     public delegate void ReceivedMessage(UserBase fromUser, string message);
 
 
 
-    public class ChatManager
+    public class SessionManager
     {
         public const string PrefixGameLobby = "Game_";
         public const string PrefixGameRoom = "GameRoom_";
@@ -24,11 +25,9 @@ namespace PointGaming.Chat
         public const string ReasonPasswordRequired = "password required";
 
         private UserDataManager _userData;
-        private ChatWindow _chatWindow;
-        private Dictionary<string, GameRoomWindow> _gameRoomWindowViews = new Dictionary<string, GameRoomWindow>();
-
-        private readonly Dictionary<string, ChatroomSession> _chatroomUsage = new Dictionary<string, ChatroomSession>();
-
+        private readonly Dictionary<PgUser, ChatSessionBase> _privateChats = new Dictionary<PgUser, ChatSessionBase>();
+        private readonly Dictionary<string, ChatroomSessionBase> _chatroomUsage = new Dictionary<string, ChatroomSessionBase>();
+        
         public void Init(UserDataManager userData)
         {
             _userData = userData;
@@ -59,81 +58,71 @@ namespace PointGaming.Chat
             ChatroomUserGetList();
         }
 
-        public ChatWindow ChatWindow
+        public void LeavePrivateChat(PgUser other)
         {
-            get
-            {
-                if (_chatWindow != null)
-                    return _chatWindow;
-
-                _chatWindow = new ChatWindow();
-                _chatWindow.Init(this);
-                _chatWindow.Show();
-                HomeWindow.Home.AddChildWindow(_chatWindow);
-                return _chatWindow;
-            }
+            _privateChats.Remove(other);
         }
 
-        public void ChatWindowClosed()
-        {
-            foreach (var item in _chatroomUsage.Values)
-            {
-                if (item.State == ChatroomState.Connected)
-                    Disconnect(item);
-            }
-
-            _chatWindow = null;
-            HomeWindow.Home.RemoveChildWindow(_chatWindow);
-
-            // Close any open game room windows when lobby closes
-            foreach (KeyValuePair<string, GameRoomWindow> kv in _gameRoomWindowViews)
-            {
-               kv.Value.Close();
-            }
-        }
         public void Leave(string id)
         {
-            ChatroomSession chatroomUsage;
-            if (_chatroomUsage.TryGetValue(id, out chatroomUsage))
+            ChatroomSessionBase session;
+            if (_chatroomUsage.TryGetValue(id, out session) && session.State == ChatroomState.Connected)
             {
-                Disconnect(chatroomUsage);
+                Disconnect(session);
             }
         }
-        private void Disconnect(ChatroomSession item)
+        private void Disconnect(ChatroomSessionBase item)
         {
             var id = item.ChatroomId;
             item.State = ChatroomState.Disconnected;
             ChatroomUserLeave(new Chatroom { _id = item.ChatroomId, });
+            _chatroomUsage.Remove(id);// 2013-07-29 Dean Gores: at one point I didn't remove them from here, I can't remember why now
         }
 
         #region private messages
         public void ChatWith(PgUser friend)
         {
-            var chatWindow = ChatWindow;
-            chatWindow.ChatWith(friend);
+            ChatSessionBase chatSession = GetOrCreatePrivateChatSession(friend);
+            chatSession.ShowControl(true);
         }
 
         private void OnPrivateMessageSent(IMessage message)
         {
             var received = message.Json.GetFirstArgAs<PrivateMessageSent>();
-            var chatWindow = ChatWindow;
-            chatWindow.MessageSent(received);
+            var toUser = _userData.GetPgUser(received.toUser);
+
+            ChatSessionBase chatSession = GetOrCreatePrivateChatSession(toUser);
+            chatSession.ChatMessages.Add(new ChatMessage(toUser, received.message));
         }
         private void OnPrivateMessageSendFailed(IMessage message)
         {
             var received = message.Json.GetFirstArgAs<PrivateMessageOut>();
-            var chatWindow = ChatWindow;
-            chatWindow.MessageSendFailed();
+            var toUser = _userData.GetPgUser(new UserBase { _id = received._id });
+            ChatSessionBase chatSession = GetOrCreatePrivateChatSession(toUser);
+            chatSession.OnSendMessageFailed(received.message);
         }
         private void OnPrivateMessageReceived(IMessage message)
         {
             var received = message.Json.GetFirstArgAs<PrivateMessageIn>();
-            var chatWindow = ChatWindow;
-            chatWindow.MessageReceived(received);
+            var fromUser = _userData.GetPgUser(received.fromUser);
+
+            ChatSessionBase chatSession = GetOrCreatePrivateChatSession(fromUser);
+            chatSession.ChatMessages.Add(new ChatMessage(fromUser, received.message));
         }
         public void SendMessage(PrivateMessageOut message)
         {
             _userData.PgSession.EmitLater("Message.send", message);
+        }
+        private ChatSessionBase GetOrCreatePrivateChatSession(PgUser user)
+        {
+            ChatSessionBase chat;
+            if (_privateChats.TryGetValue(user, out chat))
+                return chat;
+
+            var session = new PrivateChatSession(this, user);
+            _privateChats[user] = session;
+            session.ShowControl(false);
+            return session;
         }
         #endregion
 
@@ -146,15 +135,15 @@ namespace PointGaming.Chat
             string password = null;
             if (reason == ReasonInvalidPassword)
             {
-                GameRoom.PasswordDialog.Show(_chatWindow, "Join Failed", "Incorrect password.", out password);
+                GameRoom.PasswordDialog.Show(HomeWindow.Home, "Join Failed", "Incorrect password.", out password);
             }
             else if (reason == ReasonPasswordRequired)
             {
-                GameRoom.PasswordDialog.Show(_chatWindow, "Join Failed", "Password required.", out password);
+                GameRoom.PasswordDialog.Show(HomeWindow.Home, "Join Failed", "Password required.", out password);
             }
             else
             {
-                MessageDialog.Show(_chatWindow, "Join Failed", reason);
+                MessageDialog.Show(HomeWindow.Home, "Join Failed", reason);
             }
 
             if (password != null)
@@ -162,21 +151,23 @@ namespace PointGaming.Chat
                 JoinChatroom(received._id, password);
             }
         }
+
         private void OnChatroomUserList(IMessage message)
         {
             var received = message.Json.GetFirstArgAs<ChatroomUserList>();
             foreach (var id in received.chatrooms)
             {
-                ChatroomSession usage;
+                ChatroomSessionBase usage;
                 if (!_chatroomUsage.TryGetValue(id, out usage))
                     JoinChatroom(id);
             }
         }
+
         private void OnChatroomMemberList(IMessage message)
         {
             var received = message.Json.GetFirstArgAs<ChatroomMemberList>();
             var id = received._id;
-            ChatroomSession chatroomSession;
+            ChatroomSessionBase chatroomSession;
             if (!_chatroomUsage.TryGetValue(id, out chatroomSession))
                 return;
 
@@ -190,24 +181,13 @@ namespace PointGaming.Chat
                     chatroomSession.Membership.Add(pgUser);
             }
 
-            if (chatroomSession is GameRoomSession)
-            {
-                GameRoomWindow window;
-                if (_gameRoomWindowViews.TryGetValue(chatroomSession.ChatroomId, out window))
-                {
-                    window.Show();
-                }
-            }
-            else
-            {
-                ChatWindow.Show(chatroomSession);
-            }
+            chatroomSession.ShowControl(true);
         }
         private void OnChatroomMemberChange(IMessage message)
         {
             var received = message.Json.GetFirstArgAs<ChatroomMemberChange>();
             var id = received._id;
-            ChatroomSession usage;
+            ChatroomSessionBase usage;
             if (!_chatroomUsage.TryGetValue(id, out usage))
                 return;
 
@@ -225,13 +205,14 @@ namespace PointGaming.Chat
         {
             var received = message.Json.GetFirstArgAs<ChatroomMessageNew>();
             var id = received._id;
-            ChatroomSession usage;
-            if (!_chatroomUsage.TryGetValue(id, out usage))
+            ChatroomSessionBase session;
+            if (!_chatroomUsage.TryGetValue(id, out session))
                 return;
-            if (usage.State != ChatroomState.Connected)
+            if (session.State != ChatroomState.Connected)
                 return;
 
-            usage.OnMessageNew(received.fromUser, received.message);
+            var chatMessage = new ChatMessage(_userData.GetPgUser(received.fromUser), received.message);
+            session.ChatMessages.Add(chatMessage);
         }
         private void OnChatroomInviteNew(IMessage message)
         {
@@ -239,13 +220,12 @@ namespace PointGaming.Chat
             var id = received._id;
             if (_userData.IsFriend(received.fromUser._id))
             {
-                ChatroomSession usage;
-                if (!_chatroomUsage.TryGetValue(id, out usage)
-                    || usage.State == ChatroomState.Disconnected)
+                ChatroomSessionBase usage;
+                if (!_chatroomUsage.TryGetValue(id, out usage))
                 {
                     if (id.StartsWith(PrefixGameLobby) || id.StartsWith(PrefixGameRoom))
                     {
-                        ChatWindow.AddInvite(received);
+                        AddInvite(received);
                     }
                     else
                         JoinChatroom(id);
@@ -253,24 +233,44 @@ namespace PointGaming.Chat
             }
             else
             {
-                ChatWindow.AddInvite(received);
+                AddInvite(received);
             }
+        }
+
+        private RoomInviteTab _inviteTab = null;
+
+        public void AddInvite(ChatroomInviteNew invite)
+        {
+            if (_inviteTab == null)
+            {
+                _inviteTab = new RoomInviteTab();
+                _inviteTab.Closed += _inviteTab_Closed;
+                _inviteTab.ShowNormal(false);
+            }
+            _inviteTab.AddInvite(invite);
+            _inviteTab.FlashWindowSmartly();
+        }
+
+        void _inviteTab_Closed(object sender, EventArgs e)
+        {
+            _inviteTab = null;
         }
 
         public void JoinChatroom(string id, string password = null)
         {
-            ChatroomSession chatroomSession;
-            ChatWindow.Title = "Chat";
-
+            ChatroomSessionBase chatroomSession;
             if (_chatroomUsage.TryGetValue(id, out chatroomSession))
             {
-                if (chatroomSession.State == ChatroomState.Connected
-                    || chatroomSession.State == ChatroomState.New)
+                if (chatroomSession.State == ChatroomState.New)
+                    return;// we are already joining
+                else if (chatroomSession.State == ChatroomState.Connected)
                 {
-                    ChatWindow.Show(chatroomSession);
+                    chatroomSession.ShowControl(true);// show it
                     return;
                 }
+                // else state == invited, so join it
             }
+
             if (id.StartsWith(PrefixGameLobby))
             {
                 var gameId = id.Substring(PrefixGameLobby.Length);
@@ -281,35 +281,21 @@ namespace PointGaming.Chat
                     session.LoadGameRoomsComplete += session_LoadGameRoomsComplete;
                     session.LoadGameRooms();
                     chatroomSession = session;
-                    ChatWindow.Title = "Point Gaming Lobby";
                 }
             }
             else if (id.StartsWith(PrefixGameRoom))
             {
-                bool isFound = false;
                 var gameRoomId = id.Substring(PrefixGameRoom.Length);
-                foreach (var session in _chatroomUsage.Values)
-                {
-                    if (session is Lobby.LobbySession)
-                    {
-                        var lobbySession = (Lobby.LobbySession)session;
-                        Lobby.GameRoomItem gameRoomItem;
-                        if (lobbySession.GameRoomLookup.TryGetValue(gameRoomId, out gameRoomItem))
-                        {
-                            var grSession = new GameRoom.GameRoomSession(this, lobbySession, gameRoomItem);
-                            grSession.LoadMatch();
-                            chatroomSession = grSession;
-                            isFound = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!isFound)
+                Lobby.LobbySession lobbySession;
+                Lobby.GameRoomItem gameRoomItem;
+                if (!TryGetGameRoomAndSession(gameRoomId, out lobbySession, out gameRoomItem))
                 {
                     Lobby.LobbySession.LookupGameRoom(_userData, gameRoomId, JoinLobbyAndGameRoom);
                     return;
                 }
+
+                var gameRoomSession = new GameRoom.GameRoomSession(this, lobbySession, gameRoomItem);
+                chatroomSession = gameRoomSession;
             }
             else
                 chatroomSession = new ChatroomSession(this);
@@ -325,6 +311,25 @@ namespace PointGaming.Chat
                 : new ChatroomWithPassword { _id = id, password = password, };
             ChatroomUserJoin(joinChatroom);
             ChatroomMemberGetList(chatroom);
+        }
+        
+        private bool TryGetGameRoomAndSession(string id, out Lobby.LobbySession session, out Lobby.GameRoomItem room)
+        {
+            foreach (var chatSession in _chatroomUsage.Values)
+            {
+                if (chatSession is Lobby.LobbySession)
+                {
+                    session = chatSession as Lobby.LobbySession;
+                    if (session.GameRoomLookup.TryGetValue(id, out room))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            session = null;
+            room = null;
+            return false;
         }
 
         void session_LoadGameRoomsComplete(Lobby.LobbySession obj)
@@ -346,7 +351,7 @@ namespace PointGaming.Chat
 
         private void JoinLobbyAndGameRoom(Lobby.GameRoomItem room)
         {
-            ChatroomSession session;
+            ChatroomSessionBase session;
             if (_chatroomUsage.TryGetValue(PrefixGameLobby + room.GameId, out session))
             {
                 var lobbySession = (Lobby.LobbySession)session;
@@ -393,71 +398,9 @@ namespace PointGaming.Chat
 
         #region game room
 
-        private bool TryGetGameRoomAndSession(string id, out Lobby.LobbySession session, out Lobby.GameRoomItem room)
-        {
-            foreach (var chatSession in _chatroomUsage.Values)
-            {
-                if (chatSession is Lobby.LobbySession)
-                {
-                    session = chatSession as Lobby.LobbySession;
-                    if (session.GameRoomLookup.TryGetValue(id, out room))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            session = null;
-            room = null;
-            return false;
-        }
-
-        public void JoinGameRoom(string id)
-        {
-            Lobby.LobbySession session;
-            GameRoomWindow window;
-
-            if (_gameRoomWindowViews.TryGetValue(id, out window))
-            {
-                // game room window already open
-                window.Show();
-                return;
-            }
-
-            var gameRoomId = id.Substring(PrefixGameRoom.Length);
-            Lobby.GameRoomItem room;
-            if (!TryGetGameRoomAndSession(gameRoomId, out session, out room))
-            {
-                // game room data still needs to be retrieved from rest API
-                Lobby.LobbySession.LookupGameRoom(_userData, gameRoomId, JoinLobbyAndGameRoom);
-                return;
-            }
-
-            // start new game room session
-            var gameRoomSession = new GameRoom.GameRoomSession(this, session, room);
-            gameRoomSession.LoadMatch();
-            gameRoomSession.ChatroomId = id;
-            gameRoomSession.State = ChatroomState.New;
-
-            // create new game window (but only show after OnChatroomMemberList resolves)
-            GameRoomWindowModelView modelView = new GameRoomWindowModelView();
-            modelView.Init(this, gameRoomSession);
-            window = new GameRoomWindow();
-            window.DataContext = modelView;
-
-            // update lookups
-            _chatroomUsage.Add(id, gameRoomSession);
-            _gameRoomWindowViews.Add(id, window);
-
-            // connect
-            var chatroom = new Chatroom { _id = id };
-            ChatroomUserJoin(chatroom);
-            ChatroomMemberGetList(chatroom);
-        }
-
         public void AdminGameRoom(string id)
         {
-            ChatroomSession session;
+            ChatroomSessionBase session;
             if (_chatroomUsage.TryGetValue(id, out session))
             {
                 GameRoomSession gameRoomSession = session as GameRoomSession;
@@ -471,24 +414,14 @@ namespace PointGaming.Chat
             }
         }
 
-        public void GameRoomWindowClosed(string id)
-        {
-            ChatroomSession session;
-            if (_chatroomUsage.TryGetValue(id, out session)) {
-                if (session.State == ChatroomState.Connected)
-                    Disconnect(session);
-            }
-            _chatroomUsage.Remove(id);
-        }
-
         public void OpenBetting(string id)
         {
-            ChatroomSession session;
+            ChatroomSessionBase session;
             if (_chatroomUsage.TryGetValue(id, out session))
             {
                 GameRoomSession gameRoomSession = session as GameRoomSession;
                 var dialog = new BetProposalDialog();
-                dialog.Owner = _chatWindow;
+                dialog.Owner = gameRoomSession.Window;
                 dialog.SetMatch(gameRoomSession.MyMatch);
                 dialog.ShowDialog();
                 if (dialog.DialogResult == true)
@@ -500,10 +433,11 @@ namespace PointGaming.Chat
 
         public void ShowMessage(string id, string title, string message)
         {
-            GameRoomWindow window;
-            if (_gameRoomWindowViews.TryGetValue(id, out window))
+            ChatroomSessionBase session;
+            if (_chatroomUsage.TryGetValue(id, out session))
             {
-                MessageDialog.Show(window, title, message);
+                GameRoomSession gameRoomSession = session as GameRoomSession;
+                MessageDialog.Show(gameRoomSession.Window, title, message);
             }
         }
 
@@ -550,7 +484,7 @@ namespace PointGaming.Chat
             lobby = null;
 
             var lobbyId = PrefixGameLobby + gameId;
-            ChatroomSession usage;
+            ChatroomSessionBase usage;
             if (!_chatroomUsage.TryGetValue(lobbyId, out usage))
                 return false;
 
@@ -563,7 +497,7 @@ namespace PointGaming.Chat
             gameRoomSession = null;
 
             var usageId = PrefixGameRoom + gameRoomId;
-            ChatroomSession usage;
+            ChatroomSessionBase usage;
             if (!_chatroomUsage.TryGetValue(usageId, out usage))
                 return false;
 

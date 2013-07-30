@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="PointGaming.Lobby.LobbyTab"
+﻿<Window x:Class="PointGaming.Lobby.LobbyTab"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,9 +7,9 @@
              xmlns:Lobby="clr-namespace:PointGaming.Lobby;assembly="
              mc:Ignorable="d" 
              Name="lobbyTab" 
-             d:DesignHeight="400" d:DesignWidth="800" Loaded="UserControl_Loaded"
+             Height="500" Width="800" Loaded="UserControl_Loaded"
              AllowDrop="True" PreviewDrop="TabPreviewDrop" PreviewDragEnter="TabPreviewDragQuery"
-             PreviewDragOver="TabPreviewDragQuery" PreviewDragLeave="TabPreviewDragQuery">
+             PreviewDragOver="TabPreviewDragQuery" PreviewDragLeave="TabPreviewDragQuery" Closing="lobbyTab_Closing">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -186,4 +186,4 @@
             </ScrollViewer>
         </Grid>
     </Grid>
-</UserControl>
+</Window>

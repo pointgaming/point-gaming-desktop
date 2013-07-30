@@ -465,6 +465,12 @@ namespace PointGaming
             FlashWindowEx(ref info);
         }
 
+        public static void FlashWindowSmartly(this Window w)
+        {
+            if (!w.IsActive && Properties.Settings.Default.ShouldFlashChatWindow)
+                w.FlashWindow();
+        }
+
         public static void SetPointGamingDefaults(this FlowDocument doc)
         {
             doc.Background = System.Windows.Media.Brushes.White;
@@ -503,6 +509,23 @@ namespace PointGaming
             }
             plain = null;
             return false;
+        }
+
+
+        public static void ShowNormal(this Window window, bool shouldActivate)
+        {
+            window.Show();
+            if (window.WindowState == WindowState.Minimized)
+                window.WindowState = WindowState.Normal;
+
+            if (shouldActivate)
+            {
+                using (var d = window.Dispatcher.DisableProcessing())
+                {
+                    window.Visibility = Visibility.Hidden;
+                    window.Visibility = Visibility.Visible;
+                }
+            }
         }
     }
 }

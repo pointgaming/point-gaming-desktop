@@ -19,8 +19,10 @@ using PointGaming.Chat;
 
 namespace PointGaming.Lobby
 {
-    public partial class LobbyTab : UserControl, IWeakEventListener, IChatroomTab
+    public partial class LobbyTab : Window, IWeakEventListener
     {
+        public WindowTreeManager WindowTreeManager;
+
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyChanged(string propertyName)
         {
@@ -31,14 +33,10 @@ namespace PointGaming.Lobby
             changedCallback(this, args);
         }
 
-        private ChatWindow _chatWindow;
         private LobbySession _lobbySession;
         private UserDataManager _userData = HomeWindow.UserData;
         private AutoScroller _autoScroller;
         private ObservableCollection<PgUser> _groupedUsers;
-
-        public string Id { get { return _lobbySession.ChatroomId; } }
-        public string Header { get { return _lobbySession.GameInfo.DisplayName; } }
 
         public LobbyTab()
         {
@@ -47,6 +45,7 @@ namespace PointGaming.Lobby
             UpdateChatFont();
             _autoScroller = new AutoScroller(flowDocumentLog);
             PropertyChangedEventManager.AddListener(Properties.Settings.Default, this, "PropertyChanged");
+            WindowTreeManager = new WindowTreeManager(this, HomeWindow.Home.WindowTreeManager);
         }
 
         public bool ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
@@ -78,11 +77,11 @@ namespace PointGaming.Lobby
             flowDocumentLog.Document.FontSize = Properties.Settings.Default.ChatFontSize;
         }
 
-        public void Init(ChatWindow window, ChatroomSession lobbySession)
+        public void Init(LobbySession lobbySession)
         {
-            _chatWindow = window;
-            _lobbySession = (LobbySession)lobbySession;
-            _lobbySession.ReceivedMessage += ReceivedMessage;
+            _lobbySession = lobbySession;
+            Title = _lobbySession.GameInfo.DisplayName;
+
             InitGroupedMembers( _lobbySession );
             itemsControlGameRoomList.ItemsSource = _lobbySession.AllGameRooms;
             itemsControlJoinedGameRoomList.ItemsSource = _lobbySession.JoinedGameRooms;
@@ -90,9 +89,17 @@ namespace PointGaming.Lobby
             PropertyChangedEventManager.AddListener(_lobbySession.GameInfo, this, "PropertyChanged");
 
             _userData.LookupPendingBets(OnPendingBetsComplete);
+
+            _lobbySession.ChatMessages.CollectionChanged += ChatMessages_CollectionChanged;
         }
 
-        private void InitGroupedMembers(ChatroomSession lobbySession)
+        void ChatMessages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            foreach (ChatMessage item in e.NewItems)
+                AppendUserMessage(item.Author.Username, item.Message);
+        }
+
+        private void InitGroupedMembers(ChatroomSessionBase lobbySession)
         {
             _groupedUsers = new ObservableCollection<PgUser>();
             
@@ -141,12 +148,12 @@ namespace PointGaming.Lobby
 
         private void userContextMenuTaunt_Click(object sender, RoutedEventArgs e)
         {
-            MessageDialog.Show(_chatWindow, "Taunt User", "TODO: show taunt selection UI");
+            MessageDialog.Show(this, "Taunt User", "TODO: show taunt selection UI");
         }
 
         private void userContextMenuBlock_Click(object sender, RoutedEventArgs e)
         {
-            MessageDialog.Show(_chatWindow, "Block User", "TODO: ???");
+            MessageDialog.Show(this, "Block User", "TODO: ???");
         }
 
         private void userContextMenuMessage_Click(object sender, RoutedEventArgs e)
@@ -191,7 +198,7 @@ namespace PointGaming.Lobby
 
         private void reportMatchWinnerButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageDialog.Show(_chatWindow, "Report Match Winner", "TODO: get list of pending user bets from REST API");
+            MessageDialog.Show(this, "Report Match Winner", "TODO: get list of pending user bets from REST API");
         }
 
         private void OnRequestFriend(string errorMessage)
@@ -232,12 +239,7 @@ namespace PointGaming.Lobby
 
             _lobbySession.SendMessage(send);
         }
-
-        private void ReceivedMessage(UserBase fromUser, string message)
-        {
-            AppendUserMessage(fromUser.username, message);
-        }
-        
+                
         private void AppendUserMessage(string username, string message)
         {
             var time = DateTime.Now;
@@ -352,7 +354,7 @@ namespace PointGaming.Lobby
                 }
                 else
                 {
-                    _userData.JoinGameRoom(Chat.ChatManager.PrefixGameRoom + item.Id);
+                    _userData.JoinChat(SessionManager.PrefixGameRoom + item.Id);
                 }
             }
         }
@@ -368,7 +370,7 @@ namespace PointGaming.Lobby
 
         private void OnMyRoomCreated(string id)
         {
-            _userData.JoinGameRoom(Chat.ChatManager.PrefixGameRoom + id);
+            _userData.JoinChat(SessionManager.PrefixGameRoom + id);
         }
 
         private void GameRoomPanel_InfoClick(object sender, RoutedEventArgs e)
@@ -395,8 +397,13 @@ namespace PointGaming.Lobby
 
         private void itemsControlJoinedGameRoomList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            _userData.JoinChat(Chat.ChatManager.PrefixGameRoom + _joinedItemMouseOver.Id);
+            _userData.JoinChat(SessionManager.PrefixGameRoom + _joinedItemMouseOver.Id);
             _joinedItemMouseOver = null;
+        }
+
+        private void lobbyTab_Closing(object sender, CancelEventArgs e)
+        {
+            _lobbySession.Leave();
         }
     }
 }
