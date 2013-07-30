@@ -67,7 +67,7 @@ namespace PointGaming.POCO
 
         public override bool Equals(object obj)
         {
-            var other = obj as UserBase;
+            var other = obj as TeamBase;
             if (other == null)
                 return false;
             return _id == other._id;
