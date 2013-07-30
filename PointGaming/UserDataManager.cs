@@ -111,9 +111,8 @@ namespace PointGaming
                 Rank = userBase.rank,
                 Team = GetPgTeam(userBase.team)
             };
-
             _userLookup[userBase._id] = user;
-            // todo dean gores 2013-02-26: should probably look this user up so that real info can be shown
+            LookupUserData(userBase._id);
             return user;
         }
 
@@ -143,6 +142,30 @@ namespace PointGaming
             }
             info = null;
             return false;
+        }
+
+        public void LookupUserData(string userId)
+        {
+            RestResponse<UserBase> response = null;
+            PgSession.BeginAndCallback(delegate
+            {
+                var url = PgSession.GetWebAppFunction("/api/v1", "/users/" + userId + ".json");
+                var client = new RestClient(url);
+                var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+                response = (RestResponse<UserBase>)client.Execute<UserBase>(request);
+            }, delegate
+            {
+                if (response.IsOk())
+                {
+                    PgUser user;
+                    if (_userLookup.TryGetValue(userId, out user))
+                    {
+                        user.Rank = response.Data.rank;
+                        user.Username = response.Data.username;
+                        user.Points = response.Data.points;
+                    }
+                }
+            });
         }
 
         public void LookupBetOperand(string query, Action<List<BetOperandPoco>> callback)

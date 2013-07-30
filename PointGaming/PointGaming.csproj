@@ -149,16 +149,13 @@
     <Compile Include="BitcoinMiner\StratumHeaderBuilder.cs" />
     <Compile Include="BitcoinMiner\UInt256.cs" />
     <Compile Include="Chat\AutoScroller.cs" />
-    <Compile Include="Chat\ChatroomSessionBase.cs" />
-    <Compile Include="Chat\ChatSessionBase.cs" />
-    <Compile Include="Chat\PrivateChatSession.cs" />
-    <Compile Include="WindowTreeManager.cs" />
-    <Compile Include="SessionManager.cs" />
+    <Compile Include="Chat\ChatManager.cs" />
     <Compile Include="Chat\ChatroomSession.cs" />
     <Compile Include="Chat\ChatroomTab.xaml.cs">
       <DependentUpon>ChatroomTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="Chat\ChatTabCommon.cs" />
+    <Compile Include="Chat\ITabWithId.cs" />
     <Compile Include="Chat\RoomInviteTab.xaml.cs">
       <DependentUpon>RoomInviteTab.xaml</DependentUpon>
     </Compile>
@@ -245,7 +242,7 @@
       <DependentUpon>UserProfileTooltip.xaml</DependentUpon>
     </Compile>
     <Compile Include="WindowBoundsPersistor.cs" />
-    <Page Include="Chat\ChatWindowDeleteMe.xaml">
+    <Page Include="Chat\ChatWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -337,8 +334,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Chat\ChatWindowDeleteMe.xaml.cs">
-      <DependentUpon>ChatWindowDeleteMe.xaml</DependentUpon>
+    <Compile Include="Chat\ChatWindow.xaml.cs">
+      <DependentUpon>ChatWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Chat\ChatTab.xaml.cs">
       <DependentUpon>ChatTab.xaml</DependentUpon>
@@ -723,6 +720,13 @@
       <Project>{952E558B-6E94-49A5-BA50-EC50C044709C}</Project>
       <Name>Aviad.WPF.Controls</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\offline.png" />
+    <Resource Include="Resources\online.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\idle.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
