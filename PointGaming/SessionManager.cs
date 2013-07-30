@@ -92,7 +92,7 @@ namespace PointGaming
             var toUser = _userData.GetPgUser(received.toUser);
 
             ChatSessionBase chatSession = GetOrCreatePrivateChatSession(toUser);
-            chatSession.ChatMessages.Add(new ChatMessage(toUser, received.message));
+            chatSession.ChatMessages.Add(new ChatMessage(_userData.User, received.message));
         }
         private void OnPrivateMessageSendFailed(IMessage message)
         {
