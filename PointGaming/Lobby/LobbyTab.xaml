@@ -6,6 +6,7 @@
              xmlns:my="clr-namespace:PointGaming;assembly="
              xmlns:Lobby="clr-namespace:PointGaming.Lobby;assembly="
              mc:Ignorable="d" 
+             Icon="/PointGaming;component/PointGaming.ico"
              Name="lobbyTab" 
              Height="500" Width="800" Loaded="UserControl_Loaded"
              AllowDrop="True" PreviewDrop="TabPreviewDrop" PreviewDragEnter="TabPreviewDragQuery"

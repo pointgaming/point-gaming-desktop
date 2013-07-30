@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:my="clr-namespace:PointGaming"
              mc:Ignorable="d" 
+             Icon="/PointGaming;component/PointGaming.ico"
              Height="300" Width="500" Loaded="UserControl_Loaded"
              AllowDrop="True" PreviewDrop="TabPreviewDrop" PreviewDragEnter="TabPreviewDragQuery"
              PreviewDragOver="TabPreviewDragQuery" PreviewDragLeave="TabPreviewDragQuery" Title="Chatroom" Closing="Window_Closing" Activated="Window_Activated">

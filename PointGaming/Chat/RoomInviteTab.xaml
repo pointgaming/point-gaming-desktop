@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
+             Icon="/PointGaming;component/PointGaming.ico"
              Height="300" Width="500" Padding="5"
              Name="myUserControl" Title="Invites" Activated="myUserControl_Activated">
     <Grid>
