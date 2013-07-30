@@ -100,15 +100,17 @@ namespace PointGaming
         public void AddFriend(PgUser friend)
         {
             friend.IsFriend = true;
-            Friends.Add(friend);
-            _friendLookup[friend.Id] = friend;
-            _userLookup[friend.Id] = friend;
+            if (!_friendLookup.ContainsKey(friend.Id))
+            {
+                Friends.Add(friend);
+                _friendLookup[friend.Id] = friend;
+            }
         }
         public void RemoveFriend(PgUser friend)
         {
             friend.IsFriend = false;
-            Friends.Remove(friend);
-            _friendLookup.Remove(friend.Id);
+            if (_friendLookup.Remove(friend.Id))
+                Friends.Remove(friend);
         }
 
         public bool IsFriend(string id)

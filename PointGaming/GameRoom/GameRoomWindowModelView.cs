@@ -23,8 +23,16 @@ namespace PointGaming.GameRoom
         private GameRoom.GameRoomSession _session;
         private SessionManager _manager;
 
+        private ObservableCollection<PgUser> _groupedMembershipList = new ObservableCollection<PgUser>();
+        private ActiveGroupingCollectionView _groupedMembership;
+        public ActiveGroupingCollectionView Membership
+        {
+            get { return _groupedMembership; }
+        }
+
         public GameRoomWindowModelView()
         {
+            _groupedMembership = new ActiveGroupingCollectionView(_groupedMembershipList);
         }
 
         public void Init(SessionManager manager, GameRoom.GameRoomSession session)
@@ -140,11 +148,7 @@ namespace PointGaming.GameRoom
             get { return _session.RoomBets; }
         }
 
-        private ListCollectionView _groupedMembership = new ListCollectionView(new ObservableCollection<PgUser>());
-        public ListCollectionView Membership
-        {
-            get { return _groupedMembership; }
-        }
+        
 
         private void Membership_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -158,16 +162,15 @@ namespace PointGaming.GameRoom
                 botUser.Id = "mock";
                 botUser.Username = "dProductions";
                 botUser.Team = new PgTeam{ Name="Game Room Team Bot"};
-                _groupedMembership.AddNewItem(botUser);
+                _groupedMembershipList.Add(botUser);
             }
 
             // team groups
             foreach (PgUser user in _session.Membership)
             {
-                _groupedMembership.AddNewItem(user);
+                _groupedMembershipList.Add(user);
             }
 
-            _groupedMembership.CommitNew();
             _groupedMembership.GroupDescriptions.Add(new PropertyGroupDescription("GameRoomGroupName"));
             OnPropertyChanged("Membership");
         }

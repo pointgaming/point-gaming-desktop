@@ -37,8 +37,6 @@ namespace PointGaming.Lobby
         private LobbySession _lobbySession;
         private UserDataManager _userData = HomeWindow.UserData;
         private AutoScroller _autoScroller;
-        private DispatcherTimer _membershipViewRefresher;
-        System.ComponentModel.ICollectionView _membershipView;
 
         public LobbyWindow()
         {
@@ -93,16 +91,6 @@ namespace PointGaming.Lobby
             _userData.LookupPendingBets(OnPendingBetsComplete);
 
             _lobbySession.ChatMessages.CollectionChanged += ChatMessages_CollectionChanged;
-
-            _membershipViewRefresher = new DispatcherTimer();
-            _membershipViewRefresher.Interval = TimeSpan.FromSeconds(3);
-            _membershipViewRefresher.Tick += RefreshMembership;
-            _membershipViewRefresher.Start();
-        }
-
-        void RefreshMembership(object sender, EventArgs e)
-        {
-            _membershipView.Refresh();
         }
 
         void ChatMessages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -113,9 +101,9 @@ namespace PointGaming.Lobby
 
         private void InitGroupedMembers(ChatroomSessionBase lobbySession)
         {
-            _membershipView = CollectionViewSource.GetDefaultView(lobbySession.Membership);
-            _membershipView.GroupDescriptions.Add(new PropertyGroupDescription("LobbyGroupName"));
-            listBoxMembership.DataContext = _membershipView;
+            var membershipView = new ActiveGroupingCollectionView(lobbySession.Membership);
+            membershipView.GroupDescriptions.Add(new PropertyGroupDescription("LobbyGroupName"));
+            listBoxMembership.DataContext = membershipView;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)

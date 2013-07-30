@@ -140,6 +140,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ActiveGroupingCollectionView.cs" />
     <Compile Include="BitcoinMiner\CPUThreadMiner.cs" />
     <Compile Include="BitcoinMiner\Miner.cs" />
     <Compile Include="BitcoinMiner\Numerical.cs" />

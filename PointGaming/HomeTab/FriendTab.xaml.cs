@@ -208,22 +208,10 @@ namespace PointGaming.HomeTab
 
         private void AddOrUpdateFriend(UserWithStatus friend)
         {
-            PgUser old;
-            if (_userData.TryGetFriend(friend._id, out old))
-            {
-                old.Status = friend.status;
-                old.Username = friend.username;
-            }
-            else
-            {
-                var newFriend = new PgUser
-                {
-                    Username = friend.username,
-                    Status = friend.status,
-                    Id = friend._id,
-                };
-                _userData.AddFriend(newFriend);
-            }
+            var user = _userData.GetPgUser(friend);
+            user.Status = friend.status;
+            user.Username = friend.username;
+            _userData.AddFriend(user);
         }
 
         private void RemoveOldFriends(List<UserWithStatus> newFriends)
