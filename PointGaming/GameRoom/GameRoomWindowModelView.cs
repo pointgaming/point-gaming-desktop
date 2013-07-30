@@ -155,16 +155,6 @@ namespace PointGaming.GameRoom
             _groupedMembership.Refresh();
             _groupedMembership.GroupDescriptions.Clear();
 
-            // placeholder bot group; TODO: get bot(s) from socket API
-            if (_session.Membership.Count > 0)
-            {
-                PgUser botUser = new PgUser();
-                botUser.Id = "mock";
-                botUser.Username = "dProductions";
-                botUser.Team = new PgTeam{ Name="Game Room Team Bot"};
-                _groupedMembershipList.Add(botUser);
-            }
-
             // team groups
             foreach (PgUser user in _session.Membership)
             {

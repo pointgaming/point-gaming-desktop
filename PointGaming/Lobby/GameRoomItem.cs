@@ -250,6 +250,19 @@ namespace PointGaming.Lobby
             }
         }
 
+        private bool _isTeamBotPlaced;
+        public bool IsTeamBotPlaced
+        {
+            get { return _isTeamBotPlaced; }
+            set
+            {
+                if (value == _isTeamBotPlaced)
+                    return;
+                _isTeamBotPlaced = value;
+                NotifyChanged("IsTeamBotPlaced");
+            }
+        }
+
         private bool _isBetting;
         public bool IsBetting
         {
