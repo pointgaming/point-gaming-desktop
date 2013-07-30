@@ -89,10 +89,12 @@ namespace PointGaming.GameRoom
                 return;
 
             Bet bet = ToBet();
+            string offererChoice = bet.OffererChoice != null ? bet.OffererChoice.ShortDescription : "Unkown";
+            string takerChoice = bet.TakerChoice != null ? bet.TakerChoice.ShortDescription : "Unkown";
             string summaryFormat = "If {0} wins, you win {1:#,0}.\r\nIf {2} wins, you lose {3:#,0}.";
             textBoxSummary.Text = string.Format(summaryFormat,
-                bet.OffererChoice.ShortDescription, bet.OffererReward,
-                bet.TakerChoice.ShortDescription, bet.OffererWager);
+                offererChoice, bet.OffererReward,
+                takerChoice, bet.OffererWager);
         }
 
         public Bet ToBet()

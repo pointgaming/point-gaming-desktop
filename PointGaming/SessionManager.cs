@@ -430,6 +430,11 @@ namespace PointGaming
                 GameRoomAdminDialog dialog = new GameRoomAdminDialog();
                 dialog.DataContext = modelView;
                 dialog.ShowDialog();
+
+                if (dialog.DialogResult == true)
+                {
+                    modelView.UpdateGameRoomSettings();
+                }
             }
         }
 
@@ -441,7 +446,6 @@ namespace PointGaming
                 GameRoomSession gameRoomSession = session as GameRoomSession;
                 var dialog = new BetProposalDialog();
                 dialog.Owner = gameRoomSession.Window;
-                dialog.SetMatch(gameRoomSession.MyMatch);
                 dialog.ShowDialog();
                 if (dialog.DialogResult == true)
                 {
