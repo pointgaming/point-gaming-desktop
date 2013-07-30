@@ -86,13 +86,7 @@ namespace PointGaming.GameRoom
         public bool IsBetting
         {
             get { return _isBetting; }
-            set
-            {
-                if (value == _isBetting)
-                    return;
-                _isBetting = value;
-                OnPropertyChanged("IsBetting");
-            }
+            set { }
         }
 
         private string _bettingType;
@@ -128,7 +122,6 @@ namespace PointGaming.GameRoom
                 _id = _session.GameRoom.Id,
                 description = Description,
                 is_advertising = IsAdvertising,
-                betting = IsBetting,
                 password = Password,
                 bettingType = _bettingType
             };
