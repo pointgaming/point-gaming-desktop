@@ -128,7 +128,6 @@ namespace PointGaming.GameRoom
             }
         }
 
-        public ICommand WindowClosed { get { return new ActionCommand(UpdateGameRoomSettings); } }
         public void UpdateGameRoomSettings()
         {
             var poco = new
