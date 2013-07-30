@@ -216,8 +216,7 @@ namespace PointGaming.GameRoom
         {
             get
             {
-                return _session.GameRoom.IsBetting &&
-                       _session.MyMatch.State == MatchState.created;
+                return _session.MyMatch.State == MatchState.created;
             }
         }
 
