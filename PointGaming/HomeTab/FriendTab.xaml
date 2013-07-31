@@ -67,7 +67,7 @@
                 <DataGridTemplateColumn Header="Online" Width="55" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Image Height="50" Width="50" Source="{Binding Status, Converter={StaticResource onlineConverter}}" />
+                            <Image Height="25" Width="25" Source="{Binding Status, Converter={StaticResource onlineConverter}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
