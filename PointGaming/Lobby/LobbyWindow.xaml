@@ -97,7 +97,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="4" />
-                <RowDefinition Height="100" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <Button Grid.Row="0" Content="Report Match Winner" Height="75" Visibility="Collapsed" Name="reportMatchWinnerButton" Click="reportMatchWinnerButton_Click" />
@@ -173,20 +173,18 @@
                 </ListView.GroupStyle>
             </ListView>
 
-            <GridSplitter Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            <GridSplitter Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsEnabled="False" />
 
-            <ScrollViewer Grid.Row="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <ItemsControl Name="itemsControlJoinedGameRoomList">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Button Content="{Binding DisplayName}" Tag="{Binding}" Height="23" HorizontalAlignment="Stretch" Name="buttonTaskbar" VerticalAlignment="Top" Click="buttonTaskbar_Click" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                    <ItemsControl.ItemsSource>
-                        <Lobby:VsGameRoomItemCollection/>
-                    </ItemsControl.ItemsSource>
-                </ItemsControl>
-            </ScrollViewer>
+            <ItemsControl Grid.Row="4" Name="itemsControlJoinedGameRoomList">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding DisplayName}" Tag="{Binding}" Height="23" HorizontalAlignment="Stretch" Name="buttonTaskbar" VerticalAlignment="Top" Click="buttonTaskbar_Click" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsSource>
+                    <Lobby:VsGameRoomItemCollection/>
+                </ItemsControl.ItemsSource>
+            </ItemsControl>
         </Grid>
     </Grid>
 </Window>
