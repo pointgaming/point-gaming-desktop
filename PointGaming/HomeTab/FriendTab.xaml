@@ -26,12 +26,8 @@
         <DataGrid Grid.Row="0" AutoGenerateColumns="False" HorizontalAlignment="Stretch" Name="dataGridFriends" VerticalAlignment="Stretch"
                   ItemsSource="{Binding Friends}" SelectionMode="Single"
                   MouseDown="dataGridFriends_MouseDown" MouseDoubleClick="dataGridFriends_MouseDoubleClick"
-                  PreviewMouseLeftButtonDown="dataGridFriends_PreviewMouseLeftButtonDown"
-                  PreviewMouseLeftButtonUp="dataGridFriends_PreviewMouseLeftButtonUp"
-                  PreviewMouseMove="dataGridFriends_PreviewMouseMove"
                   CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="False" CanUserReorderColumns="False"
-                  CanUserSortColumns="False" CanUserResizeRows="False"
-                  AllowDrop="True" Drop="dataGridFriends_Drop" DragEnter="dataGridFriends_DragQuery" DragOver="dataGridFriends_DragQuery" DragLeave="dataGridFriends_DragQuery">
+                  CanUserSortColumns="False" CanUserResizeRows="False">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Player" Width="*" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>

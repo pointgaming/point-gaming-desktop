@@ -7,8 +7,7 @@
              mc:Ignorable="d" 
              Icon="/PointGaming;component/PointGaming.ico"
              Height="300" Width="500" Loaded="UserControl_Loaded"
-             AllowDrop="True" PreviewDrop="TabPreviewDrop" PreviewDragEnter="TabPreviewDragQuery"
-             PreviewDragOver="TabPreviewDragQuery" PreviewDragLeave="TabPreviewDragQuery" Title="Chatroom" Closing="Window_Closing" Activated="Window_Activated">
+             Title="Chatroom" Closing="Window_Closing" Activated="Window_Activated">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -43,10 +42,7 @@
 
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Name="gridSplitter1" VerticalAlignment="Stretch" Width="4" Margin="3,0,3,0" />
         
-        <ListBox Grid.Column="2" Name="listBoxMembership" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                     PreviewMouseLeftButtonDown="listBoxMembership_PreviewMouseLeftButtonDown"
-                     PreviewMouseLeftButtonUp="listBoxMembership_PreviewMouseLeftButtonUp"
-                     PreviewMouseMove="listBoxMembership_PreviewMouseMove">
+        <ListBox Grid.Column="2" Name="listBoxMembership" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <ListBox.Resources>
                 <DataTemplate DataType="{x:Type my:PgUser}">
                     <Label Content="{Binding Username}" MouseDoubleClick="Label_MouseDoubleClick" />

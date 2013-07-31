@@ -9,8 +9,7 @@
              Icon="/PointGaming;component/PointGaming.ico"
              Name="lobbyTab" 
              Height="500" Width="800" Loaded="UserControl_Loaded"
-             AllowDrop="True" PreviewDrop="TabPreviewDrop" PreviewDragEnter="TabPreviewDragQuery"
-             PreviewDragOver="TabPreviewDragQuery" PreviewDragLeave="TabPreviewDragQuery" Closing="lobbyTab_Closing">
+             Closing="lobbyTab_Closing">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -105,9 +104,7 @@
             <Label Grid.Row="1" Content="{Binding ElementName=lobbyTab, Path=MembershipCount, FallbackValue=Total (0)}" Height="28" HorizontalAlignment="Left" Name="labelMembershipTotal" VerticalAlignment="Top" />
             
             <ListView Grid.Row="2" Name="listBoxMembership" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding}"
-                     PreviewMouseLeftButtonDown="listBoxMembership_PreviewMouseLeftButtonDown"
-                     PreviewMouseLeftButtonUp="listBoxMembership_PreviewMouseLeftButtonUp"
-                     PreviewMouseMove="listBoxMembership_PreviewMouseMove" Margin="0,4,0,0" Grid.RowSpan="2">
+                     Margin="0,4,0,0" Grid.RowSpan="2">
 
                 <ListView.Resources>
                     <ContextMenu x:Key="UserMenu">

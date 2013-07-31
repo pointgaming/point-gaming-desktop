@@ -142,41 +142,6 @@ namespace PointGaming.Chat
             _autoScroller.PostAppend();
         }
 
-        #region drag & drop sink
-        private bool CanHandleDrop(DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(typeof(PgUser).FullName))
-            {
-                PgUser anotherUser = e.Data.GetData(typeof(PgUser).FullName) as PgUser;
-                if (anotherUser.Id != _otherUser.Id)
-                    return true;
-            }
-            return false;
-        }
-
-        private void TabPreviewDragQuery(object sender, DragEventArgs e)
-        {
-            e.Effects = DragDropEffects.None;
-            if (CanHandleDrop(e))
-            {
-                e.Effects = DragDropEffects.Link;
-                e.Handled = true;
-            }
-        }
-        private void TabPreviewDrop(object sender, DragEventArgs e)
-        {
-            if (!CanHandleDrop(e))
-                return;
-
-            if (e.Data.GetDataPresent(typeof(PgUser).FullName))
-            {
-                PgUser anotherUser = e.Data.GetData(typeof(PgUser).FullName) as PgUser;
-                HomeWindow.UserData.CreateChatroomWith(_otherUser, anotherUser);
-                e.Handled = true;
-            }
-        }
-        #endregion
-
         private void Window_Activated(object sender, EventArgs e)
         {
             this.StopFlashingWindow();
