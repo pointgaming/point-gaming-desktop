@@ -31,7 +31,7 @@
                   CanUserAddRows="False" CanUserDeleteRows="False"
                   AllowDrop="True" Drop="dataGridFriends_Drop" DragEnter="dataGridFriends_DragQuery" DragOver="dataGridFriends_DragQuery" DragLeave="dataGridFriends_DragQuery">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="User" Width="*" IsReadOnly="True">
+                <DataGridTemplateColumn Header="Player" Width="*" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Grid>
