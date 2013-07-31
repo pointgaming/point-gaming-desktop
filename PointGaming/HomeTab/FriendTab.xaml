@@ -12,6 +12,7 @@
     <UserControl.Resources>
         <my:OnlineConverter x:Key="onlineConverter" />
         <my:BoldNameConverter x:Key="boldNameConverter" />
+        <my:NullVisibilityConverter x:Key="nullVisConverter"/>
     </UserControl.Resources>
     
     <Grid>
@@ -61,13 +62,7 @@
                                         </MultiBinding>
                                     </TextBlock.FontWeight>
                                 </TextBlock>
-                                <ListBox Grid.Row="1" Grid.Column="1" Height="28" HorizontalAlignment="Stretch" Margin="0" Name="listBox1" VerticalAlignment="Top" ItemsSource="{Binding Path=(my:FriendTab.Lobbies)}" BorderThickness="0" >
-                                    <ListBox.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <StackPanel Orientation="Horizontal"/>
-                                        </ItemsPanelTemplate>
-                                    </ListBox.ItemsPanel>
-                                </ListBox>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Height="28" HorizontalAlignment="Stretch" Margin="0" Name="listBox1" VerticalAlignment="Top" Visibility="{Binding Path=Lobby, Converter={StaticResource nullVisConverter}}"><Run Text="In "/><Hyperlink Click="hyperLinkLobbyClick" Tag="{Binding}"><Run Text="{Binding Path=Lobby, Mode=OneWay}" /></Hyperlink><Run Text=" Lobby"/></TextBlock>
                             </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

@@ -345,6 +345,9 @@ namespace PointGaming
         {
             parent = default(T);
 
+            if (!(element is Visual))
+                return false;
+
             if (element != null)
                 element = VisualTreeHelper.GetParent(element);
 

@@ -153,18 +153,6 @@ namespace PointGaming.HomeTab
             }
         }
 
-
-        public static readonly DependencyProperty LobbiesProperty = DependencyProperty.RegisterAttached(
-            "Lobbies", typeof(ObservableCollection<LauncherInfo>), typeof(FriendTab));
-        public static void SetLobbies(DependencyObject element, ObservableCollection<LauncherInfo> value)
-        {
-            element.SetValue(LobbiesProperty, value);
-        }
-        public static ObservableCollection<LauncherInfo> GetLobbies(DependencyObject element)
-        {
-            return (ObservableCollection<LauncherInfo>)element.GetValue(LobbiesProperty);
-        }
-
         private void OnFriendLobbyChange(IMessage data)
         {
             try
@@ -178,10 +166,11 @@ namespace PointGaming.HomeTab
                 if (!HomeWindow.UserData.TryGetGame(game_id, out info))
                     throw new NotImplementedException("Game not found: " + game_id);
                 
-                var lobbies = GetLobbies(user);
+                var lobbies = user.Lobbies;
                 if (status == "joined")
                 {
-                    lobbies.Add(info);
+                    if (!lobbies.Contains(info))
+                        lobbies.Add(info);
                 }
                 else if (status == "left")
                 {
@@ -255,28 +244,36 @@ namespace PointGaming.HomeTab
             });
         }
 
+        private readonly Random _deleteMeLater = new Random();
+
         private void AddOrUpdateFriend(UserWithStatus friend, List<string> lobbies)
         {
             var user = _userData.GetPgUser(friend);
             user.Status = friend.status;
             user.Username = friend.username;
-            if (!_userData.IsFriend(user.Id))
-                SetLobbies(user, new ObservableCollection<LauncherInfo>());
             _userData.AddFriend(user);
 
             if (lobbies == null)
-                lobbies = new List<string>(new[] { _userData.Launchers[0].Id });
+            {
+                var count = _userData.Launchers.Count;
+                var index = _deleteMeLater.Next(count + 1);
+                if (index == count)
+                    lobbies = new List<string>();
+                else
+                    lobbies = new List<string>(new[] { _userData.Launchers[index].Id });
+            }
 
-            var list = GetLobbies(user);
+            var list = user.Lobbies;
             foreach (var game_id in lobbies)
             {
                 LauncherInfo info;
                 if (!HomeWindow.UserData.TryGetGame(game_id, out info))
                     throw new NotImplementedException("Game not found: " + game_id);
-                list.Add(info);
+                if (!list.Contains(info))
+                    list.Add(info);
             }
         }
-
+        
         private void RemoveOldFriends(List<UserWithLobbies> newFriends)
         {
             var newData = new Dictionary<string, PgUser>(newFriends.Count);
@@ -607,6 +604,15 @@ namespace PointGaming.HomeTab
             }
         }
         #endregion
+
+        private void hyperLinkLobbyClick(object sender, RoutedEventArgs e)
+        {
+            var hyperlink = sender as System.Windows.Documents.Hyperlink;
+            var user = hyperlink.Tag as PgUser;
+            var launcher = user.Lobby;
+            if (launcher != null)
+                _userData.JoinChat(SessionManager.PrefixGameLobby + launcher.Id);
+        }
     }
 
     #region converters
@@ -645,6 +651,21 @@ namespace PointGaming.HomeTab
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class NullVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null)
+                return Visibility.Collapsed;
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException();
         }

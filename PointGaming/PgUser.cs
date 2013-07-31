@@ -63,7 +63,7 @@ namespace PointGaming
         public string ShortDescription { get { return _name; } }
     }
 
-    public class PgUser : DependencyObject, IBetOperand
+    public class PgUser : IBetOperand
     {
         public string PocoType { get { return "User"; } }
         public event PropertyChangedEventHandler PropertyChanged;
@@ -79,7 +79,15 @@ namespace PointGaming
         /// <summary>
         /// Warning: you should probably be using UserDataManager.GetPgUser() so that only one PgUser is initalized per user._id
         /// </summary>
-        public PgUser() { }
+        public PgUser()
+        {
+            Lobbies.CollectionChanged += Lobbies_CollectionChanged;
+        }
+
+        void Lobbies_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            NotifyChanged("Lobby");
+        }
 
         private string _id;
         public string Id
@@ -282,6 +290,17 @@ namespace PointGaming
         {
             get { return Team != null; }
         }
+
+        public readonly ObservableCollection<HomeTab.LauncherInfo> _lobbies = new ObservableCollection<HomeTab.LauncherInfo>();
+        public ObservableCollection<HomeTab.LauncherInfo> Lobbies { get { return _lobbies; } }
+        public HomeTab.LauncherInfo Lobby
+        {
+            get
+            {
+                return Lobbies.Count == 0 ? null : Lobbies[0];
+            }
+        }
+
 
         public UserBase ToUserBase()
         {
