@@ -41,13 +41,10 @@ namespace PointGaming
         public UserDataManager(SocketSession session)
         {
             PgSession = session;
-            User = session.User;
-            _userLookup[User.Id] = User;
+            User = GetPgUser(session.User);
+            User.Status = "online";
             _sessionManager = new SessionManager();
             Friendship = new FriendshipManager(PgSession);
-
-            User.Status = "online";
-            LookupUserData(User.Id);
 
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(5);

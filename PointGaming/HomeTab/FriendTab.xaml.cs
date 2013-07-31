@@ -24,12 +24,41 @@ namespace PointGaming.HomeTab
         private static readonly List<string> ChatAvailableStatuses = new List<string>(new[] { FriendStatusOnline });
 
         private UserDataManager _userData = HomeWindow.UserData;
-        public ObservableCollection<PgUser> Friends { get { return _userData.Friends; } }
+        private ActiveGroupingCollectionView _FriendsView;
+        public ActiveGroupingCollectionView Friends
+        {
+            get
+            {
+                if (_FriendsView == null)
+                {
+                    _FriendsView = new ActiveGroupingCollectionView(_userData.Friends);
+                    _FriendsView.CustomSort = new FriendStatusComparer();
+                    _FriendsView.GroupDescriptions.Add(new PropertyGroupDescription("Status"));
+                }
+                return _FriendsView;
+            }
+        }
 
         public FriendTab()
         {
             InitializeComponent();
         }
+
+        private class FriendStatusComparer : System.Collections.IComparer
+        {
+            private static readonly string[] statuses = new [] { "online", "idle", "offline" };
+            public int Compare(object x, object y)
+            {
+                var a = x as PgUser;
+                var b = y as PgUser;
+                var aix = Array.IndexOf(statuses, a.Status);
+                var bix = Array.IndexOf(statuses, b.Status);
+                if (aix != bix)
+                    return aix.CompareTo(bix);
+                return a.Username.CompareTo(b.Username);
+            }
+        }
+
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             if (DesignerProperties.GetIsInDesignMode(this))
@@ -255,7 +284,7 @@ namespace PointGaming.HomeTab
                 newData.Add(item.username, null);
 
             var removes = new List<PgUser>();
-            foreach (var item in Friends)
+            foreach (var item in _userData.Friends)
                 if (!newData.ContainsKey(item.Username))
                     removes.Add(item);
             foreach (var item in removes)

@@ -928,8 +928,7 @@ namespace PointGaming
                 bool oldIsGrouping = this._isGrouping;
                 this._isGrouping = (this._groupDescriptions.Count != 0);
                 this.BuildItemsCollection();
-                if (!this.IsEmpty)
-                {
+                
                     if (this._sortDescriptions != null && this._sortDescriptions.Count != 0)
                     {
                         this.SortUsingComparer(new SortDescriptionCollectionComparer(this._sortDescriptions));
@@ -938,7 +937,7 @@ namespace PointGaming
                     {
                         this.SortUsingComparer(this.CustomSort);
                     }
-                }
+                
                 if (!this._isGrouping)
                 {
                     if (oldIsGrouping)

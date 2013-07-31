@@ -31,7 +31,7 @@ namespace PointGaming
         private Dictionary<int, Action<Action>> _threadQueuers = new Dictionary<int, Action<Action>>();
         private readonly List<CallbackAction> _workQueue = new List<CallbackAction>();
 
-        public PgUser User;
+        public UserBase User;
 
         public string GetWebAppFunction(string apiPath, string function, params string[] arguments)
         {
@@ -222,7 +222,7 @@ namespace PointGaming
                     isSuccess = false;
 
                     AuthToken = apiResponse.Data.auth_token;
-                    User = new PgUser {Id = apiResponse.Data._id, Username = username };
+                    User = new UserBase {_id = apiResponse.Data._id, username = username };
                     
                     ConnectSocket();
                     while (DateTime.Now < timeout && !_isAuthResponded)
@@ -266,9 +266,8 @@ namespace PointGaming
             }
 
             AuthToken = "";
-            User.Username = "";
-            User.Id = "";
-            User.Status = "";
+            User.username = "";
+            User._id = "";
 
             App.LogLine("Logged in session ended.");
         }
