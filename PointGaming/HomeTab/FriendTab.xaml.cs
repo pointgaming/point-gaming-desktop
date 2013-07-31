@@ -14,30 +14,6 @@ using SocketIOClient.Messages;
 
 namespace PointGaming.HomeTab
 {
-    public class OnlineConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            var assembly = typeof(LauncherInfo).Assembly;
-            var defaultUri = "pack://application:,,,/" + assembly.GetName().Name + ";component/Resources/";
-
-            if ((string)value == "online")
-                defaultUri += "online.png";
-            else if ((string)value == "idle")
-                defaultUri += "idle.png";
-            else
-                defaultUri += "offline.png";
-
-            var source = new ImageSourceConverter().ConvertFromString(defaultUri) as ImageSource;
-            return source;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     public partial class FriendTab : UserControl
     {
         private const string FriendStatusOffline = "offline";
@@ -540,6 +516,47 @@ namespace PointGaming.HomeTab
             }
         }
         #endregion
-
     }
+
+    #region converters
+    public class OnlineConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var assembly = typeof(LauncherInfo).Assembly;
+            var defaultUri = "pack://application:,,,/" + assembly.GetName().Name + ";component/Resources/";
+
+            if ((string)value == "online")
+                defaultUri += "online.png";
+            else if ((string)value == "idle")
+                defaultUri += "idle.png";
+            else
+                defaultUri += "offline.png";
+
+            var source = new ImageSourceConverter().ConvertFromString(defaultUri) as ImageSource;
+            return source;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class BoldNameConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((string)values[1] == "online")
+                return FontWeights.Bold;
+            else
+                return FontWeights.Normal;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    #endregion
 }

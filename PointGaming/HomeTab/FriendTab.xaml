@@ -10,6 +10,7 @@
     
     <UserControl.Resources>
         <my:OnlineConverter x:Key="onlineConverter" />
+        <my:BoldNameConverter x:Key="boldNameConverter" />
     </UserControl.Resources>
     
     <Grid>
@@ -34,7 +35,14 @@
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <Image Height="48" Width="48" HorizontalAlignment="Left" Margin="0,0,5,0" Stretch="Fill" VerticalAlignment="Center" Source="{Binding Avatar, Mode=OneWay}" />
-                                <TextBlock Height="16" HorizontalAlignment="Left" Margin="0" Text="{Binding Username}" VerticalAlignment="Center" Padding="0" />
+                                <TextBlock Height="16" Text="{Binding Username}" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Center" Padding="0">
+                                    <TextBlock.FontWeight>
+                                        <MultiBinding Converter="{StaticResource boldNameConverter}">
+                                            <Binding Path="Username" />
+                                            <Binding Path="Status" />
+                                        </MultiBinding>
+                                    </TextBlock.FontWeight>
+                                </TextBlock>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
