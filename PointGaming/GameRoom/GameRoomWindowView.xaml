@@ -5,7 +5,7 @@
         xmlns:pg="clr-namespace:PointGaming"
         Name="This"
         WindowStartupLocation="CenterOwner"
-        Title="GameRoom Chat" 
+        Title="{Binding DisplayName}" 
         Icon="/PointGaming;component/PointGaming.ico" 
         WindowStyle="SingleBorderWindow" 
         ShowInTaskbar="False"

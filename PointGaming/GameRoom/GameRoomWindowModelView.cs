@@ -78,6 +78,8 @@ namespace PointGaming.GameRoom
             SetMembershipCount();
         }
 
+        public string DisplayName { get { return _session.GameRoom.DisplayName; } }
+
         public string TeamAvatar
         {
             get { return "http://forums.pointgaming.com/assets/logo-3b643498dc7635d6ce4598843b5fcf0e.png"; }
