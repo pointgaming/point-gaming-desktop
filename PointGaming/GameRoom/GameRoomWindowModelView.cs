@@ -386,12 +386,6 @@ namespace PointGaming.GameRoom
             _manager.ShowMessage(_session.ChatroomId, "Change Team Only Requirement", "TODO: change chat's team only status in socket API");
         }
 
-        public ICommand CloseChat { get { return new ActionCommand(CloseChatRoom); } }
-        private void CloseChatRoom(object sender)
-        {
-            _manager.ShowMessage(_session.ChatroomId, "Close", "TODO: close chat somehow?");
-        }
-
         public ICommand CheckUserCanAdmin { get { return new ActionCommand(CheckCanAdmin); } }
         private void CheckCanAdmin(object sender)
         {

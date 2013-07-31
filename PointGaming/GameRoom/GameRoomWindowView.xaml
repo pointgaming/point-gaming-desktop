@@ -273,7 +273,6 @@
             <CheckBox Name="checkBoxMute" Grid.Column="0" Content="Mute" Height="16" Margin="3" IsChecked="{Binding IsChatMuted}" Command="{Binding ToggleChatMuted}" />
             <CheckBox Name="checkBoxMuteMicrophone" Grid.Column="1" Content="Mute Microphone" Height="16" Margin="3" IsChecked="{Binding IsMicMuted}" Command="{Binding ToggleChatMicMuted}" />
             <CheckBox Name="checkBoxTeamOnlyChat" Grid.Column="2" Content="Team-Only Chat" Height="16" Margin="3" IsChecked="{Binding IsTeamOnlyChat}" Command="{Binding ToggleTeamOnlyChat}" />
-            <Button Grid.Column="3" Name="CloseChatButton" Command="{Binding CloseChat}" Content="Close" Height="23" Margin="3" HorizontalAlignment="Right" Width="75" />
         </Grid>
 
 
