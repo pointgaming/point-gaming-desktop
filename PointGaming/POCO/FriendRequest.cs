@@ -13,4 +13,11 @@ namespace PointGaming.POCO
 	{
         public List<FriendRequest> friend_requests { get; set; }
 	}
+
+    public class FriendLobbyChange
+    {
+        public string game_id { get; set; }
+        public string user_id { get; set; }
+        public string status { get; set; }
+    }
 }

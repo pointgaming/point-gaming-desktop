@@ -47,6 +47,7 @@ namespace PointGaming
             Friendship = new FriendshipManager(PgSession);
 
             User.Status = "online";
+            LookupUserData(User.Id);
 
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(5);
@@ -88,7 +89,7 @@ namespace PointGaming
         public void LoggedOut()
         {
             _userLookup.Clear();
-            _friends.Clear();
+            Friends.Clear();
             _friendLookup.Clear();
 
             timer.Stop();
@@ -99,15 +100,18 @@ namespace PointGaming
 
         public void AddFriend(PgUser friend)
         {
-            _friends.Add(friend);
-            _friendLookup[friend.Id] = friend;
-            _userLookup[friend.Id] = friend;
+            friend.IsFriend = true;
+            if (!_friendLookup.ContainsKey(friend.Id))
+            {
+                Friends.Add(friend);
+                _friendLookup[friend.Id] = friend;
+            }
         }
         public void RemoveFriend(PgUser friend)
         {
-            _friends.Remove(friend);
-            _friendLookup.Remove(friend.Id);
-            _userLookup.Remove(friend.Id);
+            friend.IsFriend = false;
+            if (_friendLookup.Remove(friend.Id))
+                Friends.Remove(friend);
         }
 
         public bool IsFriend(string id)
@@ -185,6 +189,7 @@ namespace PointGaming
                         user.Rank = response.Data.rank;
                         user.Username = response.Data.username;
                         user.Points = response.Data.points;
+                        user.Team = GetPgTeam(response.Data.team);
                     }
                 }
             });

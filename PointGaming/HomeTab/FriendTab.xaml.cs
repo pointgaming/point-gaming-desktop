@@ -38,6 +38,7 @@ namespace PointGaming.HomeTab
             _userData.PgSession.OnThread("friend_status_changed", OnFriendStatusChanged);
             _userData.PgSession.OnThread("friend_request_created", OnFriendRequestCreated);
             _userData.PgSession.OnThread("friend_request_destroyed", OnFriendRequestDestroyed);
+            _userData.PgSession.OnThread("Friend.Lobby.change", OnFriendLobbyChange);
 
             GetFriends();
             GetFriendRequestsTo();
@@ -68,11 +69,14 @@ namespace PointGaming.HomeTab
         {
             PgUser friend;
             if (dataGridFriends.TryGetRowItem(e, out friend))
+                ChatWith(friend);
+        }
+
+        private void ChatWith(PgUser friend)
+        {
+            if (CanChatWith(friend))
             {
-                if (CanChatWith(friend))
-                {
-                    _userData.ChatWith(friend);
-                }
+                _userData.ChatWith(friend);
             }
         }
 
@@ -80,6 +84,19 @@ namespace PointGaming.HomeTab
         {
             var status = friend.Status;
             return ChatAvailableStatuses.Contains(status);
+        }
+
+        private void userContextMenuMessage_Click(object sender, RoutedEventArgs e)
+        {
+            PgUser friend = _rightClickedFriend;
+            ChatWith(friend);
+        }
+
+        private void userContextMenuViewProfile_Click(object sender, RoutedEventArgs e)
+        {
+            PgUser friend = _rightClickedFriend;
+            var url = Properties.Settings.Default.WebServerUrl + "/u/" + friend.Username + "/profile";
+            System.Diagnostics.Process.Start(url);
         }
 
         #region friend status
@@ -100,6 +117,49 @@ namespace PointGaming.HomeTab
                         FriendStatusChanged(friendStatus);
                         break;
                 }
+            }
+            catch (Exception ex)
+            {
+                App.LogLine(ex.Message);
+            }
+        }
+
+
+        public static readonly DependencyProperty LobbiesProperty = DependencyProperty.RegisterAttached(
+            "Lobbies", typeof(ObservableCollection<LauncherInfo>), typeof(FriendTab));
+        public static void SetLobbies(DependencyObject element, ObservableCollection<LauncherInfo> value)
+        {
+            element.SetValue(LobbiesProperty, value);
+        }
+        public static ObservableCollection<LauncherInfo> GetLobbies(DependencyObject element)
+        {
+            return (ObservableCollection<LauncherInfo>)element.GetValue(LobbiesProperty);
+        }
+
+        private void OnFriendLobbyChange(IMessage data)
+        {
+            try
+            {
+                var change = data.Json.GetFirstArgAs<FriendLobbyChange>();
+                var status = change.status;
+                var user = _userData.GetPgUser(new UserBase { _id = change.user_id });
+                var game_id = change.game_id;
+
+                LauncherInfo info;
+                if (!HomeWindow.UserData.TryGetGame(game_id, out info))
+                    throw new NotImplementedException("Game not found: " + game_id);
+                
+                var lobbies = GetLobbies(user);
+                if (status == "joined")
+                {
+                    lobbies.Add(info);
+                }
+                else if (status == "left")
+                {
+                    lobbies.Remove(info);
+                }
+                else
+                    throw new NotImplementedException("friend lobby change status = " + status);
             }
             catch (Exception ex)
             {
@@ -129,7 +189,7 @@ namespace PointGaming.HomeTab
             friend._id = friendStatus._id;
             friend.username = friendStatus.username;
             friend.status = FriendStatusOffline;
-            AddOrUpdateFriend(friend);
+            AddOrUpdateFriend(friend, friendStatus.lobbies);
 
             var todoList = new List<UIElement>();
             foreach (var item in stackPanelFriendRequestsFrom.Children)
@@ -161,32 +221,34 @@ namespace PointGaming.HomeTab
                     RemoveOldFriends(friends);
 
                     foreach (var item in friends)
-                        AddOrUpdateFriend(item);
+                        AddOrUpdateFriend(item, item.lobbies);
                 }
             });
         }
 
-        private void AddOrUpdateFriend(UserWithStatus friend)
+        private void AddOrUpdateFriend(UserWithStatus friend, List<string> lobbies)
         {
-            PgUser old;
-            if (_userData.TryGetFriend(friend._id, out old))
+            var user = _userData.GetPgUser(friend);
+            user.Status = friend.status;
+            user.Username = friend.username;
+            if (!_userData.IsFriend(user.Id))
+                SetLobbies(user, new ObservableCollection<LauncherInfo>());
+            _userData.AddFriend(user);
+
+            if (lobbies == null)
+                lobbies = new List<string>(new[] { _userData.Launchers[0].Id });
+
+            var list = GetLobbies(user);
+            foreach (var game_id in lobbies)
             {
-                old.Status = friend.status;
-                old.Username = friend.username;
-            }
-            else
-            {
-                var newFriend = new PgUser
-                {
-                    Username = friend.username,
-                    Status = friend.status,
-                    Id = friend._id,
-                };
-                _userData.AddFriend(newFriend);
+                LauncherInfo info;
+                if (!HomeWindow.UserData.TryGetGame(game_id, out info))
+                    throw new NotImplementedException("Game not found: " + game_id);
+                list.Add(info);
             }
         }
 
-        private void RemoveOldFriends(List<UserWithStatus> newFriends)
+        private void RemoveOldFriends(List<UserWithLobbies> newFriends)
         {
             var newData = new Dictionary<string, PgUser>(newFriends.Count);
             foreach (var item in newFriends)

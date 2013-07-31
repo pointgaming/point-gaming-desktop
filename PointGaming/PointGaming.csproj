@@ -140,6 +140,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ActiveGroupingCollectionView.cs" />
     <Compile Include="BitcoinMiner\CPUThreadMiner.cs" />
     <Compile Include="BitcoinMiner\Miner.cs" />
     <Compile Include="BitcoinMiner\Numerical.cs" />
@@ -321,10 +322,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="HomeTab\SettingsTab.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="HomeWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -350,9 +347,6 @@
     </Compile>
     <Compile Include="HomeTab\PaymentTab.xaml.cs">
       <DependentUpon>PaymentTab.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="HomeTab\SettingsTab.xaml.cs">
-      <DependentUpon>SettingsTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="HomeWindow.xaml.cs">
       <DependentUpon>HomeWindow.xaml</DependentUpon>

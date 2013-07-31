@@ -63,7 +63,7 @@ namespace PointGaming
         public string ShortDescription { get { return _name; } }
     }
 
-    public class PgUser : IBetOperand
+    public class PgUser : DependencyObject, IBetOperand
     {
         public string PocoType { get { return "User"; } }
         public event PropertyChangedEventHandler PropertyChanged;
@@ -105,6 +105,7 @@ namespace PointGaming
                 _username = value;
                 NotifyChanged("Username");
                 NotifyChanged("ShortDescription");
+                NotifyChanged("DisplayName");
             }
         }
 
@@ -118,18 +119,93 @@ namespace PointGaming
                     return;
                 _rank = value;
                 NotifyChanged("Rank");
+                NotifyChanged("IsAdmin");
+                NotifyChanged("LobbyGroupName");
+                NotifyChanged("DisplayName");
             }
         }
         public bool IsAdmin { 
             get { return !string.IsNullOrEmpty(Rank); } 
-        } 
+        }
+
+        private bool _isFriend;
+        public bool IsFriend
+        {
+            get { return _isFriend; }
+            set
+            {
+                if (value == _isFriend)
+                    return;
+                _isFriend = value;
+                NotifyChanged("IsFriend");
+                NotifyChanged("LobbyGroupName");
+            }
+        }
         
         public string DisplayName
         {
             get { return Rank != null ? Rank + Username : Username; }
         }
         public string ShortDescription { get { return _username; } }
-        public string GroupName { get; set; }
+
+        public string GameRoomGroupName
+        {
+            get
+            {
+                if (HasTeam)
+                    return TeamName;
+                return "Other (No Team)";
+            }
+        }
+        public string LobbyGroupName
+        {
+            get
+            {
+                if (IsAdmin)
+                    return "Admins";
+                if (IsFriend || HomeWindow.UserData.User == this)
+                    return "Friends";
+                return "Players";
+            }
+        }
+
+        private static readonly string[] LobbyGroupNames = new string[] { "Total", "Friends", "Admins", "Players", };
+        public static System.Collections.IComparer GetLobbyMemberSorter()
+        {
+            return new LobbyMemberSorter();
+        }
+        private class LobbyMemberSorter : System.Collections.IComparer
+        {
+            public int Compare(object x, object y)
+            {
+                PgUser a = x as PgUser;
+                PgUser b = y as PgUser;
+                if (a.LobbyGroupName == b.LobbyGroupName)
+                {
+                    return -1 * a.Points.CompareTo(b.Points);
+                }
+                var aix = Array.IndexOf(LobbyGroupNames, a.LobbyGroupName);
+                var bix = Array.IndexOf(LobbyGroupNames, b.LobbyGroupName);
+                return aix.CompareTo(bix);
+            }
+        }
+
+        public static System.Collections.IComparer GetGameRoomMemberSorter()
+        {
+            return new GameRoomMemberSorter();
+        }
+        private class GameRoomMemberSorter : System.Collections.IComparer
+        {
+            public int Compare(object x, object y)
+            {
+                PgUser a = x as PgUser;
+                PgUser b = y as PgUser;
+                var groupCmp = a.GameRoomGroupName.CompareTo(b.GameRoomGroupName);
+                if (groupCmp != 0)
+                    return groupCmp;
+                return -1 * a.Points.CompareTo(b.Points);
+            }
+        }
 
         private string _status;
         public string Status
@@ -179,8 +255,23 @@ namespace PointGaming
             {
                 if (value == _team)
                     return;
+                if (_team != null)
+                    _team.PropertyChanged -= _team_PropertyChanged;
                 _team = value;
                 NotifyChanged("Team");
+                NotifyChanged("TeamName");
+                NotifyChanged("HasTeam");
+                NotifyChanged("GameRoomGroupName");
+                if (_team != null)
+                    _team.PropertyChanged += _team_PropertyChanged;
+            }
+        }
+
+        void _team_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Name")
+            {
+                NotifyChanged("TeamName");
             }
         }
         public string TeamName
@@ -197,25 +288,9 @@ namespace PointGaming
             return new UserBase { _id = Id, username = Username, };
         }
 
-        public override bool Equals(object obj)
-        {
-            var other = obj as PgUser;
-            if (other == null)
-                return false;
-            return _id == other._id;
-        }
-        public override int GetHashCode()
-        {
-            return _id.GetHashCode();
-        }
         public override string ToString()
         {
             return Username;
-        }
-
-        public PgUser ShallowCopy()
-        {
-            return (PgUser)this.MemberwiseClone();
         }
     }
 

@@ -64,13 +64,6 @@ namespace PointGaming
 
             tab = new TabItem
             {
-                Header = "Settings",
-                Content = new HomeTab.SettingsTab(),
-            };
-            tabControlMain.Items.Add(tab);
-
-            tab = new TabItem
-            {
                 Header = "Debug",
                 Content = new HomeTab.DebugTab(),
             };
@@ -199,6 +192,12 @@ namespace PointGaming
             GlassExtender.ExtendGlassFrame(this, new Thickness(-1));
         }
 
+        private void LogOutClick(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.Password = "";
+            Properties.Settings.Default.Save();
+            LogOut(true, false);
+        }
     }
 
     public class GlassExtender

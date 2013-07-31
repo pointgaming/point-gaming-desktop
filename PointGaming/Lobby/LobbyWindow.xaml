@@ -94,6 +94,7 @@
         <Grid Grid.Column="2" Name="gridUserAndJoinedGameRoomLists">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="4" />
                 <RowDefinition Height="100" />
@@ -101,7 +102,9 @@
 
             <Button Grid.Row="0" Content="Report Match Winner" Height="75" Visibility="Collapsed" Name="reportMatchWinnerButton" Click="reportMatchWinnerButton_Click" />
 
-            <ListView Grid.Row="1" Name="listBoxMembership" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding}"
+            <Label Grid.Row="1" Content="{Binding ElementName=lobbyTab, Path=MembershipCount, FallbackValue=Total (0)}" Height="28" HorizontalAlignment="Left" Name="labelMembershipTotal" VerticalAlignment="Top" />
+            
+            <ListView Grid.Row="2" Name="listBoxMembership" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding}"
                      PreviewMouseLeftButtonDown="listBoxMembership_PreviewMouseLeftButtonDown"
                      PreviewMouseLeftButtonUp="listBoxMembership_PreviewMouseLeftButtonUp"
                      PreviewMouseMove="listBoxMembership_PreviewMouseMove" Margin="0,4,0,0" Grid.RowSpan="2">
@@ -170,10 +173,9 @@
                 </ListView.GroupStyle>
             </ListView>
 
-            <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            <GridSplitter Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 
-
-            <ScrollViewer Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer Grid.Row="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <ItemsControl Name="itemsControlJoinedGameRoomList" MouseDoubleClick="itemsControlJoinedGameRoomList_MouseDoubleClick">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>

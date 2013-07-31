@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:my="clr-namespace:PointGaming.HomeTab"
+             xmlns:root="clr-namespace:PointGaming"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding RelativeSource={RelativeSource Self}}" Loaded="UserControl_Loaded">
@@ -33,17 +34,33 @@
                 <DataGridTemplateColumn Header="User" Width="*" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Image Height="48" Width="48" HorizontalAlignment="Left" Margin="0,0,5,0" Stretch="Fill" VerticalAlignment="Center" Source="{Binding Avatar, Mode=OneWay}" />
-                                <TextBlock Height="16" Text="{Binding Username}" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Center" Padding="0">
-                                    <TextBlock.FontWeight>
-                                        <MultiBinding Converter="{StaticResource boldNameConverter}">
-                                            <Binding Path="Username" />
-                                            <Binding Path="Status" />
-                                        </MultiBinding>
-                                    </TextBlock.FontWeight>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Image Grid.RowSpan="2" Height="48" Width="48" HorizontalAlignment="Left" Margin="0,0,5,0" Stretch="Fill" VerticalAlignment="Center" Source="{Binding Avatar, Mode=OneWay}" />
+
+                                <TextBlock Grid.Row="0" Grid.Column="1" Height="16" HorizontalAlignment="Left" Margin="0" Text="{Binding Username}" VerticalAlignment="Center" Padding="0">
+                                        <TextBlock.FontWeight>
+                                            <MultiBinding Converter="{StaticResource boldNameConverter}">
+                                                <Binding Path="Username" />
+                                                <Binding Path="Status" />
+                                            </MultiBinding>
+                                        </TextBlock.FontWeight>
                                 </TextBlock>
-                            </StackPanel>
+                                <ListBox Grid.Row="1" Grid.Column="1" Height="28" HorizontalAlignment="Stretch" Margin="0" Name="listBox1" VerticalAlignment="Top" ItemsSource="{Binding Path=(my:FriendTab.Lobbies)}" BorderThickness="0" >
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+                                </ListBox>
+                            </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -58,6 +75,8 @@
 
             <DataGrid.Resources>
                 <ContextMenu x:Key="DataRowContextMenu">
+                    <MenuItem Header="Message" Click="userContextMenuMessage_Click" />
+                    <MenuItem Header="View Profile" Click="userContextMenuViewProfile_Click" />
                     <MenuItem Header="Unfriend" Click="UnfriendClick" />
                 </ContextMenu>
             </DataGrid.Resources>
@@ -65,6 +84,11 @@
             <DataGrid.RowStyle>
                 <Style TargetType="{x:Type DataGridRow}" x:Name="styleForDataRow">
                     <Setter Property="ContextMenu" Value="{StaticResource DataRowContextMenu}" />
+                    <Setter Property="ToolTip">
+                        <Setter.Value>
+                            <root:UserProfileTooltip UserProfile="{Binding}" />
+                        </Setter.Value>
+                    </Setter>
                 </Style>
             </DataGrid.RowStyle>
         </DataGrid>
@@ -87,6 +111,5 @@
             <TextBox Grid.Row="1" Grid.Column="1" Height="23" HorizontalAlignment="Stretch" Name="textBoxAddFriendUsername" VerticalAlignment="Center" PreviewKeyDown="textBoxAddFriendUsername_PreviewKeyDown" />
             <Button Grid.Row="1" Grid.Column="2" Content="Add Friend" Height="23" HorizontalAlignment="Left" Name="buttonAddFriend" VerticalAlignment="Center" Width="75" Margin="5,0,0,0" Click="buttonAddFriend_Click" />
         </Grid>
-        
     </Grid>
 </UserControl>

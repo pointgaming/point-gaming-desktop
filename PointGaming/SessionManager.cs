@@ -92,7 +92,7 @@ namespace PointGaming
             var toUser = _userData.GetPgUser(received.toUser);
 
             ChatSessionBase chatSession = GetOrCreatePrivateChatSession(toUser);
-            chatSession.ChatMessages.Add(new ChatMessage(toUser, received.message));
+            chatSession.ChatMessages.Add(new ChatMessage(_userData.User, received.message));
         }
         private void OnPrivateMessageSendFailed(IMessage message)
         {
@@ -430,6 +430,11 @@ namespace PointGaming
                 GameRoomAdminDialog dialog = new GameRoomAdminDialog();
                 dialog.DataContext = modelView;
                 dialog.ShowDialog();
+
+                if (dialog.DialogResult == true)
+                {
+                    modelView.UpdateGameRoomSettings();
+                }
             }
         }
 
@@ -441,7 +446,6 @@ namespace PointGaming
                 GameRoomSession gameRoomSession = session as GameRoomSession;
                 var dialog = new BetProposalDialog();
                 dialog.Owner = gameRoomSession.Window;
-                dialog.SetMatch(gameRoomSession.MyMatch);
                 dialog.ShowDialog();
                 if (dialog.DialogResult == true)
                 {

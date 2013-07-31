@@ -34,6 +34,7 @@ namespace PointGaming.GameRoom
             _description = _session.GameRoom.Description;
             _password = _session.GameRoom.Password;
             _isBetting = _session.GameRoom.IsBetting;
+            _isTeamBotPlaced = _session.GameRoom.IsTeamBotPlaced;
             _bettingType = _session.GameRoom.BettingType == null ? "1v1" : _session.GameRoom.BettingType;
             _isAdvertising = _session.GameRoom.IsAdvertising;
         }
@@ -102,6 +103,19 @@ namespace PointGaming.GameRoom
             }
         }
 
+        private bool _isTeamBotPlaced;
+        public bool IsTeamBotPlaced
+        {
+            get { return _isTeamBotPlaced; }
+            set
+            {
+                if (value == _isTeamBotPlaced)
+                    return;
+                _isTeamBotPlaced = value;
+                OnPropertyChanged("IsTeamBotPlaced");
+            }
+        }
+
         public bool IsOneOnOneBetting
         {
             get { return _bettingType == "1v1"; }
@@ -114,7 +128,6 @@ namespace PointGaming.GameRoom
             }
         }
 
-        public ICommand WindowClosed { get { return new ActionCommand(UpdateGameRoomSettings); } }
         public void UpdateGameRoomSettings()
         {
             var poco = new
@@ -126,6 +139,8 @@ namespace PointGaming.GameRoom
                 bettingType = _bettingType
             };
             _session.SetGameRoomSettings(poco);
+
+            // TODO: set team bot if bot assignment has changed.
         }
 
     }

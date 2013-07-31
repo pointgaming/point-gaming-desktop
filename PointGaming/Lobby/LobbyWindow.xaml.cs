@@ -10,6 +10,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -19,7 +20,7 @@ using PointGaming.Chat;
 
 namespace PointGaming.Lobby
 {
-    public partial class LobbyWindow : Window, IWeakEventListener
+    public partial class LobbyWindow : Window, IWeakEventListener, INotifyPropertyChanged
     {
         public WindowTreeManager WindowTreeManager;
 
@@ -36,7 +37,6 @@ namespace PointGaming.Lobby
         private LobbySession _lobbySession;
         private UserDataManager _userData = HomeWindow.UserData;
         private AutoScroller _autoScroller;
-        private ObservableCollection<PgUser> _groupedUsers;
 
         public LobbyWindow()
         {
@@ -46,6 +46,19 @@ namespace PointGaming.Lobby
             _autoScroller = new AutoScroller(flowDocumentLog);
             PropertyChangedEventManager.AddListener(Properties.Settings.Default, this, "PropertyChanged");
             WindowTreeManager = new WindowTreeManager(this, HomeWindow.Home.WindowTreeManager);
+        }
+
+        private string _MembershipCount = "Total (0)";
+        public string MembershipCount
+        {
+            get { return _MembershipCount; }
+            set
+            {
+                if (value == _MembershipCount)
+                    return;
+                _MembershipCount = value;
+                NotifyChanged("MembershipCount");
+            }
         }
 
         public bool ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
@@ -101,41 +114,19 @@ namespace PointGaming.Lobby
 
         private void InitGroupedMembers(ChatroomSessionBase lobbySession)
         {
-            _groupedUsers = new ObservableCollection<PgUser>();
-            
-            // players group
-            foreach (PgUser user in lobbySession.Membership)
-            {
-                PgUser groupedUser = user.ShallowCopy();
-                groupedUser.GroupName = "Players";
-                _groupedUsers.Add(groupedUser);
-            }
-
-            // admin group
-            foreach (PgUser user in lobbySession.Membership)
-            {
-                if (!user.IsAdmin) continue;
-
-                PgUser groupedUser = user.ShallowCopy();
-                groupedUser.GroupName = "Admin";
-                _groupedUsers.Add(groupedUser);
-            }
-
-            // friends group
-            foreach (PgUser user in lobbySession.Membership)
-            {
-                if (!_userData.IsFriend(user.Id)) continue;
-
-                PgUser groupedUser = user.ShallowCopy();
-                groupedUser.GroupName = "Friends";
-                _groupedUsers.Add(groupedUser);
-            }
-
-            System.ComponentModel.ICollectionView mv = CollectionViewSource.GetDefaultView(_groupedUsers);
-            mv.GroupDescriptions.Add(new PropertyGroupDescription("GroupName"));
-            listBoxMembership.DataContext = mv;
+            var membershipView = new ActiveGroupingCollectionView(lobbySession.Membership);
+            membershipView.CustomSort = PgUser.GetLobbyMemberSorter();
+            membershipView.GroupDescriptions.Add(new PropertyGroupDescription("LobbyGroupName"));
+            listBoxMembership.DataContext = membershipView;
+            lobbySession.Membership.CollectionChanged += Membership_CollectionChanged;
+            Membership_CollectionChanged(null, null);
         }
 
+        void Membership_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            MembershipCount = "Total (" + _lobbySession.Membership.Count + ")";
+        }
+        
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             textBoxInput.Focus();
