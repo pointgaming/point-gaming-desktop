@@ -11,6 +11,7 @@
     
     <UserControl.Resources>
         <my:OnlineConverter x:Key="onlineConverter" />
+        <my:BoldNameConverter x:Key="boldNameConverter" />
     </UserControl.Resources>
     
     <Grid>
@@ -30,7 +31,7 @@
                   CanUserAddRows="False" CanUserDeleteRows="False"
                   AllowDrop="True" Drop="dataGridFriends_Drop" DragEnter="dataGridFriends_DragQuery" DragOver="dataGridFriends_DragQuery" DragLeave="dataGridFriends_DragQuery">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="User" Width="*" IsReadOnly="True">
+                <DataGridTemplateColumn Header="Player" Width="*" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Grid>
@@ -43,8 +44,7 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
                                 <Image Grid.RowSpan="2" Height="48" Width="48" HorizontalAlignment="Left" Margin="0,0,5,0" Stretch="Fill" VerticalAlignment="Center" Source="{Binding Avatar, Mode=OneWay}" />
-
-                                <TextBlock Grid.Row="0" Grid.Column="1" Height="16" HorizontalAlignment="Left" Margin="0" Text="{Binding Username}" VerticalAlignment="Center" Padding="0" >
+                                <TextBlock Grid.Row="0" Grid.Column="1" Height="16" HorizontalAlignment="Left" Margin="0" Text="{Binding Username}" VerticalAlignment="Center" Padding="0">
                                     <TextBlock.Style>
                                         <Style TargetType="{x:Type TextBlock}" x:Name="styleForUsername">
                                             <Setter Property="ToolTip">
@@ -54,6 +54,12 @@
                                             </Setter>
                                         </Style>
                                     </TextBlock.Style>
+                                    <TextBlock.FontWeight>
+                                        <MultiBinding Converter="{StaticResource boldNameConverter}">
+                                            <Binding Path="Username" />
+                                            <Binding Path="Status" />
+                                        </MultiBinding>
+                                    </TextBlock.FontWeight>
                                 </TextBlock>
                                 <ListBox Grid.Row="1" Grid.Column="1" Height="28" HorizontalAlignment="Stretch" Margin="0" Name="listBox1" VerticalAlignment="Top" ItemsSource="{Binding Path=(my:FriendTab.Lobbies)}" BorderThickness="0" >
                                     <ListBox.ItemsPanel>
