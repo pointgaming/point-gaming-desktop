@@ -23,16 +23,12 @@ namespace PointGaming
         public static UserDataManager UserData;
 
         public WindowTreeManager WindowTreeManager;
-        private WindowBoundsPersistor _windowBoundsPersistor;
         private HomeTab.PaymentTab _paymentTab;
         
-
         public HomeWindow()
         {
             InitializeComponent();
             Home = this;
-            _windowBoundsPersistor = new HomeWindowBoundsPersistor(this);
-            _windowBoundsPersistor.Load();
             WindowTreeManager = new WindowTreeManager(this, null, false);
         }
 
@@ -153,7 +149,6 @@ namespace PointGaming
             }
 
             LogOut(false, true);
-            _windowBoundsPersistor.Save();
         }
         private void ExitClick(object sender, RoutedEventArgs e)
         {
@@ -161,31 +156,6 @@ namespace PointGaming
             Close();
         }
         private bool _allowClose = false;
-
-        private class HomeWindowBoundsPersistor : WindowBoundsPersistor
-        {
-            public HomeWindowBoundsPersistor(Window window) : base(window) { }
-
-            protected override Rect GetBounds(out string oldDesktopInfo)
-            {
-                var r = new Rect(
-                    Properties.Settings.Default.HomeWindowBoundsLeft,
-                    Properties.Settings.Default.HomeWindowBoundsTop,
-                    Properties.Settings.Default.HomeWindowBoundsWidth,
-                    Properties.Settings.Default.HomeWindowBoundsHeight
-                );
-                oldDesktopInfo = Properties.Settings.Default.HomeWindowBoundsDesktopInfo;
-                return r;
-            }
-            protected override void SetBounds(Rect r, string desktopInfo)
-            {
-                Properties.Settings.Default.HomeWindowBoundsLeft = r.Left;
-                Properties.Settings.Default.HomeWindowBoundsTop = r.Top;
-                Properties.Settings.Default.HomeWindowBoundsWidth = r.Width;
-                Properties.Settings.Default.HomeWindowBoundsHeight = r.Height;
-                Properties.Settings.Default.HomeWindowBoundsDesktopInfo = desktopInfo;
-            }
-        }
 
         private void homeWindow_SourceInitialized(object sender, EventArgs e)
         {
