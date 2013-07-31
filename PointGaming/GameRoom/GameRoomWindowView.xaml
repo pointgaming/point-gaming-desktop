@@ -10,8 +10,8 @@
         WindowStyle="SingleBorderWindow" 
         ShowInTaskbar="False"
         ResizeMode="CanResize"
-        Height="592" 
-        Width="900">
+        Width="850" Height="730" 
+        >
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closed">
             <i:InvokeCommandAction Command="{Binding WindowClosed}" />

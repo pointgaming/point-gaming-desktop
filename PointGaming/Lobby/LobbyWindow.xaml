@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              Icon="/PointGaming;component/PointGaming.ico"
              Name="lobbyTab" 
-             Height="500" Width="800" Loaded="UserControl_Loaded"
+             Width="1075" Height="760" Loaded="UserControl_Loaded"
              Closing="lobbyTab_Closing">
     <Grid>
         <Grid.ColumnDefinitions>

@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              Icon="/PointGaming;component/PointGaming.ico"
-             Height="300" Width="500" Loaded="UserControl_Loaded"
+             Width="500" Height="300" Loaded="UserControl_Loaded"
              Activated="Window_Activated" Closing="Window_Closing">
     <Grid>
         <Grid.RowDefinitions>
