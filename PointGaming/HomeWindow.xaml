@@ -18,6 +18,7 @@
 
             <tb:TaskbarIcon.Resources>
                 <ContextMenu x:Key="TrayIconContextMenu">
+                    <MenuItem Header="Open" Click="OpenClick" />
                     <MenuItem Header="Log Out" Click="LogOutClick" />
                     <MenuItem Header="Exit" Click="ExitClick" />
                 </ContextMenu>

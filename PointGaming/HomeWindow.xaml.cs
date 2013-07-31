@@ -198,6 +198,13 @@ namespace PointGaming
             Properties.Settings.Default.Save();
             LogOut(true, false);
         }
+
+        private void OpenClick(object sender, RoutedEventArgs e)
+        {
+            this.Show();
+            this.WindowState = WindowState.Normal;
+            this.Activate();
+        }
     }
 
     public class GlassExtender
