@@ -33,6 +33,15 @@ namespace PointGaming.GameRoom
             _lobbySession = lobbySession;
             GameRoom = gameRoom;
             _lobbySession.GameRoomJoining(this);
+            _lobbySession.DisplayToggled += _lobbySession_DisplayToggled;
+        }
+
+        void _lobbySession_DisplayToggled(Lobby.GameRoomItem obj)
+        {
+            if (_window.IsVisible)
+                _window.Hide();
+            else
+                ShowControl(true);
         }
 
         public override void ShowControl(bool shouldActivate)
@@ -92,6 +101,7 @@ namespace PointGaming.GameRoom
             {
                 _window.Close();
                 _window = null;
+                _lobbySession.DisplayToggled -= _lobbySession_DisplayToggled;
             }
         }
 

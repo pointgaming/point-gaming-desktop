@@ -29,6 +29,7 @@ namespace PointGaming.Lobby
         public ObservableCollection<GameRoomItem> JoinedGameRooms { get { return _joinedGameRooms; } }
 
         public event Action<LobbySession> LoadGameRoomsComplete;
+        public event Action<GameRoomItem> DisplayToggled;
 
         private LobbyWindow _window;
         public LobbyWindow Window { get { return _window; } }
@@ -78,6 +79,13 @@ namespace PointGaming.Lobby
                         call(this);
                 }
             });
+        }
+
+        public void ToggleDisplay(GameRoomItem item)
+        {
+            var call = DisplayToggled;
+            if (call != null)
+                call(item);
         }
         
         private void FillEmptyRooms()

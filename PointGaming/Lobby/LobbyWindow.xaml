@@ -176,10 +176,10 @@
             <GridSplitter Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 
             <ScrollViewer Grid.Row="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <ItemsControl Name="itemsControlJoinedGameRoomList" MouseDoubleClick="itemsControlJoinedGameRoomList_MouseDoubleClick">
+                <ItemsControl Name="itemsControlJoinedGameRoomList">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding DisplayName}" MouseEnter="TextBlock_MouseEnter" MouseLeave="TextBlock_MouseLeave" />
+                            <Button Content="{Binding DisplayName}" Tag="{Binding}" Height="23" HorizontalAlignment="Stretch" Name="buttonTaskbar" VerticalAlignment="Top" Click="buttonTaskbar_Click" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                     <ItemsControl.ItemsSource>

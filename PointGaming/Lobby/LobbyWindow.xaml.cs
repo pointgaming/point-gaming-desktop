@@ -373,27 +373,13 @@ namespace PointGaming.Lobby
             }
         }
 
-        private GameRoomItem _joinedItemMouseOver;
-        private void TextBlock_MouseEnter(object sender, MouseEventArgs e)
+        private void buttonTaskbar_Click(object sender, RoutedEventArgs e)
         {
-            GameRoomItem item;
-            if (((DependencyObject)sender).TryGetPresentedParent(out item))
-                _joinedItemMouseOver = item;
+            var button = sender as Button;
+            var item = button.Tag as GameRoomItem;
+            _lobbySession.ToggleDisplay(item);
         }
-
-        private void TextBlock_MouseLeave(object sender, MouseEventArgs e)
-        {
-            _joinedItemMouseOver = null;
-        }
-
-        private void itemsControlJoinedGameRoomList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (_joinedItemMouseOver == null)
-                return;
-            _userData.JoinChat(SessionManager.PrefixGameRoom + _joinedItemMouseOver.Id);
-            _joinedItemMouseOver = null;
-        }
-
+        
         private void lobbyTab_Closing(object sender, CancelEventArgs e)
         {
             _lobbySession.Leave();
