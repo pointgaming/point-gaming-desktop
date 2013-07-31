@@ -7,6 +7,11 @@ namespace PointGaming.POCO
 {
     public class FriendList
     {
-        public List<UserWithStatus> friends { get; set; }
+        public List<UserWithLobbies> friends { get; set; }
+    }
+
+    public class UserWithLobbies : UserWithStatus
+    {
+        public List<string> lobbies { get; set; }
     }
 }

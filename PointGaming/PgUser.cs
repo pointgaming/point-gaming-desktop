@@ -63,7 +63,7 @@ namespace PointGaming
         public string ShortDescription { get { return _name; } }
     }
 
-    public class PgUser : IBetOperand
+    public class PgUser : DependencyObject, IBetOperand
     {
         public string PocoType { get { return "User"; } }
         public event PropertyChangedEventHandler PropertyChanged;
@@ -288,17 +288,6 @@ namespace PointGaming
             return new UserBase { _id = Id, username = Username, };
         }
 
-        public override bool Equals(object obj)
-        {
-            var other = obj as PgUser;
-            if (other == null)
-                return false;
-            return _id == other._id;
-        }
-        public override int GetHashCode()
-        {
-            return _id.GetHashCode();
-        }
         public override string ToString()
         {
             return Username;

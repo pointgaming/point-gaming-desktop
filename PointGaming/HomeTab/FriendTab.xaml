@@ -35,7 +35,16 @@
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <Image Height="48" Width="48" HorizontalAlignment="Left" Margin="0,0,5,0" Stretch="Fill" VerticalAlignment="Center" Source="{Binding Avatar, Mode=OneWay}" />
-                                <TextBlock Height="16" HorizontalAlignment="Left" Margin="0" Text="{Binding Username}" VerticalAlignment="Center" Padding="0" />
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Height="16" HorizontalAlignment="Left" Margin="0" Text="{Binding Username}" VerticalAlignment="Center" Padding="0" />
+                                    <ListBox Height="28" HorizontalAlignment="Left" Margin="0" Name="listBox1" VerticalAlignment="Top" Width="200" ItemsSource="{Binding Path=(my:FriendTab.Lobbies)}" >
+                                        <ListBox.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Horizontal"/>
+                                            </ItemsPanelTemplate>
+                                        </ListBox.ItemsPanel>
+                                    </ListBox>
+                                </StackPanel>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -87,6 +96,5 @@
             <TextBox Grid.Row="1" Grid.Column="1" Height="23" HorizontalAlignment="Stretch" Name="textBoxAddFriendUsername" VerticalAlignment="Center" PreviewKeyDown="textBoxAddFriendUsername_PreviewKeyDown" />
             <Button Grid.Row="1" Grid.Column="2" Content="Add Friend" Height="23" HorizontalAlignment="Left" Name="buttonAddFriend" VerticalAlignment="Center" Width="75" Margin="5,0,0,0" Click="buttonAddFriend_Click" />
         </Grid>
-        
     </Grid>
 </UserControl>
