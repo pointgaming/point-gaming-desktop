@@ -17,7 +17,7 @@
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <Image Height="48" Width="48" HorizontalAlignment="Left" Margin="0,0,5,0" Stretch="Fill" VerticalAlignment="Center" Source="{Binding FileIcon, Mode=OneWay}" />
-                                <TextBlock Height="16" HorizontalAlignment="Left" Margin="0" Text="{Binding DisplayName}" VerticalAlignment="Center" Padding="0" />
+                                <TextBlock Height="16" HorizontalAlignment="Left" Margin="0" Text="{Binding DisplayName}" VerticalAlignment="Center" Padding="0" Foreground="Black" />
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -38,7 +38,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>-->
                 
-                <DataGridTextColumn Binding="{Binding PlayerCount}" Header="Players" Width="50" IsReadOnly="True" />
+                <DataGridTextColumn Binding="{Binding PlayerCount}" Header="Players" Width="50" Foreground="Black" IsReadOnly="True" />
             </DataGrid.Columns>
             
             <DataGrid.ContextMenu>
@@ -63,6 +63,7 @@
                     <MenuItem Header="Edit..." Click="EditLauncherClick" />
                     <MenuItem Header="Remove" Click="RemoveLauncherClick" />
                 </ContextMenu>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#F9F9F9" />
             </DataGrid.Resources>
 
             <DataGrid.RowStyle>
