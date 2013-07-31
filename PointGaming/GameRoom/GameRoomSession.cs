@@ -38,6 +38,8 @@ namespace PointGaming.GameRoom
 
         void _lobbySession_DisplayToggled(Lobby.GameRoomItem obj)
         {
+            if (obj != GameRoom)
+                return;
             if (_window.IsVisible)
                 _window.Hide();
             else
