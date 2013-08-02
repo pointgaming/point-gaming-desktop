@@ -24,41 +24,77 @@ namespace PointGaming.NAudio
         private IWavePlayer waveOut;
         private BufferedWaveProvider waveProvider;
         private INetworkChatCodec codec;
+        public System.Windows.Forms.Keys TriggerKey {get ; set;}
+
+        public int InputDeviceNumber { get; set; }
 
         public NAudioTest(INetworkChatCodec codec)
         {
             this.codec = codec;
+            TriggerKey = System.Windows.Forms.Keys.LControlKey;
+
+            App.KeyDown += App_KeyDown;
+            App.KeyUp += App_KeyUp;
+        }
+
+        public void Enable()
+        {
+            StartPlaying();
+        }
+        public void Disable()
+        {
+            StopPlaying();
+        }
+
+        private void StartPlaying()
+        {
+            if (waveOut != null)
+                return;
 
             waveOut = new WaveOut();
             waveProvider = new BufferedWaveProvider(codec.RecordFormat);
             waveOut.Init(waveProvider);
             waveOut.Play();
-
-            _maxSamplesAfterPickup = codec.RecordFormat.SampleRate / 3;
-            _samplesSincePickup = _maxSamplesAfterPickup;
         }
 
-        public void StartSending()
+        private void App_KeyUp(System.Windows.Forms.Keys obj)
+        {
+            if (waveOut == null)
+                return;
+
+            if (obj != TriggerKey)
+                return;
+
+            Console.WriteLine(TriggerKey + " up");
+            StopSending();
+        }
+
+        private void App_KeyDown(System.Windows.Forms.Keys obj)
+        {
+            if (waveOut == null)
+                return;
+
+            if (obj != TriggerKey)
+                return;
+
+            Console.WriteLine(TriggerKey + " down");
+            StartSending();
+        }
+
+        private void StartSending()
         {
             if (waveIn != null)
                 return;
 
-            //for (int n = 0; n < WaveIn.DeviceCount; n++)
-            //{
-            //    var capabilities = WaveIn.GetCapabilities(n);
-            //    this.comboBoxInputDevices.Items.Add(capabilities.ProductName);
-            //}
-            int inputDeviceNumber = 0;
-
             waveIn = new WaveIn();
             waveIn.BufferMilliseconds = 50;
-            waveIn.DeviceNumber = inputDeviceNumber;
+            waveIn.DeviceNumber = InputDeviceNumber;
             waveIn.WaveFormat = codec.RecordFormat;
             
             waveIn.DataAvailable += waveIn_DataAvailable;
             waveIn.StartRecording();
         }
-        public void StopSending()
+        private void StopSending()
         {
             if (waveIn == null)
                 return;
@@ -66,64 +102,46 @@ namespace PointGaming.NAudio
             waveIn.StopRecording();
             waveIn.Dispose();
             waveIn = null;
+            OnAudioRecorded(new byte[0]);
         }
 
         public void Dispose()
         {
             StopSending();
-
-            if (waveOut != null)
-            {
-                waveOut.Stop();
-                waveOut.Dispose();
-                waveOut = null;
-                codec.Dispose();// a bit naughty but we have designed the codecs to support multiple calls to Dispose, recreating their resources if Encode/Decode called again
-            }
+            StopPlaying();
         }
-        
+
+        private void StopPlaying()
+        {
+            if (waveOut == null)
+                return;
+            
+            waveOut.Stop();
+            waveOut.Dispose();
+            waveOut = null;
+        }
+
         public void AudioReceived(byte[] b)
         {
+            if (waveOut == null)
+                return;
+
             byte[] decoded = codec.Decode(b, 0, b.Length);
             waveProvider.AddSamples(decoded, 0, decoded.Length);
         }
 
-        private float _pickupAmplitude = 32767 / 4;
-        private bool _foundPickup = false;
-        private int _samplesSincePickup;
-        private int _maxSamplesAfterPickup;
-        
         private void waveIn_DataAvailable(object sender, WaveInEventArgs e)
         {
-            var isPickupLost = false;
+            byte[] encoded = codec.Encode(e.Buffer, 0, e.BytesRecorded);
 
-            var bytesRecorded = e.BytesRecorded;
-            for (int i = 0; i < bytesRecorded; i+= 2)
-            {
-                var b1 = (ushort)e.Buffer[i];
-                var b2 = (ushort)e.Buffer[i + 1];
-                var sample = (short)((b2 << 8) | b1);
-                var absSample = sample >= 0 ? sample : -sample;
+            OnAudioRecorded(encoded);
+        }
 
-                if (absSample >= _pickupAmplitude)
-                    _samplesSincePickup = 0;
-                else if (_samplesSincePickup < _maxSamplesAfterPickup)
-                {
-                    _samplesSincePickup++;
-                    if (_samplesSincePickup == _maxSamplesAfterPickup)
-                        isPickupLost = true;
-                }
-            }
-
-            var isPickup = _samplesSincePickup < _maxSamplesAfterPickup;
-
-            if (isPickupLost || isPickup)
-            {
-                byte[] encoded = codec.Encode(e.Buffer, 0, bytesRecorded);
-
-                var call = AudioRecorded;
-                if (call != null)
-                    call(this, encoded, !isPickup);
-            }
+        private void OnAudioRecorded(byte[] encoded)
+        {
+            var call = AudioRecorded;
+            if (call != null)
+                call(this, encoded, encoded.Length == 0);
         }
     }
 
