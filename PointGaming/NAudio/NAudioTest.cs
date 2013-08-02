@@ -37,6 +37,9 @@ namespace PointGaming.NAudio
 
         public void StartSending()
         {
+            if (waveIn != null)
+                return;
+
             //for (int n = 0; n < WaveIn.DeviceCount; n++)
             //{
             //    var capabilities = WaveIn.GetCapabilities(n);
@@ -54,6 +57,8 @@ namespace PointGaming.NAudio
         }
         public void StopSending()
         {
+            if (waveIn == null)
+                return;
             waveIn.DataAvailable -= waveIn_DataAvailable;
             waveIn.StopRecording();
             waveIn.Dispose();
@@ -62,10 +67,8 @@ namespace PointGaming.NAudio
 
         public void Dispose()
         {
-            if (waveIn != null)
-            {
-                StopSending();
-            }
+            StopSending();
+
             if (waveOut != null)
             {
                 waveOut.Stop();

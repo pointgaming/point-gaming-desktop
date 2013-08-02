@@ -200,5 +200,17 @@ namespace PointGaming.Chat
         {
             _nAudioTest.StopSending();
         }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.LeftCtrl)
+                _nAudioTest.StartSending();
+        }
+
+        private void Window_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.LeftCtrl)
+                _nAudioTest.StopSending();
+        }
     }
 }
