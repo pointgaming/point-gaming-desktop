@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using PointGaming.HomeTab;
 using PointGaming.POCO;
+using PointGaming.NAudio;
 
 namespace PointGaming.Chat
 {
@@ -34,6 +35,7 @@ namespace PointGaming.Chat
         private AutoScroller _autoScroller;
 
         private PrivateChatSession _session;
+        private NAudioTest _nAudioTest;
 
         public PrivateChatWindow()
         {
@@ -43,6 +45,15 @@ namespace PointGaming.Chat
             _autoScroller = new AutoScroller(flowDocumentLog);
             PropertyChangedEventManager.AddListener(Properties.Settings.Default, this, "PropertyChanged");
             WindowTreeManager = new WindowTreeManager(this, HomeWindow.Home.WindowTreeManager);
+
+            _nAudioTest = new NAudioTest(new WideBandSpeexCodec());
+            _nAudioTest.AudioRecorded += new AudioAvailable(_nAudioTest_AudioRecorded);
+        }
+
+        void _nAudioTest_AudioRecorded(NAudioTest source, byte[] data)
+        {
+            var b64 = Convert.ToBase64String(data);
+            _session.SendMessage("speex_" + b64);
         }
 
         public void Init(PrivateChatSession session, PgUser otherUser)
@@ -52,20 +63,31 @@ namespace PointGaming.Chat
             PropertyChangedEventManager.AddListener(_otherUser, this, "PropertyChanged");
             Title = otherUser.Username;
 
-            _session.ChatMessages.CollectionChanged += ChatMessages_CollectionChanged;
+            _session.ChatMessageReceived += ChatMessages_CollectionChanged;
             _session.SendMessageFailed += MessageSendFailed;
         }
 
-        void ChatMessages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void ChatMessages_CollectionChanged(ChatMessage item)
         {
+            bool hasText = false;
             bool allFromSelf = true;
-            foreach (ChatMessage item in e.NewItems)
+            
+            var user = item.Author;
+            var message = item.Message;
+
+            if (message.StartsWith("speex_"))
             {
-                AppendUserMessage(item.Author.Username, item.Message);
+                HandleAudio(user, message);
+            }
+            else
+            {
+                AppendUserMessage(user, message);
                 if (item.Author != _userData.User)
                     allFromSelf = false;
+                hasText = true;
             }
-            if (!allFromSelf)
+            
+            if (hasText && !allFromSelf)
                 this.FlashWindowSmartly();
         }
 
@@ -125,7 +147,7 @@ namespace PointGaming.Chat
             _session.SendMessage(send);
         }
         
-        private void AppendUserMessage(string username, string message)
+        private void AppendUserMessage(PgUser user, string message)
         {
             var time = DateTime.Now;
 
@@ -135,11 +157,21 @@ namespace PointGaming.Chat
 
             var p = new Paragraph();
             p.Inlines.Add(new Run(timeString + " "));
-            p.Inlines.Add(new Bold(new Run(username + ": ")));
+            p.Inlines.Add(new Bold(new Run(user.Username + ": ")));
             ChatCommon.Format(message, p.Inlines);
             flowDocumentLog.Document.Blocks.Add(p);
 
             _autoScroller.PostAppend();
+        }
+
+        private void HandleAudio(PgUser user, string message)
+        {
+            if (user == _userData.User)
+                return;
+
+            message = message.Substring("speex_".Length);
+            var data = Convert.FromBase64String(message);
+            _nAudioTest.AudioReceived(data);
         }
 
         private void Window_Activated(object sender, EventArgs e)
@@ -151,11 +183,22 @@ namespace PointGaming.Chat
         {
             _session.SendMessageFailed -= MessageSendFailed;
             _session.Leave();
+            _nAudioTest.Dispose();
         }
 
         public void MessageSendFailed(string message)
         {
             MessageDialog.Show(this, "Failed to Send Message", "Failed to send message.  User is not online or doesn't exist.");
+        }
+
+        private void buttonSendAudio_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            _nAudioTest.StartSending();
+        }
+
+        private void buttonSendAudio_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            _nAudioTest.StopSending();
         }
     }
 }

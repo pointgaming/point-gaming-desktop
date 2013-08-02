@@ -25,7 +25,7 @@ namespace PointGaming.Chat
     public abstract class ChatSessionBase
     {
         public event Action<string> SendMessageFailed;
-        public readonly ObservableCollection<ChatMessage> ChatMessages = new ObservableCollection<ChatMessage>();
+        public event Action<ChatMessage> ChatMessageReceived;
 
         protected readonly SessionManager _manager;
 
@@ -38,6 +38,13 @@ namespace PointGaming.Chat
             var func = SendMessageFailed;
             if (func != null)
                 func(message);
+        }
+
+        internal void OnChatMessageReceived(ChatMessage message)
+        {
+            var call = ChatMessageReceived;
+            if (call != null)
+                call(message);
         }
     }
 }

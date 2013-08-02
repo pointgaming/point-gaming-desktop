@@ -64,7 +64,7 @@ namespace PointGaming.Chat
             _chatroomSession = roomManager;
             listBoxMembership.ItemsSource = _chatroomSession.Membership;
             Title = roomManager.ChatroomId;
-            _chatroomSession.ChatMessages.CollectionChanged += ChatMessages_CollectionChanged;
+            _chatroomSession.ChatMessageReceived += ChatMessages_CollectionChanged;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -100,15 +100,14 @@ namespace PointGaming.Chat
         }
 
 
-        void ChatMessages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void ChatMessages_CollectionChanged(ChatMessage item)
         {
             bool allFromSelf = true;
-            foreach (ChatMessage item in e.NewItems)
-            {
-                AppendUserMessage(item.Author.Username, item.Message);
-                if (item.Author != _userData.User)
-                    allFromSelf = false;
-            }
+            
+            AppendUserMessage(item.Author.Username, item.Message);
+            if (item.Author != _userData.User)
+                allFromSelf = false;
+            
             if (!allFromSelf)
                 this.FlashWindowSmartly();
         }
