@@ -28,6 +28,8 @@ namespace PointGaming.NAudio
 
         public int InputDeviceNumber { get; set; }
 
+        private object _startStopSynch = new object();
+
         public NAudioTest(INetworkChatCodec codec)
         {
             this.codec = codec;
@@ -44,17 +46,7 @@ namespace PointGaming.NAudio
         public void Disable()
         {
             StopPlaying();
-        }
-
-        private void StartPlaying()
-        {
-            if (waveOut != null)
-                return;
-
-            waveOut = new WaveOut();
-            waveProvider = new BufferedWaveProvider(codec.RecordFormat);
-            waveOut.Init(waveProvider);
-            waveOut.Play();
+            StopSending();
         }
 
         private void App_KeyUp(System.Windows.Forms.Keys obj)
@@ -65,7 +57,6 @@ namespace PointGaming.NAudio
             if (obj != TriggerKey)
                 return;
 
-            Console.WriteLine(TriggerKey + " up");
             StopSending();
         }
 
@@ -77,63 +68,79 @@ namespace PointGaming.NAudio
             if (obj != TriggerKey)
                 return;
 
-            Console.WriteLine(TriggerKey + " down");
             StartSending();
         }
 
         private void StartSending()
         {
-            if (waveIn != null)
-                return;
+            lock (_startStopSynch)
+            {
+                if (waveIn != null)
+                    return;
 
-            waveIn = new WaveIn();
-            waveIn.BufferMilliseconds = 50;
-            waveIn.DeviceNumber = InputDeviceNumber;
-            waveIn.WaveFormat = codec.RecordFormat;
-            
-            waveIn.DataAvailable += waveIn_DataAvailable;
-            waveIn.StartRecording();
+                waveIn = new WaveIn();
+                waveIn.BufferMilliseconds = 50;
+                waveIn.DeviceNumber = InputDeviceNumber;
+                waveIn.WaveFormat = codec.RecordFormat;
+
+                waveIn.DataAvailable += waveIn_DataAvailable;
+                waveIn.StartRecording();
+            }
         }
         private void StopSending()
         {
-            if (waveIn == null)
-                return;
-            waveIn.DataAvailable -= waveIn_DataAvailable;
-            waveIn.StopRecording();
-            waveIn.Dispose();
-            waveIn = null;
-            OnAudioRecorded(new byte[0]);
+            lock (_startStopSynch)
+            {
+                if (waveIn == null)
+                    return;
+                waveIn.DataAvailable -= waveIn_DataAvailable;
+                waveIn.StopRecording();
+                waveIn.Dispose();
+                waveIn = null;
+                OnAudioRecorded(new byte[0]);
+            }
         }
 
-        public void Dispose()
+        private void StartPlaying()
         {
-            StopSending();
-            StopPlaying();
-        }
+            lock (_startStopSynch)
+            {
+                if (waveOut != null)
+                    return;
 
+                waveOut = new WaveOut();
+                waveProvider = new BufferedWaveProvider(codec.RecordFormat);
+                waveOut.Init(waveProvider);
+                waveOut.Play();
+            }
+        }
         private void StopPlaying()
         {
-            if (waveOut == null)
-                return;
-            
-            waveOut.Stop();
-            waveOut.Dispose();
-            waveOut = null;
+            lock (_startStopSynch)
+            {
+                if (waveOut == null)
+                    return;
+
+                waveOut.Stop();
+                waveOut.Dispose();
+                waveOut = null;
+            }
         }
 
         public void AudioReceived(byte[] b)
         {
-            if (waveOut == null)
-                return;
-
             byte[] decoded = codec.Decode(b, 0, b.Length);
-            waveProvider.AddSamples(decoded, 0, decoded.Length);
+            lock (_startStopSynch)
+            {
+                if (waveOut == null)
+                    return;
+                waveProvider.AddSamples(decoded, 0, decoded.Length);
+            }
         }
 
         private void waveIn_DataAvailable(object sender, WaveInEventArgs e)
         {
             byte[] encoded = codec.Encode(e.Buffer, 0, e.BytesRecorded);
-
             OnAudioRecorded(encoded);
         }
 
@@ -142,6 +149,12 @@ namespace PointGaming.NAudio
             var call = AudioRecorded;
             if (call != null)
                 call(this, encoded, encoded.Length == 0);
+        }
+
+        public void Dispose()
+        {
+            StopSending();
+            StopPlaying();
         }
     }
 
