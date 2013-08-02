@@ -47,13 +47,17 @@ namespace PointGaming.Chat
             WindowTreeManager = new WindowTreeManager(this, HomeWindow.Home.WindowTreeManager);
 
             _nAudioTest = new NAudioTest(new WideBandSpeexCodec());
-            _nAudioTest.AudioRecorded += new AudioAvailable(_nAudioTest_AudioRecorded);
+            _nAudioTest.AudioRecorded += _nAudioTest_AudioRecorded;
+            _nAudioTest.StartSending();
         }
 
-        void _nAudioTest_AudioRecorded(NAudioTest source, byte[] data)
+
+        void _nAudioTest_AudioRecorded(NAudioTest source, byte[] data, bool isLast)
         {
             var b64 = Convert.ToBase64String(data);
             _session.SendMessage("speex_" + b64);
+            if (isLast)
+                _session.SendMessage("speex_=");
         }
 
         public void Init(PrivateChatSession session, PgUser otherUser)
@@ -166,12 +170,27 @@ namespace PointGaming.Chat
 
         private void HandleAudio(PgUser user, string message)
         {
-            if (user == _userData.User)
-                return;
-
             message = message.Substring("speex_".Length);
-            var data = Convert.FromBase64String(message);
-            _nAudioTest.AudioReceived(data);
+            bool isEnd = message == "=";
+
+            if (user == _userData.User)
+            {
+                if (isEnd)
+                    radioButtonTransmit.IsChecked = false;
+                else
+                    radioButtonTransmit.IsChecked = true;
+            }
+            else
+            {
+                if (isEnd)
+                    radioButtonReceive.IsChecked = false;
+                else
+                {
+                    radioButtonReceive.IsChecked = true;
+                    var data = Convert.FromBase64String(message);
+                    _nAudioTest.AudioReceived(data);
+                }
+            }
         }
 
         private void Window_Activated(object sender, EventArgs e)
@@ -191,26 +210,14 @@ namespace PointGaming.Chat
             MessageDialog.Show(this, "Failed to Send Message", "Failed to send message.  User is not online or doesn't exist.");
         }
 
-        private void buttonSendAudio_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        private void checkboxEnableMic_Checked(object sender, RoutedEventArgs e)
         {
             _nAudioTest.StartSending();
         }
 
-        private void buttonSendAudio_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        private void checkboxEnableMic_Unchecked(object sender, RoutedEventArgs e)
         {
             _nAudioTest.StopSending();
-        }
-
-        private void Window_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.LeftCtrl)
-                _nAudioTest.StartSending();
-        }
-
-        private void Window_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.LeftCtrl)
-                _nAudioTest.StopSending();
         }
     }
 }

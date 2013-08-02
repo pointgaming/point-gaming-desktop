@@ -14,7 +14,7 @@ using System.Diagnostics;
 
 namespace PointGaming.NAudio
 {
-    public delegate void AudioAvailable(NAudioTest source, byte[] data);
+    public delegate void AudioAvailable(NAudioTest source, byte[] data, bool isLast);
 
     public partial class NAudioTest : IDisposable
     {
@@ -33,6 +33,9 @@ namespace PointGaming.NAudio
             waveProvider = new BufferedWaveProvider(codec.RecordFormat);
             waveOut.Init(waveProvider);
             waveOut.Play();
+
+            _maxSamplesAfterPickup = codec.RecordFormat.SampleRate / 3;
+            _samplesSincePickup = _maxSamplesAfterPickup;
         }
 
         public void StartSending()
@@ -83,14 +86,44 @@ namespace PointGaming.NAudio
             byte[] decoded = codec.Decode(b, 0, b.Length);
             waveProvider.AddSamples(decoded, 0, decoded.Length);
         }
+
+        private float _pickupAmplitude = 32767 / 4;
+        private bool _foundPickup = false;
+        private int _samplesSincePickup;
+        private int _maxSamplesAfterPickup;
         
         private void waveIn_DataAvailable(object sender, WaveInEventArgs e)
         {
-            byte[] encoded = codec.Encode(e.Buffer, 0, e.BytesRecorded);
+            var isPickupLost = false;
 
-            var call = AudioRecorded;
-            if (call != null)
-                call(this, encoded);
+            var bytesRecorded = e.BytesRecorded;
+            for (int i = 0; i < bytesRecorded; i+= 2)
+            {
+                var b1 = (ushort)e.Buffer[i];
+                var b2 = (ushort)e.Buffer[i + 1];
+                var sample = (short)((b2 << 8) | b1);
+                var absSample = sample >= 0 ? sample : -sample;
+
+                if (absSample >= _pickupAmplitude)
+                    _samplesSincePickup = 0;
+                else if (_samplesSincePickup < _maxSamplesAfterPickup)
+                {
+                    _samplesSincePickup++;
+                    if (_samplesSincePickup == _maxSamplesAfterPickup)
+                        isPickupLost = true;
+                }
+            }
+
+            var isPickup = _samplesSincePickup < _maxSamplesAfterPickup;
+
+            if (isPickupLost || isPickup)
+            {
+                byte[] encoded = codec.Encode(e.Buffer, 0, bytesRecorded);
+
+                var call = AudioRecorded;
+                if (call != null)
+                    call(this, encoded, !isPickup);
+            }
         }
     }
 

@@ -6,7 +6,7 @@
              mc:Ignorable="d" 
              Icon="/PointGaming;component/PointGaming.ico"
              Width="500" Height="300" Loaded="UserControl_Loaded"
-             Activated="Window_Activated" Closing="Window_Closing" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp">
+             Activated="Window_Activated" Closing="Window_Closing">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -29,10 +29,15 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBox Grid.Column="0" Grid.RowSpan="2" Height="69" HorizontalAlignment="Stretch" Name="textBoxInput" VerticalAlignment="Stretch" PreviewKeyDown="textBoxInput_PreviewKeyDown" MaxLength="1024" TextWrapping="Wrap" AcceptsReturn="True" />
+            <TextBox Grid.Column="0" Grid.RowSpan="3" Height="69" HorizontalAlignment="Stretch" Name="textBoxInput" VerticalAlignment="Stretch" PreviewKeyDown="textBoxInput_PreviewKeyDown" MaxLength="1024" TextWrapping="Wrap" AcceptsReturn="True" />
             <Button Grid.Column="1" Grid.Row="0" Content="Send" Height="23" HorizontalAlignment="Left" Name="buttonSendInput" VerticalAlignment="Top" Width="75" Click="buttonSendInput_Click" />
-            <Button Grid.Column="1" Grid.Row="1" Content="Talk" ToolTip="Keyboard: Left-Ctrl" Height="23" HorizontalAlignment="Left" Name="buttonSendAudio" VerticalAlignment="Top" Width="75" PreviewMouseDown="buttonSendAudio_PreviewMouseDown" PreviewMouseUp="buttonSendAudio_PreviewMouseUp" />
+            <CheckBox Grid.Column="1" Grid.Row="1" Content="Enable Mic" Height="23" HorizontalAlignment="Left" Name="checkboxEnableMic" VerticalAlignment="Top" Width="80" Checked="checkboxEnableMic_Checked" Unchecked="checkboxEnableMic_Unchecked" />
+            <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal">
+                <RadioButton Content="Tx" Height="16" HorizontalAlignment="Left" Name="radioButtonTransmit" VerticalAlignment="Top" Margin="4,0,4,0" IsEnabled="False" />
+                <RadioButton Content="Rx" Height="16" HorizontalAlignment="Left" Name="radioButtonReceive" VerticalAlignment="Top" IsEnabled="False" />
+            </StackPanel>
         </Grid>
     </Grid>
 </Window>
