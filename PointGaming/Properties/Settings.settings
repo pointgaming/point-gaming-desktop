@@ -50,5 +50,8 @@
     <Setting Name="WindowBounds" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="MicTriggerKey" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">162</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using PointGaming.HomeTab;
 using PointGaming.POCO;
 using PointGaming.NAudio;
+using NA = NAudio;
 
 namespace PointGaming.Chat
 {
@@ -47,15 +48,18 @@ namespace PointGaming.Chat
             WindowTreeManager = new WindowTreeManager(this, HomeWindow.Home.WindowTreeManager);
 
             _nAudioTest = new NAudioTest(new WideBandSpeexCodec());
+            _nAudioTest.TriggerKey = (System.Windows.Forms.Keys)Properties.Settings.Default.MicTriggerKey;
             _nAudioTest.AudioRecorded += _nAudioTest_AudioRecorded;
-            _nAudioTest.StartSending();
         }
 
 
         void _nAudioTest_AudioRecorded(NAudioTest source, byte[] data, bool isLast)
         {
-            var b64 = Convert.ToBase64String(data);
-            _session.SendMessage("speex_" + b64);
+            if (data.Length > 0)
+            {
+                var b64 = Convert.ToBase64String(data);
+                _session.SendMessage("speex_" + b64);
+            }
             if (isLast)
                 _session.SendMessage("speex_=");
         }
@@ -69,6 +73,13 @@ namespace PointGaming.Chat
 
             _session.ChatMessageReceived += ChatMessages_CollectionChanged;
             _session.SendMessageFailed += MessageSendFailed;
+
+            for (int n = 0; n < NA.Wave.WaveIn.DeviceCount; n++)
+            {
+                var capabilities = NA.Wave.WaveIn.GetCapabilities(n);
+                comboBoxRecordingDevices.Items.Add(capabilities.ProductName);
+            }
+            comboBoxRecordingDevices.SelectedIndex = 0;
         }
 
         void ChatMessages_CollectionChanged(ChatMessage item)
@@ -212,12 +223,40 @@ namespace PointGaming.Chat
 
         private void checkboxEnableMic_Checked(object sender, RoutedEventArgs e)
         {
-            _nAudioTest.StartSending();
+            _nAudioTest.InputDeviceNumber = comboBoxRecordingDevices.SelectedIndex;
+            _nAudioTest.Enable();
         }
 
         private void checkboxEnableMic_Unchecked(object sender, RoutedEventArgs e)
         {
-            _nAudioTest.StopSending();
+            _nAudioTest.Disable();
+        }
+
+        private void comboBoxRecordingDevices_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!(checkboxEnableMic.IsChecked == true))
+                return;
+
+            _nAudioTest.Disable();
+            _nAudioTest.InputDeviceNumber = comboBoxRecordingDevices.SelectedIndex;
+            _nAudioTest.Enable();
+        }
+
+        private void buttonSetMicKey_Click(object sender, RoutedEventArgs e)
+        {
+            App.KeyDown += App_KeyDown;
+            MessageDialog.Show(this, "Press Key", "Press the key you want to trigger the microphone. Then click OK.");
+            Properties.Settings.Default.MicTriggerKey = (int)_lastKeyDown;
+            Properties.Settings.Default.Save();
+            App.KeyDown -= App_KeyDown;
+            _nAudioTest.TriggerKey = (System.Windows.Forms.Keys)Properties.Settings.Default.MicTriggerKey;
+        }
+
+        System.Windows.Forms.Keys _lastKeyDown;
+
+        void App_KeyDown(System.Windows.Forms.Keys obj)
+        {
+            _lastKeyDown = obj;
         }
     }
 }
