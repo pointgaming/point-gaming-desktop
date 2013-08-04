@@ -23,7 +23,7 @@ namespace PointGaming.NAudio
 
         private WaveIn waveIn;
         private IWavePlayer waveOut;
-        private BufferedWaveProvider waveProvider;
+        private MixingWaveProvider waveProvider;
         private INetworkChatCodec codec;
         public System.Windows.Input.Key TriggerKey {get ; set;}
 
@@ -96,7 +96,7 @@ namespace PointGaming.NAudio
                     return;
 
                 waveOut = new WaveOut();
-                waveProvider = new BufferedWaveProvider(codec.RecordFormat);
+                waveProvider = new MixingWaveProvider(16000);
                 waveOut.Init(waveProvider);
                 waveOut.Play();
             }
@@ -114,14 +114,36 @@ namespace PointGaming.NAudio
             }
         }
 
-        public void AudioReceived(byte[] b)
+        private Dictionary<string, BufferedWaveProvider> _myStreams = new Dictionary<string, BufferedWaveProvider>();
+
+        public void AudioReceived(string streamId, byte[] b)
         {
             byte[] decoded = codec.Decode(b, 0, b.Length);
             lock (_startStopSynch)
             {
                 if (waveOut == null)
                     return;
-                waveProvider.AddSamples(decoded, 0, decoded.Length);
+
+                BufferedWaveProvider wp;
+                if (!_myStreams.TryGetValue(streamId, out wp))
+                {
+                    wp = new BufferedWaveProvider(codec.RecordFormat);
+                    waveProvider.AddStream(wp);
+                    _myStreams[streamId] = wp;
+                }
+                wp.AddSamples(decoded, 0, decoded.Length);
+            }
+        }
+        public void AudioReceiveEnded(string streamId)
+        {
+            lock (_startStopSynch)
+            {
+                BufferedWaveProvider wp;
+                if (_myStreams.TryGetValue(streamId, out wp))
+                {
+                    _myStreams.Remove(streamId);
+                    waveProvider.RemoveStream(wp);
+                }
             }
         }
 

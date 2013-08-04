@@ -164,6 +164,7 @@
       <DependentUpon>KeySelectDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="NAudio\INetworkChatCodec.cs" />
+    <Compile Include="NAudio\MixingWaveProvider.cs" />
     <Compile Include="NAudio\NAudioTest.cs" />
     <Compile Include="Chat\PrivateChatSession.cs" />
     <Compile Include="NAudio\SpeexChatCodec.cs" />

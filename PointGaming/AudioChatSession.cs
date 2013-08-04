@@ -138,13 +138,17 @@ namespace PointGaming
                 return;
 
             var isEnd = obj.Audio.Length == 0;
-            if (!isEnd)
-                _nAudioTest.AudioReceived(obj.Audio);
 
             if (isEnd)
+            {
+                _nAudioTest.AudioReceiveEnded(obj.FromUserId);
                 OnAudioStopped(_userData.GetPgUser(obj.FromUserId), obj.RoomName);
+            }
             else
+            {
+                _nAudioTest.AudioReceived(obj.FromUserId, obj.Audio);
                 OnAudioSending(_userData.GetPgUser(obj.FromUserId), obj.RoomName);
+            }
         }
 
         private int _messageNumber = 1;

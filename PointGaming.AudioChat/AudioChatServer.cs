@@ -164,7 +164,9 @@ namespace PointGaming.AudioChat
                     eps = new List<ClientConnection>();
                     _rooms[qm.RoomName.DeepCopy()] = eps;
                 }
-                eps.Add(new ClientConnection(qm.FromUserId.DeepCopy(), Copy(ep)));
+                var newCC = new ClientConnection(qm.FromUserId.DeepCopy(), Copy(ep));
+                if (!eps.Contains(newCC))
+                    eps.Add(newCC);
             }
             else if (type == LeaveRoomMessage.MType)
             {
