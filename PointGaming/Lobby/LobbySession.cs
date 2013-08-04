@@ -33,7 +33,7 @@ namespace PointGaming.Lobby
 
         private LobbyWindow _window;
         public LobbyWindow Window { get { return _window; } }
-        
+
         public LobbySession(SessionManager manager, HomeTab.LauncherInfo gameInfo)
             : base(manager)
         {
@@ -87,7 +87,7 @@ namespace PointGaming.Lobby
             if (call != null)
                 call(item);
         }
-        
+
         private void FillEmptyRooms()
         {
             while (_allGameRooms.Count < MinRoomCount)
@@ -109,13 +109,14 @@ namespace PointGaming.Lobby
 
         public void CreateRoomAt(int position, string description, Action<string> onCreated, bool takeover = false)
         {
-            RestResponse<GameRoomSinglePoco> response = null;
+            RestResponse<GameRoomPoco> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
                 var url = _userData.PgSession.GetWebAppFunction("/api", "/game_rooms");
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.POST) { RequestFormat = RestSharp.DataFormat.Json };
-                var poco = new GameRoomPoco {
+                var poco = new GameRoomPoco
+                {
                     position = position,
                     description = description,
                     takeover_position = takeover,
@@ -126,12 +127,12 @@ namespace PointGaming.Lobby
                 };
                 var root = new GameRoomSinglePoco { game_room = poco };
                 request.AddBody(root);
-                response = (RestResponse<GameRoomSinglePoco>)client.Execute<GameRoomSinglePoco>(request);
+                response = (RestResponse<GameRoomPoco>)client.Execute<GameRoomPoco>(request);
             }, delegate
             {
                 if (response.IsOk() && response.Data != null)
                 {
-                    var gameRoom = response.Data.game_room;
+                    var gameRoom = response.Data;
                     if (onCreated != null)
                         onCreated(gameRoom._id);
                 }
@@ -191,7 +192,7 @@ namespace PointGaming.Lobby
                 }
             }
         }
-        
+
         public void OnGameRoomNew(GameRoomPoco poco)
         {
             var item = new GameRoomItem(poco);

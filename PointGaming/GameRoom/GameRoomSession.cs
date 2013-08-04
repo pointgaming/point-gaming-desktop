@@ -106,18 +106,18 @@ namespace PointGaming.GameRoom
         {
             var url = _userData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + GameRoom.Id);
             var root = new { game_room = poco };
-            RestResponse<GameRoomSinglePoco> response = null;
+            RestResponse<GameRoomPoco> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
-                response = SocketSession.Rest<GameRoomSinglePoco>(url, Method.PUT, root);
+                response = SocketSession.Rest<GameRoomPoco>(url, Method.PUT, root);
             }, delegate
             {
                 if (response.IsOk())
                 {
-                    GameRoom.Description = response.Data.game_room.description;
-                    GameRoom.IsAdvertising = response.Data.game_room.is_advertising;
-                    GameRoom.Password = response.Data.game_room.password;
-                    GameRoom.IsBetting = response.Data.game_room.betting;
+                    GameRoom.Description = response.Data.description;
+                    GameRoom.IsAdvertising = response.Data.is_advertising;
+                    GameRoom.Password = response.Data.password;
+                    GameRoom.IsBetting = response.Data.betting;
                 }
                 else
                 {
