@@ -122,6 +122,7 @@ namespace PointGaming.Lobby
                     max_member_count = DefaultMaxGameRoomMemberCount,
                     is_advertising = false,
                     game_id = GameInfo.Id,
+                    betting_type = "1v1"
                 };
                 var root = new GameRoomSinglePoco { game_room = poco };
                 request.AddBody(root);

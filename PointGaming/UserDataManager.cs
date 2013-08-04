@@ -147,7 +147,8 @@ namespace PointGaming
                 Username = userBase.username ?? "unknown",
                 Status = "unknown",
                 Rank = userBase.rank,
-                Team = GetPgTeam(userBase.team)
+                Team = GetPgTeam(userBase.team),
+                Avatar = userBase.avatar,
             };
             _userLookup[userBase._id] = user;
             LookupUserData(userBase._id);
