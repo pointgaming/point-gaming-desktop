@@ -17,6 +17,7 @@
             <StackPanel Orientation="Horizontal">
                 <ComboBox Height="23" Name="comboBoxRecordingDevices" Width="220" SelectionChanged="comboBoxRecordingDevices_SelectionChanged" />
                 <Button Content="Set Mic Key" Height="23" Name="buttonSetMicKey" Width="75" Click="buttonSetMicKey_Click" />
+                <Label Height="28" Name="labelMicKey" />
             </StackPanel>
             <Label Content="{Binding ElementName=debugTabControl, Path=ProgramVersion, FallbackValue='0.0.0'}" Height="28" HorizontalAlignment="Left" Name="labelVersion" VerticalAlignment="Top" />
         </StackPanel>

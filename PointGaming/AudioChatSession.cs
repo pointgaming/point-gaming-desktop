@@ -70,7 +70,7 @@ namespace PointGaming
             _userData = userData;
             _nAudioTest = new NAudioTest(new WideBandSpeexCodec());
             _nAudioTest.InputDeviceNumber = Properties.Settings.Default.AudioInputDeviceIndex;
-            _nAudioTest.TriggerKey = (System.Windows.Forms.Keys)Properties.Settings.Default.MicTriggerKey;
+            _nAudioTest.TriggerKey = (System.Windows.Input.Key)Properties.Settings.Default.MicTriggerKey;
             _nAudioTest.AudioRecorded += _nAudioTest_AudioRecorded;
             _nAudioTest.AudioRecordEnded += _nAudioTest_AudioRecordEnded;
 
@@ -124,7 +124,7 @@ namespace PointGaming
             _nAudioTest.Disable();
         }
 
-        public System.Windows.Forms.Keys TriggerKey
+        public System.Windows.Input.Key TriggerKey
         {
             set
             {
