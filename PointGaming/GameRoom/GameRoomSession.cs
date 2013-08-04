@@ -104,7 +104,7 @@ namespace PointGaming.GameRoom
 
         public void SetGameRoomSettings(object poco)
         {
-            var url = _userData.PgSession.GetWebAppFunction("", "/game_rooms/" + GameRoom.Id);
+            var url = _userData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + GameRoom.Id);
             var root = new { game_room = poco };
             RestResponse<GameRoomSinglePoco> response = null;
             _userData.PgSession.BeginAndCallback(delegate
@@ -319,7 +319,7 @@ namespace PointGaming.GameRoom
             RestResponse<ApiResponse> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
-                var url = _userData.PgSession.GetWebApiV1Function("/matches/" + MyMatch.Id + "/bets");
+                var url = _userData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + GameRoom.Id + "/bets");
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.POST) { RequestFormat = RestSharp.DataFormat.Json };
                 var root = new { bet = poco };

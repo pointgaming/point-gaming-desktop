@@ -112,7 +112,7 @@ namespace PointGaming.Lobby
             RestResponse<GameRoomSinglePoco> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
-                var url = _userData.PgSession.GetWebAppFunction("", "/game_rooms");
+                var url = _userData.PgSession.GetWebAppFunction("/api", "/game_rooms");
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.POST) { RequestFormat = RestSharp.DataFormat.Json };
                 var poco = new GameRoomPoco {

@@ -58,9 +58,21 @@ namespace PointGaming.GameRoom
             }
         }
 
-        public BetProposalDialog()
+        private string BettingType = "1v1";
+        private bool IsOneOnOneBetting
+        {
+            get { return BettingType == "1v1"; }
+        }
+        private bool IsTeamBetting
+        {
+            get { return BettingType == "team"; }
+        }
+
+        public BetProposalDialog(string bettingType)
         {
             InitializeComponent();
+
+            if (bettingType == "team") BettingType = "team";
         }
 
         private IBetOperand _betOperandA;
