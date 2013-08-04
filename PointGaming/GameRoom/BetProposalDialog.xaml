@@ -19,11 +19,10 @@
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0" Content="Map" Height="28" HorizontalAlignment="Right" Name="label5" VerticalAlignment="Center" />
-        <TextBox Grid.Row="0" Grid.Column="1" Height="23" HorizontalAlignment="Stretch" Name="textBoxMap" VerticalAlignment="Center" IsReadOnly="True"
-                 Text="{Binding ElementName=myWindow, Path=MapName}" />
+        <TextBox Grid.Row="0" Grid.Column="1" Height="24" HorizontalAlignment="Stretch" Name="textBoxMap" VerticalAlignment="Center" Text="{Binding ElementName=myWindow, Path=MapName}" Margin="0,2,10,2" />
 
-        <Label Grid.Row="1" Grid.Column="0" Content="Outcome" Height="28" HorizontalAlignment="Right" Name="label3" VerticalAlignment="Center" />
-        <ComboBox Grid.Row="1" Grid.Column="1" Height="23" HorizontalAlignment="Stretch" Name="comboBoxOutcome" VerticalAlignment="Center" SelectedIndex="0" SelectionChanged="comboBoxOutcome_SelectionChanged">
+        <Label Visibility="Hidden" Grid.Row="1" Grid.Column="0" Content="Outcome" Height="28" HorizontalAlignment="Right" Name="label3" VerticalAlignment="Center" />
+        <ComboBox Visibility="Hidden" Grid.Row="1" Grid.Column="1" Height="24" HorizontalAlignment="Stretch" Name="comboBoxOutcome" VerticalAlignment="Center" SelectedIndex="0" SelectionChanged="comboBoxOutcome_SelectionChanged" Margin="0,2,10,2">
             <ComboBoxItem Name="aBeatsB">MrApple beats MrBanana</ComboBoxItem>
             <ComboBoxItem Name="bBeatsA">MrBanana beats MrApple</ComboBoxItem>
         </ComboBox>

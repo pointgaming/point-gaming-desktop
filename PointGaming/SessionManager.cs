@@ -446,7 +446,7 @@ namespace PointGaming
             if (_chatroomUsage.TryGetValue(id, out session))
             {
                 GameRoomSession gameRoomSession = session as GameRoomSession;
-                var dialog = new BetProposalDialog();
+                var dialog = new BetProposalDialog(gameRoomSession.GameRoom.BettingType);
                 dialog.Owner = gameRoomSession.Window;
                 dialog.ShowDialog();
                 if (dialog.DialogResult == true)
