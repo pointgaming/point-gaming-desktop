@@ -16,6 +16,9 @@ using System.Security.Cryptography;
 using PointGaming.Lobby;
 using PointGaming.GameRoom;
 using PointGaming.Chat;
+using PointGaming.NAudio;
+using PointGaming.AudioChat;
+using NA = NAudio;
 
 
 namespace PointGaming
@@ -38,6 +41,8 @@ namespace PointGaming
 
         public readonly ObservableCollection<LauncherInfo> Launchers = new ObservableCollection<LauncherInfo>();
 
+        public AudioChatSession AudioSystem;
+
         public UserDataManager(SocketSession session)
         {
             PgSession = session;
@@ -45,6 +50,8 @@ namespace PointGaming
             User.Status = "online";
             _sessionManager = new SessionManager();
             Friendship = new FriendshipManager(PgSession);
+            AudioSystem = new AudioChatSession(this);
+            AudioSystem.Enable();
 
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(5);
@@ -90,6 +97,8 @@ namespace PointGaming
             _friendLookup.Clear();
 
             timer.Stop();
+            AudioSystem.Disable();
+            AudioSystem.Dispose();
 
             PgSession.Begin(PgSession.Logout);
             _sessionManager = null;
@@ -118,6 +127,12 @@ namespace PointGaming
         public bool TryGetFriend(string id, out PgUser friend)
         {
             return _friendLookup.TryGetValue(id, out friend);
+        }
+
+        public PgUser GetPgUser(string id)
+        {
+            var userBase = new UserBase { _id = id };
+            return GetPgUser(userBase);
         }
 
         public PgUser GetPgUser(UserBase userBase)

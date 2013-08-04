@@ -207,5 +207,26 @@ namespace PointGaming.Properties {
                 this["MicTriggerKey"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("192.168.1.71")]
+        public string AudioChatIp {
+            get {
+                return ((string)(this["AudioChatIp"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int AudioInputDeviceIndex {
+            get {
+                return ((int)(this["AudioInputDeviceIndex"]));
+            }
+            set {
+                this["AudioInputDeviceIndex"] = value;
+            }
+        }
     }
 }

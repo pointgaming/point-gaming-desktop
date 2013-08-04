@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d"
              x:Name="debugTabControl"
-             d:DesignHeight="300" d:DesignWidth="300" Padding="5" Loaded="UserControl_Loaded">
+             d:DesignHeight="300" d:DesignWidth="400" Padding="5" Loaded="UserControl_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -14,6 +14,10 @@
         <StackPanel Orientation="Vertical">
             <TextBox Height="23" Name="textBoxFontChoice" Width="100" Visibility="Collapsed" Text="The font chosen will be used for Point Gaming chat windows." />
             <Button Content="Choose chat font..." Height="23" HorizontalAlignment="Left" Name="buttonChooseChatFont" VerticalAlignment="Top" Width="120" Margin="0,2.5,0,2.5" Click="buttonChooseChatFont_Click" />
+            <StackPanel Orientation="Horizontal">
+                <ComboBox Height="23" Name="comboBoxRecordingDevices" Width="220" SelectionChanged="comboBoxRecordingDevices_SelectionChanged" />
+                <Button Content="Set Mic Key" Height="23" Name="buttonSetMicKey" Width="75" Click="buttonSetMicKey_Click" />
+            </StackPanel>
             <Label Content="{Binding ElementName=debugTabControl, Path=ProgramVersion, FallbackValue='0.0.0'}" Height="28" HorizontalAlignment="Left" Name="labelVersion" VerticalAlignment="Top" />
         </StackPanel>
         <TextBox Grid.Row="1" HorizontalAlignment="Stretch" Name="textBoxConsole" VerticalAlignment="Stretch" 

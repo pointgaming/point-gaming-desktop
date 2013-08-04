@@ -577,5 +577,30 @@ namespace PointGaming.HomeTab
             throw new NotImplementedException();
         }
     }
+
+    public class SpeakingConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var isSpeakingP = value as bool?;
+            var isSpeaking = isSpeakingP == true;
+
+            var assembly = typeof(LauncherInfo).Assembly;
+            var defaultUri = "pack://application:,,,/" + assembly.GetName().Name + ";component/Resources/";
+
+            if (isSpeaking)
+                defaultUri += "SpeakerLoud.png";
+            else
+                defaultUri += "SpeakerMute.png";
+
+            var source = new ImageSourceConverter().ConvertFromString(defaultUri) as ImageSource;
+            return source;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
     #endregion
 }

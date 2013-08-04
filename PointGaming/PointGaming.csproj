@@ -149,6 +149,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ActiveGroupingCollectionView.cs" />
+    <Compile Include="AudioChatSession.cs" />
     <Compile Include="BitcoinMiner\CPUThreadMiner.cs" />
     <Compile Include="BitcoinMiner\Miner.cs" />
     <Compile Include="BitcoinMiner\Numerical.cs" />
@@ -710,6 +711,10 @@
       <Project>{952E558B-6E94-49A5-BA50-EC50C044709C}</Project>
       <Name>Aviad.WPF.Controls</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PointGaming.AudioChat\PointGaming.AudioChat.csproj">
+      <Project>{65ED6CBC-EB2D-441D-96C9-BA514EF46B75}</Project>
+      <Name>PointGaming.AudioChat</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\offline.png" />
@@ -717,6 +722,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\idle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\SpeakerLoud.png" />
+    <Resource Include="Resources\SpeakerMute.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

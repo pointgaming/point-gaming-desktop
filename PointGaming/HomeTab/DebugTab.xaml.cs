@@ -14,6 +14,10 @@ namespace PointGaming.HomeTab
         public DebugTab()
         {
             InitializeComponent();
+
+            foreach (var item in HomeWindow.UserData.AudioSystem.GetAudioInputDevices())
+                comboBoxRecordingDevices.Items.Add(item);
+            comboBoxRecordingDevices.SelectedIndex = Properties.Settings.Default.AudioInputDeviceIndex;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -47,6 +51,37 @@ namespace PointGaming.HomeTab
                 Properties.Settings.Default.ChatFontSize = size;
                 Properties.Settings.Default.Save();
             }
+        }
+
+        private void buttonSetMicKey_Click(object sender, RoutedEventArgs e)
+        {
+            SetAudioInputDeviceTriggerKey();
+        }
+
+
+        private void SetAudioInputDeviceTriggerKey()
+        {
+            App.KeyDown += App_KeyDown;
+            MessageDialog.Show(HomeWindow.Home, "Press Key", "Press the key you want to trigger the microphone. Then click OK.");
+            Properties.Settings.Default.MicTriggerKey = (int)_lastKeyDown;
+            Properties.Settings.Default.Save();
+            App.KeyDown -= App_KeyDown;
+            HomeWindow.UserData.AudioSystem.TriggerKey = (System.Windows.Forms.Keys)Properties.Settings.Default.MicTriggerKey;
+        }
+
+        System.Windows.Forms.Keys _lastKeyDown;
+
+        void App_KeyDown(System.Windows.Forms.Keys obj)
+        {
+            _lastKeyDown = obj;
+        }
+
+        private void comboBoxRecordingDevices_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var deviceIndex = comboBoxRecordingDevices.SelectedIndex;
+            Properties.Settings.Default.AudioInputDeviceIndex = deviceIndex;
+            Properties.Settings.Default.Save();
+            HomeWindow.UserData.AudioSystem.SetAudioInputDevice(deviceIndex);
         }
     }
 }

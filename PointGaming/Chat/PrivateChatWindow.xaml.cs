@@ -15,11 +15,12 @@ using System.Windows.Shapes;
 using PointGaming.HomeTab;
 using PointGaming.POCO;
 using PointGaming.NAudio;
+using PointGaming.AudioChat;
 using NA = NAudio;
 
 namespace PointGaming.Chat
 {
-    public partial class PrivateChatWindow : Window, IWeakEventListener
+    public partial class PrivateChatWindow : Window, IWeakEventListener, INotifyPropertyChanged
     {
         public WindowTreeManager WindowTreeManager;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -36,7 +37,6 @@ namespace PointGaming.Chat
         private AutoScroller _autoScroller;
 
         private PrivateChatSession _session;
-        private NAudioTest _nAudioTest;
 
         public PrivateChatWindow()
         {
@@ -46,24 +46,62 @@ namespace PointGaming.Chat
             _autoScroller = new AutoScroller(flowDocumentLog);
             PropertyChangedEventManager.AddListener(Properties.Settings.Default, this, "PropertyChanged");
             WindowTreeManager = new WindowTreeManager(this, HomeWindow.Home.WindowTreeManager);
-
-            _nAudioTest = new NAudioTest(new WideBandSpeexCodec());
-            _nAudioTest.TriggerKey = (System.Windows.Forms.Keys)Properties.Settings.Default.MicTriggerKey;
-            _nAudioTest.AudioRecorded += _nAudioTest_AudioRecorded;
+            _userData.AudioSystem.AudioStarted += AudioSystem_AudioStarted;
+            _userData.AudioSystem.AudioStopped += AudioSystem_AudioStopped;
+            _userData.AudioSystem.SpeakingRoomChanged += AudioSystem_SpeakingRoomChanged;
         }
 
-
-        void _nAudioTest_AudioRecorded(NAudioTest source, byte[] data, bool isLast)
+        private void AudioSystem_SpeakingRoomChanged(string obj)
         {
-            if (data.Length > 0)
-            {
-                var b64 = Convert.ToBase64String(data);
-                _session.SendMessage("speex_" + b64);
-            }
-            if (isLast)
-                _session.SendMessage("speex_=");
+            if (obj != AudioRoomName)
+                checkboxSpeak.IsChecked = false;
         }
 
+        private bool _IsSelfSpeaking;
+        public bool IsSelfSpeaking
+        {
+            get { return _IsSelfSpeaking; }
+            set
+            {
+                if (value == _IsSelfSpeaking)
+                    return;
+                _IsSelfSpeaking = value;
+                NotifyChanged("IsSelfSpeaking");
+            }
+        }
+        private bool _IsOtherSpeaking;
+        public bool IsOtherSpeaking
+        {
+            get { return _IsOtherSpeaking; }
+            set
+            {
+                if (value == _IsOtherSpeaking)
+                    return;
+                _IsOtherSpeaking = value;
+                NotifyChanged("IsOtherSpeaking");
+            }
+        }
+
+        private void AudioSystem_AudioStopped(PgUser obj, string roomId)
+        {
+            if (roomId != AudioRoomName)
+                return;
+            if (obj == _otherUser)
+                IsOtherSpeaking = false;
+            else
+                IsSelfSpeaking = false;
+        }
+
+        private void AudioSystem_AudioStarted(PgUser obj, string roomId)
+        {
+            if (roomId != AudioRoomName)
+                return;
+            if (obj == _otherUser)
+                IsOtherSpeaking = true;
+            else
+                IsSelfSpeaking = true;
+        }
+        
         public void Init(PrivateChatSession session, PgUser otherUser)
         {
             _session = session;
@@ -73,36 +111,20 @@ namespace PointGaming.Chat
 
             _session.ChatMessageReceived += ChatMessages_CollectionChanged;
             _session.SendMessageFailed += MessageSendFailed;
-
-            for (int n = 0; n < NA.Wave.WaveIn.DeviceCount; n++)
-            {
-                var capabilities = NA.Wave.WaveIn.GetCapabilities(n);
-                comboBoxRecordingDevices.Items.Add(capabilities.ProductName);
-            }
-            comboBoxRecordingDevices.SelectedIndex = 0;
         }
 
         void ChatMessages_CollectionChanged(ChatMessage item)
         {
-            bool hasText = false;
             bool allFromSelf = true;
             
             var user = item.Author;
             var message = item.Message;
 
-            if (message.StartsWith("speex_"))
-            {
-                HandleAudio(user, message);
-            }
-            else
-            {
-                AppendUserMessage(user, message);
-                if (item.Author != _userData.User)
-                    allFromSelf = false;
-                hasText = true;
-            }
+            AppendUserMessage(user, message);
+            if (item.Author != _userData.User)
+                allFromSelf = false;
             
-            if (hasText && !allFromSelf)
+            if (!allFromSelf)
                 this.FlashWindowSmartly();
         }
 
@@ -179,31 +201,6 @@ namespace PointGaming.Chat
             _autoScroller.PostAppend();
         }
 
-        private void HandleAudio(PgUser user, string message)
-        {
-            message = message.Substring("speex_".Length);
-            bool isEnd = message == "=";
-
-            if (user == _userData.User)
-            {
-                if (isEnd)
-                    radioButtonTransmit.IsChecked = false;
-                else
-                    radioButtonTransmit.IsChecked = true;
-            }
-            else
-            {
-                if (isEnd)
-                    radioButtonReceive.IsChecked = false;
-                else
-                {
-                    radioButtonReceive.IsChecked = true;
-                    var data = Convert.FromBase64String(message);
-                    _nAudioTest.AudioReceived(data);
-                }
-            }
-        }
-
         private void Window_Activated(object sender, EventArgs e)
         {
             this.StopFlashingWindow();
@@ -213,7 +210,8 @@ namespace PointGaming.Chat
         {
             _session.SendMessageFailed -= MessageSendFailed;
             _session.Leave();
-            _nAudioTest.Dispose();
+            _userData.AudioSystem.UnsetSpeakingRoomId(AudioRoomName);
+            _userData.AudioSystem.LeaveRoom(AudioRoomName);
         }
 
         public void MessageSendFailed(string message)
@@ -221,42 +219,38 @@ namespace PointGaming.Chat
             MessageDialog.Show(this, "Failed to Send Message", "Failed to send message.  User is not online or doesn't exist.");
         }
 
-        private void checkboxEnableMic_Checked(object sender, RoutedEventArgs e)
+        private string AudioRoomName
         {
-            _nAudioTest.InputDeviceNumber = comboBoxRecordingDevices.SelectedIndex;
-            _nAudioTest.Enable();
+            get
+            {
+                var ids = new string[] { _userData.User.Id, _otherUser.Id };
+                Array.Sort(ids);
+                return ids[0] + " " + ids[1];
+            }
         }
 
-        private void checkboxEnableMic_Unchecked(object sender, RoutedEventArgs e)
+        private void checkboxSpeak_Checked(object sender, RoutedEventArgs e)
         {
-            _nAudioTest.Disable();
+            if (checkboxListen.IsChecked != true)
+                checkboxListen.IsChecked = true;// todo verify that this causes checkboxListen_Checked to be called
+            _userData.AudioSystem.SpeakingIntoRoomId = AudioRoomName;
         }
 
-        private void comboBoxRecordingDevices_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void checkboxSpeak_Unchecked(object sender, RoutedEventArgs e)
         {
-            if (!(checkboxEnableMic.IsChecked == true))
-                return;
-
-            _nAudioTest.Disable();
-            _nAudioTest.InputDeviceNumber = comboBoxRecordingDevices.SelectedIndex;
-            _nAudioTest.Enable();
+            _userData.AudioSystem.UnsetSpeakingRoomId(AudioRoomName);
         }
 
-        private void buttonSetMicKey_Click(object sender, RoutedEventArgs e)
+        private void checkboxListen_Checked(object sender, RoutedEventArgs e)
         {
-            App.KeyDown += App_KeyDown;
-            MessageDialog.Show(this, "Press Key", "Press the key you want to trigger the microphone. Then click OK.");
-            Properties.Settings.Default.MicTriggerKey = (int)_lastKeyDown;
-            Properties.Settings.Default.Save();
-            App.KeyDown -= App_KeyDown;
-            _nAudioTest.TriggerKey = (System.Windows.Forms.Keys)Properties.Settings.Default.MicTriggerKey;
+            _userData.AudioSystem.JoinRoom(AudioRoomName);
         }
 
-        System.Windows.Forms.Keys _lastKeyDown;
-
-        void App_KeyDown(System.Windows.Forms.Keys obj)
+        private void checkboxListen_Unchecked(object sender, RoutedEventArgs e)
         {
-            _lastKeyDown = obj;
+            if (checkboxSpeak.IsChecked == true)
+                checkboxSpeak.IsChecked = false;// todo verify that this causes checkboxSpeak_Unchecked to be called
+            _userData.AudioSystem.LeaveRoom(AudioRoomName);
         }
     }
 }

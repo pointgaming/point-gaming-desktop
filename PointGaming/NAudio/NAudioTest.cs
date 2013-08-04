@@ -14,11 +14,12 @@ using System.Diagnostics;
 
 namespace PointGaming.NAudio
 {
-    public delegate void AudioAvailable(NAudioTest source, byte[] data, bool isLast);
+    public delegate void AudioAvailable(NAudioTest source, byte[] data);
 
     public partial class NAudioTest : IDisposable
     {
         public event AudioAvailable AudioRecorded;
+        public event Action AudioRecordEnded;
 
         private WaveIn waveIn;
         private IWavePlayer waveOut;
@@ -41,6 +42,7 @@ namespace PointGaming.NAudio
 
         public void Enable()
         {
+            StartSending();
             StartPlaying();
         }
         public void Disable()
@@ -49,6 +51,7 @@ namespace PointGaming.NAudio
             StopSending();
         }
 
+        private DateTime _upTimeout = DateTime.UtcNow;
         private void App_KeyUp(System.Windows.Forms.Keys obj)
         {
             if (waveOut == null)
@@ -57,8 +60,12 @@ namespace PointGaming.NAudio
             if (obj != TriggerKey)
                 return;
 
-            StopSending();
+            _sendKeyIsDown = false;
+            _upTimeout = DateTime.UtcNow + TimeSpan.FromMilliseconds(200);
         }
+
+        private DateTime _downTimeout = DateTime.UtcNow - TimeSpan.FromDays(1);
+        private bool _sendKeyIsDown;
 
         private void App_KeyDown(System.Windows.Forms.Keys obj)
         {
@@ -68,7 +75,9 @@ namespace PointGaming.NAudio
             if (obj != TriggerKey)
                 return;
 
-            StartSending();
+            _downTimeout = DateTime.UtcNow + TimeSpan.FromSeconds(2);
+            _sendKeyIsDown = true;
+            _lastTrickleSent = false;
         }
 
         private void StartSending()
@@ -97,7 +106,17 @@ namespace PointGaming.NAudio
                 waveIn.StopRecording();
                 waveIn.Dispose();
                 waveIn = null;
-                OnAudioRecorded(new byte[0]);
+            }
+        }
+
+        public bool IsEnabled
+        {
+            get
+            {
+                lock (_startStopSynch)
+                {
+                    return waveOut != null;
+                }
             }
         }
 
@@ -141,14 +160,41 @@ namespace PointGaming.NAudio
         private void waveIn_DataAvailable(object sender, WaveInEventArgs e)
         {
             byte[] encoded = codec.Encode(e.Buffer, 0, e.BytesRecorded);
-            OnAudioRecorded(encoded);
+            if (encoded.Length > 0)
+            {
+                OnAudioRecorded(encoded);
+            }
         }
+
+        private bool _lastTrickleSent = true;
 
         private void OnAudioRecorded(byte[] encoded)
         {
+            if (!_sendKeyIsDown && _lastTrickleSent)
+                return;
+
             var call = AudioRecorded;
             if (call != null)
-                call(this, encoded, encoded.Length == 0);
+                call(this, encoded);
+
+            if (DateTime.UtcNow > _downTimeout)
+            {
+                _sendKeyIsDown = false;// sometimes the up key event never happens
+                _upTimeout = _downTimeout;
+            }
+
+            if (!_sendKeyIsDown && DateTime.UtcNow > _upTimeout)
+            {
+                OnAudioRecordEnded();
+                _lastTrickleSent = true;// gotta trickle a littme more after the key goes up
+            }
+        }
+
+        private void OnAudioRecordEnded()
+        {
+            var call = AudioRecordEnded;
+            if (call != null)
+                call();
         }
 
         public void Dispose()
@@ -157,5 +203,4 @@ namespace PointGaming.NAudio
             StopPlaying();
         }
     }
-
 }
