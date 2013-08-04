@@ -57,6 +57,7 @@ namespace PointGaming.GameRoom
                 _window.DataContext = modelView;
                 _window.Owner = _lobbySession.Window;
 
+                LoadBets();
                 LoadMatch();
             }
 
@@ -67,6 +68,38 @@ namespace PointGaming.GameRoom
         public void ShowLobby(bool shouldActivate)
         {
             _lobbySession.ShowControl(shouldActivate);
+        }
+
+        public void LoadBets()
+        {
+            if (GameRoom.Bets.Length > 0) return;
+
+            RestResponse<BetListPoco> response = null;
+            _userData.PgSession.BeginAndCallback(delegate
+            {
+                var url = _userData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + GameRoom.Id + "/bets", "include_matches=true");
+                var client = new RestClient(url);
+                var request = new RestRequest(Method.GET);
+                response = (RestResponse<BetListPoco>)client.Execute<BetListPoco>(request);
+            }, delegate
+            {
+                if (response.IsOk())
+                {
+                    if (response.Data != null)
+                    {
+                        var bets = response.Data.bets;
+                        foreach (BetPoco bet in bets)
+                        {
+                            Bet item = new Bet(_userData, null, bet);
+                            RoomBets.Add(item);
+                        }
+                    }
+                }
+                else
+                {
+                    MessageDialog.Show(_window, "Failed to get Bets", "Sorry, failed to get bet list.\r\nDetails: " + response.ErrorMessage);
+                }
+            });
         }
 
         public void SetGameRoomSettings(object poco)

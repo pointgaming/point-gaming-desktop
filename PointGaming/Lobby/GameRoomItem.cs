@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Controls;
 using System.Diagnostics;
 using System.ComponentModel;
+using PointGaming.GameRoom;
 
 namespace PointGaming.Lobby
 {
@@ -234,6 +235,19 @@ namespace PointGaming.Lobby
                     return;
                 _members = value;
                 NotifyChanged("Members");
+            }
+        }
+
+        private Bet[] _bets = new Bet[0];
+        public Bet[] Bets
+        {
+            get { return _bets; }
+            set
+            {
+                if (value == _bets)
+                    return;
+                _bets = value;
+                NotifyChanged("Bets");
             }
         }
 
