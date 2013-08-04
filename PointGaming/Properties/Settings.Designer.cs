@@ -198,7 +198,7 @@ namespace PointGaming.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("162")]
+        [global::System.Configuration.DefaultSettingValueAttribute("118")]
         public int MicTriggerKey {
             get {
                 return ((int)(this["MicTriggerKey"]));

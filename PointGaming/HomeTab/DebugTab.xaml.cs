@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
@@ -18,6 +19,7 @@ namespace PointGaming.HomeTab
             foreach (var item in HomeWindow.UserData.AudioSystem.GetAudioInputDevices())
                 comboBoxRecordingDevices.Items.Add(item);
             comboBoxRecordingDevices.SelectedIndex = Properties.Settings.Default.AudioInputDeviceIndex;
+            labelMicKey.Content = (Key)Properties.Settings.Default.MicTriggerKey;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -61,21 +63,15 @@ namespace PointGaming.HomeTab
 
         private void SetAudioInputDeviceTriggerKey()
         {
-            App.KeyDown += App_KeyDown;
-            MessageDialog.Show(HomeWindow.Home, "Press Key", "Press the key you want to trigger the microphone. Then click OK.");
-            Properties.Settings.Default.MicTriggerKey = (int)_lastKeyDown;
+            var key = KeySelectDialog.Show(HomeWindow.Home, "Select Microphone Key", "Press new microphone hotkey.");
+            if (!key.HasValue)
+                return;
+            labelMicKey.Content = key.Value;
+            Properties.Settings.Default.MicTriggerKey = (int)key.Value;
             Properties.Settings.Default.Save();
-            App.KeyDown -= App_KeyDown;
-            HomeWindow.UserData.AudioSystem.TriggerKey = (System.Windows.Forms.Keys)Properties.Settings.Default.MicTriggerKey;
+            HomeWindow.UserData.AudioSystem.TriggerKey = key.Value;
         }
-
-        System.Windows.Forms.Keys _lastKeyDown;
-
-        void App_KeyDown(System.Windows.Forms.Keys obj)
-        {
-            _lastKeyDown = obj;
-        }
-
+        
         private void comboBoxRecordingDevices_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var deviceIndex = comboBoxRecordingDevices.SelectedIndex;

@@ -125,7 +125,6 @@
     <Reference Include="System.Net" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Security" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -161,6 +160,9 @@
     <Compile Include="Chat\AutoScroller.cs" />
     <Compile Include="Chat\ChatroomSessionBase.cs" />
     <Compile Include="Chat\ChatSessionBase.cs" />
+    <Compile Include="HomeTab\KeySelectDialog.xaml.cs">
+      <DependentUpon>KeySelectDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="NAudio\INetworkChatCodec.cs" />
     <Compile Include="NAudio\NAudioTest.cs" />
     <Compile Include="Chat\PrivateChatSession.cs" />
@@ -284,6 +286,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GameRoom\PasswordDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="HomeTab\KeySelectDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

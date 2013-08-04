@@ -25,7 +25,7 @@ namespace PointGaming.NAudio
         private IWavePlayer waveOut;
         private BufferedWaveProvider waveProvider;
         private INetworkChatCodec codec;
-        public System.Windows.Forms.Keys TriggerKey {get ; set;}
+        public System.Windows.Input.Key TriggerKey {get ; set;}
 
         public int InputDeviceNumber { get; set; }
 
@@ -34,10 +34,7 @@ namespace PointGaming.NAudio
         public NAudioTest(INetworkChatCodec codec)
         {
             this.codec = codec;
-            TriggerKey = System.Windows.Forms.Keys.LControlKey;
-
-            App.KeyDown += App_KeyDown;
-            App.KeyUp += App_KeyUp;
+            TriggerKey = System.Windows.Input.Key.LeftCtrl;
         }
 
         public void Enable()
@@ -49,35 +46,6 @@ namespace PointGaming.NAudio
         {
             StopPlaying();
             StopSending();
-        }
-
-        private DateTime _upTimeout = DateTime.UtcNow;
-        private void App_KeyUp(System.Windows.Forms.Keys obj)
-        {
-            if (waveOut == null)
-                return;
-
-            if (obj != TriggerKey)
-                return;
-
-            _sendKeyIsDown = false;
-            _upTimeout = DateTime.UtcNow + TimeSpan.FromMilliseconds(200);
-        }
-
-        private DateTime _downTimeout = DateTime.UtcNow - TimeSpan.FromDays(1);
-        private bool _sendKeyIsDown;
-
-        private void App_KeyDown(System.Windows.Forms.Keys obj)
-        {
-            if (waveOut == null)
-                return;
-
-            if (obj != TriggerKey)
-                return;
-
-            _downTimeout = DateTime.UtcNow + TimeSpan.FromSeconds(2);
-            _sendKeyIsDown = true;
-            _lastTrickleSent = false;
         }
 
         private void StartSending()
@@ -166,24 +134,36 @@ namespace PointGaming.NAudio
             }
         }
 
+        private DateTime _trickleTimeout;
+        private bool _isTrickleStarted = false;
         private bool _lastTrickleSent = true;
 
         private void OnAudioRecorded(byte[] encoded)
         {
-            if (!_sendKeyIsDown && _lastTrickleSent)
+            var isKeyDown = System.Windows.Input.Keyboard.IsKeyDown(TriggerKey);
+            if (isKeyDown)
+            {
+                _lastTrickleSent = false;
+                _isTrickleStarted = false;
+            }
+
+            if (!isKeyDown && _lastTrickleSent)
                 return;
 
             var call = AudioRecorded;
             if (call != null)
                 call(this, encoded);
 
-            if (DateTime.UtcNow > _downTimeout)
+            if (!isKeyDown)
             {
-                _sendKeyIsDown = false;// sometimes the up key event never happens
-                _upTimeout = _downTimeout;
+                if (!_isTrickleStarted)
+                {
+                    _isTrickleStarted = true;
+                    _trickleTimeout = DateTime.UtcNow + TimeSpan.FromMilliseconds(200);
+                }
             }
 
-            if (!_sendKeyIsDown && DateTime.UtcNow > _upTimeout)
+            if (!isKeyDown && DateTime.UtcNow > _trickleTimeout)
             {
                 OnAudioRecordEnded();
                 _lastTrickleSent = true;// gotta trickle a littme more after the key goes up
