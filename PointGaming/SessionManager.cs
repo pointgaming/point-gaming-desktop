@@ -92,7 +92,8 @@ namespace PointGaming
             var toUser = _userData.GetPgUser(received.toUser);
 
             ChatSessionBase chatSession = GetOrCreatePrivateChatSession(toUser);
-            chatSession.ChatMessages.Add(new ChatMessage(_userData.User, received.message));
+            var cm = new ChatMessage(_userData.User, received.message);
+            chatSession.OnChatMessageReceived(cm);
         }
         private void OnPrivateMessageSendFailed(IMessage message)
         {
@@ -107,7 +108,8 @@ namespace PointGaming
             var fromUser = _userData.GetPgUser(received.fromUser);
 
             ChatSessionBase chatSession = GetOrCreatePrivateChatSession(fromUser);
-            chatSession.ChatMessages.Add(new ChatMessage(fromUser, received.message));
+            var cm = new ChatMessage(fromUser, received.message);
+            chatSession.OnChatMessageReceived(cm);
         }
         public void SendMessage(PrivateMessageOut message)
         {
@@ -232,7 +234,7 @@ namespace PointGaming
                 return;
 
             var chatMessage = new ChatMessage(_userData.GetPgUser(received.fromUser), received.message);
-            session.ChatMessages.Add(chatMessage);
+            session.OnChatMessageReceived(chatMessage);
         }
         private void OnChatroomInviteNew(IMessage message)
         {

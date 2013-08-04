@@ -195,5 +195,17 @@ namespace PointGaming.Properties {
                 this["WindowBounds"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("162")]
+        public int MicTriggerKey {
+            get {
+                return ((int)(this["MicTriggerKey"]));
+            }
+            set {
+                this["MicTriggerKey"] = value;
+            }
+        }
     }
 }

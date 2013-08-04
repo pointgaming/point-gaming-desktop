@@ -60,7 +60,7 @@ namespace PointGaming.GameRoom
             _session.Membership.CollectionChanged += Membership_CollectionChanged;
             _session.GameRoom.PropertyChanged += GameRoom_PropertyChanged;
             _session.MyMatch.PropertyChanged += MyMatch_PropertyChanged;
-            _session.ChatMessages.CollectionChanged += ChatMessages_CollectionChanged;
+            _session.ChatMessageReceived += ChatMessages_CollectionChanged;
             
             InitMembership();
         }
@@ -145,12 +145,9 @@ namespace PointGaming.GameRoom
             }
         }
 
-        private void ChatMessages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void ChatMessages_CollectionChanged(ChatMessage item)
         {
-            foreach (ChatMessage item in e.NewItems)
-            {
-                AddChatMessage(item.Author.Username, item.Message);
-            }
+            AddChatMessage(item.Author.Username, item.Message);
         }
 
         public ICommand SendChat { get { return new ActionCommand<string>(SendChatMessage); } }

@@ -14,6 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using PointGaming.HomeTab;
 using PointGaming.POCO;
+using PointGaming.NAudio;
+using NA = NAudio;
 
 namespace PointGaming.Chat
 {
@@ -34,6 +36,7 @@ namespace PointGaming.Chat
         private AutoScroller _autoScroller;
 
         private PrivateChatSession _session;
+        private NAudioTest _nAudioTest;
 
         public PrivateChatWindow()
         {
@@ -43,6 +46,22 @@ namespace PointGaming.Chat
             _autoScroller = new AutoScroller(flowDocumentLog);
             PropertyChangedEventManager.AddListener(Properties.Settings.Default, this, "PropertyChanged");
             WindowTreeManager = new WindowTreeManager(this, HomeWindow.Home.WindowTreeManager);
+
+            _nAudioTest = new NAudioTest(new WideBandSpeexCodec());
+            _nAudioTest.TriggerKey = (System.Windows.Forms.Keys)Properties.Settings.Default.MicTriggerKey;
+            _nAudioTest.AudioRecorded += _nAudioTest_AudioRecorded;
+        }
+
+
+        void _nAudioTest_AudioRecorded(NAudioTest source, byte[] data, bool isLast)
+        {
+            if (data.Length > 0)
+            {
+                var b64 = Convert.ToBase64String(data);
+                _session.SendMessage("speex_" + b64);
+            }
+            if (isLast)
+                _session.SendMessage("speex_=");
         }
 
         public void Init(PrivateChatSession session, PgUser otherUser)
@@ -52,20 +71,38 @@ namespace PointGaming.Chat
             PropertyChangedEventManager.AddListener(_otherUser, this, "PropertyChanged");
             Title = otherUser.Username;
 
-            _session.ChatMessages.CollectionChanged += ChatMessages_CollectionChanged;
+            _session.ChatMessageReceived += ChatMessages_CollectionChanged;
             _session.SendMessageFailed += MessageSendFailed;
+
+            for (int n = 0; n < NA.Wave.WaveIn.DeviceCount; n++)
+            {
+                var capabilities = NA.Wave.WaveIn.GetCapabilities(n);
+                comboBoxRecordingDevices.Items.Add(capabilities.ProductName);
+            }
+            comboBoxRecordingDevices.SelectedIndex = 0;
         }
 
-        void ChatMessages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void ChatMessages_CollectionChanged(ChatMessage item)
         {
+            bool hasText = false;
             bool allFromSelf = true;
-            foreach (ChatMessage item in e.NewItems)
+            
+            var user = item.Author;
+            var message = item.Message;
+
+            if (message.StartsWith("speex_"))
             {
-                AppendUserMessage(item.Author.Username, item.Message);
+                HandleAudio(user, message);
+            }
+            else
+            {
+                AppendUserMessage(user, message);
                 if (item.Author != _userData.User)
                     allFromSelf = false;
+                hasText = true;
             }
-            if (!allFromSelf)
+            
+            if (hasText && !allFromSelf)
                 this.FlashWindowSmartly();
         }
 
@@ -125,7 +162,7 @@ namespace PointGaming.Chat
             _session.SendMessage(send);
         }
         
-        private void AppendUserMessage(string username, string message)
+        private void AppendUserMessage(PgUser user, string message)
         {
             var time = DateTime.Now;
 
@@ -135,11 +172,36 @@ namespace PointGaming.Chat
 
             var p = new Paragraph();
             p.Inlines.Add(new Run(timeString + " "));
-            p.Inlines.Add(new Bold(new Run(username + ": ")));
+            p.Inlines.Add(new Bold(new Run(user.Username + ": ")));
             ChatCommon.Format(message, p.Inlines);
             flowDocumentLog.Document.Blocks.Add(p);
 
             _autoScroller.PostAppend();
+        }
+
+        private void HandleAudio(PgUser user, string message)
+        {
+            message = message.Substring("speex_".Length);
+            bool isEnd = message == "=";
+
+            if (user == _userData.User)
+            {
+                if (isEnd)
+                    radioButtonTransmit.IsChecked = false;
+                else
+                    radioButtonTransmit.IsChecked = true;
+            }
+            else
+            {
+                if (isEnd)
+                    radioButtonReceive.IsChecked = false;
+                else
+                {
+                    radioButtonReceive.IsChecked = true;
+                    var data = Convert.FromBase64String(message);
+                    _nAudioTest.AudioReceived(data);
+                }
+            }
         }
 
         private void Window_Activated(object sender, EventArgs e)
@@ -151,11 +213,50 @@ namespace PointGaming.Chat
         {
             _session.SendMessageFailed -= MessageSendFailed;
             _session.Leave();
+            _nAudioTest.Dispose();
         }
 
         public void MessageSendFailed(string message)
         {
             MessageDialog.Show(this, "Failed to Send Message", "Failed to send message.  User is not online or doesn't exist.");
+        }
+
+        private void checkboxEnableMic_Checked(object sender, RoutedEventArgs e)
+        {
+            _nAudioTest.InputDeviceNumber = comboBoxRecordingDevices.SelectedIndex;
+            _nAudioTest.Enable();
+        }
+
+        private void checkboxEnableMic_Unchecked(object sender, RoutedEventArgs e)
+        {
+            _nAudioTest.Disable();
+        }
+
+        private void comboBoxRecordingDevices_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!(checkboxEnableMic.IsChecked == true))
+                return;
+
+            _nAudioTest.Disable();
+            _nAudioTest.InputDeviceNumber = comboBoxRecordingDevices.SelectedIndex;
+            _nAudioTest.Enable();
+        }
+
+        private void buttonSetMicKey_Click(object sender, RoutedEventArgs e)
+        {
+            App.KeyDown += App_KeyDown;
+            MessageDialog.Show(this, "Press Key", "Press the key you want to trigger the microphone. Then click OK.");
+            Properties.Settings.Default.MicTriggerKey = (int)_lastKeyDown;
+            Properties.Settings.Default.Save();
+            App.KeyDown -= App_KeyDown;
+            _nAudioTest.TriggerKey = (System.Windows.Forms.Keys)Properties.Settings.Default.MicTriggerKey;
+        }
+
+        System.Windows.Forms.Keys _lastKeyDown;
+
+        void App_KeyDown(System.Windows.Forms.Keys obj)
+        {
+            _lastKeyDown = obj;
         }
     }
 }

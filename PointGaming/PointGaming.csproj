@@ -100,8 +100,14 @@
       <HintPath>..\libraries\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="NAudio">
+      <HintPath>..\packages\NAudio.1.6\lib\net20\NAudio.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NSpeex">
+      <HintPath>..\libraries\NSpeex.dll</HintPath>
     </Reference>
     <Reference Include="OpenCLNet">
       <HintPath>..\libraries\OpenCLNet.dll</HintPath>
@@ -113,11 +119,13 @@
       <HintPath>..\packages\SocketIO4Net.Client.0.6.26\lib\net40\SocketIOClient.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -152,7 +160,10 @@
     <Compile Include="Chat\AutoScroller.cs" />
     <Compile Include="Chat\ChatroomSessionBase.cs" />
     <Compile Include="Chat\ChatSessionBase.cs" />
+    <Compile Include="NAudio\INetworkChatCodec.cs" />
+    <Compile Include="NAudio\NAudioTest.cs" />
     <Compile Include="Chat\PrivateChatSession.cs" />
+    <Compile Include="NAudio\SpeexChatCodec.cs" />
     <Compile Include="WindowTreeManager.cs" />
     <Compile Include="SessionManager.cs" />
     <Compile Include="Chat\ChatroomSession.cs" />

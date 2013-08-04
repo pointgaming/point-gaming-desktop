@@ -11,6 +11,7 @@ namespace PointGaming.POCO
 		public string _id { get; set; }
         public string username { get; set; }
         public string rank { get; set; }
+        public string avatar { get; set; }
         public int points { get; set; }
         public TeamBase team { get; set; }
 
@@ -38,7 +39,7 @@ namespace PointGaming.POCO
 		
 
 
-      //  "_id": "4f1ddce7-a62f-4cd9-9593-1c6e160cd85b",
+      // "_id": "4f1ddce7-a62f-4cd9-9593-1c6e160cd85b",
       //"avatar_content_type": null,
       //"avatar_file_name": null,
       //"avatar_file_size": null,

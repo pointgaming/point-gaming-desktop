@@ -11,6 +11,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <FlowDocumentScrollViewer Grid.Row="0" HorizontalAlignment="Stretch" Name="flowDocumentLog" VerticalAlignment="Stretch"
                      VerticalScrollBarVisibility="Auto" Background="White">
@@ -20,14 +21,31 @@
                 </Style>
             </FlowDocumentScrollViewer.Resources>
         </FlowDocumentScrollViewer>
-
+        
         <Grid Grid.Row="1">
+            <StackPanel Orientation="Horizontal">
+                <ComboBox Height="23" Name="comboBoxRecordingDevices" Width="220" SelectionChanged="comboBoxRecordingDevices_SelectionChanged" />
+                <Button Content="Set Mic Key" Height="23" Name="buttonSetMicKey" Width="75" Click="buttonSetMicKey_Click" />
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBox Grid.Column="0" Height="69" HorizontalAlignment="Stretch" Name="textBoxInput" VerticalAlignment="Stretch" PreviewKeyDown="textBoxInput_PreviewKeyDown" MaxLength="1024" TextWrapping="Wrap" AcceptsReturn="True" />
-            <Button Grid.Column="1" Content="Send" Grid.Row="1" Height="23" HorizontalAlignment="Left" Name="buttonSendInput" VerticalAlignment="Top" Width="75" Click="buttonSendInput_Click" />
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBox Grid.Column="0" Grid.RowSpan="3" Height="69" HorizontalAlignment="Stretch" Name="textBoxInput" VerticalAlignment="Stretch" PreviewKeyDown="textBoxInput_PreviewKeyDown" MaxLength="1024" TextWrapping="Wrap" AcceptsReturn="True" />
+            <Button Grid.Column="1" Grid.Row="0" Content="Send" Height="23" HorizontalAlignment="Left" Name="buttonSendInput" VerticalAlignment="Top" Width="75" Click="buttonSendInput_Click" />
+            <CheckBox Grid.Column="1" Grid.Row="1" Content="Voice" Height="23" HorizontalAlignment="Left" Name="checkboxEnableMic" VerticalAlignment="Top" Width="80" Checked="checkboxEnableMic_Checked" Unchecked="checkboxEnableMic_Unchecked" />
+            <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal">
+                <RadioButton Content="Tx" Height="16" HorizontalAlignment="Left" Name="radioButtonTransmit" VerticalAlignment="Top" Margin="4,0,4,0" IsEnabled="False" />
+                <RadioButton Content="Rx" Height="16" HorizontalAlignment="Left" Name="radioButtonReceive" VerticalAlignment="Top" IsEnabled="False" />
+            </StackPanel>
         </Grid>
     </Grid>
 </Window>

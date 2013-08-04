@@ -103,13 +103,12 @@ namespace PointGaming.Lobby
 
             _userData.LookupPendingBets(OnPendingBetsComplete);
 
-            _lobbySession.ChatMessages.CollectionChanged += ChatMessages_CollectionChanged;
+            _lobbySession.ChatMessageReceived += ChatMessages_CollectionChanged;
         }
 
-        void ChatMessages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void ChatMessages_CollectionChanged(ChatMessage item)
         {
-            foreach (ChatMessage item in e.NewItems)
-                AppendUserMessage(item.Author.Username, item.Message);
+            AppendUserMessage(item.Author.Username, item.Message);
         }
 
         private void InitGroupedMembers(ChatroomSessionBase lobbySession)
