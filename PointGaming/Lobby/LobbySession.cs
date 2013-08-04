@@ -148,7 +148,7 @@ namespace PointGaming.Lobby
             RestResponse<GameRoomSinglePoco> response = null;
             userData.PgSession.BeginAndCallback(delegate
             {
-                var url = userData.PgSession.GetWebAppFunction("", "/game_rooms/" + id);
+                var url = userData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + id, "include_bets=true");
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.GET);
                 response = (RestResponse<GameRoomSinglePoco>)client.Execute<GameRoomSinglePoco>(request);
