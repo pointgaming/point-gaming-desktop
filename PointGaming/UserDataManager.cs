@@ -146,10 +146,6 @@ namespace PointGaming
                 Id = userBase._id,
                 Username = userBase.username ?? "unknown",
                 Status = "unknown",
-                Rank = userBase.rank,
-                Team = GetPgTeam(userBase.team),
-                Avatar = userBase.avatar,
-                Slug = userBase.slug,
             };
             _userLookup[userBase._id] = user;
             LookupUserData(userBase._id);
@@ -158,15 +154,22 @@ namespace PointGaming
 
         public PgTeam GetPgTeam(TeamBase teamBase)
         {
-            if (teamBase == null)
+            if (teamBase == null || teamBase._id == null)
                 return null;
 
             PgTeam team;
-            if (_teamLookup.TryGetValue(teamBase._id, out team))
-                return team;
-            team = new PgTeam { Id = teamBase._id, Name = teamBase.name };
-            _teamLookup[teamBase._id] = team;
-            // todo dean gores 2013-02-26: should probably look this user up so that real info can be shown
+            if (!_teamLookup.TryGetValue(teamBase._id, out team))
+            {
+                team = new PgTeam { Id = teamBase._id, Name = teamBase.name };
+                _teamLookup[teamBase._id] = team;
+            }
+            var teamFull = teamBase as TeamFull;
+            if (teamFull != null)
+            {
+                team.Name = teamFull.name;
+                // todo copy the rest of the details
+            }
+
             return team;
         }
 
@@ -186,13 +189,13 @@ namespace PointGaming
 
         public void LookupUserData(string userId)
         {
-            RestResponse<UserBase> response = null;
+            RestResponse<UserFullResponse> response = null;
             PgSession.BeginAndCallback(delegate
             {
                 var url = PgSession.GetWebAppFunction("/api/v1", "/users/" + userId + ".json");
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
-                response = (RestResponse<UserBase>)client.Execute<UserBase>(request);
+                response = (RestResponse<UserFullResponse>)client.Execute<UserFullResponse>(request);
             }, delegate
             {
                 App.LogLine(response.Content);
@@ -201,11 +204,11 @@ namespace PointGaming
                     PgUser user;
                     if (_userLookup.TryGetValue(userId, out user))
                     {
-                        user.Rank = response.Data.rank;
-                        user.Username = response.Data.username;
-                        user.Slug = response.Data.slug;
-                        user.Points = response.Data.points;
-                        user.Team = GetPgTeam(response.Data.team);
+                        var rUser = response.Data.user;
+                        user.Username = rUser.username;
+                        user.Slug = rUser.slug;
+                        user.Points = rUser.points;
+                        user.Team = GetPgTeam(rUser.team);
                     }
                 }
             });

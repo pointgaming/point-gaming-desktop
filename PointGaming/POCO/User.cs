@@ -1,20 +1,79 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace PointGaming.POCO
 {
+    public class UserFullResponse
+    {
+        public UserFull user { get; set; }
+    }
+
+    public class UserFull : UserWithStatus
+    {
+        public bool admin { get; set; }
+        public string avatar_content_type { get; set; }
+        public string avatar_file_name { get; set; }
+        public int avatar_file_size { get; set; }
+        public DateTime avatar_updated_at { get; set; }
+        public string birth_date { get; set; }
+        public string cash { get; set; }
+        public string country { get; set; }
+        public DateTime created_at { get; set; }
+        public int dispute_lost_count { get; set; }
+        public int dispute_won_count { get; set; }
+        public string email { get; set; }
+        public int finalized_bets_count { get; set; }
+        public string first_name { get; set; }
+        public int friend_count { get; set; }
+        public string game_id { get; set; }
+        public string group_id { get; set; }
+        public string last_name { get; set; }
+        public int match_dispute_lost_count { get; set; }
+        public int match_dispute_won_count { get; set; }
+        public int match_participation_count { get; set; }
+        public string phone { get; set; }
+        public int points { get; set; }
+        public string profile_id { get; set; }
+        public string reputation { get; set; }
+        public string slug { get; set; }
+        public string state { get; set; }
+        public int stream_owner_count { get; set; }
+        public string stripe_customer_token { get; set; }
+        public TeamFull team { get; set; }
+
+        public string team_id { get; set; }
+        public string time_zone { get; set; }
+        public DateTime updated_at { get; set; }
+
+        public string profile_url { get; set; }
+        public string age { get; set; }
+        public string avatar { get; set; }
+    }
+    public class TeamFull : TeamBase
+    {
+        public DateTime created_at { get; set; }
+        //"game_points":{"":25},
+        public string logo_content_type { get; set; }
+        public string logo_file_name { get; set; }
+        public int logo_file_size { get; set; }
+        public DateTime logo_updated_at { get; set; }
+        public int member_count { get; set; }
+        public int points { get; set; }
+        public string slug { get; set; }
+        public string tag { get; set; }
+        public DateTime updated_at { get; set; }
+    }
+
+
     public class UserWithStatus : UserBase
     {
         public string status { get; set; }
     }
+
     public class UserBase
 	{
 		public string _id { get; set; }
         public string username { get; set; }
-        public string rank { get; set; }
-        public string avatar { get; set; }
-        public string slug { get; set; }
-        public int points { get; set; }
-        public TeamBase team { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -31,35 +90,6 @@ namespace PointGaming.POCO
         {
             return username;
         }
-
-        //public string status { get; set; }
-
-        //public string email { get; set; }
-        //public string first_name { get; set; }
-        //public string last_name { get; set; }
-		
-
-
-      // "_id": "4f1ddce7-a62f-4cd9-9593-1c6e160cd85b",
-      //"avatar_content_type": null,
-      //"avatar_file_name": null,
-      //"avatar_file_size": null,
-      //"avatar_updated_at": null,
-      //"birth_date": null,
-      //"country": null,
-      //"email": "dev@pointgaming.net",
-      //"first_name": "developer",
-      //"last_name": "developer",
-      //"phone": null,
-      //"points": 0,
-      //"profile_id": null,
-      //"state": null,
-      //"status": "offline",
-      //"team": null,
-      //"username": "developer",
-      //"profile_url": "/users/4f1ddce7-a62f-4cd9-9593-1c6e160cd85b/profile",
-      //"age": ""
-
 	}
 
     public class TeamBase
