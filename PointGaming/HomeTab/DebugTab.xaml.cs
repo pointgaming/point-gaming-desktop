@@ -20,6 +20,16 @@ namespace PointGaming.HomeTab
                 comboBoxRecordingDevices.Items.Add(item);
             comboBoxRecordingDevices.SelectedIndex = Properties.Settings.Default.AudioInputDeviceIndex;
             labelMicKey.Content = (Key)Properties.Settings.Default.MicTriggerKey;
+            HomeWindow.UserData.AudioSystem.RecordingDeviceChanged += AudioSystem_RecordingDeviceChanged;
+        }
+
+        void AudioSystem_RecordingDeviceChanged(int obj)
+        {
+            if (obj == Properties.Settings.Default.AudioInputDeviceIndex)
+                return;
+            Properties.Settings.Default.AudioInputDeviceIndex = obj;
+            Properties.Settings.Default.Save();
+            comboBoxRecordingDevices.SelectedIndex = obj;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)

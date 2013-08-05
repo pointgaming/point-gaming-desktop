@@ -33,6 +33,7 @@ namespace PointGaming
         public event Action<string> SpeakingRoomChanged;
         public event AudioStreamExistEvent AudioStarted;
         public event AudioStreamExistEvent AudioStopped;
+        public event Action<int> RecordingDeviceChanged;
 
         private readonly List<PgUser> _audioSenders = new List<PgUser>();
         private string _speakingIntoRoomId;
@@ -73,6 +74,7 @@ namespace PointGaming
             _nAudioTest.TriggerKey = (System.Windows.Input.Key)Properties.Settings.Default.MicTriggerKey;
             _nAudioTest.AudioRecorded += _nAudioTest_AudioRecorded;
             _nAudioTest.AudioRecordEnded += _nAudioTest_AudioRecordEnded;
+            _nAudioTest.InputDeviceNumberChanged += _nAudioTest_InputDeviceNumberChanged;
 
             var audioChatIp = System.Net.IPAddress.Parse(Properties.Settings.Default.AudioChatIp);
             var endpoint = new System.Net.IPEndPoint(audioChatIp, AudioChatClient.DefaultPort);
@@ -81,6 +83,13 @@ namespace PointGaming
             _audioChatClient.Start();
         }
 
+        void _nAudioTest_InputDeviceNumberChanged(int index)
+        {
+            var call = RecordingDeviceChanged;
+            if (call != null)
+                call(index);
+        }
+        
         public void Dispose()
         {
             if (_nAudioTest == null)

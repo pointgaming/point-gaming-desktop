@@ -11,6 +11,7 @@ using System.Threading;
 using System.Net;
 using NAudio.Wave.Compression;
 using System.Diagnostics;
+using NA = NAudio;
 
 namespace PointGaming.NAudio
 {
@@ -20,6 +21,7 @@ namespace PointGaming.NAudio
     {
         public event AudioAvailable AudioRecorded;
         public event Action AudioRecordEnded;
+        public event Action<int> InputDeviceNumberChanged;
 
         private WaveIn waveIn;
         private IWavePlayer waveOut;
@@ -27,7 +29,21 @@ namespace PointGaming.NAudio
         private INetworkChatCodec codec;
         public System.Windows.Input.Key TriggerKey {get ; set;}
 
-        public int InputDeviceNumber { get; set; }
+        private int _InputDeviceNumber;
+        public int InputDeviceNumber
+        {
+            get { return _InputDeviceNumber; }
+            set
+            {
+
+                if (value == _InputDeviceNumber)
+                    return;
+                _InputDeviceNumber = value;
+                var call = InputDeviceNumberChanged;
+                if (call != null)
+                    call(value);
+            }
+        }
 
         private object _startStopSynch = new object();
 
@@ -55,15 +71,42 @@ namespace PointGaming.NAudio
                 if (waveIn != null)
                     return;
 
-                waveIn = new WaveIn();
-                waveIn.BufferMilliseconds = 50;
-                waveIn.DeviceNumber = InputDeviceNumber;
-                waveIn.WaveFormat = codec.RecordFormat;
+                int deviceNumber = InputDeviceNumber;
 
-                waveIn.DataAvailable += waveIn_DataAvailable;
-                waveIn.StartRecording();
+                while (true)
+                {
+                    try
+                    {
+                        CaptureMic(deviceNumber);
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        if (deviceNumber != 0)
+                            deviceNumber = 0;
+                        else
+                        {
+                            App.LogLine("Failed to start microphone capture due to " + e.Message);
+                            App.LogLine(e.StackTrace);
+                            break;
+                        }
+                    }
+                }
+                InputDeviceNumber = deviceNumber;
             }
         }
+
+        private void CaptureMic(int deviceNumber)
+        {
+            waveIn = new WaveIn();
+            waveIn.BufferMilliseconds = 50;
+            waveIn.DeviceNumber = deviceNumber;
+            waveIn.WaveFormat = codec.RecordFormat;
+
+            waveIn.DataAvailable += waveIn_DataAvailable;
+            waveIn.StartRecording();
+        }
+
         private void StopSending()
         {
             lock (_startStopSynch)
