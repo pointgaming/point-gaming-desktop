@@ -215,6 +215,19 @@ namespace PointGaming
             }
         }
 
+        private string _slug;
+        public string Slug
+        {
+            get { return _slug; }
+            set
+            {
+                if (value == _slug)
+                    return;
+                _slug = value;
+                NotifyChanged("Slug");
+            }
+        }
+
         private string _status;
         public string Status
         {
@@ -294,6 +307,11 @@ namespace PointGaming
         public bool HasTeam
         {
             get { return Team != null; }
+        }
+
+        public void ViewProfile()
+        {
+            System.Diagnostics.Process.Start(PointGaming.Properties.Settings.Default.WebServerUrl + "/u/" + Slug);
         }
 
         public readonly ObservableCollection<HomeTab.LauncherInfo> _lobbies = new ObservableCollection<HomeTab.LauncherInfo>();

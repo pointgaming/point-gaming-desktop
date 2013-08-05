@@ -72,7 +72,7 @@ namespace PointGaming
 
         private void ProfileClick(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(PointGaming.Properties.Settings.Default.WebServerUrl + "/u/" + UserData.User.Username);
+            UserData.User.ViewProfile();
         }
         
         private void Window_Loaded(object sender, RoutedEventArgs e)

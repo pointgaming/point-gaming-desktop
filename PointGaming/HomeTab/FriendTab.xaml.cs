@@ -123,9 +123,7 @@ namespace PointGaming.HomeTab
 
         private void userContextMenuViewProfile_Click(object sender, RoutedEventArgs e)
         {
-            PgUser friend = _rightClickedFriend;
-            var url = Properties.Settings.Default.WebServerUrl + "/u/" + friend.Username + "/profile";
-            System.Diagnostics.Process.Start(url);
+            _rightClickedFriend.ViewProfile();
         }
 
         #region friend status

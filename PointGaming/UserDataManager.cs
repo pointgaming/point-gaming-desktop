@@ -149,6 +149,7 @@ namespace PointGaming
                 Rank = userBase.rank,
                 Team = GetPgTeam(userBase.team),
                 Avatar = userBase.avatar,
+                Slug = userBase.slug,
             };
             _userLookup[userBase._id] = user;
             LookupUserData(userBase._id);
@@ -194,6 +195,7 @@ namespace PointGaming
                 response = (RestResponse<UserBase>)client.Execute<UserBase>(request);
             }, delegate
             {
+                App.LogLine(response.Content);
                 if (response.IsOk())
                 {
                     PgUser user;
@@ -201,6 +203,7 @@ namespace PointGaming
                     {
                         user.Rank = response.Data.rank;
                         user.Username = response.Data.username;
+                        user.Slug = response.Data.slug;
                         user.Points = response.Data.points;
                         user.Team = GetPgTeam(response.Data.team);
                     }
