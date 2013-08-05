@@ -198,7 +198,6 @@ namespace PointGaming
                 response = (RestResponse<UserFullResponse>)client.Execute<UserFullResponse>(request);
             }, delegate
             {
-                App.LogLine(response.Content);
                 if (response.IsOk())
                 {
                     PgUser user;
@@ -208,6 +207,7 @@ namespace PointGaming
                         user.Username = rUser.username;
                         user.Slug = rUser.slug;
                         user.Points = rUser.points;
+                        user.Avatar = rUser.avatar;
                         user.Team = GetPgTeam(rUser.team);
                     }
                 }
