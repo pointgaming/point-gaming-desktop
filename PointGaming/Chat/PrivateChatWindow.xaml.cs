@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using PointGaming.HomeTab;
 using PointGaming.POCO;
-using PointGaming.NAudio;
+using PointGaming.Audio;
 using PointGaming.AudioChat;
 using NA = NAudio;
 

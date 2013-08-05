@@ -16,7 +16,7 @@ using System.Security.Cryptography;
 using PointGaming.Lobby;
 using PointGaming.GameRoom;
 using PointGaming.Chat;
-using PointGaming.NAudio;
+using PointGaming.Audio;
 using PointGaming.AudioChat;
 using NA = NAudio;
 

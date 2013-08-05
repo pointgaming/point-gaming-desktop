@@ -7,7 +7,7 @@ using NSpeex;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 
-namespace PointGaming.NAudio
+namespace PointGaming.Audio
 {
     [Export(typeof(INetworkChatCodec))]
     class NarrowBandSpeexCodec : SpeexChatCodec

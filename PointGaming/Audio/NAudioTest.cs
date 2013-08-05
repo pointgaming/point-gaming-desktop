@@ -13,7 +13,7 @@ using NAudio.Wave.Compression;
 using System.Diagnostics;
 using NA = NAudio;
 
-namespace PointGaming.NAudio
+namespace PointGaming.Audio
 {
     public delegate void AudioAvailable(NAudioTest source, byte[] data);
 

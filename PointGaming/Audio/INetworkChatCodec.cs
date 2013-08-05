@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using NAudio.Wave;
 
-namespace PointGaming.NAudio
+namespace PointGaming.Audio
 {
     public interface INetworkChatCodec : IDisposable
     {

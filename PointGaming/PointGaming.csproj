@@ -163,11 +163,14 @@
     <Compile Include="HomeTab\KeySelectDialog.xaml.cs">
       <DependentUpon>KeySelectDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NAudio\INetworkChatCodec.cs" />
-    <Compile Include="NAudio\MixingWaveProvider.cs" />
-    <Compile Include="NAudio\NAudioTest.cs" />
+    <Compile Include="Audio\API.cs" />
+    <Compile Include="Audio\INetworkChatCodec.cs" />
+    <Compile Include="Audio\MixingWaveProvider.cs" />
+    <Compile Include="Audio\NAudioTest.cs" />
     <Compile Include="Chat\PrivateChatSession.cs" />
-    <Compile Include="NAudio\SpeexChatCodec.cs" />
+    <Compile Include="Audio\OpusDecoder.cs" />
+    <Compile Include="Audio\OpusEncoder.cs" />
+    <Compile Include="Audio\SpeexChatCodec.cs" />
     <Compile Include="POCO\BetList.cs" />
     <Compile Include="WindowTreeManager.cs" />
     <Compile Include="SessionManager.cs" />
@@ -734,6 +737,12 @@
   <ItemGroup>
     <Resource Include="Resources\SpeakerLoud.png" />
     <Resource Include="Resources\SpeakerMute.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\libraries\opus.dll">
+      <Link>NAudio\opus.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
