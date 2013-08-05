@@ -65,14 +65,9 @@ namespace PointGaming
             };
             tabControlMain.Items.Add(tab);
 
-            usernameButton.Content = UserData.User.Username;
+            menuItemUsername.Header = UserData.User.Username;
 
             UserData.StartChat();
-        }
-
-        private void usernameButton_OnClick(object sender, EventArgs e)
-        {
-            usernameButtonMenu.IsOpen = true;
         }
 
         private void ProfileClick(object sender, EventArgs e)
@@ -171,7 +166,7 @@ namespace PointGaming
 
         private void homeWindow_SourceInitialized(object sender, EventArgs e)
         {
-            GlassExtender.ExtendGlassFrame(this, new Thickness(-1));
+            //GlassExtender.ExtendGlassFrame(this, new Thickness(-1));
         }
 
         private void LogOutClick(object sender, RoutedEventArgs e)

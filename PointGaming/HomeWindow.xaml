@@ -11,7 +11,10 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}" WindowStyle="SingleBorderWindow" ResizeMode="CanResize"
         ShowInTaskbar="False" SourceInitialized="homeWindow_SourceInitialized">
     <Grid>
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         <tb:TaskbarIcon Name="taskbarIcon" IconSource="/PointGaming;component/PointGaming.ico" 
                         TrayMouseDoubleClick="TaskbarIcon_TrayMouseDoubleClick"
                         ToolTipText="Point Gaming" Visibility="Visible">
@@ -39,14 +42,14 @@
             </tb:TaskbarIcon.Style>
         </tb:TaskbarIcon>
 
-        <Button x:Name="usernameButton" Click="usernameButton_OnClick" Width="149" Height="34" Margin="8,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
-            <Button.ContextMenu>
-                <ContextMenu x:Name="usernameButtonMenu">
-                    <MenuItem Header="View Profile" Click="ProfileClick" />
-                    <MenuItem Header="Log Out" Click="LogOutClick" />
-                </ContextMenu>
-            </Button.ContextMenu>
-        </Button>
-        <TabControl Name="tabControlMain" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,49,0,0" />
+        
+        <Menu Grid.Row="0" Height="23" HorizontalAlignment="Stretch" Name="menu1" VerticalAlignment="Top">
+            <MenuItem Header="Username" Name="menuItemUsername">
+                <MenuItem Header="View Profile" Click="ProfileClick" />
+                <MenuItem Header="Log Out" Click="LogOutClick" />
+            </MenuItem>
+        </Menu>
+        
+        <TabControl Grid.Row="1" Name="tabControlMain" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
     </Grid>
 </Window>
