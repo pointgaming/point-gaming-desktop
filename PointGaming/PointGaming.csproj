@@ -173,6 +173,7 @@
     <Compile Include="Audio\OpusEncoder.cs" />
     <Compile Include="Audio\SpeexChatCodec.cs" />
     <Compile Include="POCO\BetList.cs" />
+    <Compile Include="POCO\BetterAccount.cs" />
     <Compile Include="WindowTreeManager.cs" />
     <Compile Include="SessionManager.cs" />
     <Compile Include="Chat\ChatroomSession.cs" />
