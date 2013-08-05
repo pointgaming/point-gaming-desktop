@@ -39,6 +39,14 @@
             </tb:TaskbarIcon.Style>
         </tb:TaskbarIcon>
 
-        <TabControl Name="tabControlMain" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        <Button x:Name="usernameButton" Click="usernameButton_OnClick" Width="149" Height="34" Margin="8,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Button.ContextMenu>
+                <ContextMenu x:Name="usernameButtonMenu">
+                    <MenuItem Header="View Profile" Click="ProfileClick" />
+                    <MenuItem Header="Log Out" Click="LogOutClick" />
+                </ContextMenu>
+            </Button.ContextMenu>
+        </Button>
+        <TabControl Name="tabControlMain" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,49,0,0" />
     </Grid>
 </Window>

@@ -65,7 +65,19 @@ namespace PointGaming
             };
             tabControlMain.Items.Add(tab);
 
+            usernameButton.Content = UserData.User.Username;
+
             UserData.StartChat();
+        }
+
+        private void usernameButton_OnClick(object sender, EventArgs e)
+        {
+            usernameButtonMenu.IsOpen = true;
+        }
+
+        private void ProfileClick(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(PointGaming.Properties.Settings.Default.WebServerUrl + "/u/" + UserData.User.Username);
         }
         
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -174,6 +186,11 @@ namespace PointGaming
             this.Show();
             this.WindowState = WindowState.Normal;
             this.Activate();
+        }
+
+        private void signedInAsLabel_GotMouseCapture(object sender, MouseEventArgs e)
+        {
+
         }
     }
 
