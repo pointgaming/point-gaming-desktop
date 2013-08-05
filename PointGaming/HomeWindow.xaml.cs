@@ -65,8 +65,11 @@ namespace PointGaming
             };
             tabControlMain.Items.Add(tab);
 
-            menuItemUsername.Header = UserData.User.Username;
-
+            var b = new System.Windows.Data.Binding("Username");
+            b.Mode = System.Windows.Data.BindingMode.OneWay;
+            b.Source = UserData.User;
+            menuItemUsername.SetBinding(MenuItem.HeaderProperty, b);
+            
             UserData.StartChat();
         }
 

@@ -69,7 +69,7 @@ namespace PointGaming
         public AudioChatSession(UserDataManager userData)
         {
             _userData = userData;
-            _nAudioTest = new NAudioTest(new WideBandSpeexCodec());
+            _nAudioTest = new NAudioTest(new Opus48kCodec());
             _nAudioTest.InputDeviceNumber = Properties.Settings.Default.AudioInputDeviceIndex;
             _nAudioTest.TriggerKey = (System.Windows.Input.Key)Properties.Settings.Default.MicTriggerKey;
             _nAudioTest.AudioRecorded += _nAudioTest_AudioRecorded;

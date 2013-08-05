@@ -149,6 +149,7 @@
     </ApplicationDefinition>
     <Compile Include="ActiveGroupingCollectionView.cs" />
     <Compile Include="AudioChatSession.cs" />
+    <Compile Include="Audio\OpusChatCodec.cs" />
     <Compile Include="BitcoinMiner\CPUThreadMiner.cs" />
     <Compile Include="BitcoinMiner\Miner.cs" />
     <Compile Include="BitcoinMiner\Numerical.cs" />
@@ -740,7 +741,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\libraries\opus.dll">
-      <Link>NAudio\opus.dll</Link>
+      <Link>opus.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

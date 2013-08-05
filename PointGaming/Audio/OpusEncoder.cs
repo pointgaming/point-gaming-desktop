@@ -58,7 +58,7 @@ namespace PointGaming.Audio
             if (disposed)
                 throw new ObjectDisposedException("OpusEncoder");
 
-            int frames = FrameCount(inputPcmSamples);
+            int frames = sampleLength / FrameSize;
             IntPtr encodedPtr;
             byte[] encoded = new byte[MaxDataBytes];
             int length = 0;
@@ -86,6 +86,8 @@ namespace PointGaming.Audio
             int bytesPerSample = (bitrate / 8) * InputChannels;
             return pcmSamples.Length / bytesPerSample;
         }
+
+        public int FrameSize { get { return 2 * InputChannels; } }
 
         /// <summary>
         /// Helper method to determine how many bytes are required for encoding to work.
