@@ -10,7 +10,9 @@
         <DataGrid AutoGenerateColumns="False" HorizontalAlignment="Stretch" Name="dataGridLauncher" VerticalAlignment="Stretch"
                   ItemsSource="{Binding Launchers}" SelectionMode="Single"
                   CanUserAddRows="False" CanUserDeleteRows="False"
-                  PreviewMouseRightButtonDown="dataGridLauncher_PreviewMouseRightButtonDown" MouseDoubleClick="dataGridLauncher_MouseDoubleClick">
+                  PreviewMouseRightButtonDown="dataGridLauncher_PreviewMouseRightButtonDown"
+                  MouseDoubleClick="dataGridLauncher_MouseDoubleClick"
+                  HorizontalScrollBarVisibility="Disabled">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Game" Width="*" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>

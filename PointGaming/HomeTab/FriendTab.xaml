@@ -27,7 +27,8 @@
                   ItemsSource="{Binding Friends}" SelectionMode="Single"
                   MouseDown="dataGridFriends_MouseDown" MouseDoubleClick="dataGridFriends_MouseDoubleClick"
                   CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="False" CanUserReorderColumns="False"
-                  CanUserSortColumns="False" CanUserResizeRows="False">
+                  CanUserSortColumns="False" CanUserResizeRows="False"
+                  HorizontalScrollBarVisibility="Disabled">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Player" Width="*" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
