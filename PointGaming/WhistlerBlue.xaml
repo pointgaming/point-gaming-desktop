@@ -16,11 +16,11 @@
         <!-- Color Palette -->
         <SolidColorBrush x:Key="OutsideFontColor" Color="#FF000000"/>
         <SolidColorBrush x:Key="ButtonFontColor" Color="#FF042271"/>
-        <Color x:Key="Focus">#FF04CCFF</Color>
+        <Color x:Key="Focus">#FFFF044E</Color>
         <Color x:Key="HyperlinkFocus">#FF2B54BA</Color>
         <Color x:Key="Calendar">#FF0066CC</Color>
-        <Color x:Key="PressStroke1">#FF1D415C</Color>
-        <Color x:Key="PressStroke2">#FF2C628B</Color>
+        <Color x:Key="PressStroke1">#FF5C1D22</Color>
+        <Color x:Key="PressStroke2">#FF8B2C33</Color>
         <Color x:Key="TabStroke">#FF4F8BB9</Color>
         <Color x:Key="DataSortArrow">#3F2C628B</Color>
         <!--PressStroke2, 25%-->
@@ -40,17 +40,17 @@
         <Color x:Key="ItemOver2">#FFCFEDFD</Color>
         <Color x:Key="ItemOverStroke">#FFD8F0FA</Color>
         <Color x:Key="ItemSelectStroke">#FF98DDFB</Color>
-        <Color x:Key="Over1">#FFE2F5FF</Color>
-        <Color x:Key="Over2">#FFC0E7FC</Color>
-        <Color x:Key="Over3">#FF9EDDFF</Color>
+        <Color x:Key="Over1">#FFFFE2E7</Color>
+        <Color x:Key="Over2">#FFFCC0C9</Color>
+        <Color x:Key="Over3">#FFFF9EAD</Color>
         <Color x:Key="Press1">#FF759FB6</Color>
         <Color x:Key="Press2">#FFB6E0F6</Color>
         <Color x:Key="Press3">#FF9DD5F4</Color>
-        <Color x:Key="PressHighlight">#FF387599</Color>
-        <Color x:Key="ButtonHighlightMid">#0095D9FF</Color>
-        <Color x:Key="ButtonHighlightMid2">#9935A6E6</Color>
+        <Color x:Key="PressHighlight">#FF993845</Color>
+        <Color x:Key="ButtonHighlightMid">#00FF95A4</Color>
+        <Color x:Key="ButtonHighlightMid2">#99E6354D</Color>
         <!--60%-->
-        <Color x:Key="ButtonHighlightMid3">#A535A6E6</Color>
+        <Color x:Key="ButtonHighlightMid3">#A5E6354D</Color>
         <!--65%-->
         <Color x:Key="RadioIcon1">#FF90D5E5</Color>
         <Color x:Key="RadioIcon2">#FF28A2D1</Color>
