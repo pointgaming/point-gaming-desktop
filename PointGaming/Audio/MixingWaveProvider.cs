@@ -87,13 +87,18 @@ namespace PointGaming.Audio
 
         private void FinishMix(byte[] buffer, int offset, int bytesRead)
         {
-            float channelCountInv = 1f / ((float)_inputs.Count);
             var sumBufferIndex = 0;
             var bufferIndex = offset;
             var sumBUfferEnd = bytesRead >> 1;
             while (sumBufferIndex < sumBUfferEnd)
             {
-                var valueF = _sumBuffer[sumBufferIndex++] * channelCountInv;
+                var valueF = _sumBuffer[sumBufferIndex++];
+                // clip
+                if (valueF > short.MaxValue)
+                    valueF = short.MaxValue;
+                else if (valueF < short.MinValue)
+                    valueF = short.MinValue;
+                // convert to bytes
                 var valueS = (short)valueF;
                 var valueU = (ushort)valueS;
                 var lo = (byte)valueU;
