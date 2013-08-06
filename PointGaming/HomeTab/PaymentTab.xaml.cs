@@ -5,6 +5,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Windows.Threading;
+using RestSharp;
 
 namespace PointGaming.HomeTab
 {
@@ -12,16 +14,47 @@ namespace PointGaming.HomeTab
     {
         BitcoinMiner.StratumSession _stratumSession;
         List<BitcoinMiner.Miner> _miners;
-        private System.Windows.Threading.DispatcherTimer _reconnectTimer;
+        private DispatcherTimer _reconnectTimer;
+        private DispatcherTimer _progressTimer;
 
         public PaymentTab()
         {
             InitializeComponent();
 
-            _reconnectTimer = new System.Windows.Threading.DispatcherTimer();
+            _reconnectTimer = new DispatcherTimer();
             _reconnectTimer.Tick += new EventHandler(dispatcherTimer_Tick);
 
             _reconnectTimer.Interval = new TimeSpan(0, 5, new Random().Next(60) - 30);
+
+
+            _progressTimer = new DispatcherTimer();
+            _progressTimer.Interval = TimeSpan.FromMinutes(15);
+            _progressTimer.Tick += _progressTimer_Tick;
+            _progressTimer.Start();
+            _progressTimer_Tick(null, null);
+        }
+
+        private void _progressTimer_Tick(object sender, EventArgs e)
+        {
+            var session = HomeWindow.UserData.PgSession;
+            var url = session.GetWebApiV1Function("/better");
+            RestResponse<PointGaming.POCO.BetterAccountPoco> response = null;
+            session.BeginAndCallback(delegate
+            {
+                response = SocketSession.Rest<PointGaming.POCO.BetterAccountPoco>(url, Method.GET, null);
+            }, delegate
+            {
+                if (!response.IsOk())
+                    return;
+                var status = response.Data;
+                var timeSpan = TimeSpan.FromSeconds(status.seconds);
+                double rolls = Math.Floor(timeSpan.TotalDays / 15.0);
+                double progressDays = timeSpan.TotalDays - (15.0 * rolls);
+                double progressPercent = (progressDays / 15.0) * 100.0;
+                progressBar1.Value = progressPercent;
+                textBlockPercentComplete.Text = string.Format("{0:0}%", progressPercent);
+                textBlockProgressDays.Text = string.Format("{0:0.0} of 15 days", progressDays);
+            });
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -128,6 +161,7 @@ namespace PointGaming.HomeTab
         public void LoggingOut()
         {
             StopMining();
+            _progressTimer.Stop();
         }
 
         private void buttonLearnMore_Click(object sender, RoutedEventArgs e)

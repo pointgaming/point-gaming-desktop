@@ -69,7 +69,7 @@ namespace PointGaming
         public AudioChatSession(UserDataManager userData)
         {
             _userData = userData;
-            _nAudioTest = new NAudioTest(new Opus48kCodec());
+            _nAudioTest = new NAudioTest(new Opus16kCodec());
             _nAudioTest.InputDeviceNumber = Properties.Settings.Default.AudioInputDeviceIndex;
             _nAudioTest.TriggerKey = (System.Windows.Input.Key)Properties.Settings.Default.MicTriggerKey;
             _nAudioTest.AudioRecorded += _nAudioTest_AudioRecorded;
@@ -147,6 +147,8 @@ namespace PointGaming
                 return;
 
             var isEnd = obj.Audio.Length == 0;
+
+            //App.LogLine(obj.FromUserId + " " + obj.MessageNumber + " " + obj.Audio.Length);
 
             if (isEnd)
             {

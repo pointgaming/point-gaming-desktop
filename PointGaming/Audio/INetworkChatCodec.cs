@@ -25,9 +25,13 @@ namespace PointGaming.Audio
         /// </summary>
         WaveFormat RecordFormat { get; }
         /// <summary>
-        /// Encodes a block of audio
+        /// Returns how many times to call Encode given the input length
         /// </summary>
-        byte[] Encode(byte[] data, int offset, int length);
+        int Encode(byte[] data, int offset, int length);
+        /// <summary>
+        /// Returns a block of encoded data
+        /// </summary>
+        byte[] GetEncoded();
         /// <summary>
         /// Decodes a block of audio
         /// </summary>

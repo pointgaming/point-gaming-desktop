@@ -54,6 +54,7 @@ namespace PointGaming.Audio
             this.recordingFormat = new WaveFormat(sampleRate, 16, 1);
             this.description = description;
             this.encoderInputBuffer = new WaveBuffer(this.recordingFormat.AverageBytesPerSecond); // more than enough
+            outputBufferTemp = new byte[this.recordingFormat.AverageBytesPerSecond];
         }
 
         public string Name
@@ -71,20 +72,23 @@ namespace PointGaming.Audio
             get { return recordingFormat; }
         }
 
-        public byte[] Encode(byte[] data, int offset, int length)
+        public int Encode(byte[] data, int offset, int length)
         {
             FeedSamplesIntoEncoderInputBuffer(data, offset, length);
-            int samplesToEncode = encoderInputBuffer.ShortBufferCount;
-            if (samplesToEncode % encoder.FrameSize != 0)
-            {
-                samplesToEncode -= samplesToEncode % encoder.FrameSize;
-            }
-            byte[] outputBufferTemp = new byte[length]; // contains more than enough space
-            int bytesWritten = encoder.Encode(encoderInputBuffer.ShortBuffer, 0, samplesToEncode, outputBufferTemp, 0, length);
+            return encoderInputBuffer.ShortBufferCount / encoder.FrameSize;
+        }
+
+        byte[] outputBufferTemp;
+        public byte[] GetEncoded()
+        {
+            int samplesToEncode = encoder.FrameSize;
+            if (encoderInputBuffer.ShortBufferCount < encoder.FrameSize)
+                return new byte[0];
+
+            int bytesWritten = encoder.Encode(encoderInputBuffer.ShortBuffer, 0, samplesToEncode, outputBufferTemp, 0, outputBufferTemp.Length);
             byte[] encoded = new byte[bytesWritten];
             Array.Copy(outputBufferTemp, 0, encoded, 0, bytesWritten);
             ShiftLeftoverSamplesDown(samplesToEncode);
-            Debug.WriteLine(String.Format("NSpeex: In {0} bytes, encoded {1} bytes [enc frame size = {2}]", length, bytesWritten, encoder.FrameSize));
             return encoded;
         }
 
@@ -109,7 +113,6 @@ namespace PointGaming.Audio
             int bytesDecoded = samplesDecoded * 2;
             byte[] decoded = new byte[bytesDecoded];
             Array.Copy(outputBufferTemp, 0, decoded, 0, bytesDecoded);
-            Debug.WriteLine(String.Format("NSpeex: In {0} bytes, decoded {1} bytes [dec frame size = {2}]", length, bytesDecoded, decoder.FrameSize));
             return decoded;
         }
 
