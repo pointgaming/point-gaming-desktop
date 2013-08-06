@@ -76,11 +76,12 @@ namespace PointGaming.Audio
             var end = bytesRead;
             while (i < end)
             {
+                var sumI = i >> 1;
                 var lo = (ushort)_inputBuffer[i++];
                 var hi = (ushort)_inputBuffer[i++];
                 var valueU = lo | (hi << 8);
                 var value = (short)valueU;
-                _sumBuffer[i >> 1] += value;
+                _sumBuffer[sumI] += value;
             }
         }
 

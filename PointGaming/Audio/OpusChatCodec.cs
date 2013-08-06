@@ -60,25 +60,33 @@ namespace PointGaming.Audio
 
     class OpusChatCodec : INetworkChatCodec
     {
-        private WaveFormat recordingFormat;
-        private OpusDecoder decoder;
-        private OpusEncoder encoder;
-        private WaveBuffer encoderInputBuffer;
-        private string description;
+        private WaveFormat _recordingFormat;
+        private OpusDecoder _decoder;
+        private OpusEncoder _encoder;
+        private byte[] _encoderInputBuffer;
+        private int _bufferCount;
+        private string _description;
+        private readonly int _segmentLength;
 
         public OpusChatCodec(int sampleRate, string description)
         {
-            this.decoder = OpusDecoder.Create(sampleRate, 1);
-            this.encoder = OpusEncoder.Create(sampleRate, 1, Application.Restricted_LowLatency);
-            this.encoder.Bitrate = 8192;
-            this.recordingFormat = new WaveFormat(sampleRate, 16, 1);
-            this.description = description;
-            this.encoderInputBuffer = new WaveBuffer(this.recordingFormat.AverageBytesPerSecond); // more than enough
+            this._segmentLength = sampleRate / 25;// 2 bytes per sample, 20ms per segment
+            this._decoder = OpusDecoder.Create(sampleRate, 1);
+            this._encoder = OpusEncoder.Create(sampleRate, 1, Application.Voip);
+            // 16kHz sample rate is 32kB/s raw.
+            // Compressed bitrates:
+            // 32768 is 4kB/s
+            // 24800 is 3kB/s (3100B/s, same as Speex 16kHz)
+            // 8192 is 1kB/s
+            this._encoder.Bitrate = 24800;
+            this._recordingFormat = new WaveFormat(sampleRate, 16, 1);
+            this._description = description;
+            this._encoderInputBuffer = new byte[this._recordingFormat.AverageBytesPerSecond]; // more than enough
         }
 
         public string Name
         {
-            get { return description; }
+            get { return _description; }
         }
 
         public int BitsPerSecond
@@ -88,39 +96,44 @@ namespace PointGaming.Audio
 
         public WaveFormat RecordFormat
         {
-            get { return recordingFormat; }
+            get { return _recordingFormat; }
         }
 
-        public byte[] Encode(byte[] data, int offset, int length)
+        public int Encode(byte[] data, int offset, int length)
         {
             FeedSamplesIntoEncoderInputBuffer(data, offset, length);
-            
-            var segmentLen = 1920;
-            byte[] encoded = new byte[0];
-            while (encoderInputBuffer.ByteBufferCount > segmentLen)
-            {
-                int encodedLength;
-                var encodedOut = encoder.Encode(encoderInputBuffer.ByteBuffer, segmentLen, out encodedLength);
-                byte[] encoded2 = new byte[encoded.Length + encodedLength];
-                Buffer.BlockCopy(encoded, 0, encoded2, 0, encoded.Length);
-                Buffer.BlockCopy(encodedOut, 0, encoded2, encoded.Length, encodedLength);
-                ShiftLeftoverSamplesDown(segmentLen);
-            }
-
-            return encoded;
+            return _bufferCount / _segmentLength;
         }
 
-        private void ShiftLeftoverSamplesDown(int length)
+        public byte[] GetEncoded()
         {
-            int leftoverSamples = encoderInputBuffer.ByteBufferCount - length;
-            Buffer.BlockCopy(encoderInputBuffer.ByteBuffer, length, encoderInputBuffer.ByteBuffer, 0, leftoverSamples);
-            encoderInputBuffer.ByteBufferCount = leftoverSamples;
+            byte[] encoded;
+
+            if (_bufferCount >= _segmentLength)
+            {
+                int encodedLength;
+                var encodedOut = _encoder.Encode(_encoderInputBuffer, _segmentLength, out encodedLength);
+                encoded = new byte[encodedLength];
+                Buffer.BlockCopy(encodedOut, 0, encoded, 0, encodedLength);
+                ShiftLeftoverSamplesDown(_segmentLength);
+            }
+            else
+                encoded = new byte[0];
+            
+            return encoded;
         }
 
         private void FeedSamplesIntoEncoderInputBuffer(byte[] data, int offset, int length)
         {
-            Buffer.BlockCopy(data, offset, encoderInputBuffer.ByteBuffer, encoderInputBuffer.ByteBufferCount, length);
-            encoderInputBuffer.ByteBufferCount += length;
+            Buffer.BlockCopy(data, offset, _encoderInputBuffer, _bufferCount, length);
+            _bufferCount += length;
+        }
+
+        private void ShiftLeftoverSamplesDown(int shiftCount)
+        {
+            int leftoverSamples = _bufferCount - shiftCount;
+            Buffer.BlockCopy(_encoderInputBuffer, shiftCount, _encoderInputBuffer, 0, leftoverSamples);
+            _bufferCount = leftoverSamples;
         }
 
         public byte[] Decode(byte[] data, int offset, int length)
@@ -134,7 +147,7 @@ namespace PointGaming.Audio
             }
 
             int decodedLength;
-            var decodedOut = decoder.Decode(data, length, out decodedLength);
+            byte[] decodedOut = _decoder.Decode(data, length, out decodedLength);
             byte[] decoded = new byte[decodedLength];
             Buffer.BlockCopy(decodedOut, 0, decoded, 0, decodedLength);
             return decoded;

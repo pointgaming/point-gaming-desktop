@@ -24,7 +24,7 @@ namespace PointGaming.Audio
         public event Action<int> InputDeviceNumberChanged;
 
         private WaveIn waveIn;
-        private IWavePlayer waveOut;
+        private WaveOut waveOut;
         private MixingWaveProvider waveProvider;
         private INetworkChatCodec codec;
         public System.Windows.Input.Key TriggerKey {get ; set;}
@@ -99,7 +99,7 @@ namespace PointGaming.Audio
         private void CaptureMic(int deviceNumber)
         {
             waveIn = new WaveIn();
-            waveIn.BufferMilliseconds = 50;
+            waveIn.BufferMilliseconds = 20;
             waveIn.DeviceNumber = deviceNumber;
             waveIn.WaveFormat = codec.RecordFormat;
 
@@ -139,7 +139,8 @@ namespace PointGaming.Audio
                     return;
 
                 waveOut = new WaveOut();
-                waveProvider = new MixingWaveProvider(16000);
+                waveProvider = new MixingWaveProvider(codec.RecordFormat.SampleRate);
+                waveOut.DesiredLatency = 100;
                 waveOut.Init(waveProvider);
                 waveOut.Play();
             }
@@ -192,11 +193,9 @@ namespace PointGaming.Audio
 
         private void waveIn_DataAvailable(object sender, WaveInEventArgs e)
         {
-            byte[] encoded = codec.Encode(e.Buffer, 0, e.BytesRecorded);
-            if (encoded.Length > 0)
-            {
-                OnAudioRecorded(encoded);
-            }
+            int callCount = codec.Encode(e.Buffer, 0, e.BytesRecorded);
+            for (int i = 0; i < callCount; i++)
+                OnAudioRecorded(codec.GetEncoded());
         }
 
         private DateTime _trickleTimeout;
