@@ -234,6 +234,7 @@ namespace PointGaming.GameRoom
                 taker_choice_type = (TakerChoice != null ? TakerChoice.PocoType : "Unknown"),
                 taker_odds = TakerOdds,
                 taker_wager = TakerWager,
+                match = (MyMatch != null ? MyMatch.ToPoco() : null)
             };
             return poco;
         }

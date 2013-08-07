@@ -256,5 +256,14 @@ namespace PointGaming.GameRoom
                 throw new Exception("Player type " + type + " not recognized.");
             return player;
         }
+
+        public POCO.MatchPoco ToPoco()
+        {
+            var poco = new POCO.MatchPoco
+            {
+                map = Map
+            };
+            return poco;
+        }
     }
 }

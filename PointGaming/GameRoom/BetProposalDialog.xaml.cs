@@ -130,7 +130,12 @@ namespace PointGaming.GameRoom
                 bet.TakerChoice = _betOperandA;
             }
 
-            if (_match != null)
+            if (_match == null)
+            {
+                bet.MyMatch = new Match();
+                bet.MyMatch.Map = _mapName;
+            } 
+            else 
             {
                 bet.MyMatch = _match;
                 bet.MatchHash = _match.MatchHash;

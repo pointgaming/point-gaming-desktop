@@ -29,6 +29,8 @@ namespace PointGaming.POCO
         public string taker_choice_id { get; set; }
         public string taker_choice_name { get; set; }
         public string taker_choice_type { get; set; }
+
+        public MatchPoco match { get; set; }
     }
 
     public class BetListPoco
