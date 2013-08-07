@@ -243,6 +243,8 @@ namespace PointGaming.GameRoom
 
         private static IBetOperand GetBetOperand(UserDataManager manager, string type, string id, string name)
         {
+            if (id == null) return null;
+
             IBetOperand player = null;
             if (type == "Team")
             {

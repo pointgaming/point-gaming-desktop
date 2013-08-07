@@ -118,6 +118,7 @@ namespace PointGaming.GameRoom
                     GameRoom.IsAdvertising = response.Data.is_advertising;
                     GameRoom.Password = response.Data.password;
                     GameRoom.IsBetting = response.Data.betting;
+                    GameRoom.BettingType = response.Data.betting_type;
                 }
                 else
                 {

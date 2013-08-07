@@ -22,6 +22,8 @@ namespace PointGaming.POCO
         public string offerer_choice_name { get; set; }
         public string offerer_choice_type { get; set; }
 
+        public string offerer_choice { get; set; } // player_1 or player_2
+
         public string taker_id { get; set; }
         public string taker_username { get; set; }
         public decimal taker_wager { get; set; }

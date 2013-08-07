@@ -226,6 +226,7 @@ namespace PointGaming.GameRoom
                 offerer_odds = OffererOdds,
                 match_id = MyMatch != null ? MyMatch.Id : null,
                 match_hash = MatchHash,
+                offerer_choice = (OffererChoice != null ? "player_1" : null),
                 offerer_choice_id = (OffererChoice != null ? OffererChoice.Id : "Unknown"),
                 offerer_choice_name = (OffererChoice != null ? OffererChoice.ShortDescription : "Unknown"),
                 offerer_choice_type = (OffererChoice != null ? OffererChoice.PocoType : "Unknown"),

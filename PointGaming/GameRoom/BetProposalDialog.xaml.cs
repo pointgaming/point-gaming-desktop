@@ -40,9 +40,18 @@ namespace PointGaming.GameRoom
                     throw new Exception("Wager must be a whole number");
                 _wager = value;
                 NotifyChanged("Wager");
-                buttonOK.IsEnabled = _wager > 0;
+                NotifyChanged("CanPlaceBet");
                 UpdateSummary();
             }
+        }
+
+        public bool CanPlaceBet
+        {
+            get 
+            {
+                return _wager > 0 && _mapName.Length > 0; 
+            }
+            set { }
         }
 
         private string _mapName = "";
@@ -55,6 +64,7 @@ namespace PointGaming.GameRoom
                     return;
                 _mapName = value;
                 NotifyChanged("MapName");
+                NotifyChanged("CanPlaceBet");
             }
         }
 
@@ -119,15 +129,13 @@ namespace PointGaming.GameRoom
                 OffererOdds = selectedOdds.Content.ToString(),
             };
 
-            if (comboBoxOutcome.SelectedIndex == 0)
+            if (IsOneOnOneBetting)
             {
-                bet.OffererChoice = _betOperandA;
-                bet.TakerChoice = _betOperandB;
+                bet.OffererChoice = HomeWindow.UserData.User;
             }
-            else
+            else if (IsTeamBetting && HomeWindow.UserData.User.HasTeam)
             {
-                bet.OffererChoice = _betOperandB;
-                bet.TakerChoice = _betOperandA;
+                bet.OffererChoice = HomeWindow.UserData.User.Team;
             }
 
             if (_match == null)
