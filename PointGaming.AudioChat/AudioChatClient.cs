@@ -10,7 +10,9 @@ namespace PointGaming.AudioChat
     public class AudioChatClient
     {
         public event Action<AudioChatClient> Stopped;
-        public event Action<AudioMessage> MessageReceived;
+        public event Action<AudioMessage> AudioReceived;
+        public event Action<JoinRoomMessage> JoinReceived;
+        public event Action<LeaveRoomMessage> LeaveReceived;
 
         private readonly IPEndPoint _serverEndPoint;
         private volatile bool _isRunning = false;
@@ -142,14 +144,40 @@ namespace PointGaming.AudioChat
         private void HandleMessage(byte[] buffer, int read)
         {
             var type = buffer[0];
-            if (type == AudioMessage.MType)
+            switch (type)
             {
-                var audio = new AudioMessage();
-                if (!audio.Read(buffer, read))
-                    return;
-                var call = MessageReceived;
-                if (call != null)
-                    call(audio);
+                case (AudioMessage.MType):
+                    {
+                        var m = new AudioMessage();
+                        if (!m.Read(buffer, read))
+                            return;
+                        var call = AudioReceived;
+                        if (call != null)
+                            call(m);
+                        break;
+                    }
+                case (JoinRoomMessage.MType):
+                    {
+                        var m = new JoinRoomMessage();
+                        if (!m.Read(buffer, read))
+                            return;
+                        var call = JoinReceived;
+                        if (call != null)
+                            call(m);
+                        break;
+                    }
+                case (LeaveRoomMessage.MType):
+                    {
+                        var m = new LeaveRoomMessage();
+                        if (!m.Read(buffer, read))
+                            return;
+                        var call = LeaveReceived;
+                        if (call != null)
+                            call(m);
+                        break;
+                    }
+                default:
+                    break;
             }
         }
     }

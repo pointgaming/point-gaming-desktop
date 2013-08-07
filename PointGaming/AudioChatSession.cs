@@ -35,6 +35,8 @@ namespace PointGaming
         public event AudioStreamExistEvent AudioStopped;
         public event Action<int> RecordingDeviceChanged;
 
+        public DispatcherTimer _udpKeepAliveTimer;
+
         private readonly List<PgUser> _audioSenders = new List<PgUser>();
         private string _speakingIntoRoomId;
         public string SpeakingIntoRoomId
@@ -57,15 +59,19 @@ namespace PointGaming
                 SpeakingIntoRoomId = null;
         }
 
+        private readonly HashSet<string> _joinedRooms = new HashSet<string>();
+
         public void JoinRoom(string id)
         {
-            _audioChatClient.Send(new JoinRoomMessage { RoomName = id, FromUserId = _userData.User.Id });
+            _joinedRooms.Add(id);
+            SendJoinRoom(id);
         }
         public void LeaveRoom(string id)
         {
-            _audioChatClient.Send(new LeaveRoomMessage { RoomName = id, FromUserId = _userData.User.Id });
+            _joinedRooms.Remove(id);
+            SendLeaveRoom(id);
         }
-
+        
         public AudioChatSession(UserDataManager userData)
         {
             _userData = userData;
@@ -80,8 +86,31 @@ namespace PointGaming
             var audioChatPort = Properties.Settings.Default.AudioChatPort;
             var endpoint = new System.Net.IPEndPoint(audioChatIp, audioChatPort);
             _audioChatClient = new AudioChatClient(endpoint);
-            _audioChatClient.MessageReceived += _audioChatClient_MessageReceived;
+            _audioChatClient.AudioReceived += _audioChatClient_MessageReceived;
             _audioChatClient.Start();
+
+            _udpKeepAliveTimer = new DispatcherTimer();
+            _udpKeepAliveTimer.Interval = TimeSpan.FromSeconds(55);
+            _udpKeepAliveTimer.Tick += _udpKeepAliveTimer_Tick;
+            _udpKeepAliveTimer.Start();
+        }
+
+        private void _udpKeepAliveTimer_Tick(object sender, EventArgs e)
+        {
+            foreach (var id in _joinedRooms)
+            {
+                SendJoinRoom(id);
+            }
+        }
+
+        private void SendJoinRoom(string id)
+        {
+            _audioChatClient.Send(new JoinRoomMessage { RoomName = id, FromUserId = _userData.User.Id });
+        }
+
+        private void SendLeaveRoom(string id)
+        {
+            _audioChatClient.Send(new LeaveRoomMessage { RoomName = id, FromUserId = _userData.User.Id });
         }
 
         void _nAudioTest_InputDeviceNumberChanged(int index)
@@ -101,6 +130,8 @@ namespace PointGaming
 
             _audioChatClient.Stop();
             _audioChatClient = null;
+
+            _udpKeepAliveTimer.Stop();
         }
 
         public List<string> GetAudioInputDevices()
