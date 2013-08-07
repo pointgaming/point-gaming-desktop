@@ -22,7 +22,7 @@
         <TextBox Grid.Row="0" Grid.Column="1" Height="24" HorizontalAlignment="Stretch" Name="textBoxMap" VerticalAlignment="Center" Text="{Binding ElementName=myWindow, Path=MapName}" Margin="10,2" />
 
         <Label Grid.Row="1" Grid.Column="0" Content="Choice" Height="28" HorizontalAlignment="Right" Name="label3" VerticalAlignment="Center" />
-        <Label Grid.Row="1" Grid.Column="1" Content="Player 1" Height="28" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" />
+        <Label Grid.Row="1" Grid.Column="1" Content="{Binding ElementName=myWindow, Path=OffererChoice}" Height="28" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" />
 
         <ComboBox Visibility="Hidden" Grid.Row="1" Grid.Column="1" Height="24" HorizontalAlignment="Stretch" Name="comboBoxOutcome" VerticalAlignment="Center" SelectedIndex="0" SelectionChanged="comboBoxOutcome_SelectionChanged" Margin="0,2,10,2">
             <ComboBoxItem Name="aBeatsB">MrApple beats MrBanana</ComboBoxItem>

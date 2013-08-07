@@ -54,6 +54,28 @@ namespace PointGaming.GameRoom
             set { }
         }
 
+        public string OffererChoice
+        {
+            get
+            {
+                if (IsTeamBetting)
+                {
+                    if (HomeWindow.UserData.User.HasTeam)
+                    {
+                        return "Team 1 (" + HomeWindow.UserData.User.TeamName + ")";
+                    }
+                    else
+                    {
+                        return "NO AVAILABLE TEAM!";
+                    }
+                }
+                else
+                {
+                    return "Player 1 (" + HomeWindow.UserData.User.DisplayName+")";
+                }
+            }
+        }
+
         private string _mapName = "";
         public string MapName
         {
@@ -82,7 +104,8 @@ namespace PointGaming.GameRoom
         {
             InitializeComponent();
 
-            if (bettingType == "team") BettingType = "team";
+            if (bettingType.Equals("team")) BettingType = "team";
+            NotifyChanged("OffererChoice");
         }
 
         private IBetOperand _betOperandA;
