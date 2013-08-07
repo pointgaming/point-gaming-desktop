@@ -77,7 +77,8 @@ namespace PointGaming
             _nAudioTest.InputDeviceNumberChanged += _nAudioTest_InputDeviceNumberChanged;
 
             var audioChatIp = System.Net.IPAddress.Parse(Properties.Settings.Default.AudioChatIp);
-            var endpoint = new System.Net.IPEndPoint(audioChatIp, AudioChatClient.DefaultPort);
+            var audioChatPort = Properties.Settings.Default.AudioChatPort;
+            var endpoint = new System.Net.IPEndPoint(audioChatIp, audioChatPort);
             _audioChatClient = new AudioChatClient(endpoint);
             _audioChatClient.MessageReceived += _audioChatClient_MessageReceived;
             _audioChatClient.Start();

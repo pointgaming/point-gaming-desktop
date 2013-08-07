@@ -210,7 +210,7 @@ namespace PointGaming.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("192.168.1.71")]
+        [global::System.Configuration.DefaultSettingValueAttribute("66.228.50.130")]
         public string AudioChatIp {
             get {
                 return ((string)(this["AudioChatIp"]));
@@ -226,6 +226,15 @@ namespace PointGaming.Properties {
             }
             set {
                 this["AudioInputDeviceIndex"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("31337")]
+        public int AudioChatPort {
+            get {
+                return ((int)(this["AudioChatPort"]));
             }
         }
     }

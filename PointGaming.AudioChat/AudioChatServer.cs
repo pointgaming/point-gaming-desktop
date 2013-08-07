@@ -9,7 +9,6 @@ namespace PointGaming.AudioChat
 {
     public class AudioChatServer
     {
-        public const int DefaultPort = 13275;
         public event Action<AudioChatServer> Stopped;
         public event Action<int> MessageReceived;
 

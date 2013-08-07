@@ -9,7 +9,6 @@ namespace PointGaming.AudioChat
 {
     public class AudioChatClient
     {
-        public const int DefaultPort = 13275;
         public event Action<AudioChatClient> Stopped;
         public event Action<AudioMessage> MessageReceived;
 
@@ -121,6 +120,8 @@ namespace PointGaming.AudioChat
                         foreach (var message in queue)
                         {
                             int len = message.Write(buffer);
+                            //var str = "0x" + BitConverter.ToString(buffer, 0, len).Replace("-", string.Empty);
+                            //Console.WriteLine(str);
                             _clientOut.SendTo(buffer, len, SocketFlags.None, _serverEndPoint);
                         }
                         queue.Clear();

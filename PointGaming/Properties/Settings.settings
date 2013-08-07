@@ -54,10 +54,13 @@
       <Value Profile="(Default)">118</Value>
     </Setting>
     <Setting Name="AudioChatIp" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">192.168.1.71</Value>
+      <Value Profile="(Default)">66.228.50.130</Value>
     </Setting>
     <Setting Name="AudioInputDeviceIndex" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="AudioChatPort" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">31337</Value>
     </Setting>
   </Settings>
 </SettingsFile>

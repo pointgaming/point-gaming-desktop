@@ -21,7 +21,7 @@ namespace PointGaming.AudioChat
         public MainWindow()
         {
             InitializeComponent();
-            textBoxPort.Text = "" + AudioChatServer.DefaultPort;
+            textBoxPort.Text = "31337";
         }
 
         private void buttonStart_Click(object sender, RoutedEventArgs e)
