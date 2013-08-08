@@ -43,7 +43,7 @@
         </tb:TaskbarIcon>
 
         
-        <Menu Grid.Row="0" Height="23" HorizontalAlignment="Stretch" Name="menu1" VerticalAlignment="Top">
+        <Menu Grid.Row="0" Height="28" HorizontalAlignment="Stretch" Name="menu1" VerticalAlignment="Top">
             <MenuItem Header="Username" Name="menuItemUsername">
                 <MenuItem Header="View Profile" Click="ProfileClick" />
                 <MenuItem Header="Log Out" Click="LogOutClick" />
