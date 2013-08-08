@@ -243,6 +243,8 @@ namespace PointGaming.GameRoom
 
         private static IBetOperand GetBetOperand(UserDataManager manager, string type, string id, string name)
         {
+            if (id == null) return null;
+
             IBetOperand player = null;
             if (type == "Team")
             {
@@ -255,6 +257,15 @@ namespace PointGaming.GameRoom
             else
                 throw new Exception("Player type " + type + " not recognized.");
             return player;
+        }
+
+        public POCO.MatchPoco ToPoco()
+        {
+            var poco = new POCO.MatchPoco
+            {
+                map = Map
+            };
+            return poco;
         }
     }
 }

@@ -293,7 +293,7 @@ namespace PointGaming.Lobby
         private string _bettingType;
         public string BettingType
         {
-            get { return _bettingType; }
+            get { return _bettingType != null ? _bettingType : "1v1"; }
             set
             {
                 if (value == _bettingType)

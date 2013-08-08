@@ -136,7 +136,7 @@ namespace PointGaming.GameRoom
                 description = Description,
                 is_advertising = IsAdvertising,
                 password = Password,
-                bettingType = _bettingType
+                betting_type = _bettingType
             };
             _session.SetGameRoomSettings(poco);
 

@@ -40,8 +40,39 @@ namespace PointGaming.GameRoom
                     throw new Exception("Wager must be a whole number");
                 _wager = value;
                 NotifyChanged("Wager");
-                buttonOK.IsEnabled = _wager > 0;
+                NotifyChanged("CanPlaceBet");
                 UpdateSummary();
+            }
+        }
+
+        public bool CanPlaceBet
+        {
+            get 
+            {
+                return _wager > 0 && _mapName.Length > 0; 
+            }
+            set { }
+        }
+
+        public string OffererChoice
+        {
+            get
+            {
+                if (IsTeamBetting)
+                {
+                    if (HomeWindow.UserData.User.HasTeam)
+                    {
+                        return "Team 1 (" + HomeWindow.UserData.User.TeamName + ")";
+                    }
+                    else
+                    {
+                        return "NO AVAILABLE TEAM!";
+                    }
+                }
+                else
+                {
+                    return "Player 1 (" + HomeWindow.UserData.User.DisplayName+")";
+                }
             }
         }
 
@@ -55,6 +86,7 @@ namespace PointGaming.GameRoom
                     return;
                 _mapName = value;
                 NotifyChanged("MapName");
+                NotifyChanged("CanPlaceBet");
             }
         }
 
@@ -72,7 +104,8 @@ namespace PointGaming.GameRoom
         {
             InitializeComponent();
 
-            if (bettingType == "team") BettingType = "team";
+            if (bettingType.Equals("team")) BettingType = "team";
+            NotifyChanged("OffererChoice");
         }
 
         private IBetOperand _betOperandA;
@@ -119,18 +152,21 @@ namespace PointGaming.GameRoom
                 OffererOdds = selectedOdds.Content.ToString(),
             };
 
-            if (comboBoxOutcome.SelectedIndex == 0)
+            if (IsOneOnOneBetting)
             {
-                bet.OffererChoice = _betOperandA;
-                bet.TakerChoice = _betOperandB;
+                bet.OffererChoice = HomeWindow.UserData.User;
             }
-            else
+            else if (IsTeamBetting && HomeWindow.UserData.User.HasTeam)
             {
-                bet.OffererChoice = _betOperandB;
-                bet.TakerChoice = _betOperandA;
+                bet.OffererChoice = HomeWindow.UserData.User.Team;
             }
 
-            if (_match != null)
+            if (_match == null)
+            {
+                bet.MyMatch = new Match();
+                bet.MyMatch.Map = _mapName;
+            } 
+            else 
             {
                 bet.MyMatch = _match;
                 bet.MatchHash = _match.MatchHash;

@@ -19,17 +19,19 @@
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0" Content="Map" Height="28" HorizontalAlignment="Right" Name="label5" VerticalAlignment="Center" />
-        <TextBox Grid.Row="0" Grid.Column="1" Height="24" HorizontalAlignment="Stretch" Name="textBoxMap" VerticalAlignment="Center" Text="{Binding ElementName=myWindow, Path=MapName}" Margin="0,2,10,2" />
+        <TextBox Grid.Row="0" Grid.Column="1" Height="24" HorizontalAlignment="Stretch" Name="textBoxMap" VerticalAlignment="Center" Text="{Binding ElementName=myWindow, Path=MapName}" Margin="10,2" />
 
-        <Label Visibility="Hidden" Grid.Row="1" Grid.Column="0" Content="Outcome" Height="28" HorizontalAlignment="Right" Name="label3" VerticalAlignment="Center" />
+        <Label Grid.Row="1" Grid.Column="0" Content="Choice" Height="28" HorizontalAlignment="Right" Name="label3" VerticalAlignment="Center" />
+        <Label Grid.Row="1" Grid.Column="1" Content="{Binding ElementName=myWindow, Path=OffererChoice}" Height="28" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" />
+
         <ComboBox Visibility="Hidden" Grid.Row="1" Grid.Column="1" Height="24" HorizontalAlignment="Stretch" Name="comboBoxOutcome" VerticalAlignment="Center" SelectedIndex="0" SelectionChanged="comboBoxOutcome_SelectionChanged" Margin="0,2,10,2">
             <ComboBoxItem Name="aBeatsB">MrApple beats MrBanana</ComboBoxItem>
             <ComboBoxItem Name="bBeatsA">MrBanana beats MrApple</ComboBoxItem>
         </ComboBox>
 
         <Label Grid.Row="2" Grid.Column="0" Content="Odds" Height="28" HorizontalAlignment="Right" Name="label2" VerticalAlignment="Center" />
-        <ComboBox Grid.Row="2" Grid.Column="1" Height="23" HorizontalAlignment="Left" Name="comboBoxOdds" VerticalAlignment="Center" Width="120" SelectedIndex="9"
-                  HorizontalContentAlignment="Right" SelectionChanged="comboBoxOdds_SelectionChanged">
+        <ComboBox Grid.Row="1" Grid.Column="1" Height="23" HorizontalAlignment="Left" Name="comboBoxOdds" VerticalAlignment="Center" Width="120" SelectedIndex="9"
+                  HorizontalContentAlignment="Right" SelectionChanged="comboBoxOdds_SelectionChanged" Margin="10,26,0,7" Grid.RowSpan="2">
             <ComboBoxItem>10:1</ComboBoxItem>
             <ComboBoxItem>9:1</ComboBoxItem>
             <ComboBoxItem>8:1</ComboBoxItem>
@@ -52,8 +54,8 @@
         </ComboBox>
 
         <Label Grid.Row="3" Grid.Column="0" Content="Wager" Height="28" HorizontalAlignment="Right" Name="label1" VerticalAlignment="Center" />
-        <TextBox Grid.Row="3" Grid.Column="1" Height="23" HorizontalAlignment="Left" Name="textBoxAmount" VerticalAlignment="Center"
-                 Text="{Binding ElementName=myWindow, Path=Wager, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" HorizontalContentAlignment="Right" Width="120"/>
+        <TextBox Grid.Row="3" Grid.Column="1" Height="22" HorizontalAlignment="Left" Name="textBoxAmount" VerticalAlignment="Center"
+                 Text="{Binding ElementName=myWindow, Path=Wager, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" HorizontalContentAlignment="Right" Width="120" Margin="10,0,0,6"/>
 
         <Grid Grid.Row="4" Grid.ColumnSpan="2" Margin="0,10,0,0">
             <Grid.RowDefinitions>
@@ -72,7 +74,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" Content="OK" Height="23" HorizontalAlignment="Center" Name="buttonOK" VerticalAlignment="Top" Width="75" Click="buttonOK_Click"
-                    IsEnabled="False"/>
+                    IsEnabled="{Binding ElementName=myWindow, Path=CanPlaceBet}"/>
             <Button Grid.Column="1" Content="Cancel" Height="23" HorizontalAlignment="Center" Name="buttonCancel" VerticalAlignment="Top" Width="75" Click="buttonCancel_Click" />
         </Grid>
     </Grid>

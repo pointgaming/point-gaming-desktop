@@ -226,6 +226,7 @@ namespace PointGaming.GameRoom
                 offerer_odds = OffererOdds,
                 match_id = MyMatch != null ? MyMatch.Id : null,
                 match_hash = MatchHash,
+                offerer_choice = (OffererChoice != null ? "player_1" : null),
                 offerer_choice_id = (OffererChoice != null ? OffererChoice.Id : "Unknown"),
                 offerer_choice_name = (OffererChoice != null ? OffererChoice.ShortDescription : "Unknown"),
                 offerer_choice_type = (OffererChoice != null ? OffererChoice.PocoType : "Unknown"),
@@ -234,6 +235,7 @@ namespace PointGaming.GameRoom
                 taker_choice_type = (TakerChoice != null ? TakerChoice.PocoType : "Unknown"),
                 taker_odds = TakerOdds,
                 taker_wager = TakerWager,
+                match = (MyMatch != null ? MyMatch.ToPoco() : null)
             };
             return poco;
         }

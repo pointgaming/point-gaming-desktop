@@ -118,6 +118,7 @@ namespace PointGaming.GameRoom
                     GameRoom.IsAdvertising = response.Data.is_advertising;
                     GameRoom.Password = response.Data.password;
                     GameRoom.IsBetting = response.Data.betting;
+                    GameRoom.BettingType = response.Data.betting_type;
                 }
                 else
                 {
@@ -329,8 +330,8 @@ namespace PointGaming.GameRoom
             {
                 if (!response.IsOk())
                 {
-                    MessageDialog.Show(_window, "Failed to create bet", 
-                        string.Concat(response.Data.errors));
+                    string msg = response.Data.errors == null ? response.StatusCode.ToString() : string.Concat(response.Data.errors);
+                    MessageDialog.Show(_window, "Failed to create bet", msg);
                 }
             });
         }
