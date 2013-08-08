@@ -59,6 +59,7 @@ namespace PointGaming.GameRoom
             // socket membership messages trigger on the session, so update room's membership when session members change
             _session.Membership.CollectionChanged += Membership_CollectionChanged;
             _session.GameRoom.PropertyChanged += GameRoom_PropertyChanged;
+            _session.RoomBets.CollectionChanged += RoomBets_CollectionChanged;
             _session.MyMatch.PropertyChanged += MyMatch_PropertyChanged;
             _session.ChatMessageReceived += ChatMessages_CollectionChanged;
             
@@ -176,6 +177,12 @@ namespace PointGaming.GameRoom
         {
             get { return _session.RoomBets; }
         }
+
+        private void RoomBets_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged("RoomBets");
+        }
+
 
         private readonly List<PgUser> _teamBots = new List<PgUser>();
 
