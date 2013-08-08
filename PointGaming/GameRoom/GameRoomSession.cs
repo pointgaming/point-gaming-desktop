@@ -330,8 +330,8 @@ namespace PointGaming.GameRoom
             {
                 if (!response.IsOk())
                 {
-                    MessageDialog.Show(_window, "Failed to create bet", 
-                        string.Concat(response.Data.errors));
+                    string msg = response.Data.errors == null ? response.StatusCode.ToString() : string.Concat(response.Data.errors);
+                    MessageDialog.Show(_window, "Failed to create bet", msg);
                 }
             });
         }
