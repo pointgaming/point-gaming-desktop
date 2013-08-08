@@ -130,6 +130,26 @@ namespace PointGaming.AudioChat
             Buffer.BlockCopy(value, 0, buffer, position, len);
             position += len;
         }
+
+
+        public static bool ReadRawBytes(byte[] buffer, int bufferLength, ref int position, out byte[] value)
+        {
+            value = null;
+
+            int len = bufferLength - position;
+            value = new byte[len];
+            Buffer.BlockCopy(buffer, position, value, 0, len);
+            position += len;
+
+            return true;
+        }
+
+        public static void WriteRawBytes(byte[] buffer, ref int position, byte[] value)
+        {
+            var len = value.Length;
+            Buffer.BlockCopy(value, 0, buffer, position, len);
+            position += len;
+        }
     }
 
 }

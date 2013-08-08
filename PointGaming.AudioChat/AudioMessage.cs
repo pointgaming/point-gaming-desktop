@@ -37,7 +37,7 @@ namespace PointGaming.AudioChat
             if (!BufferIO.ReadInt(buffer, length, ref position, out MessageNumber))
                 return false;
 
-            if (!BufferIO.ReadBytes(buffer, length, ref position, out Audio))
+            if (!BufferIO.ReadRawBytes(buffer, length, ref position, out Audio))
                 return false;
 
             return true;
@@ -51,7 +51,7 @@ namespace PointGaming.AudioChat
             BufferIO.WriteString(buffer, ref position, RoomName);
             BufferIO.WriteString(buffer, ref position, FromUserId);
             BufferIO.WriteInt(buffer, ref position, MessageNumber);
-            BufferIO.WriteBytes(buffer, ref position, Audio);
+            BufferIO.WriteRawBytes(buffer, ref position, Audio);
             return position;
         }
     }
