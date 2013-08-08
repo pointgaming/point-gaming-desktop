@@ -79,7 +79,7 @@
                                           Background="White" 
                                           Height="Auto" 
                                           MaxHeight="100" 
-                                          MinHeight="22" Margin="1,-1,-1,1" >
+                                          MinHeight="22" Margin="1,-1,9,1" >
                     <FlowDocumentScrollViewer.Resources>
                         <Style TargetType="{x:Type Paragraph}">
                             <Setter Property="Margin" Value="0"/>
@@ -106,43 +106,43 @@
             <Border Grid.Row="2" Margin="0,0,0,5" BorderThickness="1" BorderBrush="#FF828790">
                 <Grid Name="gridBetting">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="213*"/>
-                        <ColumnDefinition Width="542*"/>
+                        <ColumnDefinition Width="92*"/>
+                        <ColumnDefinition Width="61*"/>
+                        <ColumnDefinition Width="173*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="23"/>
-                        <RowDefinition Height="23"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Button Grid.Row="0" Height="18" FontSize="11" Content="Propose a bet..." HorizontalAlignment="Left" Name="buttonProposeABet" Margin="3" VerticalAlignment="Top" Width="113" Command="{Binding ProposeBet}" Grid.ColumnSpan="2" />
-                
-                    <ScrollViewer Grid.Row="1" Height="150" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.ColumnSpan="2">
+                    <Button Grid.Row="0" Height="18" FontSize="11" Content="Propose a bet..." HorizontalAlignment="Left" Name="buttonProposeABet" Margin="3,3,0,0" VerticalAlignment="Top" Width="113" Command="{Binding ProposeBet}" Grid.ColumnSpan="2" />
+
+                    <ScrollViewer Grid.Row="1" Height="Auto" Grid.ColumnSpan="3" Margin="0,0,0,0" Grid.RowSpan="2">
                         <ItemsControl Name="itemsControlBets" ItemsSource="{Binding RoomBets}" Height="125">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type pgr:Bet}">
-                                    <Grid HorizontalAlignment="Stretch">
+                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="18">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        
-                                        <TextBlock Grid.Column="0" Height="Auto" Margin="5" HorizontalAlignment="Left" VerticalAlignment="Top">
+
+                                        <TextBlock Grid.Column="0" Height="20" Margin="5" HorizontalAlignment="Left" VerticalAlignment="Top">
                                             <Run Text="{Binding Path=OffererChoice.ShortDescription, Mode=OneWay}" />
                                             <Run Text=" vs. " />
                                             <Run Text="Unknown" />
                                         </TextBlock>
 
-                                        <TextBlock Grid.Column="1" Height="18" Margin="2" HorizontalAlignment="Right" VerticalAlignment="Top">
-                                            <Hyperlink>Details</Hyperlink>
+                                        <TextBlock Grid.Column="1" Height="20" Margin="2" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                            <Hyperlink Command="{Binding ElementName=This, Path=DataContext.ViewBet}" CommandParameter="{Binding}">Details</Hyperlink>
                                         </TextBlock>
-                                        <TextBlock Grid.Column="2" Height="18" Margin="2" HorizontalAlignment="Right" VerticalAlignment="Top">
-                                            <Hyperlink>Accept</Hyperlink>
+                                        <TextBlock Grid.Column="2" Height="20" Margin="2" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                            <Hyperlink Command="{Binding ElementName=This, Path=DataContext.AcceptBet}" CommandParameter="{Binding}">Accept</Hyperlink>
                                         </TextBlock>
-                                        <TextBlock Grid.Column="3" Height="18" Margin="2,2,5,2" HorizontalAlignment="Right" VerticalAlignment="Top">
-                                            <Hyperlink>Cancel</Hyperlink>
+                                        <TextBlock Grid.Column="3" Height="20" Margin="2,2,5,2" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                            <Hyperlink Command="{Binding ElementName=This, Path=DataContext.CancelBet}" CommandParameter="{Binding}">Cancel</Hyperlink>
                                         </TextBlock>
                                     </Grid>
                                 </DataTemplate>
@@ -168,7 +168,7 @@
                                       Document="{Binding ChatMessages}"
                                       HorizontalAlignment="Stretch" 
                                       VerticalAlignment="Stretch" 
-                                      VerticalScrollBarVisibility="Auto" >
+                                      VerticalScrollBarVisibility="Auto" Margin="0,-5,0,5" >
                 <FlowDocumentScrollViewer.Resources>
                     <Style TargetType="{x:Type Paragraph}">
                         <Setter Property="Margin" Value="0"/>
