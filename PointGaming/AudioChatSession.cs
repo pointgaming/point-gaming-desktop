@@ -105,12 +105,24 @@ namespace PointGaming
 
         private void SendJoinRoom(string id)
         {
-            _audioChatClient.Send(new JoinRoomMessage { RoomName = id, FromUserId = _userData.User.Id });
+            var message = new JoinRoomMessage
+            {
+                AuthToken = _userData.PgSession.AuthToken,
+                RoomName = id,
+                FromUserId = _userData.User.Id
+            };
+            _audioChatClient.Send(message);
         }
 
         private void SendLeaveRoom(string id)
         {
-            _audioChatClient.Send(new LeaveRoomMessage { RoomName = id, FromUserId = _userData.User.Id });
+            var message = new LeaveRoomMessage
+            {
+                AuthToken = _userData.PgSession.AuthToken,
+                RoomName = id,
+                FromUserId = _userData.User.Id
+            };
+            _audioChatClient.Send(message);
         }
 
         void _nAudioTest_InputDeviceNumberChanged(int index)
@@ -202,11 +214,15 @@ namespace PointGaming
             if (roomId == null)
                 return;
 
-            var message = new AudioMessage();
-            message.FromUserId = _userData.User.Id;
-            message.RoomName = roomId;
-            message.MessageNumber = _messageNumber++;
-            message.Audio = data;
+            var message = new AudioMessage
+            {
+                AuthToken = _userData.PgSession.AuthToken,
+                RoomName = roomId,
+                FromUserId = _userData.User.Id,
+                MessageNumber = _messageNumber++,
+                Audio = data,
+            };
+            
             _audioChatClient.Send(message);
             OnAudioSending(_userData.User, roomId);
         }
@@ -220,11 +236,15 @@ namespace PointGaming
                 return;
             }
 
-            var message = new AudioMessage();
-            message.FromUserId = _userData.User.Id;
-            message.RoomName = roomId;
-            message.MessageNumber = _messageNumber++;
-            message.Audio = new byte[0];
+            var message = new AudioMessage
+            {
+                AuthToken = _userData.PgSession.AuthToken,
+                RoomName = roomId,
+                FromUserId = _userData.User.Id,
+                MessageNumber = _messageNumber++,
+                Audio = new byte[0],
+            };
+
             _audioChatClient.Send(message);
             OnAudioStopped(_userData.User, roomId);
             _messageNumber = 1;

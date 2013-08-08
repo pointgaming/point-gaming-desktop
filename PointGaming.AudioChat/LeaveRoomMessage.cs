@@ -12,6 +12,7 @@ namespace PointGaming.AudioChat
         public const byte MType = 2;
         public byte MessageType { get { return MType; } }
 
+        public string AuthToken;
         public string RoomName;
         public string FromUserId;
 
@@ -23,6 +24,9 @@ namespace PointGaming.AudioChat
                 return false;
 
             var position = 1;
+            if (!BufferIO.ReadString(buffer, length, ref position, out AuthToken))
+                return false;
+
             if (!BufferIO.ReadString(buffer, length, ref position, out RoomName))
                 return false;
 
@@ -36,6 +40,7 @@ namespace PointGaming.AudioChat
         {
             buffer[0] = MessageType;
             var position = 1;
+            BufferIO.WriteString(buffer, ref position, AuthToken);
             BufferIO.WriteString(buffer, ref position, RoomName);
             BufferIO.WriteString(buffer, ref position, FromUserId);
             return position;
