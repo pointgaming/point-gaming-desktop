@@ -35,6 +35,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>PointGaming.AudioChat.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -57,6 +60,7 @@
     </ApplicationDefinition>
     <Compile Include="BufferIO.cs" />
     <Compile Include="AudioChatServer.cs" />
+    <Compile Include="Cryptography.cs" />
     <Compile Include="JoinRoomMessage.cs" />
     <Compile Include="LeaveRoomMessage.cs" />
     <Compile Include="AudioMessage.cs" />
