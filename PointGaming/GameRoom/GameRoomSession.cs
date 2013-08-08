@@ -349,7 +349,8 @@ namespace PointGaming.GameRoom
             {
                 if (!response.IsOk())
                 {
-                    MessageDialog.Show(_window, "Failed to accept bet", response.ErrorMessage);
+                    string msg = response.Data.errors == null ? response.StatusCode.ToString() : string.Concat(response.Data.errors);
+                    MessageDialog.Show(_window, "Failed to accept bet", msg);
                 }
             });
         }
@@ -359,7 +360,7 @@ namespace PointGaming.GameRoom
             RestResponse<ApiResponse> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
-                var url = _userData.PgSession.GetWebApiV1Function("/matches/" +  MyMatch.Id + "/bets/" + bet.Id + ".json");
+                var url = _userData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + GameRoom.Id + "/bets/" + bet.Id + ".json");
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.DELETE);
                 response = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
@@ -367,7 +368,8 @@ namespace PointGaming.GameRoom
             {
                 if (!response.IsOk())
                 {
-                    MessageDialog.Show(_window, "Failed to delete bet", response.ErrorMessage);
+                    string msg = response.Data.errors == null ? response.StatusCode.ToString() : string.Concat(response.Data.errors);
+                    MessageDialog.Show(_window, "Failed to delete bet", msg);
                 }
             });
         }
