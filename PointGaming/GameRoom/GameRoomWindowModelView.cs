@@ -321,6 +321,7 @@ namespace PointGaming.GameRoom
         public ICommand ViewBet { get { return new ActionCommand<Bet>(ViewBetDetails); } }
         public void ViewBetDetails(Bet bet)
         {
+            _manager.ViewBetting(_session.ChatroomId, bet);
         }
 
         public ICommand AcceptBet { get { return new ActionCommand<Bet>(AcceptGameRoomBet); } }

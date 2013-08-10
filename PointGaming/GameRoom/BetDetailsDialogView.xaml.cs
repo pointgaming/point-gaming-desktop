@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.ComponentModel;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -15,10 +13,9 @@ using System.Windows.Shapes;
 
 namespace PointGaming.GameRoom
 {
-    public partial class GameRoomAdminDialog : Window
+    public partial class BetDetailsDialogView : Window
     {
-        
-        public GameRoomAdminDialog()
+        public BetDetailsDialogView()
         {
             InitializeComponent();
         }

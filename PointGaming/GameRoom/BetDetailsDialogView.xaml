@@ -1,0 +1,45 @@
+﻿<Window x:Class="PointGaming.GameRoom.BetDetailsDialogView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Name="This" 
+        Icon="/PointGaming;component/PointGaming.ico"
+        WindowStyle="ToolWindow" ResizeMode="NoResize"
+        Title="Bet Details" 
+        Height="300" Width="300"
+        WindowStartupLocation="CenterOwner">
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Content="Match:" Height="28" HorizontalAlignment="Right" VerticalAlignment="Center" />
+        <Label Grid.Row="0" Grid.Column="1"  Height="28" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" >
+            <TextBlock>
+                <Run Text="{Binding Path=MyMatch.Player1Description, Mode=OneWay}" />
+                <Run Text=" vs. " />
+                <Run Text="{Binding Path=MyMatch.Player2Description, Mode=OneWay}" />
+            </TextBlock>
+        </Label>
+        
+        <Label Grid.Row="1" Grid.Column="0" Content="Map:" Height="28" HorizontalAlignment="Right" VerticalAlignment="Center" />
+        <Label Grid.Row="1" Grid.Column="1" Content="{Binding Path=MyMatch.Map}" Height="28" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" />
+
+        <Label Grid.Row="2" Grid.Column="0" Content="Offerer:" Height="28" HorizontalAlignment="Right" VerticalAlignment="Center" />
+        <Label Grid.Row="2" Grid.Column="1" Content="{Binding Path=Offerer.DisplayName}" Height="28" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" />
+        
+        <Label Grid.Row="3" Grid.Column="0" Content="Offerer Wager:" Height="28" HorizontalAlignment="Right" VerticalAlignment="Center" />
+        <Label Grid.Row="3" Grid.Column="1" Content="{Binding OffererWager}" Height="28" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" />
+        
+        <Label Grid.Row="4" Grid.Column="0" Content="Offerer Odds:" Height="28" HorizontalAlignment="Right"  VerticalAlignment="Center" />
+        <Label Grid.Row="4" Grid.Column="1" Content="{Binding OffererOdds}" Height="28" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" />
+    </Grid>
+</Window>
