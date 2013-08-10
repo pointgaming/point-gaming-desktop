@@ -46,7 +46,7 @@ namespace PointGaming.AudioChat
             AesIO.CryptoRNG.GetBytes(nonce);
             BufferIO.WriteRawBytes(buffer, ref position, nonce);
             BufferIO.WriteRawBytes(buffer, ref position, AesIO.AntiDoS);
-            buffer[position] = MessageType;
+            buffer[position++] = MessageType;
             BufferIO.WriteString(buffer, ref position, RoomName);
 
             var encryptedData = AesIO.AesEncrypt(key, AesIO.HardcodedIv, buffer, cryptoStart, position - cryptoStart);
