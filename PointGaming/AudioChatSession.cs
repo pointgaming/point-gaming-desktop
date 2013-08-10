@@ -107,7 +107,6 @@ namespace PointGaming
         {
             var message = new JoinRoomMessage
             {
-                AuthToken = _userData.PgSession.AuthToken,
                 RoomName = id,
                 FromUserId = _userData.User.Id
             };
@@ -118,7 +117,6 @@ namespace PointGaming
         {
             var message = new LeaveRoomMessage
             {
-                AuthToken = _userData.PgSession.AuthToken,
                 RoomName = id,
                 FromUserId = _userData.User.Id
             };
@@ -216,7 +214,6 @@ namespace PointGaming
 
             var message = new AudioMessage
             {
-                AuthToken = _userData.PgSession.AuthToken,
                 RoomName = roomId,
                 FromUserId = _userData.User.Id,
                 MessageNumber = _messageNumber++,
@@ -238,7 +235,6 @@ namespace PointGaming
 
             var message = new AudioMessage
             {
-                AuthToken = _userData.PgSession.AuthToken,
                 RoomName = roomId,
                 FromUserId = _userData.User.Id,
                 MessageNumber = _messageNumber++,
