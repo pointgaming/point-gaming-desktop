@@ -14,6 +14,7 @@ namespace PointGaming.AudioChat
         public event Action<JoinRoomMessage> JoinReceived;
         public event Action<LeaveRoomMessage> LeaveReceived;
 
+        private readonly byte[] _key;
         private readonly IPEndPoint _serverEndPoint;
         private volatile bool _isRunning = false;
         private volatile bool _shouldRun = false;
@@ -24,9 +25,10 @@ namespace PointGaming.AudioChat
         private System.Threading.AutoResetEvent _are = new System.Threading.AutoResetEvent(false);
         private List<IChatMessage> _messageQueue = new List<IChatMessage>();
 
-        public AudioChatClient(IPEndPoint serverEndPoint)
+        public AudioChatClient(IPEndPoint serverEndPoint, byte[] key)
         {
             _serverEndPoint = serverEndPoint;
+            _key = key;
         }
 
         public void Start()
@@ -121,7 +123,7 @@ namespace PointGaming.AudioChat
                     {
                         foreach (var message in queue)
                         {
-                            int len = message.Write(buffer);
+                            int len = message.Write(buffer, _key);
                             //var str = "0x" + BitConverter.ToString(buffer, 0, len).Replace("-", string.Empty);
                             //Console.WriteLine(str);
                             _clientOut.SendTo(buffer, len, SocketFlags.None, _serverEndPoint);
@@ -149,7 +151,7 @@ namespace PointGaming.AudioChat
                 case (AudioMessage.MType):
                     {
                         var m = new AudioMessage();
-                        if (!m.Read(buffer, read))
+                        if (!m.Read(buffer, read, _key))
                             return;
                         var call = AudioReceived;
                         if (call != null)
@@ -159,7 +161,7 @@ namespace PointGaming.AudioChat
                 case (JoinRoomMessage.MType):
                     {
                         var m = new JoinRoomMessage();
-                        if (!m.Read(buffer, read))
+                        if (!m.Read(buffer, read, _key))
                             return;
                         var call = JoinReceived;
                         if (call != null)
@@ -169,7 +171,7 @@ namespace PointGaming.AudioChat
                 case (LeaveRoomMessage.MType):
                     {
                         var m = new LeaveRoomMessage();
-                        if (!m.Read(buffer, read))
+                        if (!m.Read(buffer, read, _key))
                             return;
                         var call = LeaveReceived;
                         if (call != null)

@@ -85,7 +85,7 @@ namespace PointGaming
             var audioChatIp = System.Net.IPAddress.Parse(Properties.Settings.Default.AudioChatIp);
             var audioChatPort = Properties.Settings.Default.AudioChatPort;
             var endpoint = new System.Net.IPEndPoint(audioChatIp, audioChatPort);
-            _audioChatClient = new AudioChatClient(endpoint);
+            _audioChatClient = new AudioChatClient(endpoint, _userData.PgSession.AuthTokenBytes);
             _audioChatClient.AudioReceived += _audioChatClient_MessageReceived;
             _audioChatClient.Start();
 

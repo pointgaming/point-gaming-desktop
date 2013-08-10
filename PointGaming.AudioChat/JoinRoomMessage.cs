@@ -16,7 +16,7 @@ namespace PointGaming.AudioChat
         public string RoomName;
         public string FromUserId;
 
-        public bool Read(byte[] buffer, int length)
+        public bool Read(byte[] buffer, int length, byte[] key)
         {
             if (length <= 0)
                 return false;
@@ -36,13 +36,23 @@ namespace PointGaming.AudioChat
             return true;
         }
 
-        public int Write(byte[] buffer)
+        public int Write(byte[] buffer, byte[] key)
         {
-            buffer[0] = MessageType;
-            var position = 1;
-            BufferIO.WriteString(buffer, ref position, AuthToken);
-            BufferIO.WriteString(buffer, ref position, RoomName);
+            var position = 0;
             BufferIO.WriteString(buffer, ref position, FromUserId);
+            
+            var cryptoStart = position;
+            var nonce = new byte[4];
+            AesIO.CryptoRNG.GetBytes(nonce);
+            BufferIO.WriteRawBytes(buffer, ref position, nonce);
+            BufferIO.WriteRawBytes(buffer, ref position, AesIO.AntiDoS);
+            buffer[position] = MessageType;
+            BufferIO.WriteString(buffer, ref position, RoomName);
+
+            var encryptedData = AesIO.AesEncrypt(key, AesIO.HardcodedIv, buffer, cryptoStart, position - cryptoStart);
+            Buffer.BlockCopy(encryptedData, 0, buffer, cryptoStart, encryptedData.Length);
+            position = cryptoStart + encryptedData.Length;
+
             return position;
         }
     }

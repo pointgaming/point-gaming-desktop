@@ -16,7 +16,7 @@ namespace PointGaming.AudioChat
         public string RoomName;
         public string FromUserId;
 
-        public bool Read(byte[] buffer, int length)
+        public bool Read(byte[] buffer, int length, byte[] key)
         {
             if (length <= 0)
                 return false;
@@ -36,7 +36,7 @@ namespace PointGaming.AudioChat
             return true;
         }
 
-        public int Write(byte[] buffer)
+        public int Write(byte[] buffer, byte[] key)
         {
             buffer[0] = MessageType;
             var position = 1;

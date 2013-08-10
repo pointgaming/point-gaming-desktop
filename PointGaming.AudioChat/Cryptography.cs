@@ -9,6 +9,10 @@ namespace PointGaming.AudioChat
 {
     public class AesIO
     {
+        public static byte[] AntiDoS = { 0x8E, 0xAA, 0xCF, 0x12 };
+
+        public static RandomNumberGenerator CryptoRNG = RandomNumberGenerator.Create();
+
         public static readonly byte[] HardcodedKey = new byte[]
         {
             0x64, 0xFF, 0xBB, 0xF6,
