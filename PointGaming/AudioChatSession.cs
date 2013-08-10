@@ -85,7 +85,7 @@ namespace PointGaming
             var audioChatIp = System.Net.IPAddress.Parse(Properties.Settings.Default.AudioChatIp);
             var audioChatPort = Properties.Settings.Default.AudioChatPort;
             var endpoint = new System.Net.IPEndPoint(audioChatIp, audioChatPort);
-            _audioChatClient = new AudioChatClient(endpoint);
+            _audioChatClient = new AudioChatClient(endpoint, _userData.PgSession.AuthTokenBytes);
             _audioChatClient.AudioReceived += _audioChatClient_MessageReceived;
             _audioChatClient.Start();
 
@@ -107,7 +107,6 @@ namespace PointGaming
         {
             var message = new JoinRoomMessage
             {
-                AuthToken = _userData.PgSession.AuthToken,
                 RoomName = id,
                 FromUserId = _userData.User.Id
             };
@@ -118,7 +117,6 @@ namespace PointGaming
         {
             var message = new LeaveRoomMessage
             {
-                AuthToken = _userData.PgSession.AuthToken,
                 RoomName = id,
                 FromUserId = _userData.User.Id
             };
@@ -216,7 +214,6 @@ namespace PointGaming
 
             var message = new AudioMessage
             {
-                AuthToken = _userData.PgSession.AuthToken,
                 RoomName = roomId,
                 FromUserId = _userData.User.Id,
                 MessageNumber = _messageNumber++,
@@ -238,7 +235,6 @@ namespace PointGaming
 
             var message = new AudioMessage
             {
-                AuthToken = _userData.PgSession.AuthToken,
                 RoomName = roomId,
                 FromUserId = _userData.User.Id,
                 MessageNumber = _messageNumber++,

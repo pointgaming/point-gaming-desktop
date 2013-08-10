@@ -10,7 +10,7 @@ namespace PointGaming.AudioChat
     public interface IChatMessage
     {
         byte MessageType { get; }
-        bool Read(byte[] buffer, int length);
-        int Write(byte[] buffer);
+        bool Read(byte[] buffer, int length, byte[] key);
+        int Write(byte[] buffer, byte[] key);
     }
 }
