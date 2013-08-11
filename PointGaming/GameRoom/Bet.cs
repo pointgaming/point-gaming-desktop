@@ -162,7 +162,22 @@ namespace PointGaming.GameRoom
 
         public decimal OffererReward { get { return Math.Floor(OffererWager * OffererMultiplier); } }
         public decimal TakerReward { get { return OffererWager; } }
+        public string TakerRewardAmount { 
+            get 
+            {
+                string points = OffererWager == 1 ? "point" : "points";
+                return string.Format("{0:0}", OffererWager) + " " + points;
+            } 
+        }
         public decimal TakerWager { get { return OffererReward; } }
+        public string TakerWagerAmount
+        {
+            get
+            {
+                string points = OffererReward == 1 ? "point" : "points";
+                return string.Format("{0:0}", OffererReward) + " " + points;
+            }
+        }
 
         public string TakerOdds
         {

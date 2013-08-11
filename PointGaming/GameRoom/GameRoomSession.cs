@@ -341,7 +341,7 @@ namespace PointGaming.GameRoom
             RestResponse<ApiResponse> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
-                var url = _userData.PgSession.GetWebApiV1Function("/matches/" + MyMatch.Id + "/bets/" + bet.Id + ".json");
+                var url = _userData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + GameRoom.Id + "/bets/" + bet.Id + ".json");
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.PUT);
                 response = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);

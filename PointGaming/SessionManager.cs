@@ -468,6 +468,7 @@ namespace PointGaming
                 dialog.ShowDialog();
                 if (dialog.DialogResult == true)
                 {
+                    gameRoomSession.AcceptBet(bet);
                 }
             }
         }
