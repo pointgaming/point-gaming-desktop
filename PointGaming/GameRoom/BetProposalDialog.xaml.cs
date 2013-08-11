@@ -104,7 +104,10 @@ namespace PointGaming.GameRoom
         {
             InitializeComponent();
 
-            if (bettingType.Equals("team")) BettingType = "team";
+            if (bettingType.Equals("team")) 
+                BettingType = "team";
+            else
+                BettingType = "1v1";
             NotifyChanged("OffererChoice");
         }
 

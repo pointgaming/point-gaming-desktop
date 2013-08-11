@@ -74,23 +74,24 @@ namespace PointGaming.GameRoom
         {
             if (GameRoom.Bets.Length > 0) return;
 
-            RestResponse<BetListPoco> response = null;
+            RestResponse<List<BetPoco>> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
                 var url = _userData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + GameRoom.Id + "/bets", "include_matches=true");
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.GET);
-                response = (RestResponse<BetListPoco>)client.Execute<BetListPoco>(request);
+                response = (RestResponse<List<BetPoco>>)client.Execute<List<BetPoco>>(request);
             }, delegate
             {
                 if (response.IsOk())
                 {
                     if (response.Data != null)
                     {
-                        var bets = response.Data.bets;
+                        var bets = response.Data;
                         foreach (BetPoco bet in bets)
                         {
-                            Bet item = new Bet(_userData, null, bet);
+                            Match match = new Match(bet.match);
+                            Bet item = new Bet(_userData, match, bet);
                             RoomBets.Add(item);
                         }
                     }
@@ -341,7 +342,7 @@ namespace PointGaming.GameRoom
             RestResponse<ApiResponse> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
-                var url = _userData.PgSession.GetWebApiV1Function("/matches/" + MyMatch.Id + "/bets/" + bet.Id + ".json");
+                var url = _userData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + GameRoom.Id + "/bets/" + bet.Id + ".json");
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.PUT);
                 response = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);

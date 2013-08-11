@@ -456,6 +456,23 @@ namespace PointGaming
             }
         }
 
+        public void ViewBetting(string id, Bet bet)
+        {
+            ChatroomSessionBase session;
+            if (_chatroomUsage.TryGetValue(id, out session))
+            {
+                GameRoomSession gameRoomSession = session as GameRoomSession;
+                var dialog = new BetDetailsDialogView();
+                dialog.Owner = gameRoomSession.Window;
+                dialog.DataContext = bet;
+                dialog.ShowDialog();
+                if (dialog.DialogResult == true)
+                {
+                    gameRoomSession.AcceptBet(bet);
+                }
+            }
+        }
+
         public void ShowMessage(string id, string title, string message)
         {
             ChatroomSessionBase session;

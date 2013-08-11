@@ -161,6 +161,9 @@
     <Compile Include="Chat\AutoScroller.cs" />
     <Compile Include="Chat\ChatroomSessionBase.cs" />
     <Compile Include="Chat\ChatSessionBase.cs" />
+    <Compile Include="GameRoom\BetDetailsDialogView.xaml.cs">
+      <DependentUpon>BetDetailsDialogView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HomeTab\KeySelectDialog.xaml.cs">
       <DependentUpon>KeySelectDialog.xaml</DependentUpon>
     </Compile>
@@ -279,6 +282,10 @@
     <Page Include="ClosableTabHeader.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GameRoom\BetDetailsDialogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GameRoom\BetProposalDialog.xaml">
       <SubType>Designer</SubType>
