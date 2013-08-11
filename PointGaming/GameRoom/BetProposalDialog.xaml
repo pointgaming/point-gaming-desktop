@@ -47,8 +47,8 @@
             <ComboBoxItem Name="bBeatsA">MrBanana beats MrApple</ComboBoxItem>
         </ComboBox>
 
-        <Label Grid.Row="3" Grid.Column="0" Content="Odds" Height="28" HorizontalAlignment="Right" Name="label2" VerticalAlignment="Center" />
-        <ComboBox Grid.Row="3" Grid.Column="1" Height="23" HorizontalAlignment="Left" Name="comboBoxOdds" VerticalAlignment="Center" Width="120" SelectedIndex="9"
+        <Label Grid.Row="4" Grid.Column="0" Content="Odds" Height="28" HorizontalAlignment="Right" Name="label2" VerticalAlignment="Center" />
+        <ComboBox Grid.Row="4" Grid.Column="1" Height="23" HorizontalAlignment="Left" Name="comboBoxOdds" VerticalAlignment="Center" Width="120" SelectedIndex="9"
                   HorizontalContentAlignment="Right" SelectionChanged="comboBoxOdds_SelectionChanged" Margin="10,3,0,7">
             <ComboBoxItem>10:1</ComboBoxItem>
             <ComboBoxItem>9:1</ComboBoxItem>
@@ -71,8 +71,8 @@
             <ComboBoxItem>1:10</ComboBoxItem>
         </ComboBox>
 
-        <Label Grid.Row="4" Grid.Column="0" Content="Wager" Height="28" HorizontalAlignment="Right" Name="label1" VerticalAlignment="Center" />
-        <TextBox Grid.Row="4" Grid.Column="1" Height="22" HorizontalAlignment="Left" Name="textBoxAmount" VerticalAlignment="Center"
+        <Label Grid.Row="3" Grid.Column="0" Content="Wager" Height="28" HorizontalAlignment="Right" Name="label1" VerticalAlignment="Center" />
+        <TextBox Grid.Row="3" Grid.Column="1" Height="22" HorizontalAlignment="Left" Name="textBoxAmount" VerticalAlignment="Center"
                  Text="{Binding ElementName=myWindow, Path=Wager, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" HorizontalContentAlignment="Right" Width="120" Margin="10,0,0,6"/>
 
         <Label Grid.Row="5" Grid.Column="0" Content="Summary" Height="28" HorizontalAlignment="Left" Name="label4" VerticalAlignment="Top" />
