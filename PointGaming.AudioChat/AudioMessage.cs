@@ -42,7 +42,9 @@ namespace PointGaming.AudioChat
         public int Write(byte[] buffer, byte[] key)
         {
             var position = 0;
-            BufferIO.WriteString(buffer, ref position, FromUserId);
+            BufferIO.WriteRawGuid(buffer, ref position, FromUserId);
+            var iv = AesIO.GenerateIv();
+            BufferIO.WriteRawBytes(buffer, ref position, iv);
 
             var cryptoStart = position;
             var nonce = new byte[4];
@@ -55,7 +57,7 @@ namespace PointGaming.AudioChat
             BufferIO.WriteInt(buffer, ref position, MessageNumber);
             BufferIO.WriteRawBytes(buffer, ref position, Audio);
 
-            var encryptedData = AesIO.AesEncrypt(key, AesIO.HardcodedIv, buffer, cryptoStart, position - cryptoStart);
+            var encryptedData = AesIO.AesEncrypt(key, iv, buffer, cryptoStart, position - cryptoStart);
             Buffer.BlockCopy(encryptedData, 0, buffer, cryptoStart, encryptedData.Length);
             position = cryptoStart + encryptedData.Length;
 

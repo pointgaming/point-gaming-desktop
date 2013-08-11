@@ -25,10 +25,10 @@ namespace PointGaming.AudioChat
         private System.Threading.AutoResetEvent _are = new System.Threading.AutoResetEvent(false);
         private List<IChatMessage> _messageQueue = new List<IChatMessage>();
 
-        public AudioChatClient(IPEndPoint serverEndPoint, byte[] key)
+        public AudioChatClient(IPEndPoint serverEndPoint, string authToken)
         {
             _serverEndPoint = serverEndPoint;
-            _key = key;
+            _key = authToken.GuidToHex().HexToBytes();
         }
 
         public void Start()
@@ -124,8 +124,8 @@ namespace PointGaming.AudioChat
                         foreach (var message in queue)
                         {
                             int len = message.Write(buffer, _key);
-                            //var str = "0x" + BitConverter.ToString(buffer, 0, len).Replace("-", string.Empty);
-                            //Console.WriteLine(str);
+                            var str = "0x" + BitConverter.ToString(buffer, 0, len).Replace("-", string.Empty).ToLower();
+                            Console.WriteLine(str);
                             _clientOut.SendTo(buffer, len, SocketFlags.None, _serverEndPoint);
                         }
                         queue.Clear();

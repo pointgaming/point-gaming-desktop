@@ -29,6 +29,13 @@ namespace PointGaming.AudioChat
             0x83, 0x71, 0x4E, 0xAD,
         };
 
+        public static byte[] GenerateIv()
+        {
+            byte[] buffer = new byte[16];
+            CryptoRNG.GetBytes(buffer);
+            return buffer;
+        }
+
         public static void Test()
         {
             try
@@ -66,8 +73,10 @@ namespace PointGaming.AudioChat
             byte[] encryptedData;
             using (Aes aesAlg = Aes.Create())
             {
+                aesAlg.Mode = CipherMode.CBC;
                 aesAlg.Key = Key;
                 aesAlg.IV = IV;
+                aesAlg.Padding = PaddingMode.PKCS7;
 
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
                 using (MemoryStream msEncrypt = new MemoryStream())
