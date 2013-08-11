@@ -160,6 +160,16 @@ namespace PointGaming.GameRoom
             }
         }
 
+        public string MapAndAmount
+        {
+            get
+            {
+                string map = MyMatch != null ? MyMatch.Map : "";
+                string points = OffererWager == 1 ? "point" : "points";
+                return map + " (" + string.Format("{0:0}", OffererWager) + " " + points + ")";
+            }
+        }
+
         public decimal OffererReward { get { return Math.Floor(OffererWager * OffererMultiplier); } }
         public decimal TakerReward { get { return OffererWager; } }
         public string TakerRewardAmount { 
@@ -210,15 +220,18 @@ namespace PointGaming.GameRoom
 
             SetOutcome(poco.outcome);
 
-            if (poco.offerer_choice_id == match.Player1.Id)
+            if (match != null)
             {
-                OffererChoice = match.Player1;
-                TakerChoice = match.Player2;
-            }
-            else
-            {
-                OffererChoice = match.Player2;
-                TakerChoice = match.Player1;
+                if (match.Player1 != null && poco.offerer_choice_id == match.Player1.Id)
+                {
+                    OffererChoice = match.Player1;
+                    TakerChoice = match.Player2;
+                }
+                else
+                {
+                    OffererChoice = match.Player2;
+                    TakerChoice = match.Player1;
+                }
             }
             
             var offerer = new POCO.UserBase { _id = poco.offerer_id, username = poco.offerer_username };

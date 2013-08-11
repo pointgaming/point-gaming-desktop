@@ -259,6 +259,14 @@ namespace PointGaming.GameRoom
             return player;
         }
 
+        public Match()
+        {
+        }
+        
+        public Match(POCO.MatchPoco poco){
+            Map = poco.map;
+        }
+
         public POCO.MatchPoco ToPoco()
         {
             var poco = new POCO.MatchPoco
