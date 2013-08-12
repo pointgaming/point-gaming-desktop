@@ -5,7 +5,7 @@ using System.Text;
 
 namespace PointGaming.AudioChat
 {
-    public class BufferIO
+    public static class BufferIO
     {
         public static bool ReadInt(byte[] buffer, int bufferLength, ref int position, out int value)
         {
@@ -149,6 +149,112 @@ namespace PointGaming.AudioChat
             var len = value.Length;
             Buffer.BlockCopy(value, 0, buffer, position, len);
             position += len;
+        }
+
+
+        public static bool ReadRawGuid(byte[] buffer, int bufferLength, ref int position, out string guid)
+        {
+            guid = null;
+
+            int len = 16;
+            if (position + len > bufferLength)
+                return false;
+
+            var temp = new byte[len];
+            Buffer.BlockCopy(buffer, position, temp, 0, len);
+            position += len;
+
+            guid = temp.BytesToHex().HexToGuid();
+
+            return true;
+        }
+
+        public static void WriteRawGuid(byte[] buffer, ref int position, string guid)
+        {
+            var temp = guid.GuidToHex().HexToBytes();
+            var len = 16;
+            Buffer.BlockCopy(temp, 0, buffer, position, len);
+            position += len;
+        }
+
+        public static string HexToGuid(this string hex)
+        {
+            char[] result = new char[32 + 4];
+            char[] hexChars = hex.ToCharArray();
+            var hexIndex = 0;
+            var resIndex = 0;
+            Array.Copy(hexChars, hexIndex, result, resIndex, 8);
+            hexIndex += 8;
+            resIndex += 8;
+            result[resIndex++] = '-';
+            Array.Copy(hexChars, hexIndex, result, resIndex, 4);
+            hexIndex += 4;
+            resIndex += 4;
+            result[resIndex++] = '-';
+            Array.Copy(hexChars, hexIndex, result, resIndex, 4);
+            hexIndex += 4;
+            resIndex += 4;
+            result[resIndex++] = '-';
+            Array.Copy(hexChars, hexIndex, result, resIndex, 4);
+            hexIndex += 4;
+            resIndex += 4;
+            result[resIndex++] = '-';
+            Array.Copy(hexChars, hexIndex, result, resIndex, 12);
+            return new string(result);
+        }
+
+        public static string GuidToHex(this string guid)
+        {
+            return guid.Replace("-", "");
+        }
+
+
+        public static byte[] HexToBytes(this string hex)
+        {
+            if ((hex.Length & 1) != 0)
+                throw new Exception("The binary key cannot have an odd number of digits");
+
+            var result = new byte[hex.Length >> 1];
+            int i = 0;
+            while (i < hex.Length)
+            {
+                var resultIndex = i >> 1;
+                var hi = hex[i++].HexToLoByte();
+                var lo = hex[i++].HexToLoByte();
+                result[resultIndex] = (byte)(lo | (hi << 4));
+            }
+            return result;
+        }
+
+        public static int HexToLoByte(this char hex)
+        {
+            int val = (int)hex;
+            return val - (val < 58 ? 48 : (val < 97 ? 55 : 87));
+        }
+
+        public static char LoByteToHex(this byte value)
+        {
+            int trans = value + ((value < 10) ? 48 : 87);
+            return (char)trans;
+        }
+
+        public static string BytesToHex(this byte[] value, int offset = 0, int length = -1)
+        {
+            if (length == -1)
+                length = value.Length - offset;
+
+            char[] result = new char[length << 1];
+            int i = 0;
+            while (i < result.Length)
+            {
+                var valueIndex = offset + (i >> 1);
+                var b = value[valueIndex];
+                var hi = (byte)((b >> 4) & 0xf);
+                var lo = (byte)(b & 0xf);
+                result[i++] = hi.LoByteToHex();
+                result[i++] = lo.LoByteToHex();
+            }
+            return new string(result);
         }
     }
 

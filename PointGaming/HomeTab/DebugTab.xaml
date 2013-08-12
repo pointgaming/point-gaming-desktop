@@ -22,6 +22,6 @@
             <Label Content="{Binding ElementName=debugTabControl, Path=ProgramVersion, FallbackValue='0.0.0'}" Height="28" HorizontalAlignment="Left" Name="labelVersion" VerticalAlignment="Top" />
         </StackPanel>
         <TextBox Grid.Row="1" HorizontalAlignment="Stretch" Name="textBoxConsole" VerticalAlignment="Stretch" 
-                 VerticalScrollBarVisibility="Auto" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"/>
+                 VerticalScrollBarVisibility="Auto" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto" FontFamily="Consolas"/>
     </Grid>
 </UserControl>
