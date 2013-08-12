@@ -188,7 +188,7 @@ namespace PointGaming.Lobby
 
         private void reportMatchWinnerButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageDialog.Show(this, "Report Match Winner", "TODO: get list of pending user bets from REST API");
+            _lobbySession.ShowUndecidedMatches(_lobbySession.ChatroomId);
         }
 
         private void OnRequestFriend(string errorMessage)

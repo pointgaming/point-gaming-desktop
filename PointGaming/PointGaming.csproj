@@ -175,6 +175,10 @@
     <Compile Include="Audio\OpusDecoder.cs" />
     <Compile Include="Audio\OpusEncoder.cs" />
     <Compile Include="Audio\SpeexChatCodec.cs" />
+    <Compile Include="Lobby\MatchesDialogModelView.cs" />
+    <Compile Include="Lobby\MatchesDialogView.xaml.cs">
+      <DependentUpon>MatchesDialogView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="POCO\BetList.cs" />
     <Compile Include="POCO\BetterAccount.cs" />
     <Compile Include="WindowTreeManager.cs" />
@@ -376,6 +380,10 @@
     <Page Include="Lobby\LobbyWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Lobby\MatchesDialogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Lobby\ReportBetsDialog.xaml">
       <SubType>Designer</SubType>

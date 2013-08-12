@@ -107,6 +107,35 @@ namespace PointGaming.Lobby
                 _allGameRooms.Add(fakeRoom);
         }
 
+        public void ShowUndecidedMatches(string id)
+        {
+            _manager.ShowUndecidedMatches(id);
+        }
+
+        public void RequestUndecidedMatches(Action<List<MatchPoco>> onCompleted)
+        {
+            RestResponse<List<MatchPoco>> response = null;
+            _userData.PgSession.BeginAndCallback(delegate
+            {
+                var url = _userData.PgSession.GetWebAppFunction("/api", "/matches");
+                var client = new RestClient(url);
+                var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+                response = (RestResponse<List<MatchPoco>>)client.Execute<List<MatchPoco>>(request);
+            }, delegate
+            {
+                if (response.IsOk() && response.Data != null)
+                {
+                    if (onCompleted != null)
+                        onCompleted(response.Data);
+                }
+                else
+                {
+                    string reason = String.IsNullOrEmpty(response.ErrorMessage) ? response.Content : response.ErrorMessage;
+                    MessageDialog.Show(_window, "Could not load matches", reason);
+                }
+            });
+        }
+
         public void CreateRoomAt(int position, string description, Action<string> onCreated, bool takeover = false)
         {
             RestResponse<GameRoomPoco> response = null;

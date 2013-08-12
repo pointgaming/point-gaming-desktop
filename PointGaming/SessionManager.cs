@@ -9,6 +9,7 @@ using SocketIOClient;
 using SocketIOClient.Messages;
 using RestSharp;
 using PointGaming.Chat;
+using PointGaming.Lobby;
 
 namespace PointGaming
 {
@@ -276,6 +277,24 @@ namespace PointGaming
         void _inviteTab_Closed(object sender, EventArgs e)
         {
             _inviteTab = null;
+        }
+
+        public void ShowUndecidedMatches(string id)
+        {
+            ChatroomSessionBase session;
+            if (_chatroomUsage.TryGetValue(id, out session))
+            {
+                MatchesDialogModelView modelView = new MatchesDialogModelView();
+                modelView.Init(this, session as ChatroomSession);
+
+                var dialog = new MatchesDialog();
+                dialog.DataContext = modelView;
+                dialog.ShowDialog();
+
+                if (dialog.DialogResult == true)
+                {
+                }
+            }
         }
 
         public void JoinChatroom(string id, string password = null)
