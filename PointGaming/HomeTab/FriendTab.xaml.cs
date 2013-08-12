@@ -18,10 +18,11 @@ namespace PointGaming.HomeTab
     {
         private const string FriendStatusOffline = "offline";
         private const string FriendStatusOnline = "online";
+        private const string FriendStatusIdle = "idle";
         private const string FriendStatusAdded = "added";
         private const string FriendStatusRemoved = "removed";
 
-        private static readonly List<string> ChatAvailableStatuses = new List<string>(new[] { FriendStatusOnline });
+        private static readonly List<string> ChatAvailableStatuses = new List<string>(new[] { FriendStatusOnline, FriendStatusIdle });
 
         private UserDataManager _userData = HomeWindow.UserData;
         private ActiveGroupingCollectionView _FriendsView;
