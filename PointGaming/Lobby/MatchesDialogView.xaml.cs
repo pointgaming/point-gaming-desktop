@@ -22,5 +22,12 @@ namespace PointGaming.Lobby
         {
             InitializeComponent();
         }
+
+        private void buttonOK_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
+            Close();
+        }
+
     }
 }

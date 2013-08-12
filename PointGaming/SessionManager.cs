@@ -285,7 +285,7 @@ namespace PointGaming
             if (_chatroomUsage.TryGetValue(id, out session))
             {
                 MatchesDialogModelView modelView = new MatchesDialogModelView();
-                modelView.Init(this, session as ChatroomSession);
+                modelView.Init(this, session as LobbySession);
 
                 var dialog = new MatchesDialog();
                 dialog.DataContext = modelView;

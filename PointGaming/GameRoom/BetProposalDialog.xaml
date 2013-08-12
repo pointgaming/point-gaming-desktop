@@ -35,20 +35,32 @@
         <Label Grid.Row="0" Grid.Column="0" Content="Map" Height="28" HorizontalAlignment="Right" Name="label5" VerticalAlignment="Center" />
         <TextBox Grid.Row="0" Grid.Column="1" Height="24" HorizontalAlignment="Stretch" Name="textBoxMap" VerticalAlignment="Center" Text="{Binding ElementName=myWindow, Path=MapName}" Margin="10,2" />
 
-        <Label Grid.Row="1" Grid.Column="0" Content="Choice" Height="28" HorizontalAlignment="Right" Name="label3" VerticalAlignment="Center" />
-        <Label Grid.Row="1" Grid.Column="1" Content="{Binding ElementName=myWindow, Path=OffererChoice}" Height="28" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" />
-
-        <Label Grid.Row="2" Grid.Column="0" Content="Team Size" Height="28" HorizontalAlignment="Right" VerticalAlignment="Center" />
-        <ComboBox Grid.Row="2" Grid.Column="1" Height="23" HorizontalAlignment="Left" VerticalAlignment="Center" Width="120" HorizontalContentAlignment="Right" Margin="10,2,0,0" Text="{Binding ElementName=myWindow, Path=MapName}">
+        <Label Grid.Row="1" Grid.Column="0" Content="Team Size" Height="28" HorizontalAlignment="Right" VerticalAlignment="Center" />
+        <ComboBox Grid.Row="1" Grid.Column="1" Height="23" HorizontalAlignment="Left" VerticalAlignment="Center" Width="120" HorizontalContentAlignment="Right" Margin="10,2,0,0" Text="{Binding ElementName=myWindow, Path=MapName}">
+            <ComboBoxItem>1</ComboBoxItem>
+            <ComboBoxItem>2</ComboBoxItem>
+            <ComboBoxItem>3</ComboBoxItem>
+            <ComboBoxItem>4</ComboBoxItem>
+            <ComboBoxItem>5</ComboBoxItem>
+            <ComboBoxItem>6</ComboBoxItem>
+            <ComboBoxItem>7</ComboBoxItem>
+            <ComboBoxItem>8</ComboBoxItem>
+            <ComboBoxItem>9</ComboBoxItem>
+            <ComboBoxItem>10</ComboBoxItem>
+            <ComboBoxItem>11</ComboBoxItem>
+            <ComboBoxItem>12</ComboBoxItem>
+            <ComboBoxItem>13</ComboBoxItem>
+            <ComboBoxItem>14</ComboBoxItem>
+            <ComboBoxItem>15</ComboBoxItem>
+            <ComboBoxItem>16</ComboBoxItem>
+            <ComboBoxItem>17</ComboBoxItem>
+            <ComboBoxItem>18</ComboBoxItem>
+            <ComboBoxItem>19</ComboBoxItem>
+            <ComboBoxItem>20</ComboBoxItem>
         </ComboBox>
 
-        <ComboBox Visibility="Hidden" Grid.Row="2" Grid.Column="1" Height="24" HorizontalAlignment="Stretch" Name="comboBoxOutcome" VerticalAlignment="Center" SelectedIndex="0" SelectionChanged="comboBoxOutcome_SelectionChanged" Margin="0,2,10,2">
-            <ComboBoxItem Name="aBeatsB">MrApple beats MrBanana</ComboBoxItem>
-            <ComboBoxItem Name="bBeatsA">MrBanana beats MrApple</ComboBoxItem>
-        </ComboBox>
-
-        <Label Grid.Row="4" Grid.Column="0" Content="Odds" Height="28" HorizontalAlignment="Right" Name="label2" VerticalAlignment="Center" />
-        <ComboBox Grid.Row="4" Grid.Column="1" Height="23" HorizontalAlignment="Left" Name="comboBoxOdds" VerticalAlignment="Center" Width="120" SelectedIndex="9"
+        <Label Grid.Row="2" Grid.Column="0" Content="Odds" Height="28" HorizontalAlignment="Right" Name="label2" VerticalAlignment="Center" />
+        <ComboBox Grid.Row="2" Grid.Column="1" Height="23" HorizontalAlignment="Left" Name="comboBoxOdds" VerticalAlignment="Center" Width="120" SelectedIndex="9"
                   HorizontalContentAlignment="Right" SelectionChanged="comboBoxOdds_SelectionChanged" Margin="10,3,0,7">
             <ComboBoxItem>10:1</ComboBoxItem>
             <ComboBoxItem>9:1</ComboBoxItem>
@@ -71,8 +83,8 @@
             <ComboBoxItem>1:10</ComboBoxItem>
         </ComboBox>
 
-        <Label Grid.Row="3" Grid.Column="0" Content="Wager" Height="28" HorizontalAlignment="Right" Name="label1" VerticalAlignment="Center" />
-        <TextBox Grid.Row="3" Grid.Column="1" Height="22" HorizontalAlignment="Left" Name="textBoxAmount" VerticalAlignment="Center"
+        <Label Grid.Row="4" Grid.Column="0" Content="Wager" Height="28" HorizontalAlignment="Right" Name="label1" VerticalAlignment="Center" />
+        <TextBox Grid.Row="4" Grid.Column="1" Height="22" HorizontalAlignment="Left" Name="textBoxAmount" VerticalAlignment="Center"
                  Text="{Binding ElementName=myWindow, Path=Wager, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" HorizontalContentAlignment="Right" Width="120" Margin="10,0,0,6"/>
 
         <Label Grid.Row="5" Grid.Column="0" Content="Summary" Height="28" HorizontalAlignment="Left" Name="label4" VerticalAlignment="Top" />

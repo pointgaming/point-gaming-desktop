@@ -130,8 +130,8 @@ namespace PointGaming.Lobby
                 }
                 else
                 {
-                    string reason = String.IsNullOrEmpty(response.ErrorMessage) ? response.Content : response.ErrorMessage;
-                    MessageDialog.Show(_window, "Could not load matches", reason);
+                    // fail silently
+                    onCompleted(new List<MatchPoco>(0));
                 }
             });
         }

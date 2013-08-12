@@ -126,8 +126,6 @@ namespace PointGaming.GameRoom
 
             _betOperandA = operandA;
             _betOperandB = operandB;
-            aBeatsB.Content = operandA.ShortDescription + " beats " + operandB.ShortDescription;
-            bBeatsA.Content = operandB.ShortDescription + " beats " + operandA.ShortDescription;
             UpdateSummary();
         }
 
