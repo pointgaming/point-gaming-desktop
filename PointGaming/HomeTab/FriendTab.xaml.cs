@@ -225,7 +225,7 @@ namespace PointGaming.HomeTab
             RestResponse<FriendList> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
-                var friendsRequestCall = _userData.PgSession.GetWebApiV1Function("/friends");
+                var friendsRequestCall = _userData.PgSession.GetWebAppFunction("/api", "/friends");
                 var friendClient = new RestClient(friendsRequestCall);
                 var fRequest = new RestRequest(Method.GET);
                 response = (RestResponse<FriendList>)friendClient.Execute<FriendList>(fRequest);
@@ -344,7 +344,7 @@ namespace PointGaming.HomeTab
             bool isSuccess = false;
             _userData.PgSession.BeginAndCallback(delegate
             {
-                var friendsRequestCall = _userData.PgSession.GetWebApiV1Function("/friend_requests", "sent=1");
+                var friendsRequestCall = _userData.PgSession.GetWebAppFunction("/api", "/friend_requests", "sent=1");
                 var friendClient = new RestClient(friendsRequestCall);
                 var fRequest = new RestRequest(Method.GET);
                 var response = (RestResponse<FriendRequestRoot>)
@@ -378,7 +378,7 @@ namespace PointGaming.HomeTab
             string id = source.FriendRequestId;
             _userData.PgSession.Begin(delegate
             {
-                var apiCall = _userData.PgSession.GetWebApiV1Function("/friend_requests/" + id);
+                var apiCall = _userData.PgSession.GetWebAppFunction("/api", "/friend_requests/" + id);
                 var client = new RestClient(apiCall);
                 var request = new RestRequest(Method.DELETE);
                 client.Execute<ApiResponse>(request);
@@ -393,7 +393,7 @@ namespace PointGaming.HomeTab
             bool isSuccess = false;
             _userData.PgSession.BeginAndCallback(delegate
             {
-                var friendsRequestCall = _userData.PgSession.GetWebApiV1Function("/friend_requests");
+                var friendsRequestCall = _userData.PgSession.GetWebAppFunction("/api", "/friend_requests");
                 var friendClient = new RestClient(friendsRequestCall);
                 var fRequest = new RestRequest(Method.GET);
                 var response = (RestResponse<FriendRequestRoot>)
@@ -427,7 +427,7 @@ namespace PointGaming.HomeTab
             string id = source.FriendRequestId;
             _userData.PgSession.Begin(delegate
             {
-                var apiCall = _userData.PgSession.GetWebApiV1Function("/friend_requests/" + id);
+                var apiCall = _userData.PgSession.GetWebAppFunction("/api", "/friend_requests/" + id);
                 var client = new RestClient(apiCall);
                 var request = new RestRequest(Method.PUT) { RequestFormat = RestSharp.DataFormat.Json };
 
@@ -502,7 +502,7 @@ namespace PointGaming.HomeTab
             _userData.PgSession.Begin(delegate
             {
                 var request = new RestRequest(Method.DELETE);
-                var friendsUrl = _userData.PgSession.GetWebApiV1Function("/friends/" + friend.Id);
+                var friendsUrl = _userData.PgSession.GetWebAppFunction("/api", "/friends/" + friend.Id);
                 var client = new RestClient(friendsUrl);
                 client.Execute<ApiResponse>(request);
             });

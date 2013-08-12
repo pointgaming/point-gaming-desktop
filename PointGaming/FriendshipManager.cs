@@ -25,7 +25,7 @@ namespace PointGaming
             request.RequestFormat = RestSharp.DataFormat.Json;
             request.AddBody(friendRequestRootObject);
 
-            var friendsRequestApiCall = _pgSession.GetWebApiV1Function("/friend_requests");
+            var friendsRequestApiCall = _pgSession.GetWebAppFunction("/api", "/friend_requests");
             var client = new RestClient(friendsRequestApiCall);
 
             _pgSession.Begin(delegate
