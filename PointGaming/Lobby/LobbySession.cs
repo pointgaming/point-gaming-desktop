@@ -112,6 +112,25 @@ namespace PointGaming.Lobby
             _manager.ShowUndecidedMatches(id);
         }
 
+        public void ReportMatchWinner(Match match)
+        {
+            RestResponse<ApiResponse> response = null;
+            _userData.PgSession.BeginAndCallback(delegate
+            {
+                var url = _userData.PgSession.GetWebAppFunction("/api", "/matches/" + match.Id + ".json");
+                var client = new RestClient(url);
+                var request = new RestRequest(Method.PUT);
+                response = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
+            }, delegate
+            {
+                if (!response.IsOk())
+                {
+                    string msg = response.Data.errors == null ? response.StatusCode.ToString() : string.Concat(response.Data.errors);
+                    MessageDialog.Show(_window, "Failed to report winner", msg);
+                }
+            });
+        }
+
         public void RequestUndecidedMatches(Action<List<MatchPoco>> onCompleted)
         {
             RestResponse<List<MatchPoco>> response = null;

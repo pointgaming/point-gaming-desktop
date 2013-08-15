@@ -34,7 +34,7 @@
                             <TextBlock Text="{Binding Path=Bet.OffererOdds, Mode=OneWay}" Grid.Column="2" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" />
 
                             <TextBlock Grid.Column="3" Height="20" Margin="2,2,5,2" HorizontalAlignment="Right" VerticalAlignment="Top">
-                                <Hyperlink Command="{Binding ElementName=This, Path=DataContext.ReportMatchWinner}" CommandParameter="{Binding}">Report Win</Hyperlink>
+                                <Hyperlink Command="{Binding ElementName=This, Path=DataContext.ReportWinner}" CommandParameter="{Binding}">Report Win</Hyperlink>
                             </TextBlock>
                         </Grid>
                     </DataTemplate>

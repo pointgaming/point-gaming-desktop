@@ -281,6 +281,9 @@ namespace PointGaming.GameRoom
 
         public Match(POCO.MatchPoco poco)
         {
+            Id = poco._id;
+            MatchHash = poco.match_hash;
+            IsBetting = poco.betting;
             Map = poco.map;
             foreach (POCO.BetPoco bet in poco.bets)
             {

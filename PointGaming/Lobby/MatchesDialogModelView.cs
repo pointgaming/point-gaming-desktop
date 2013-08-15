@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using System.Windows.Input;
 using PointGaming;
 using PointGaming.GameRoom;
 using PointGaming.Chat;
@@ -51,6 +52,12 @@ namespace PointGaming.Lobby
                 _matches.Add(item);
             }
             OnPropertyChanged("Matches");
+        }
+
+        public ICommand ReportWinner { get { return new ActionCommand<Match>(ReportMatchWinner); } }
+        public void ReportMatchWinner(Match match)
+        {
+            _session.ReportMatchWinner(match);
         }
     }
 }
