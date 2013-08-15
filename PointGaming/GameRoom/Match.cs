@@ -202,6 +202,22 @@ namespace PointGaming.GameRoom
         {
             get { return Winner == null ? "" : Winner.ShortDescription; }
         }
+        
+        private ObservableCollection<Bet> _bets = new ObservableCollection<Bet>();
+        public ObservableCollection<Bet> Bets
+        {
+            get
+            {
+                return _bets;
+            }
+        }
+        public Bet Bet
+        {
+            get
+            {
+                return Bets.Count > 0 ? Bets[0] : new Bet();
+            }
+        }
 
         public void Update(UserDataManager manager, POCO.MatchPoco poco)
         {
@@ -262,9 +278,15 @@ namespace PointGaming.GameRoom
         public Match()
         {
         }
-        
-        public Match(POCO.MatchPoco poco){
+
+        public Match(POCO.MatchPoco poco)
+        {
             Map = poco.map;
+            foreach (POCO.BetPoco bet in poco.bets)
+            {
+                Bet item = new Bet(bet);
+                Bets.Add(item);
+            }
         }
 
         public POCO.MatchPoco ToPoco()

@@ -24,12 +24,14 @@
                         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="18">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
                             <TextBlock Text="{Binding Path=Map, Mode=OneWay}" Grid.Column="0" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                            <TextBlock Text="{Binding Path=Bet.OffererWager, Mode=OneWay}" Grid.Column="1" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                            <TextBlock Text="{Binding Path=Bet.OffererOdds, Mode=OneWay}" Grid.Column="2" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" />
 
                             <TextBlock Grid.Column="3" Height="20" Margin="2,2,5,2" HorizontalAlignment="Right" VerticalAlignment="Top">
                                 <Hyperlink Command="{Binding ElementName=This, Path=DataContext.ReportMatchWinner}" CommandParameter="{Binding}">Report Win</Hyperlink>

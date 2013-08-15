@@ -17,7 +17,14 @@ namespace PointGaming.Lobby
         private LobbySession _session;
         private SessionManager _manager;
 
-        public ObservableCollection<Match> Matches = new ObservableCollection<Match>();
+        private ObservableCollection<Match> _matches = new ObservableCollection<Match>();
+        public ObservableCollection<Match> Matches
+        {
+            get
+            {
+                return _matches;
+            }
+        }
 
         public MatchesDialogModelView()
         {
@@ -41,8 +48,9 @@ namespace PointGaming.Lobby
             foreach (var match in matches)
             {
                 Match item = new Match(match);
-                Matches.Add(item);
+                _matches.Add(item);
             }
+            OnPropertyChanged("Matches");
         }
     }
 }
