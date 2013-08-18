@@ -36,19 +36,39 @@ namespace PointGaming.AudioChat
             return buffer;
         }
 
-        public static void Test()
+        public static void Main()
         {
             try
             {
-                string original = "This is a super long message.  lkasjdfj sdklf lksjadkjf slkfksdf lsdkl sdksdflkslkfk skldkl sldflk lsdfkj sllkjs klfksdj dkdkk kdksdkjfsdakdfjsd kfjksdjk sjk sksjsdjkjk fjk sdkf jsdkfj sdk fksdj jksdjkfjks dfjksdkfj";
+                var key = "4907ebd7d23548019a8dac24d25d9722";
+                var iv =  "00000000000000000000000000000000";
+                var plain = "b6a517de8eaacf120105726e616d65";
+                var message = "b7cecdddfe70e38ce85f869d6b1fb5eadea93e81a17317bfa797175553591acc";
+
+                message = AesEncrypt(key.HexToBytes(), iv.HexToBytes(), plain.HexToBytes(), 0, plain.Length>>1).BytesToHex();
+
+                plain = AesDecrypt(key.HexToBytes(), iv.HexToBytes(), message.HexToBytes()).BytesToHex();
+
+                string original = "Hello World.  This is a longer test.";
                 var originalData = System.Text.Encoding.UTF8.GetBytes(original);
 
                 byte[] encrypted = AesEncrypt(HardcodedKey, HardcodedIv, originalData, 0, original.Length);
                 byte[] roundtripData = AesDecrypt(HardcodedKey, HardcodedIv, encrypted);
                 var roundtrip = System.Text.Encoding.UTF8.GetString(roundtripData);
 
-                Console.WriteLine("Original:   {0}", original);
-                Console.WriteLine("Round Trip: {0}", roundtrip);
+                var keyy = HardcodedKey.BytesToHex();
+                var ivv = HardcodedIv.BytesToHex();
+
+                Console.WriteLine("plainr: {0}", original);
+                Console.WriteLine("plainx: {0}", originalData.BytesToHex());
+                Console.WriteLine("cryptx: {0}", encrypted.BytesToHex());
+                Console.WriteLine("plainx: {0}", roundtripData.BytesToHex());
+                Console.WriteLine("plainr: {0}", roundtrip);
+
+                var opensslRes = File.ReadAllBytes("C:\\OpenSSL-Win32\\bin\\test\\test.bin");
+                var opensslRess = opensslRes.BytesToHex();
+
+
                 Console.WriteLine("Equal:      {0}", original == roundtrip);
             }
             catch (Exception e)
@@ -56,6 +76,8 @@ namespace PointGaming.AudioChat
                 Console.WriteLine("Error: {0}", e.Message);
             }
         }
+
+        private static readonly byte[] _zeros = new byte[32];
 
         public static byte[] AesEncrypt(byte[] Key, byte[] IV, byte[] plainData, int offset, int length)
         {
@@ -74,9 +96,9 @@ namespace PointGaming.AudioChat
             using (Aes aesAlg = Aes.Create())
             {
                 aesAlg.Mode = CipherMode.CBC;
+                aesAlg.Padding = PaddingMode.PKCS7;
                 aesAlg.Key = Key;
                 aesAlg.IV = IV;
-                aesAlg.Padding = PaddingMode.PKCS7;
 
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
                 using (MemoryStream msEncrypt = new MemoryStream())
@@ -84,6 +106,12 @@ namespace PointGaming.AudioChat
                     using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
                     {
                         csEncrypt.Write(plainData, offset, length);
+                        if (aesAlg.Padding == PaddingMode.None)
+                        {
+                            var extra = length % 16;
+                            if (extra != 0)
+                                csEncrypt.Write(_zeros, 0, 16 - extra);
+                        }
                         csEncrypt.FlushFinalBlock();
                         encryptedData = msEncrypt.ToArray();
                     }
@@ -106,6 +134,8 @@ namespace PointGaming.AudioChat
             
             using (Aes aesAlg = Aes.Create())
             {
+                aesAlg.Mode = CipherMode.CBC;
+                aesAlg.Padding = PaddingMode.PKCS7;
                 aesAlg.Key = Key;
                 aesAlg.IV = IV;
 
