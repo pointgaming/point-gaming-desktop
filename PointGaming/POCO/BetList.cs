@@ -67,6 +67,8 @@ namespace PointGaming.POCO
         public string state { get; set; }
         public string winner_id { get; set; }
         public string winner_type { get; set; }
+
+        public List<BetPoco> bets { get; set; }
     }
 
     public class MatchSinglePoco

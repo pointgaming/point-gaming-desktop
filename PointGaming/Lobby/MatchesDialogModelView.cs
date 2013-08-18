@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using System.Windows.Input;
 using PointGaming;
 using PointGaming.GameRoom;
 using PointGaming.Chat;
@@ -17,7 +18,14 @@ namespace PointGaming.Lobby
         private LobbySession _session;
         private SessionManager _manager;
 
-        public ObservableCollection<Match> Matches = new ObservableCollection<Match>();
+        private ObservableCollection<Match> _matches = new ObservableCollection<Match>();
+        public ObservableCollection<Match> Matches
+        {
+            get
+            {
+                return _matches;
+            }
+        }
 
         public MatchesDialogModelView()
         {
@@ -41,8 +49,15 @@ namespace PointGaming.Lobby
             foreach (var match in matches)
             {
                 Match item = new Match(match);
-                Matches.Add(item);
+                _matches.Add(item);
             }
+            OnPropertyChanged("Matches");
+        }
+
+        public ICommand ReportWinner { get { return new ActionCommand<Match>(ReportMatchWinner); } }
+        public void ReportMatchWinner(Match match)
+        {
+            _session.ReportMatchWinner(match);
         }
     }
 }

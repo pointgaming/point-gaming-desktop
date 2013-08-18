@@ -212,6 +212,11 @@ namespace PointGaming.GameRoom
 
         public Bet() { }
 
+        public Bet(POCO.BetPoco poco)
+        {
+            LoadFromPoco(poco);
+        }
+
         public Bet(UserDataManager manager, Match match, POCO.BetPoco poco)
         {
             Id = poco._id;
@@ -242,6 +247,15 @@ namespace PointGaming.GameRoom
             var taker = new POCO.UserBase { _id = poco.taker_id, username = poco.taker_username };
             if (!string.IsNullOrWhiteSpace(taker._id))
                 Taker = manager.GetPgUser(taker);
+        }
+
+        private void LoadFromPoco(POCO.BetPoco poco)
+        {
+            MatchHash = poco.match_hash;
+            SetOutcome(poco.outcome);
+
+            OffererOdds = poco.offerer_odds;
+            OffererWager = poco.offerer_wager;
         }
 
         public POCO.BetPoco ToPoco()

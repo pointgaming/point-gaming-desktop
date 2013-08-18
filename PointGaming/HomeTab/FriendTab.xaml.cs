@@ -223,18 +223,18 @@ namespace PointGaming.HomeTab
 
         private void GetFriends()
         {
-            RestResponse<FriendList> response = null;
+            RestResponse<List<UserWithLobbies>> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
                 var friendsRequestCall = _userData.PgSession.GetWebAppFunction("/api", "/friends");
                 var friendClient = new RestClient(friendsRequestCall);
                 var fRequest = new RestRequest(Method.GET);
-                response = (RestResponse<FriendList>)friendClient.Execute<FriendList>(fRequest);
+                response = (RestResponse<List<UserWithLobbies>>)friendClient.Execute<List<UserWithLobbies>>(fRequest);
             }, delegate
             {
                 if (response.IsOk())
                 {
-                    var friends = response.Data.friends;
+                    var friends = response.Data;
                     RemoveOldFriends(friends);
 
                     foreach (var item in friends)
