@@ -302,13 +302,17 @@ namespace PointGaming.GameRoom
 
         public void OnMatchNew(MatchPoco poco)
         {
-            // Do nothing until bet is accepted
+            MyMatch.Update(_userData, poco);
+            MyMatch.IsEditable = true;
         }
         public void OnMatchUpdate(MatchPoco poco)
         {
             MyMatch.Update(_userData, poco);
             MyMatch.IsEditable = true;
-            CleanBets(poco.match_hash);
+            if (poco.state == "canceled")
+            {
+                CleanBets(poco.match_hash);
+            }
         }
         #endregion
 
@@ -386,7 +390,7 @@ namespace PointGaming.GameRoom
             var removes = new List<Bet>();
             foreach (var item in RoomBets)
             {
-                if (item.MatchHash != matchHash)
+                if (item.MatchHash == matchHash)
                     removes.Add(item);
             }
             foreach (var item in removes)
@@ -396,6 +400,7 @@ namespace PointGaming.GameRoom
         {
             Bet bet = new Bet(_userData, MyMatch, poco);
             RoomBets.Add(bet);
+            _myMatch = new Match();
         }
         public void OnBetTakerNew(BetPoco poco)
         {
