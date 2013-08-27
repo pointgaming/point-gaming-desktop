@@ -285,10 +285,14 @@ namespace PointGaming.GameRoom
             MatchHash = poco.match_hash;
             IsBetting = poco.betting;
             Map = poco.map;
-            foreach (POCO.BetPoco bet in poco.bets)
+
+            if (poco.bets != null)
             {
-                Bet item = new Bet(bet);
-                Bets.Add(item);
+                foreach (POCO.BetPoco bet in poco.bets)
+                {
+                    Bet item = new Bet(bet);
+                    Bets.Add(item);
+                }
             }
         }
 

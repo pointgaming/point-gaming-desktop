@@ -210,6 +210,17 @@ namespace PointGaming.GameRoom
             }
         }
 
+
+        private PgUser UserContext;
+
+        public bool IsAdministratable {
+            get
+            {
+                PgUser context = UserContext == null ? new PgUser() : UserContext;
+                return Offerer.Id == context.Id;
+            }
+        }
+
         public Bet() { }
 
         public Bet(POCO.BetPoco poco)
@@ -222,6 +233,7 @@ namespace PointGaming.GameRoom
             Id = poco._id;
             MyMatch = match;
             MatchHash = poco.match_hash;
+            UserContext = manager.User;
 
             SetOutcome(poco.outcome);
 

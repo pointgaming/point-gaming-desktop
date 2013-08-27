@@ -57,7 +57,20 @@ namespace PointGaming.Lobby
         public ICommand ReportWinner { get { return new ActionCommand<Match>(ReportMatchWinner); } }
         public void ReportMatchWinner(Match match)
         {
-            _session.ReportMatchWinner(match);
+            _session.ReportMatchWinner(match, OnWinnerReported);
+        }
+
+        public void OnWinnerReported(Match match)
+        {
+            if (match == null)
+            {
+                LoadMatches();
+            }
+            else
+            {
+                _matches.Remove(match);
+                OnPropertyChanged("Matches");
+            }
         }
     }
 }
