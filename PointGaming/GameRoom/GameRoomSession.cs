@@ -18,7 +18,8 @@ namespace PointGaming.GameRoom
         private readonly Lobby.LobbySession _lobbySession;
         public readonly Lobby.GameRoomItem GameRoom;
 
-        public readonly Match MyMatch = new Match();
+        private Match _myMatch = new Match();
+        public Match MyMatch { get { return _myMatch; } }
         public readonly ObservableCollection<Bet> RoomBets = new ObservableCollection<Bet>();
 
         private GameRoomWindow _window;
@@ -301,9 +302,7 @@ namespace PointGaming.GameRoom
 
         public void OnMatchNew(MatchPoco poco)
         {
-            MyMatch.Update(_userData, poco);
-            MyMatch.IsEditable = true;
-            CleanBets(poco.match_hash);
+            // Do nothing until bet is accepted
         }
         public void OnMatchUpdate(MatchPoco poco)
         {
@@ -367,7 +366,14 @@ namespace PointGaming.GameRoom
                 response = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
             }, delegate
             {
-                if (!response.IsOk())
+                if (response.IsOk())
+                {
+                    if (MyMatch.Id == bet.MyMatch.Id && bet.MyMatch.State == MatchState.created)
+                    {
+                        _myMatch = new Match();
+                    }
+                }
+                else
                 {
                     string msg = response.Data.errors == null ? response.StatusCode.ToString() : string.Concat(response.Data.errors);
                     MessageDialog.Show(_window, "Failed to delete bet", msg);
