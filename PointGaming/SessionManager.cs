@@ -481,9 +481,14 @@ namespace PointGaming
             if (_chatroomUsage.TryGetValue(id, out session))
             {
                 GameRoomSession gameRoomSession = session as GameRoomSession;
+
+                BetDetailsDialogModelView modelView = new BetDetailsDialogModelView();
+                modelView.Init(this, gameRoomSession, bet);
+
                 var dialog = new BetDetailsDialogView();
                 dialog.Owner = gameRoomSession.Window;
-                dialog.DataContext = bet;
+                dialog.DataContext = modelView;
+
                 dialog.ShowDialog();
                 if (dialog.DialogResult == true)
                 {

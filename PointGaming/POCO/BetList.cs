@@ -53,6 +53,7 @@ namespace PointGaming.POCO
         public bool betting { get; set; }
         public string map { get; set; }
         public string game_id { get; set; }
+        public int team_size { get; set; }
 
         public string player_1_id { get; set; }
         public string player_1_type { get; set; }

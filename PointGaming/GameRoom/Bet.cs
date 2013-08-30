@@ -210,7 +210,6 @@ namespace PointGaming.GameRoom
             }
         }
 
-
         private PgUser UserContext;
 
         public bool IsAdministratable {
