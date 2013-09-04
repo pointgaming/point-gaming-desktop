@@ -332,7 +332,12 @@ namespace PointGaming.GameRoom
                 response = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
             }, delegate
             {
-                if (!response.IsOk())
+                if (response.IsOk())
+                {
+                    //if (TryGetBetById(poco, out bet))
+                        //bet.SetOutcome(outcome);
+                }
+                else
                 {
                     string msg = response.Data.errors == null ? response.StatusCode.ToString() : string.Concat(response.Data.errors);
                     MessageDialog.Show(_window, "Failed to create bet", msg);

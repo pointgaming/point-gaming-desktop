@@ -87,9 +87,9 @@ namespace PointGaming.GameRoom
             set { }
         }
 
-        public string TeamName
+        public string OwnerName
         {
-            get { return "[team name]"; }
+            get { return _session.GameRoom.Owner.DisplayName; }
             set { }
         }
 

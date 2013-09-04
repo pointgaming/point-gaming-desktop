@@ -72,9 +72,9 @@ namespace PointGaming.GameRoom
 
         public bool CanPlaceBet
         {
-            get 
+            get
             {
-                return _wager > 0 && _mapName.Length > 0; 
+                return _wager > 0 && _mapName.Length > 0 && (!IsTeamBetting || _teamSize > 0);
             }
             set { }
         }

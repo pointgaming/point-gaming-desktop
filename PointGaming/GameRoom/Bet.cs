@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel;
+using PointGaming.POCO;
 
 namespace PointGaming.GameRoom
 {
@@ -160,6 +161,19 @@ namespace PointGaming.GameRoom
             }
         }
 
+        private List<BetterPoco> _betters = new List<BetterPoco>();
+        public List<BetterPoco> Betters
+        {
+            get { return _betters; }
+            set
+            {
+                if (value == _betters)
+                    return;
+                _betters = value;
+                NotifyChanged("Betters");
+            }
+        }
+
         public string MapAndAmount
         {
             get
@@ -267,6 +281,7 @@ namespace PointGaming.GameRoom
 
             OffererOdds = poco.offerer_odds;
             OffererWager = poco.offerer_wager;
+            Betters = poco.betters;
         }
 
         public POCO.BetPoco ToPoco()
