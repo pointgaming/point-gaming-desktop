@@ -112,7 +112,7 @@ namespace PointGaming.Lobby
             _manager.ShowUndecidedMatches(id);
         }
 
-        public void ReportMatchWinner(Match match)
+        public void ReportMatchWinner(Match match, Action<Match> onCompleted)
         {
             RestResponse<ApiResponse> response = null;
             _userData.PgSession.BeginAndCallback(delegate
@@ -127,6 +127,11 @@ namespace PointGaming.Lobby
                 {
                     string msg = response.Data.errors == null ? response.StatusCode.ToString() : string.Concat(response.Data.errors);
                     MessageDialog.Show(_window, "Failed to report winner", msg);
+                    onCompleted(null);
+                }
+                else
+                {
+                    onCompleted(match);
                 }
             });
         }

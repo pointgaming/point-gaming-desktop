@@ -33,6 +33,14 @@ namespace PointGaming.POCO
         public string taker_choice_type { get; set; }
 
         public MatchPoco match { get; set; }
+        public List<BetterPoco> betters { get; set; } // only populated for team bets
+    }
+
+    public class BetterPoco
+    {
+        public string name { get; set; }
+        public string user_id { get; set; }
+        public string team_id { get; set; }
     }
 
     public class BetListPoco
@@ -53,6 +61,7 @@ namespace PointGaming.POCO
         public bool betting { get; set; }
         public string map { get; set; }
         public string game_id { get; set; }
+        public int team_size { get; set; }
 
         public string player_1_id { get; set; }
         public string player_1_type { get; set; }

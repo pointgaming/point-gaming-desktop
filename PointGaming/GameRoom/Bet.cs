@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel;
+using PointGaming.POCO;
 
 namespace PointGaming.GameRoom
 {
@@ -160,6 +161,19 @@ namespace PointGaming.GameRoom
             }
         }
 
+        private List<BetterPoco> _betters = new List<BetterPoco>();
+        public List<BetterPoco> Betters
+        {
+            get { return _betters; }
+            set
+            {
+                if (value == _betters)
+                    return;
+                _betters = value;
+                NotifyChanged("Betters");
+            }
+        }
+
         public string MapAndAmount
         {
             get
@@ -210,6 +224,16 @@ namespace PointGaming.GameRoom
             }
         }
 
+        private PgUser UserContext;
+
+        public bool IsAdministratable {
+            get
+            {
+                PgUser context = UserContext == null ? new PgUser() : UserContext;
+                return Offerer.Id == context.Id;
+            }
+        }
+
         public Bet() { }
 
         public Bet(POCO.BetPoco poco)
@@ -222,6 +246,7 @@ namespace PointGaming.GameRoom
             Id = poco._id;
             MyMatch = match;
             MatchHash = poco.match_hash;
+            UserContext = manager.User;
 
             SetOutcome(poco.outcome);
 
@@ -256,6 +281,7 @@ namespace PointGaming.GameRoom
 
             OffererOdds = poco.offerer_odds;
             OffererWager = poco.offerer_wager;
+            Betters = poco.betters;
         }
 
         public POCO.BetPoco ToPoco()

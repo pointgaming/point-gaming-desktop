@@ -152,6 +152,19 @@ namespace PointGaming.GameRoom
             }
         }
 
+        private int _teamSize;
+        public int TeamSize
+        {
+            get { return _teamSize; }
+            set
+            {
+                if (value == _teamSize)
+                    return;
+                _teamSize = value;
+                NotifyChanged("TeamSize");
+            }
+        }
+
         private IBetOperand _player1;
         public IBetOperand Player1
         {
@@ -285,10 +298,15 @@ namespace PointGaming.GameRoom
             MatchHash = poco.match_hash;
             IsBetting = poco.betting;
             Map = poco.map;
-            foreach (POCO.BetPoco bet in poco.bets)
+            TeamSize = poco.team_size;
+
+            if (poco.bets != null)
             {
-                Bet item = new Bet(bet);
-                Bets.Add(item);
+                foreach (POCO.BetPoco bet in poco.bets)
+                {
+                    Bet item = new Bet(bet);
+                    Bets.Add(item);
+                }
             }
         }
 
@@ -296,7 +314,8 @@ namespace PointGaming.GameRoom
         {
             var poco = new POCO.MatchPoco
             {
-                map = Map
+                map = Map,
+                team_size = TeamSize
             };
             return poco;
         }

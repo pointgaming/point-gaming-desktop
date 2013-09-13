@@ -161,6 +161,7 @@
     <Compile Include="Chat\AutoScroller.cs" />
     <Compile Include="Chat\ChatroomSessionBase.cs" />
     <Compile Include="Chat\ChatSessionBase.cs" />
+    <Compile Include="GameRoom\BetDetailsDialogModelView.cs" />
     <Compile Include="GameRoom\BetDetailsDialogView.xaml.cs">
       <DependentUpon>BetDetailsDialogView.xaml</DependentUpon>
     </Compile>

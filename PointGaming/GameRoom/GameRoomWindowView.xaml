@@ -13,6 +13,10 @@
         ResizeMode="CanResize"
         Width="850" Height="730" 
         >
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BtVC" />
+    </Window.Resources>
+    
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closed">
             <i:InvokeCommandAction Command="{Binding WindowClosed}" />
@@ -21,6 +25,7 @@
             <i:InvokeCommandAction Command="{Binding WindowStateChanged}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -43,8 +48,8 @@
                     Orientation="Horizontal">
             <Image Source="{Binding TeamAvatar}" Height="48" Width="48" HorizontalAlignment="Left" Margin="0,0,5,0" Stretch="Fill" VerticalAlignment="Top" />
 
-            <TextBlock Height="18" Margin="2,2,20,2" VerticalAlignment="Top" Width="Auto" Text="{Binding TeamName}" />
-            <TextBlock Name="hyperLinkRoomInfo" Height="18" Margin="2" HorizontalAlignment="Right" VerticalAlignment="Top">
+            <TextBlock Height="18" Margin="2,2,20,2" VerticalAlignment="Top" Width="Auto" Text="{Binding OwnerName}" />
+            <TextBlock Name="hyperLinkRoomInfo" Height="18" Margin="2" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="{Binding IsGameRoomOwner, Converter={StaticResource BtVC}}">
                 <Hyperlink Command="{Binding ShowAdmin}">Room Admin</Hyperlink>
             </TextBlock>
             <TextBlock Height="Auto" Margin="5" VerticalAlignment="Top" Width="100">
@@ -130,10 +135,10 @@
 
                                         <TextBlock Text="{Binding Path=MapAndAmount, Mode=OneWay}" Grid.Column="0" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" />
 
-                                        <TextBlock Grid.Column="1" Height="20" Margin="2" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                        <TextBlock Grid.Column="1" Height="20" Margin="2,2,5,2" HorizontalAlignment="Right" VerticalAlignment="Top">
                                             <Hyperlink Command="{Binding ElementName=This, Path=DataContext.ViewBet}" CommandParameter="{Binding}">View</Hyperlink>
                                         </TextBlock>
-                                        <TextBlock Grid.Column="3" Height="20" Margin="2,2,5,2" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                        <TextBlock Grid.Column="3" Height="20" Margin="2,2,5,2" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="{Binding IsAdministratable, Converter={StaticResource BtVC}}">
                                             <Hyperlink Command="{Binding ElementName=This, Path=DataContext.CancelBet}" CommandParameter="{Binding}">Cancel</Hyperlink>
                                         </TextBlock>
                                     </Grid>

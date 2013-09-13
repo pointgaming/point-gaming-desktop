@@ -18,7 +18,8 @@ namespace PointGaming.GameRoom
         private readonly Lobby.LobbySession _lobbySession;
         public readonly Lobby.GameRoomItem GameRoom;
 
-        public readonly Match MyMatch = new Match();
+        private Match _myMatch = new Match();
+        public Match MyMatch { get { return _myMatch; } }
         public readonly ObservableCollection<Bet> RoomBets = new ObservableCollection<Bet>();
 
         private GameRoomWindow _window;
@@ -303,13 +304,15 @@ namespace PointGaming.GameRoom
         {
             MyMatch.Update(_userData, poco);
             MyMatch.IsEditable = true;
-            CleanBets(poco.match_hash);
         }
         public void OnMatchUpdate(MatchPoco poco)
         {
             MyMatch.Update(_userData, poco);
             MyMatch.IsEditable = true;
-            CleanBets(poco.match_hash);
+            if (poco.state == "canceled")
+            {
+                CleanBets(poco.match_hash);
+            }
         }
         #endregion
 
@@ -329,7 +332,12 @@ namespace PointGaming.GameRoom
                 response = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
             }, delegate
             {
-                if (!response.IsOk())
+                if (response.IsOk())
+                {
+                    //if (TryGetBetById(poco, out bet))
+                        //bet.SetOutcome(outcome);
+                }
+                else
                 {
                     string msg = response.Data.errors == null ? response.StatusCode.ToString() : string.Concat(response.Data.errors);
                     MessageDialog.Show(_window, "Failed to create bet", msg);
@@ -367,7 +375,14 @@ namespace PointGaming.GameRoom
                 response = (RestResponse<ApiResponse>)client.Execute<ApiResponse>(request);
             }, delegate
             {
-                if (!response.IsOk())
+                if (response.IsOk())
+                {
+                    if (MyMatch.Id == bet.MyMatch.Id && bet.MyMatch.State == MatchState.created)
+                    {
+                        _myMatch = new Match();
+                    }
+                }
+                else
                 {
                     string msg = response.Data.errors == null ? response.StatusCode.ToString() : string.Concat(response.Data.errors);
                     MessageDialog.Show(_window, "Failed to delete bet", msg);
@@ -380,7 +395,7 @@ namespace PointGaming.GameRoom
             var removes = new List<Bet>();
             foreach (var item in RoomBets)
             {
-                if (item.MatchHash != matchHash)
+                if (item.MatchHash == matchHash)
                     removes.Add(item);
             }
             foreach (var item in removes)
@@ -390,6 +405,7 @@ namespace PointGaming.GameRoom
         {
             Bet bet = new Bet(_userData, MyMatch, poco);
             RoomBets.Add(bet);
+            _myMatch = new Match();
         }
         public void OnBetTakerNew(BetPoco poco)
         {

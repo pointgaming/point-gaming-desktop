@@ -45,11 +45,36 @@ namespace PointGaming.GameRoom
             }
         }
 
+        public string[] TeamSizes
+        {
+            get
+            {
+                int maxSize = 20;
+                string[] sizes = new string[maxSize];
+                for (int i = 0; i < maxSize; i++) sizes[i] = (i+ 1).ToString();
+                return sizes;
+            }
+        }
+        private int _teamSize;
+        public int TeamSize
+        {
+            get { return _teamSize; }
+            set
+            {
+                if (value == _teamSize)
+                    return;
+                _teamSize = value;
+                NotifyChanged("TeamSize");
+                NotifyChanged("CanPlaceBet");
+                UpdateSummary();
+            }
+        }
+
         public bool CanPlaceBet
         {
-            get 
+            get
             {
-                return _wager > 0 && _mapName.Length > 0; 
+                return _wager > 0 && _mapName.Length > 0 && (!IsTeamBetting || _teamSize > 0);
             }
             set { }
         }
@@ -95,7 +120,7 @@ namespace PointGaming.GameRoom
         {
             get { return BettingType == "1v1"; }
         }
-        private bool IsTeamBetting
+        public bool IsTeamBetting
         {
             get { return BettingType == "team"; }
         }
@@ -109,6 +134,8 @@ namespace PointGaming.GameRoom
             else
                 BettingType = "1v1";
             NotifyChanged("OffererChoice");
+            NotifyChanged("IsTeamBetting");
+            NotifyChanged("MapName");
         }
 
         private IBetOperand _betOperandA;
@@ -166,6 +193,7 @@ namespace PointGaming.GameRoom
             {
                 bet.MyMatch = new Match();
                 bet.MyMatch.Map = _mapName;
+                bet.MyMatch.TeamSize = _teamSize;
             } 
             else 
             {
