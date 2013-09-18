@@ -47,5 +47,12 @@ namespace PointGaming.GameRoom
             ChatTextBox.Text = null;
             e.Handled = true;
         }
+
+        private void This_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var viewModel = (GameRoomWindowModelView)DataContext;
+            if (viewModel.WindowClosing.CanExecute(null))
+                viewModel.WindowClosing.Execute(null);
+        }
     }
 }

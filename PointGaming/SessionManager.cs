@@ -360,7 +360,7 @@ namespace PointGaming
                 if (chatSession is Lobby.LobbySession)
                 {
                     session = chatSession as Lobby.LobbySession;
-                    if (session.GameRoomLookup.TryGetValue(id, out room))
+                    if (session.GameRoomManager.TryGetItemById(id, out room))
                     {
                         return true;
                     }
@@ -375,12 +375,13 @@ namespace PointGaming
         void session_LoadGameRoomsComplete(Lobby.LobbySession obj)
         {
             List<string> removes = new List<string>();
-            foreach (var item in _gameRoomsToJoinAfterLobbyJoin)
+            foreach (var id in _gameRoomsToJoinAfterLobbyJoin)
             {
-                if (obj.GameRoomLookup.ContainsKey(item))
+                Lobby.GameRoomItem item;
+                if (obj.GameRoomManager.TryGetItemById(id, out item))
                 {
-                    JoinChatroom(PrefixGameRoom + item);
-                    removes.Add(item);
+                    JoinChatroom(PrefixGameRoom + id);
+                    removes.Add(id);
                 }
             }
             foreach (var item in removes)
@@ -396,7 +397,7 @@ namespace PointGaming
             {
                 var lobbySession = (Lobby.LobbySession)session;
                 Lobby.GameRoomItem gameRoomItem;
-                if (lobbySession.GameRoomLookup.TryGetValue(room.Id, out gameRoomItem))
+                if (lobbySession.GameRoomManager.TryGetItemById(room.Id, out gameRoomItem))
                     JoinChatroom(PrefixGameRoom + room.Id);
             }
             else

@@ -13,27 +13,22 @@ namespace PointGaming.AudioChat
         public byte MessageType { get { return MType; } }
         public string RoomName;
         public string FromUserId;
-        public int MessageNumber;
+        public bool IsTeamOnly;
         public byte[] Audio;
 
-        public bool Read(byte[] buffer, int length, byte[] key)
-        {
-            if (length <= 0)
-                return false; 
-            if (buffer[0] != MessageType)
+        public bool Read(byte[] buffer, int position, int length)
+        {            
+            if (!BufferIO.ReadRawGuid(buffer, length, ref position, true, out FromUserId))
                 return false;
 
-            var position = 1;
-            if (!BufferIO.ReadString(buffer, length, ref position, out RoomName))
+            if (!BufferIO.ReadRawHex(buffer, length, ref position, 12,  out RoomName))
                 return false;
 
-            if (!BufferIO.ReadString(buffer, length, ref position, out FromUserId))
+            if (position >= length)
                 return false;
+            IsTeamOnly = buffer[position++] == 1;
 
-            if (!BufferIO.ReadInt(buffer, length, ref position, out MessageNumber))
-                return false;
-
-            if (!BufferIO.ReadRawBytes(buffer, length, ref position, out Audio))
+            if (!BufferIO.ReadRemainingRawBytes(buffer, length, ref position, out Audio))
                 return false;
 
             return true;
@@ -50,11 +45,11 @@ namespace PointGaming.AudioChat
             var nonce = new byte[4];
             AesIO.CryptoRNG.GetBytes(nonce);
             BufferIO.WriteRawBytes(buffer, ref position, nonce);
-            BufferIO.WriteRawBytes(buffer, ref position, AesIO.AntiDoS);
+            BufferIO.WriteRawBytes(buffer, ref position, AesIO.AntiDos);
             buffer[position++] = MessageType;
-            BufferIO.WriteString(buffer, ref position, RoomName);
+            BufferIO.WriteRawHex(buffer, ref position, RoomName);
 
-            BufferIO.WriteInt(buffer, ref position, MessageNumber);
+            buffer[position++] = (byte)(IsTeamOnly ? 0 : 1);
             BufferIO.WriteRawBytes(buffer, ref position, Audio);
 
             var encryptedData = AesIO.AesEncrypt(key, iv, buffer, cryptoStart, position - cryptoStart);

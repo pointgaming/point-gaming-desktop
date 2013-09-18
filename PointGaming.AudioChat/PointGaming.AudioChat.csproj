@@ -63,7 +63,6 @@
     <Compile Include="IChatMessage.cs" />
     <Compile Include="AudioChatClient.cs" />
     <Compile Include="Utf8String.cs" />
-    <Compile Include="QuickMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

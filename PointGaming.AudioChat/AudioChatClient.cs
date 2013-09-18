@@ -143,44 +143,64 @@ namespace PointGaming.AudioChat
             }
         }
 
-        private void HandleMessage(byte[] buffer, int read)
+
+        private void HandleMessage(byte[] buffer, int length)
         {
-            var type = buffer[0];
-            switch (type)
+            if (length == 1 && buffer[0] == 0)
+            {
+                // server's response from join room.  do nothing
+            }
+            else if (!HandleEncryptedMessage(buffer, length))
+            {
+                Console.WriteLine("Unrecognized audio chat message: " + buffer.BytesToHex());
+            }
+        }
+
+        private bool HandleEncryptedMessage(byte[] buffer, int length)
+        {
+            var position = 0;
+
+            byte[] iv = new byte[16];
+            if (!BufferIO.ReadRawBytes(buffer, length, ref position, iv))
+                return false;
+
+            var decryptedData = AesIO.AesDecrypt(_key, iv, buffer, position, length - position);
+            buffer = decryptedData;
+            position = 0;
+            length = buffer.Length;
+
+            position += 4;// nonce
+
+            var antidos = new byte[4];
+            if (!BufferIO.ReadRawBytes(buffer, length, ref position, antidos))
+                return false;
+            if (!AesIO.AntiDosCheck(antidos))
+                return false;
+
+            if (position >= length)
+                return false;
+            var mType = buffer[position++];
+
+            switch (mType)
             {
                 case (AudioMessage.MType):
                     {
                         var m = new AudioMessage();
-                        if (!m.Read(buffer, read, _key))
-                            return;
+                        if (!m.Read(buffer, position, length))
+                            return false;
                         var call = AudioReceived;
                         if (call != null)
                             call(m);
                         break;
                     }
-                case (JoinRoomMessage.MType):
-                    {
-                        var m = new JoinRoomMessage();
-                        if (!m.Read(buffer, read, _key))
-                            return;
-                        var call = JoinReceived;
-                        if (call != null)
-                            call(m);
-                        break;
-                    }
-                case (LeaveRoomMessage.MType):
-                    {
-                        var m = new LeaveRoomMessage();
-                        if (!m.Read(buffer, read, _key))
-                            return;
-                        var call = LeaveReceived;
-                        if (call != null)
-                            call(m);
-                        break;
-                    }
                 default:
-                    break;
+                    {
+                        return false;
+                    }
             }
+
+            return true;
         }
+
     }
 }

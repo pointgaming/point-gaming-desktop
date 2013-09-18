@@ -4,6 +4,7 @@
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:pg="clr-namespace:PointGaming"
         xmlns:pgr="clr-namespace:PointGaming.GameRoom"
+        xmlns:pght="clr-namespace:PointGaming.HomeTab"
         Name="This"
         WindowStartupLocation="CenterOwner"
         Title="{Binding DisplayName}" 
@@ -11,10 +12,10 @@
         WindowStyle="SingleBorderWindow" 
         ShowInTaskbar="False"
         ResizeMode="CanResize"
-        Width="850" Height="730" 
-        >
+        Width="850" Height="730" Closing="This_Closing">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BtVC" />
+        <pght:SpeakingConverter x:Key="speakingConverter" />
     </Window.Resources>
     
     <i:Interaction.Triggers>
@@ -158,7 +159,7 @@
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="30"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <FlowDocumentScrollViewer Grid.Row="0" 
@@ -173,15 +174,30 @@
                 </FlowDocumentScrollViewer.Resources>
             </FlowDocumentScrollViewer>
 
-            <Grid Height="30" Grid.Row="1" 
+            <Grid Height="Auto" Grid.Row="1" 
                   VerticalAlignment="Bottom">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <TextBox Name="ChatTextBox" PreviewKeyDown="ChatTextBox_PreviewKeyDown" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxLength="1024" TextWrapping="Wrap" AcceptsReturn="True" />
-                <Button Name="SendChatButton" Command="{Binding SendChat}" CommandParameter="{Binding Text, ElementName=ChatTextBox}" Click="SendChatButton_Click" Grid.Column="1" Content="Send" Height="23" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="75" Margin="5,0,3,3" />
+                <Button Name="SendChatButton" Command="{Binding SendChat}" CommandParameter="{Binding Text, ElementName=ChatTextBox}" Click="SendChatButton_Click" Grid.Column="1" Content="Send" Height="23" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="5,3,3,3" />
+                <Grid Grid.Column="2" Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Image Grid.Row="0" Grid.Column="0" Height="25" Width="25" Source="{Binding IsSelfSpeaking, Converter={StaticResource speakingConverter}}" />
+                    <Image Grid.Row="1" Grid.Column="0" Height="25" Width="25" Source="{Binding IsOtherSpeaking, Converter={StaticResource speakingConverter}}" />
+                    <CheckBox Margin="2,0,2,0" Grid.Row="0" Grid.Column="1" Content="Speak" HorizontalAlignment="Left" Name="checkboxSpeak" VerticalAlignment="Center" IsChecked="{Binding IsSpeak}" Command="{Binding ToggleSpeak}" />
+                    <CheckBox Margin="2,0,2,0" Grid.Row="1" Grid.Column="1" Content="Listen" HorizontalAlignment="Left" Name="checkboxListen" VerticalAlignment="Center" IsChecked="{Binding IsListen}" Command="{Binding ToggleListen}" />
+                </Grid>
             </Grid>
         </Grid>
 

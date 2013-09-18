@@ -51,12 +51,6 @@ namespace PointGaming.Chat
             _userData.AudioSystem.SpeakingRoomChanged += AudioSystem_SpeakingRoomChanged;
         }
 
-        private void AudioSystem_SpeakingRoomChanged(string obj)
-        {
-            if (obj != AudioRoomName)
-                checkboxSpeak.IsChecked = false;
-        }
-
         private bool _IsSelfSpeaking;
         public bool IsSelfSpeaking
         {
@@ -100,6 +94,12 @@ namespace PointGaming.Chat
                 IsOtherSpeaking = true;
             else
                 IsSelfSpeaking = true;
+        }
+
+        private void AudioSystem_SpeakingRoomChanged(string obj)
+        {
+            if (obj != AudioRoomName)
+                checkboxSpeak.IsChecked = false;
         }
         
         public void Init(PrivateChatSession session, PgUser otherUser)

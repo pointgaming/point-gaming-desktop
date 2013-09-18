@@ -107,7 +107,7 @@ namespace PointGaming
         {
             var message = new JoinRoomMessage
             {
-                RoomName = "rname",
+                RoomName = id,
                 FromUserId = _userData.User.Id
             };
             _audioChatClient.Send(message);
@@ -117,7 +117,7 @@ namespace PointGaming
         {
             var message = new LeaveRoomMessage
             {
-                RoomName = "rname",
+                RoomName = id,
                 FromUserId = _userData.User.Id
             };
             _audioChatClient.Send(message);
@@ -214,9 +214,9 @@ namespace PointGaming
 
             var message = new AudioMessage
             {
-                RoomName = "rname",
+                RoomName = roomId,
                 FromUserId = _userData.User.Id,
-                MessageNumber = _messageNumber++,
+                //MessageNumber = _messageNumber++,
                 Audio = data,
             };
             
@@ -235,9 +235,9 @@ namespace PointGaming
 
             var message = new AudioMessage
             {
-                RoomName = "rname",
+                RoomName = roomId,
                 FromUserId = _userData.User.Id,
-                MessageNumber = _messageNumber++,
+                //MessageNumber = _messageNumber++,
                 Audio = new byte[0],
             };
 

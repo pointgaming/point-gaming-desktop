@@ -9,7 +9,17 @@ namespace PointGaming.AudioChat
 {
     public class AesIO
     {
-        public static byte[] AntiDoS = { 0x8E, 0xAA, 0xCF, 0x12 };
+        public static byte[] AntiDos = { 0x8E, 0xAA, 0xCF, 0x12 };
+
+        public static bool AntiDosCheck(byte[] test)
+        {
+            if (test == null || test.Length != AntiDos.Length)
+                return false;
+            for (int i = 0; i < AntiDos.Length; i++)
+                if (AntiDos[i] != test[i])
+                    return false;
+            return true;
+        }
 
         public static RandomNumberGenerator CryptoRNG = RandomNumberGenerator.Create();
 
@@ -121,10 +131,16 @@ namespace PointGaming.AudioChat
             return encryptedData;
         }
 
-        public static byte[] AesDecrypt(byte[] Key, byte[] IV, byte[] encryptedData)
+        public static byte[] AesDecrypt(byte[] Key, byte[] IV, byte[] encryptedData, int offset = 0, int length = int.MinValue)
         {
-            if (encryptedData == null || encryptedData.Length <= 0)
+            if (length == int.MinValue)
+                length = encryptedData.Length - offset;
+            if (encryptedData == null || encryptedData.Length < offset + length)
                 throw new ArgumentNullException("encryptedData");
+            if (offset < 0)
+                throw new ArgumentNullException("offset");
+            if (length <= 0)
+                throw new ArgumentNullException("length");
             if (Key == null || Key.Length <= 0)
                 throw new ArgumentNullException("Key");
             if (IV == null || IV.Length <= 0)
@@ -140,7 +156,7 @@ namespace PointGaming.AudioChat
                 aesAlg.IV = IV;
 
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-                using (MemoryStream msDecrypt = new MemoryStream(encryptedData))
+                using (MemoryStream msDecrypt = new MemoryStream(encryptedData, offset, length))
                 {
                     using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                     {

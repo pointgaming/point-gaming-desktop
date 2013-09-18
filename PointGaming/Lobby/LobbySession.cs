@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.ComponentModel;
@@ -10,6 +11,8 @@ using PointGaming.POCO;
 using RestSharp;
 using SocketIOClient;
 using SocketIOClient.Messages;
+using System.Windows.Threading;
+
 
 namespace PointGaming.Lobby
 {
@@ -20,10 +23,7 @@ namespace PointGaming.Lobby
         public readonly HomeTab.LauncherInfo GameInfo;
         private readonly UserDataManager _userData = HomeWindow.UserData;
 
-        public Dictionary<string, GameRoomItem> GameRoomLookup = new Dictionary<string, GameRoomItem>();
-
-        private readonly ObservableCollection<GameRoomItem> _allGameRooms = new ObservableCollection<GameRoomItem>();
-        public ObservableCollection<GameRoomItem> AllGameRooms { get { return _allGameRooms; } }
+        public GameRoomItemCollection GameRoomManager;
 
         private readonly ObservableCollection<GameRoomItem> _joinedGameRooms = new ObservableCollection<GameRoomItem>();
         public ObservableCollection<GameRoomItem> JoinedGameRooms { get { return _joinedGameRooms; } }
@@ -38,6 +38,7 @@ namespace PointGaming.Lobby
             : base(manager)
         {
             GameInfo = gameInfo;
+            GameRoomManager = new GameRoomItemCollection();
         }
 
         public override void ShowControl(bool shouldActivate)
@@ -53,8 +54,6 @@ namespace PointGaming.Lobby
 
         public void LoadGameRooms()
         {
-            FillEmptyRooms();
-
             RestResponse<GameRoomListPoco> response = null;
             _userData.PgSession.BeginAndCallback(delegate
             {
@@ -67,18 +66,72 @@ namespace PointGaming.Lobby
                 if (response.IsOk())
                 {
                     var gameRooms = response.Data.game_rooms;
-                    foreach (var gameRoom in gameRooms)
-                    {
-                        if (gameRoom.owner == null) continue;
-
-                        var item = new GameRoomItem(gameRoom);
-                        AddRoom(item);
-                    }
-                    var call = LoadGameRoomsComplete;
-                    if (call != null)
-                        call(this);
+                    LoadGameRooms(gameRooms);
                 }
             });
+        }
+
+        private class ListInvoker
+        {
+            private IEnumerator<Action> _actions;
+            private DispatcherTimer _timer;
+            public ListInvoker(IEnumerable<Action> actions)
+            {
+                _actions = actions.GetEnumerator();
+            }
+            public void Start()
+            {
+                _timer = new DispatcherTimer();
+                _timer.Interval = TimeSpan.FromMilliseconds(30);
+                _timer.Tick += _timer_Tick;
+                _timer.Start();
+            }
+
+            void _timer_Tick(object sender, EventArgs e)
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    if (_actions.MoveNext())
+                        HomeWindow.Home.BeginInvokeUI(_actions.Current);
+                    else
+                    {
+                        _timer.Stop();
+                        return;
+                    }
+                }
+            }
+        }
+
+        private void LoadGameRooms(List<GameRoomPoco> gameRooms)
+        {
+            var actions = LoadGameRooms2(gameRooms);
+            ListInvoker li = new ListInvoker(actions);
+            li.Start();
+        }
+
+        private IEnumerable<Action> LoadGameRooms2(List<GameRoomPoco> gameRooms)
+        {
+            foreach (var gameRoom in gameRooms)
+            {
+                if (gameRoom.owner == null) continue;
+
+                var item = new GameRoomItem(gameRoom);
+                yield return delegate { GameRoomManager.Add(item); };
+            }
+
+            yield return delegate
+            {
+                var call = LoadGameRoomsComplete;
+                if (call != null)
+                    call(this);
+            };
+
+            while (GameRoomManager.Count < MinRoomCount)
+            {
+                var position = GameRoomManager.Count + 1;
+                var fake = CreateFakeRoom(position);
+                yield return delegate { GameRoomManager.Add(fake); };
+            }
         }
 
         public void ToggleDisplay(GameRoomItem item)
@@ -87,26 +140,7 @@ namespace PointGaming.Lobby
             if (call != null)
                 call(item);
         }
-
-        private void FillEmptyRooms()
-        {
-            while (_allGameRooms.Count < MinRoomCount)
-            {
-                var position = _allGameRooms.Count + 1;
-                SetFakeRoomAt(position);
-            }
-        }
-
-        private void SetFakeRoomAt(int position)
-        {
-            var fakeRoom = new GameRoomItem { Position = position, Description = "", MaxMemberCount = DefaultMaxGameRoomMemberCount, };
-            int index = position - 1;
-            if (index < _allGameRooms.Count)
-                _allGameRooms[index] = fakeRoom;
-            else
-                _allGameRooms.Add(fakeRoom);
-        }
-
+        
         public void ShowUndecidedMatches(string id)
         {
             _manager.ShowUndecidedMatches(id);
@@ -219,67 +253,30 @@ namespace PointGaming.Lobby
             });
         }
 
-        private void AddRoom(GameRoomItem room)
-        {
-            var position = room.Position;
-            while (position >= _allGameRooms.Count)// if position is 100
-                SetFakeRoomAt(_allGameRooms.Count + 1);// then create a fake room at 101
-            _allGameRooms[position - 1] = room;
-            GameRoomLookup[room.Id] = room;
-        }
-
-        private void DeleteRoom(GameRoomItem room)
-        {
-            var position = room.Position;
-            SetFakeRoomAt(position);
-
-            bool isLastEmpty = _allGameRooms[_allGameRooms.Count - 1].Id == null;
-            if (isLastEmpty)
-            {
-                int lastMinRoomIndex = MinRoomCount - 1;
-                for (int i = _allGameRooms.Count - 2; i >= lastMinRoomIndex; i--)
-                {
-                    var isEmpty = _allGameRooms[i].Id == null;
-                    if (!isEmpty)
-                        break;
-                    _allGameRooms.RemoveAt(i + 1);
-                }
-            }
-        }
-
         public void OnGameRoomNew(GameRoomPoco poco)
         {
             var item = new GameRoomItem(poco);
-            AddRoom(item);
+            GameRoomManager.Add(item);
         }
         public void OnGameRoomUpdate(GameRoomPoco poco)
         {
             GameRoomItem room;
-            if (!GameRoomLookup.TryGetValue(poco._id, out room))
+            if (!GameRoomManager.TryGetItemById(poco._id, out room))
                 return;
 
             if (room.Position != poco.position)
-            {
-                SetFakeRoomAt(room.Position);
-                room.Position = poco.position;
-                var index = poco.position - 1;
-                if (_allGameRooms.Count == index)
-                    _allGameRooms.Add(room);
-                else
-                    _allGameRooms[index] = room;
-            }
+                GameRoomManager.Move(room, poco.position);
 
             room.Update(poco);
         }
         public void OnGameRoomDestroy(GameRoomPoco poco)
         {
             GameRoomItem item;
-            if (!GameRoomLookup.TryGetValue(poco._id, out item))
+            if (!GameRoomManager.TryGetItemById(poco._id, out item))
                 return;
-
-            DeleteRoom(item);
+            GameRoomManager.Remove(item);
         }
-
+        
         public void GameRoomJoining(GameRoomSession gameRoomSession)
         {
             gameRoomSession.SessionStateChanged += gameRoomSession_SessionStateChanged;
@@ -292,6 +289,189 @@ namespace PointGaming.Lobby
                 JoinedGameRooms.Add(gameRoomSession.GameRoom);
             else
                 JoinedGameRooms.Remove(gameRoomSession.GameRoom);
+        }
+
+
+        public class GameRoomItemCollection
+        {
+            private readonly ObservableCollection<GameRoomItem> _items = new ObservableCollection<GameRoomItem>();
+            public ObservableCollection<GameRoomItem> AllGameRooms { get { return _items; } }
+                        
+            public bool TryGetItemById(string id, out GameRoomItem item)
+            {
+                item = null;
+                foreach (var cur in _items)
+                {
+                    if (id == cur.Id)
+                    {
+                        item = cur;
+                        break;
+                    }
+                }
+                return item != null;
+            }
+
+            public void Add(GameRoomItem item)
+            {
+                bool isAdded = false;
+                var position = item.Position;
+                for (int i = 0; i < _items.Count; i++)
+                {
+                    var oldItem = _items[i];
+                    if (oldItem.Position == position)
+                    {
+                        if (item.Id == null)
+                        {
+                            isAdded = true;
+                            break;
+                        }
+                        else if (oldItem.Id == null)
+                        {
+                            _items[i] = item;
+                            isAdded = true;
+                            CleanEnd();
+                            break;
+                        }
+                        // else add it later
+                    }
+                    else if (oldItem.Position > position)
+                    {
+                        _items.Insert(i, item);
+                        isAdded = true;
+                        break;
+                    }
+                }
+                if (!isAdded)
+                {
+                    _items.Add(item);
+                    CleanEnd();
+                }
+            }
+            
+            public bool Remove(GameRoomItem item)
+            {
+                var index = IndexOf(item);
+                var shouldRemove = index >= 0;
+                if (shouldRemove)
+                {
+                    HandleRemove(item, index);
+                    CleanEnd();
+                }
+                return shouldRemove;
+            }
+            
+            public void Move(GameRoomItem room, int position)
+            {
+                var oldIndex = IndexOf(room);
+                HandleRemove(room, oldIndex);
+
+                room.Position = position;
+                Add(room);
+                CleanEnd();
+            }
+
+            public int IndexOf(GameRoomItem item)
+            {
+                for (int i = 0; i < _items.Count; i++)
+                {
+                    var cur = _items[i];
+                    if (cur == item)
+                        return i;
+                }
+                return -1;
+            }
+
+            public int Count { get { return _items.Count; } }
+
+            private int GetCountAtPosition(int position)
+            {
+                int countAtPosition = 0;
+                for (int i = 0; i < _items.Count; i++)
+                {
+                    var oldItem = _items[i];
+                    if (oldItem.Position == position)
+                        countAtPosition++;
+                    else if (oldItem.Position > position)
+                        break;
+                }
+                return countAtPosition;
+            }
+
+            private void HandleRemove(GameRoomItem room, int oldIndex)
+            {
+                var position = room.Position;
+                int countAtPosition = GetCountAtPosition(position);
+                if (countAtPosition == 1 && position <= MinRoomCount)
+                {
+                    var fake = CreateFakeRoom(position);
+                    _items[oldIndex] = fake;
+                }
+                else
+                {
+                    _items.RemoveAt(oldIndex);
+                }
+            }
+
+            private void CleanEnd()
+            {
+                var isInitialized = _items.Count >= MinRoomCount;
+                if (!isInitialized)
+                    return;
+
+                // remove any fake rooms at position > MinRoomCount... unless its the last room
+                for (int i = _items.Count - 2; i >= 0; i--)
+                {
+                    var cur = _items[i];
+                    if (cur.Position <= MinRoomCount)
+                        break;
+
+                    if (cur.Id == null)
+                        _items.RemoveAt(i);
+                }
+
+                var lastItem = _items[_items.Count - 1];
+                var isFake = lastItem.Id == null;
+                if (!isFake)
+                {
+                    // append a fake room
+                    var position = lastItem.Position + 1;
+                    if (position < MinRoomCount)
+                        position = MinRoomCount;
+
+                    var fake = CreateFakeRoom(position);
+                    _items.Add(fake);
+                }
+                else
+                {
+                    var roomBefore = _items[_items.Count - 2];
+                    var roomBeforeIsFake = roomBefore.Id == null;
+                    if (roomBeforeIsFake && roomBefore.Position == MinRoomCount)
+                    {
+                        // edge case, remove the last room because the one before it should be the last fake room
+                        var index = _items.Count - 1;
+                        _items.RemoveAt(index);
+                    }
+                    else
+                    {
+                        // fix the position
+                        var position = roomBefore.Position + 1;
+                        if (position < MinRoomCount)
+                            position = MinRoomCount;
+                        lastItem.Position = position;
+                    }
+                }
+            }
+        }
+
+        private static GameRoomItem CreateFakeRoom(int position)
+        {
+            var fakeRoom = new GameRoomItem
+            {
+                Position = position,
+                Description = "",
+                MaxMemberCount = DefaultMaxGameRoomMemberCount,
+            };
+            return fakeRoom;
         }
     }
 }

@@ -175,6 +175,7 @@ namespace PointGaming
                     catch (Exception e)
                     {
                         App.LogLine(e.Message);
+                        App.LogLine(e.StackTrace);
                     }
                 }
             }

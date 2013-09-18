@@ -131,8 +131,18 @@ namespace PointGaming.AudioChat
             position += len;
         }
 
+        public static bool ReadRawBytes(byte[] buffer, int bufferLength, ref int position, byte[] value)
+        {
+            int len = value.Length;
+            if (position + len > bufferLength)
+                return false;
 
-        public static bool ReadRawBytes(byte[] buffer, int bufferLength, ref int position, out byte[] value)
+            Buffer.BlockCopy(buffer, position, value, 0, len);
+            position += len;
+            return true;
+        }
+
+        public static bool ReadRemainingRawBytes(byte[] buffer, int bufferLength, ref int position, out byte[] value)
         {
             value = null;
 
@@ -152,7 +162,7 @@ namespace PointGaming.AudioChat
         }
 
 
-        public static bool ReadRawGuid(byte[] buffer, int bufferLength, ref int position, out string guid)
+        public static bool ReadRawGuid(byte[] buffer, int bufferLength, ref int position, bool shouldAddDashes, out string guid)
         {
             guid = null;
 
@@ -164,7 +174,24 @@ namespace PointGaming.AudioChat
             Buffer.BlockCopy(buffer, position, temp, 0, len);
             position += len;
 
-            guid = temp.BytesToHex().HexToGuid();
+            guid = temp.BytesToHex().HexToGuid(shouldAddDashes);
+
+            return true;
+        }
+
+        public static bool ReadRawHex(byte[] buffer, int bufferLength, ref int position, int byteCount, out string hex)
+        {
+            hex = null;
+
+            int len = byteCount;
+            if (position + len > bufferLength)
+                return false;
+
+            var temp = new byte[len];
+            Buffer.BlockCopy(buffer, position, temp, 0, len);
+            position += len;
+
+            hex = temp.BytesToHex();
 
             return true;
         }
@@ -177,28 +204,40 @@ namespace PointGaming.AudioChat
             position += len;
         }
 
-        public static string HexToGuid(this string hex)
+        public static void WriteRawHex(byte[] buffer, ref int position, string hex)
         {
-            char[] result = new char[32 + 4];
+            var temp = hex.HexToBytes();
+            var len = temp.Length;
+            Buffer.BlockCopy(temp, 0, buffer, position, len);
+            position += len;
+        }
+
+        public static string HexToGuid(this string hex, bool shouldAddDashes)
+        {
+            char[] result = new char[32 + (shouldAddDashes ? 4 : 0)];
             char[] hexChars = hex.ToCharArray();
             var hexIndex = 0;
             var resIndex = 0;
             Array.Copy(hexChars, hexIndex, result, resIndex, 8);
             hexIndex += 8;
             resIndex += 8;
-            result[resIndex++] = '-';
+            if (shouldAddDashes)
+                result[resIndex++] = '-';
             Array.Copy(hexChars, hexIndex, result, resIndex, 4);
             hexIndex += 4;
             resIndex += 4;
-            result[resIndex++] = '-';
+            if (shouldAddDashes)
+                result[resIndex++] = '-';
             Array.Copy(hexChars, hexIndex, result, resIndex, 4);
             hexIndex += 4;
             resIndex += 4;
-            result[resIndex++] = '-';
+            if (shouldAddDashes)
+                result[resIndex++] = '-';
             Array.Copy(hexChars, hexIndex, result, resIndex, 4);
             hexIndex += 4;
             resIndex += 4;
-            result[resIndex++] = '-';
+            if (shouldAddDashes)
+                result[resIndex++] = '-';
             Array.Copy(hexChars, hexIndex, result, resIndex, 12);
             return new string(result);
         }

@@ -64,6 +64,10 @@ namespace PointGaming.GameRoom
             _session.ChatMessageReceived += ChatMessages_CollectionChanged;
             
             InitMembership();
+
+            _userData.AudioSystem.AudioStarted += AudioSystem_AudioStarted;
+            _userData.AudioSystem.AudioStopped += AudioSystem_AudioStopped;
+            _userData.AudioSystem.SpeakingRoomChanged += AudioSystem_SpeakingRoomChanged;
         }
 
         private void InitMembership()
@@ -77,6 +81,32 @@ namespace PointGaming.GameRoom
             CheckBots();
 
             SetMembershipCount();
+        }
+
+        private void AudioSystem_AudioStopped(PgUser obj, string roomId)
+        {
+            if (roomId != AudioRoomName)
+                return;
+            if (obj == _userData.User)
+                IsSelfSpeaking = false;
+            else
+                IsOtherSpeaking = false;
+        }
+
+        private void AudioSystem_AudioStarted(PgUser obj, string roomId)
+        {
+            if (roomId != AudioRoomName)
+                return;
+            if (obj == _userData.User)
+                IsSelfSpeaking = true;
+            else
+                IsOtherSpeaking = true;
+        }
+
+        private void AudioSystem_SpeakingRoomChanged(string obj)
+        {
+            if (obj != AudioRoomName)
+                IsSpeak = false;
         }
 
         public string DisplayName { get { return _session.GameRoom.DisplayName; } }
@@ -391,7 +421,83 @@ namespace PointGaming.GameRoom
             _manager.ShowMessage(_session.ChatroomId, "Mute/Unmute Chat Microphone", "TODO: mute chat microphone");
         }
 
-        private bool _isTeamOnlyChat = false;
+        private bool _IsOtherSpeaking = false;
+        public bool IsOtherSpeaking
+        {
+            get { return _IsOtherSpeaking; }
+            set { _IsOtherSpeaking = value; OnPropertyChanged("IsOtherSpeaking"); }
+        }
+
+        private bool _IsSelfSpeaking = false;
+        public bool IsSelfSpeaking
+        {
+            get { return _IsSelfSpeaking; }
+            set { _IsOtherSpeaking = value; OnPropertyChanged("IsSelfSpeaking"); }
+        }
+
+
+        private string AudioRoomName
+        {
+            get
+            {
+                return _session.GameRoomId;
+            }
+        }
+
+        private bool _IsSpeak = false;
+        public bool IsSpeak
+        {
+            get { return _IsSpeak; }
+            set
+            {
+                if (_IsSpeak == value)
+                    return;
+                _IsSpeak = value;
+
+                if (_IsSpeak)
+                {
+                    if (!IsListen)
+                        IsListen = true;
+                    _userData.AudioSystem.SpeakingIntoRoomId = AudioRoomName;
+                }
+                else
+                    _userData.AudioSystem.UnsetSpeakingRoomId(AudioRoomName);
+
+                OnPropertyChanged("IsSpeak");
+            }
+        }
+        
+        private bool _IsListen = false;
+        public bool IsListen
+        {
+            get { return _IsListen; }
+            set
+            {
+                if (_IsListen == value)
+                    return;
+                _IsListen = value;
+
+                if (_IsListen)
+                    _userData.AudioSystem.JoinRoom(AudioRoomName);
+                else
+                {
+                    if (IsSpeak)
+                        IsSpeak = false;
+                    _userData.AudioSystem.LeaveRoom(AudioRoomName);
+                }
+
+                OnPropertyChanged("IsListen");
+            }
+        }
+
+        public ICommand WindowClosing { get { return new ActionCommand(WindowClosingF);}}
+        private void WindowClosingF(object sender)
+        {
+            _userData.AudioSystem.UnsetSpeakingRoomId(AudioRoomName);
+            _userData.AudioSystem.LeaveRoom(AudioRoomName);
+        }
+
+        private bool _isTeamOnlyChat = true;
         public bool IsTeamOnlyChat
         {
             get { return _isTeamOnlyChat; } // TODO: load team chat status from API
