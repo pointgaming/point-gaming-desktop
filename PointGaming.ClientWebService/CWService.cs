@@ -11,6 +11,17 @@ using System.Threading;
 
 namespace PointGaming.ClientWebService
 {
+    // http://localhost:9779/lobby/1111?userid=2222&username=dean&sessionid=5555
+    // http://localhost:9779/info
+    //
+    // to install/uninstall service:
+    // open cmd as admin
+    // g:
+    // cd "whitepaperclip\point-gaming-desktop\output\Debug"
+    // "C:\Windows\Microsoft.NET\Framework\v4.0.30319\InstallUtil.exe" PointGaming.ClientWebService.exe
+    // "C:\Windows\Microsoft.NET\Framework\v4.0.30319\InstallUtil.exe" /u PointGaming.ClientWebService.exe
+
+
     public partial class CWService : System.ServiceProcess.ServiceBase
     {
         private WcfServerConnection _wcfHost;
