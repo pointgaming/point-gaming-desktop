@@ -19,7 +19,7 @@ namespace PointGaming.HomeTab
 {
     public partial class GameLauncherTab : UserControl
     {
-        private UserDataManager _userData = HomeWindow.UserData;
+        private UserDataManager _userData = UserDataManager.UserData;
 
         public ObservableCollection<LauncherInfo> Launchers { get { return _userData.Launchers; } }
 
@@ -30,9 +30,9 @@ namespace PointGaming.HomeTab
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            var settingsList = Properties.Settings.Default.LaunchList;
+            var settingsList = UserDataManager.UserData.Settings.LaunchList;
             if (settingsList == null)
-                settingsList = new System.Collections.Specialized.StringCollection();
+                settingsList = new List<string>();
 
             foreach (var launcherString in settingsList)
             {
@@ -94,13 +94,13 @@ namespace PointGaming.HomeTab
 
         private void SaveLauncherList()
         {
-            var settingsList = new System.Collections.Specialized.StringCollection();
+            var settingsList = new List<string>();
             foreach (var item in Launchers)
             {
                 settingsList.Add(item.ToJson());
             }
-            Properties.Settings.Default.LaunchList = settingsList;
-            Properties.Settings.Default.Save();
+            UserDataManager.UserData.Settings.LaunchList = settingsList;
+            UserDataManager.UserData.Settings.Save();
         }
 
         private LauncherInfo _rightClickLauncher;

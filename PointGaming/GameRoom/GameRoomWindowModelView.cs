@@ -19,7 +19,7 @@ namespace PointGaming.GameRoom
 {
     class GameRoomWindowModelView : ViewModelBase
     {
-        private UserDataManager _userData = HomeWindow.UserData;
+        private UserDataManager _userData = UserDataManager.UserData;
         private GameRoom.GameRoomSession _session;
         private SessionManager _manager;
 

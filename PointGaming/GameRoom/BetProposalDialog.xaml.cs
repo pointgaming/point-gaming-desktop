@@ -85,9 +85,9 @@ namespace PointGaming.GameRoom
             {
                 if (IsTeamBetting)
                 {
-                    if (HomeWindow.UserData.User.HasTeam)
+                    if (UserDataManager.UserData.User.HasTeam)
                     {
-                        return "Team 1 (" + HomeWindow.UserData.User.TeamName + ")";
+                        return "Team 1 (" + UserDataManager.UserData.User.TeamName + ")";
                     }
                     else
                     {
@@ -96,7 +96,7 @@ namespace PointGaming.GameRoom
                 }
                 else
                 {
-                    return "Player 1 (" + HomeWindow.UserData.User.DisplayName+")";
+                    return "Player 1 (" + UserDataManager.UserData.User.DisplayName+")";
                 }
             }
         }
@@ -175,18 +175,18 @@ namespace PointGaming.GameRoom
             var selectedOdds = (ComboBoxItem)comboBoxOdds.SelectedItem;
             Bet bet = new Bet
             {
-                Offerer = HomeWindow.UserData.User,
+                Offerer = UserDataManager.UserData.User,
                 OffererWager = Wager,
                 OffererOdds = selectedOdds.Content.ToString(),
             };
 
             if (IsOneOnOneBetting)
             {
-                bet.OffererChoice = HomeWindow.UserData.User;
+                bet.OffererChoice = UserDataManager.UserData.User;
             }
-            else if (IsTeamBetting && HomeWindow.UserData.User.HasTeam)
+            else if (IsTeamBetting && UserDataManager.UserData.User.HasTeam)
             {
-                bet.OffererChoice = HomeWindow.UserData.User.Team;
+                bet.OffererChoice = UserDataManager.UserData.User.Team;
             }
 
             if (_match == null)

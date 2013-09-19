@@ -21,7 +21,7 @@ namespace PointGaming.Lobby
         private const int DefaultMaxGameRoomMemberCount = 50;
         private const int MinRoomCount = 100;
         public readonly HomeTab.LauncherInfo GameInfo;
-        private readonly UserDataManager _userData = HomeWindow.UserData;
+        private readonly UserDataManager _userData = UserDataManager.UserData;
 
         public GameRoomItemCollection GameRoomManager;
 

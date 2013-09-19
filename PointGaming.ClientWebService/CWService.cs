@@ -11,14 +11,66 @@ using System.Threading;
 
 namespace PointGaming.ClientWebService
 {
-    class Program
+    public partial class CWService : System.ServiceProcess.ServiceBase
     {
-        static void Main(string[] args)
+        private WcfServerConnection _wcfHost;
+        private SimpleHttpServer _httpServer;
+
+        private readonly static List<string> _appendLines = new List<string>();
+
+        public static void AppendConsoleLine(string s)
         {
-            var version = GetVersion();
-            SimpleListenerExample();
+            Console.WriteLine(s);
+            lock (_appendLines)
+            {
+                _appendLines.Add(s);
+            }
         }
 
+        public static string GetAppendedLines()
+        {
+            string lines;
+            lock (_appendLines)
+            {
+                lines = string.Join("\r\n", _appendLines.ToArray());
+                _appendLines.Clear();
+            }
+            return lines;
+        }
+
+        public CWService()
+        {
+            InitializeComponent();
+        }
+
+        protected override void OnStart(string[] args)
+        {
+            _wcfHost = new WcfServerConnection();
+            _wcfHost.Start();
+
+            var prefix = "http://localhost:9779/";
+            _httpServer = new SimpleHttpServer();
+            _httpServer.Start(prefix, ListenerCallback);
+        }
+
+        protected override void OnStop()
+        {
+            if (_wcfHost == null)
+                return;
+            _httpServer.Dispose();
+            _wcfHost.Dispose();
+            _wcfHost = null;
+            _httpServer = null;
+        }
+
+        static void Main(string[] args)
+        {
+            System.ServiceProcess.ServiceBase[] ServicesToRun = new System.ServiceProcess.ServiceBase[]
+            {
+                new CWService()
+            };
+            System.ServiceProcess.ServiceBase.Run(ServicesToRun);
+        }
 
         public static System.IO.FileInfo GetProgramFileInfo()
         {
@@ -37,26 +89,7 @@ namespace PointGaming.ClientWebService
             return versionInfo.ProductVersion;
         }
 
-        private static WcfServerConnection _wcfHost;
-
-        public static void SimpleListenerExample()
-        {
-            _wcfHost = new WcfServerConnection();
-            _wcfHost.Start();
-
-            var prefix = "http://localhost:9779/";
-            SimpleHttpServer httpServer = new SimpleHttpServer();
-            httpServer.Start(prefix, ListenerCallback);
-            
-            Console.ReadLine();
-
-            httpServer.Dispose();
-
-            _wcfHost.Dispose();
-        }
-
-
-        public static void ListenerCallback(IAsyncResult result)
+        public void ListenerCallback(IAsyncResult result)
         {
             HttpListener listener = null;
             HttpListenerContext context = null;
@@ -68,8 +101,8 @@ namespace PointGaming.ClientWebService
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
+                CWService.AppendConsoleLine(e.Message);
+                CWService.AppendConsoleLine(e.StackTrace);
                 return;
             }
 
@@ -79,8 +112,8 @@ namespace PointGaming.ClientWebService
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
+                CWService.AppendConsoleLine(e.Message);
+                CWService.AppendConsoleLine(e.StackTrace);
                 return;
             }
             finally
@@ -89,8 +122,10 @@ namespace PointGaming.ClientWebService
             }
         }
 
-        private static void HandleRequest(HttpListenerContext context)
+        private void HandleRequest(HttpListenerContext context)
         {
+            GetAppendedLines();
+
             var request = context.Request;
 
             var segments = request.Url.Segments;
@@ -115,6 +150,8 @@ namespace PointGaming.ClientWebService
             }
             else
                 Handle404(context);
+
+            GetAppendedLines();
         }
 
         private static void Handle404(HttpListenerContext context)
@@ -131,7 +168,7 @@ namespace PointGaming.ClientWebService
             response.StatusCode = 402;
         }
 
-        private static void HandleJoinLobby(HttpListenerContext context)
+        private void HandleJoinLobby(HttpListenerContext context)
         {
             var segments = context.Request.Url.Segments;
             if (segments.Length != 3)
@@ -189,7 +226,7 @@ namespace PointGaming.ClientWebService
             HttpListener listener = new HttpListener();
             listener.Prefixes.Add(prefix);
             listener.Start();
-            Console.WriteLine("Listening...");
+            CWService.AppendConsoleLine("Listening...");
 
             Thread t = new Thread(Listen);
             t.IsBackground = false;
@@ -237,7 +274,7 @@ namespace PointGaming.ClientWebService
             }
             catch (Exception e)
             {
-                Console.WriteLine("Todo: log the exception: " + e);
+                CWService.AppendConsoleLine("Todo: log the exception: " + e);
             }
             finally
             {

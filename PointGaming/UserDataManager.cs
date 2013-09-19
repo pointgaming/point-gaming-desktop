@@ -25,6 +25,8 @@ namespace PointGaming
 {
     public class UserDataManager
     {
+        public static UserDataManager UserData;
+
         public readonly PgUser User;
         public readonly SocketSession PgSession;
         public readonly FriendshipManager Friendship;
@@ -43,8 +45,12 @@ namespace PointGaming
 
         public AudioChatSession AudioSystem;
 
+        public readonly UserSettings Settings;
+
         public UserDataManager(SocketSession session)
         {
+            UserData = this;
+            Settings = UserSettings.Load(session.User.username);
             PgSession = session;
             User = GetPgUser(session.User);
             User.Status = "online";
@@ -82,7 +88,7 @@ namespace PointGaming
 
         private void CheckIdle(object sender, EventArgs e)
         {
-            var isIdle = App.UserIdleTimespan.TotalMinutes > PointGaming.Properties.Settings.Default.UserIdleMinutes;
+            var isIdle = App.UserIdleTimespan.TotalMinutes > UserDataManager.UserData.Settings.UserIdleMinutes;
             if ((User.Status == "online" && isIdle) || (User.Status == "idle" && !isIdle))
             {
                 User.Status = isIdle ? "idle" : "online";

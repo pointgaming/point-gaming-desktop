@@ -24,7 +24,7 @@ namespace PointGaming
 
         public static bool IsShuttingDown = false;
 
-        private static readonly string ApplicationSettingsPath;
+        public static readonly string ApplicationSettingsPath;
         public static string GetLoginSettingsPath(string username) {
             return ApplicationSettingsPath
                 + Path.DirectorySeparatorChar
@@ -48,6 +48,8 @@ namespace PointGaming
 
         private static StreamWriter _logWriter;
 
+        public static readonly ApplicationSettings Settings;
+
         static App()
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
@@ -59,11 +61,15 @@ namespace PointGaming
                 object[] attribs = currentAssem.GetCustomAttributes(typeof(AssemblyCompanyAttribute), true);
                 string company = ((AssemblyCompanyAttribute)attribs[0]).Company;
 
-                ApplicationSettingsPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
+                var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
                     + Path.DirectorySeparatorChar
                     + company
                     + Path.DirectorySeparatorChar
                     + currentAssem.ManifestModule.Name;
+                path = path.Replace(' ', '_');
+                ApplicationSettingsPath = path;
+
+                Settings = ApplicationSettings.Load();
 
                 LoggedOut();
                 
@@ -73,7 +79,8 @@ namespace PointGaming
             }
             catch (Exception e)
             {
-                MessageBox.Show("Could not create user settings folder!  Details: " + e.Message);
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
             }
         }
 
@@ -212,7 +219,7 @@ namespace PointGaming
                 }
                 catch { }
 
-                if (DebugBox != null)
+                if (DebugBox != null && !string.IsNullOrEmpty(text))
                 {
                     HomeWindow.Home.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action<string>(delegate(string s)
                     {
@@ -477,7 +484,7 @@ namespace PointGaming
 
         public static void FlashWindowSmartly(this Window w)
         {
-            if (!w.IsActive && Properties.Settings.Default.ShouldFlashChatWindow)
+            if (!w.IsActive && UserDataManager.UserData.Settings.ShouldFlashChatWindow)
                 w.FlashWindow();
         }
 

@@ -193,6 +193,7 @@
     </Compile>
     <Compile Include="POCO\BetList.cs" />
     <Compile Include="POCO\BetterAccount.cs" />
+    <Compile Include="ReliableSettings.cs" />
     <Compile Include="WcfClientSide.cs" />
     <Compile Include="WindowTreeManager.cs" />
     <Compile Include="SessionManager.cs" />

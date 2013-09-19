@@ -16,19 +16,19 @@ namespace PointGaming.HomeTab
         {
             InitializeComponent();
 
-            foreach (var item in HomeWindow.UserData.AudioSystem.GetAudioInputDevices())
+            foreach (var item in UserDataManager.UserData.AudioSystem.GetAudioInputDevices())
                 comboBoxRecordingDevices.Items.Add(item);
-            comboBoxRecordingDevices.SelectedIndex = Properties.Settings.Default.AudioInputDeviceIndex;
-            labelMicKey.Content = (Key)Properties.Settings.Default.MicTriggerKey;
-            HomeWindow.UserData.AudioSystem.RecordingDeviceChanged += AudioSystem_RecordingDeviceChanged;
+            comboBoxRecordingDevices.SelectedIndex = App.Settings.AudioInputDeviceIndex;
+            labelMicKey.Content = (Key)UserDataManager.UserData.Settings.MicTriggerKey;
+            UserDataManager.UserData.AudioSystem.RecordingDeviceChanged += AudioSystem_RecordingDeviceChanged;
         }
 
         void AudioSystem_RecordingDeviceChanged(int obj)
         {
-            if (obj == Properties.Settings.Default.AudioInputDeviceIndex)
+            if (obj == App.Settings.AudioInputDeviceIndex)
                 return;
-            Properties.Settings.Default.AudioInputDeviceIndex = obj;
-            Properties.Settings.Default.Save();
+            App.Settings.AudioInputDeviceIndex = obj;
+            App.Settings.Save();
             comboBoxRecordingDevices.SelectedIndex = obj;
         }
 
@@ -47,10 +47,10 @@ namespace PointGaming.HomeTab
             PgFonts.FontChooser fontChooser = new PgFonts.FontChooser();
             fontChooser.Owner = HomeWindow.Home;
 
-            if (Properties.Settings.Default.ChatFontFamily != "")
-                textBoxFontChoice.FontFamily = new System.Windows.Media.FontFamily(Properties.Settings.Default.ChatFontFamily + ", " + textBoxFontChoice.FontFamily);
-            if (Properties.Settings.Default.ChatFontSize != 0)
-                textBoxFontChoice.FontSize = Properties.Settings.Default.ChatFontSize;
+            if (UserDataManager.UserData.Settings.ChatFontFamily != "")
+                textBoxFontChoice.FontFamily = new System.Windows.Media.FontFamily(UserDataManager.UserData.Settings.ChatFontFamily + ", " + textBoxFontChoice.FontFamily);
+            if (UserDataManager.UserData.Settings.ChatFontSize != 0)
+                textBoxFontChoice.FontSize = UserDataManager.UserData.Settings.ChatFontSize;
             fontChooser.SetPropertiesFromObject(textBoxFontChoice);
             fontChooser.PreviewSampleText = textBoxFontChoice.Text;
 
@@ -59,9 +59,9 @@ namespace PointGaming.HomeTab
                 fontChooser.ApplyPropertiesToObject(textBoxFontChoice);
                 var family = textBoxFontChoice.FontFamily.ToString();
                 var size = textBoxFontChoice.FontSize;
-                Properties.Settings.Default.ChatFontFamily = family;
-                Properties.Settings.Default.ChatFontSize = size;
-                Properties.Settings.Default.Save();
+                UserDataManager.UserData.Settings.ChatFontFamily = family;
+                UserDataManager.UserData.Settings.ChatFontSize = size;
+                UserDataManager.UserData.Settings.Save();
             }
         }
 
@@ -77,17 +77,17 @@ namespace PointGaming.HomeTab
             if (!key.HasValue)
                 return;
             labelMicKey.Content = key.Value;
-            Properties.Settings.Default.MicTriggerKey = (int)key.Value;
-            Properties.Settings.Default.Save();
-            HomeWindow.UserData.AudioSystem.TriggerKey = key.Value;
+            UserDataManager.UserData.Settings.MicTriggerKey = (int)key.Value;
+            UserDataManager.UserData.Settings.Save();
+            UserDataManager.UserData.AudioSystem.TriggerKey = key.Value;
         }
         
         private void comboBoxRecordingDevices_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var deviceIndex = comboBoxRecordingDevices.SelectedIndex;
-            Properties.Settings.Default.AudioInputDeviceIndex = deviceIndex;
-            Properties.Settings.Default.Save();
-            HomeWindow.UserData.AudioSystem.SetAudioInputDevice(deviceIndex);
+            App.Settings.AudioInputDeviceIndex = deviceIndex;
+            App.Settings.Save();
+            UserDataManager.UserData.AudioSystem.SetAudioInputDevice(deviceIndex);
         }
     }
 }

@@ -81,7 +81,7 @@ namespace PointGaming
             Dictionary<string, RectAndSize> oldSizes = new Dictionary<string, RectAndSize>();
             try
             {
-                var old = Properties.Settings.Default.WindowBounds;
+                var old = UserDataManager.UserData.Settings.WindowBounds;
                 var old2 = SimpleJson.SimpleJson.DeserializeObject<Foo>(old);
                 foreach (var item in old2.sizes)
                     oldSizes[item.Name] = item;
@@ -95,8 +95,11 @@ namespace PointGaming
             var foo = new Foo();
             foo.sizes = new List<RectAndSize>(sizes.Values);
             var neww = SimpleJson.SimpleJson.SerializeObject(foo);
-            Properties.Settings.Default.WindowBounds = neww;
-            Properties.Settings.Default.Save();
+            if (UserDataManager.UserData != null)
+            {
+                UserDataManager.UserData.Settings.WindowBounds = neww;
+                UserDataManager.UserData.Settings.Save();
+            }
         }
 
         private Size GetDesktopInfo()

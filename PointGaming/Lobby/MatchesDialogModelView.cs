@@ -14,7 +14,7 @@ namespace PointGaming.Lobby
 {
     class MatchesDialogModelView : ViewModelBase
     {
-        private UserDataManager _userData = HomeWindow.UserData;
+        private UserDataManager _userData = UserDataManager.UserData;
         private LobbySession _session;
         private SessionManager _manager;
 

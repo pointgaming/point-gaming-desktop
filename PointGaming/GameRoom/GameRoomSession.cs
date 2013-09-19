@@ -13,7 +13,7 @@ namespace PointGaming.GameRoom
 {
     public class GameRoomSession : ChatroomSessionBase
     {
-        private readonly UserDataManager _userData = HomeWindow.UserData;
+        private readonly UserDataManager _userData = UserDataManager.UserData;
 
         private readonly Lobby.LobbySession _lobbySession;
         public readonly Lobby.GameRoomItem GameRoom;

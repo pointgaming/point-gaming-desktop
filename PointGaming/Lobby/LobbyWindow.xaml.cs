@@ -35,7 +35,7 @@ namespace PointGaming.Lobby
         }
 
         private LobbySession _lobbySession;
-        private UserDataManager _userData = HomeWindow.UserData;
+        private UserDataManager _userData = UserDataManager.UserData;
         private AutoScroller _autoScroller;
 
         public LobbyWindow()
@@ -44,7 +44,7 @@ namespace PointGaming.Lobby
             flowDocumentLog.Document = new FlowDocument();
             UpdateChatFont();
             _autoScroller = new AutoScroller(flowDocumentLog);
-            PropertyChangedEventManager.AddListener(Properties.Settings.Default, this, "PropertyChanged");
+            PropertyChangedEventManager.AddListener(UserDataManager.UserData.Settings, this, "PropertyChanged");
             WindowTreeManager = new WindowTreeManager(this, HomeWindow.Home.WindowTreeManager);
         }
 
@@ -63,7 +63,7 @@ namespace PointGaming.Lobby
 
         public bool ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
         {
-            if (sender == Properties.Settings.Default)
+            if (sender == UserDataManager.UserData.Settings)
             {
                 this.BeginInvokeUI(UpdateChatFont);
                 return true;
@@ -86,8 +86,8 @@ namespace PointGaming.Lobby
         {
             flowDocumentLog.Document.Background = Brushes.White;
             flowDocumentLog.Document.PagePadding = new Thickness(2);
-            flowDocumentLog.Document.FontFamily = new FontFamily(Properties.Settings.Default.ChatFontFamily + ", " + flowDocumentLog.Document.FontFamily);
-            flowDocumentLog.Document.FontSize = Properties.Settings.Default.ChatFontSize;
+            flowDocumentLog.Document.FontFamily = new FontFamily(UserDataManager.UserData.Settings.ChatFontFamily + ", " + flowDocumentLog.Document.FontFamily);
+            flowDocumentLog.Document.FontSize = UserDataManager.UserData.Settings.ChatFontSize;
         }
 
         public void Init(LobbySession lobbySession)
@@ -167,7 +167,7 @@ namespace PointGaming.Lobby
                 PgUser user = menuItem.CommandParameter as PgUser;
                 if (user != null)
                 {
-                    var url = Properties.Settings.Default.WebServerUrl + "/u/" + user.Username + "/profile";
+                    var url = App.Settings.WebServerUrl + "/u/" + user.Username + "/profile";
                     System.Diagnostics.Process.Start(url);
                 }
             } 

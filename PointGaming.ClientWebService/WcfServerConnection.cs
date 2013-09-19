@@ -31,8 +31,8 @@ namespace PointGaming.ClientWebService
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
+                CWService.AppendConsoleLine(ex.Message);
+                CWService.AppendConsoleLine(ex.StackTrace);
             }
             finally
             {

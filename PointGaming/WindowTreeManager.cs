@@ -57,6 +57,11 @@ namespace PointGaming
                 Parent.ChildRemoved(this);
         }
 
+        public void Save()
+        {
+            _windowBoundsPersistor.Save();
+        }
+
         public void CloseChildren()
         {
             var needToClose = new List<WindowTreeManager>(_children);

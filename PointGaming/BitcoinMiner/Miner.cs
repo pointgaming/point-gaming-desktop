@@ -166,7 +166,7 @@ namespace PointGaming.BitcoinMiner
             get
             {
                 var dTime = App.UserIdleTimespan;
-                var isIdle = dTime.TotalMinutes > PointGaming.Properties.Settings.Default.UserIdleMinutes;
+                var isIdle = dTime.TotalMinutes > UserDataManager.UserData.Settings.UserIdleMinutes;
                 return isIdle;
             }
         }
@@ -179,7 +179,7 @@ namespace PointGaming.BitcoinMiner
 
             while (!IsStopRequested)
             {
-                if ((!IsUserIdle && PointGaming.Properties.Settings.Default.BitcoinMinerOnlyWheUserIdle) || IsPaused)
+                if ((!IsUserIdle && UserDataManager.UserData.Settings.BitcoinMinerOnlyWheUserIdle) || IsPaused)
                 {
                     Thread.Sleep(1000);
                     continue;

@@ -76,14 +76,14 @@ namespace PointGaming
         {
             _userData = userData;
             _nAudioTest = new NAudioTest(new Opus16kCodec());
-            _nAudioTest.InputDeviceNumber = Properties.Settings.Default.AudioInputDeviceIndex;
-            _nAudioTest.TriggerKey = (System.Windows.Input.Key)Properties.Settings.Default.MicTriggerKey;
+            _nAudioTest.InputDeviceNumber = App.Settings.AudioInputDeviceIndex;
+            _nAudioTest.TriggerKey = (System.Windows.Input.Key)_userData.Settings.MicTriggerKey;
             _nAudioTest.AudioRecorded += _nAudioTest_AudioRecorded;
             _nAudioTest.AudioRecordEnded += _nAudioTest_AudioRecordEnded;
             _nAudioTest.InputDeviceNumberChanged += _nAudioTest_InputDeviceNumberChanged;
 
-            var audioChatIp = System.Net.IPAddress.Parse(Properties.Settings.Default.AudioChatIp);
-            var audioChatPort = Properties.Settings.Default.AudioChatPort;
+            var audioChatIp = System.Net.IPAddress.Parse(App.Settings.AudioChatIp);
+            var audioChatPort = App.Settings.AudioChatPort;
             var endpoint = new System.Net.IPEndPoint(audioChatIp, audioChatPort);
             _audioChatClient = new AudioChatClient(endpoint, _userData.PgSession.AuthToken);
             _audioChatClient.AudioReceived += _audioChatClient_MessageReceived;

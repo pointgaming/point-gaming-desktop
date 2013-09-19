@@ -96,7 +96,7 @@ namespace PointGaming.Lobby
         private string _url;
         public string URL
         {
-            get { return string.IsNullOrEmpty(_url) ? Properties.Settings.Default.WebServerUrl : _url; }
+            get { return string.IsNullOrEmpty(_url) ? App.Settings.WebServerUrl : _url; }
             set
             {
                 if (value == _url)
@@ -332,7 +332,7 @@ namespace PointGaming.Lobby
             IsAdvertising = poco.is_advertising;
             IsBetting = poco.betting;
             BettingType = poco.betting_type;
-            Owner = HomeWindow.UserData.GetPgUser(poco.owner);
+            Owner = UserDataManager.UserData.GetPgUser(poco.owner);
         }
 
         public POCO.GameRoomPoco ToPoco()
@@ -365,7 +365,7 @@ namespace PointGaming.Lobby
             IsBetting = poco.betting;
             BettingType = poco.betting_type;
             IsAdvertising = poco.is_advertising;
-            Owner = HomeWindow.UserData.GetPgUser(poco.owner);
+            Owner = UserDataManager.UserData.GetPgUser(poco.owner);
             MatchId = poco.match_id;
         }
     }

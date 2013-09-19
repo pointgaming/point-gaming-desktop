@@ -32,7 +32,7 @@ namespace PointGaming.Chat
         }
 
         private ChatroomSession _chatroomSession;
-        private UserDataManager _userData = HomeWindow.UserData;
+        private UserDataManager _userData = UserDataManager.UserData;
         private AutoScroller _autoScroller;
 
         public ChatroomWindow()
@@ -41,7 +41,7 @@ namespace PointGaming.Chat
             flowDocumentLog.Document = new FlowDocument();
             UpdateChatFont();
             _autoScroller = new AutoScroller(flowDocumentLog);
-            PropertyChangedEventManager.AddListener(Properties.Settings.Default, this, "PropertyChanged");
+            PropertyChangedEventManager.AddListener(UserDataManager.UserData.Settings, this, "PropertyChanged");
             WindowTreeManager = new WindowTreeManager(this, HomeWindow.Home.WindowTreeManager);
         }
 
@@ -55,8 +55,8 @@ namespace PointGaming.Chat
         {
             flowDocumentLog.Document.Background = Brushes.White;
             flowDocumentLog.Document.PagePadding = new Thickness(2);
-            flowDocumentLog.Document.FontFamily = new FontFamily(Properties.Settings.Default.ChatFontFamily + ", " + flowDocumentLog.Document.FontFamily);
-            flowDocumentLog.Document.FontSize = Properties.Settings.Default.ChatFontSize;
+            flowDocumentLog.Document.FontFamily = new FontFamily(UserDataManager.UserData.Settings.ChatFontFamily + ", " + flowDocumentLog.Document.FontFamily);
+            flowDocumentLog.Document.FontSize = UserDataManager.UserData.Settings.ChatFontSize;
         }
 
         public void Init(ChatroomSession roomManager)

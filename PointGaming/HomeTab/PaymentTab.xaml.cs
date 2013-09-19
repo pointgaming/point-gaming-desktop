@@ -36,7 +36,7 @@ namespace PointGaming.HomeTab
 
         private void _progressTimer_Tick(object sender, EventArgs e)
         {
-            var session = HomeWindow.UserData.PgSession;
+            var session = UserDataManager.UserData.PgSession;
             var url = session.GetWebApiV1Function("/better");
             RestResponse<PointGaming.POCO.BetterAccountPoco> response = null;
             session.BeginAndCallback(delegate
@@ -59,7 +59,7 @@ namespace PointGaming.HomeTab
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            bool isEnabled = PointGaming.Properties.Settings.Default.BitcoinMinerEnabled;
+            bool isEnabled = UserDataManager.UserData.Settings.BitcoinMinerEnabled;
             checkBoxFreeBetterAccount.IsChecked = isEnabled;
         }
 
@@ -84,10 +84,10 @@ namespace PointGaming.HomeTab
             _stratumSession.ConnectionConcluded += _stratumSession_ConnectionConcluded;
             _stratumSession.ConnectionFailure += _stratumSession_ConnectionFailure;
 
-            var serverAddress = Properties.Settings.Default.StratumIp;
-            var serverPort = Properties.Settings.Default.StratumPort;
+            var serverAddress = App.Settings.StratumIp;
+            var serverPort = App.Settings.StratumPort;
             IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse(serverAddress), serverPort);
-            var workerName = HomeWindow.UserData.User.Username;
+            var workerName = UserDataManager.UserData.User.Username;
             var workerPassword = "";
 
             TimeSpan timeoutTimespan = new TimeSpan(0, 0, 30);
@@ -151,10 +151,10 @@ namespace PointGaming.HomeTab
 
         private static void SaveMinerEnabled(bool isEnabled)
         {
-            if (isEnabled != PointGaming.Properties.Settings.Default.BitcoinMinerEnabled)
+            if (isEnabled != UserDataManager.UserData.Settings.BitcoinMinerEnabled)
             {
-                PointGaming.Properties.Settings.Default.BitcoinMinerEnabled = isEnabled;
-                Properties.Settings.Default.Save();
+                UserDataManager.UserData.Settings.BitcoinMinerEnabled = isEnabled;
+                UserDataManager.UserData.Settings.Save();
             }
         }
 
@@ -166,7 +166,7 @@ namespace PointGaming.HomeTab
 
         private void buttonLearnMore_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start(Properties.Settings.Default.WebServerUrl);
+            System.Diagnostics.Process.Start(App.Settings.WebServerUrl);
         }
 
         private void hyperLinkDisclaimer_Click(object sender, RoutedEventArgs e)

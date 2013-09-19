@@ -35,7 +35,7 @@ namespace PointGaming
 
         public string GetWebAppFunction(string apiPath, string function, params string[] arguments)
         {
-            var result = Properties.Settings.Default.WebServerUrl + apiPath + function;
+            var result = App.Settings.WebServerUrl + apiPath + function;
 
             var args = new List<string>(arguments);
             if (!string.IsNullOrEmpty(AuthToken))
@@ -275,7 +275,7 @@ namespace PointGaming
 
         public void ConnectSocket()
         {
-            MyClient = new Client(Properties.Settings.Default.SocketIoUrl);
+            MyClient = new Client(App.Settings.SocketIoUrl);
             MyClient.On("connect", OnConnect);
             MyClient.On("auth_resp", OnAuthResponse);
 

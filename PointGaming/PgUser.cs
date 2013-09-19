@@ -171,7 +171,7 @@ namespace PointGaming
             {
                 if (IsAdmin)
                     return "Admins";
-                if (IsFriend || HomeWindow.UserData.User == this)
+                if (IsFriend || UserDataManager.UserData.User == this)
                     return "Friends";
                 return "Players";
             }
@@ -262,7 +262,7 @@ namespace PointGaming
                 if (_avatar == string.Empty || _avatar == null)
                     return "";
 
-                return PointGaming.Properties.Settings.Default.WebServerUrl + _avatar;
+                return App.Settings.WebServerUrl + _avatar;
             }
             set
             {
@@ -311,7 +311,7 @@ namespace PointGaming
 
         public void ViewProfile()
         {
-            System.Diagnostics.Process.Start(PointGaming.Properties.Settings.Default.WebServerUrl + "/u/" + Slug);
+            System.Diagnostics.Process.Start(App.Settings.WebServerUrl + "/u/" + Slug);
         }
 
         public readonly ObservableCollection<HomeTab.LauncherInfo> _lobbies = new ObservableCollection<HomeTab.LauncherInfo>();

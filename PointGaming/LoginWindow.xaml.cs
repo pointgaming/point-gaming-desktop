@@ -32,7 +32,7 @@ namespace PointGaming
             {
                 using (WebClient Client = new WebClient())
                 {
-                    Client.DownloadFile(Properties.Settings.Default.WebServerUrl + "/system/desktop_client/PointGaming.msp", tempPath);
+                    Client.DownloadFile(App.Settings.WebServerUrl + "/system/desktop_client/PointGaming.msp", tempPath);
 
                     var processName = Process.GetCurrentProcess().ProcessName;
 
@@ -82,7 +82,7 @@ namespace PointGaming
             SocketSession = new SocketSession();
             SocketSession.SetThreadQueuerForCurrentThread(this.BeginInvokeUI);
 
-            if (Properties.Settings.Default.UpdateAutomatic)
+            if (App.Settings.UpdateAutomatic)
                 CheckForUpdate();
             else
                 UseRememberedLogin();
@@ -95,7 +95,7 @@ namespace PointGaming
 
             SocketSession.BeginAndCallback(delegate
             {
-                var url = Properties.Settings.Default.WebServerUrl + "/desktop_client/version";
+                var url = App.Settings.WebServerUrl + "/desktop_client/version";
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.GET);
                 response = (RestResponse<PgVersion>)client.Execute<PgVersion>(request);
@@ -125,7 +125,7 @@ namespace PointGaming
         {
             SetWork("Welcome.  Please login to continue.", Brushes.Black, true);
 
-            string lastUsername = Properties.Settings.Default.Username;
+            string lastUsername = App.Settings.Username;
             if (string.IsNullOrWhiteSpace(lastUsername))
             {
                 textBoxUsername.Text = "";
@@ -136,7 +136,7 @@ namespace PointGaming
                 textBoxUsername.Text = lastUsername;
                 passwordBoxPassword.Focus();
 
-                string lastPasswordEncrypted = Properties.Settings.Default.Password;
+                string lastPasswordEncrypted = App.Settings.Password;
                 if (!string.IsNullOrWhiteSpace(lastPasswordEncrypted))
                 {
                     string lastPassword;
@@ -174,7 +174,7 @@ namespace PointGaming
             
             passwordBoxPassword.Clear();
 
-            DateTime timeout = DateTime.Now + Properties.Settings.Default.LogInTimeout;
+            DateTime timeout = DateTime.Now + App.Settings.LogInTimeout;
 
             bool isSuccess = false;
             SocketSession.BeginAndCallback(delegate
@@ -188,18 +188,19 @@ namespace PointGaming
 
                     App.LoggedIn(username);
 
+                    var userData = new UserDataManager(SocketSession);
                     var homeWindow = new HomeWindow();
                     SocketSession.SetThreadQueuerForCurrentThread(HomeWindow.Home.BeginInvokeUI);
-                    homeWindow.Init(SocketSession);
+                    homeWindow.Init();
                     Hide();
                     homeWindow.Show();
 
-                    Properties.Settings.Default.Username = username;
+                    App.Settings.Username = username;
                     if (checkBoxRememberPassword.IsChecked == true)
-                        Properties.Settings.Default.Password = password.Encrypt();
+                        App.Settings.Password = password.Encrypt();
                     else
-                        Properties.Settings.Default.Password = "";
-                    Properties.Settings.Default.Save();
+                        App.Settings.Password = "";
+                    App.Settings.Save();
 
                     Close();
                 }

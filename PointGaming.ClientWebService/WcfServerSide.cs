@@ -62,7 +62,7 @@ namespace PointGaming.ClientWebService
             {
                 _registerListeners.Add(rl);
             }
-            var path = Program.GetProgramFileInfo().FullName;
+            var path = CWService.GetProgramFileInfo().FullName;
             DesktopSessionHelper.LaunchInActiveSession(path);
         }
 

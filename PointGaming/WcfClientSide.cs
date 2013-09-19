@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Net;
 using System.ServiceModel;
 using PointGaming.ClientWebService;
+
 
 namespace PointGaming
 {
@@ -16,8 +18,21 @@ namespace PointGaming
                 
         public static void AppStarted()
         {
-            WcfClientSide wcf = new WcfClientSide();
-            wcf.Start();
+            var t = new Thread((ThreadStart)delegate
+            {
+                try
+                {
+                    WcfClientSide wcf = new WcfClientSide();
+                    wcf.Start();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Failed to connect to PointGaming client web service: " + e.Message);
+                    Console.WriteLine(e.StackTrace);
+                }
+            });
+            t.IsBackground = true;
+            t.Start();
         }
 
         public void Start()

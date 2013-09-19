@@ -20,7 +20,6 @@ namespace PointGaming
     {
         public static int GuiThreadId;
         public static HomeWindow Home;
-        public static UserDataManager UserData;
 
         public WindowTreeManager WindowTreeManager;
         private HomeTab.PaymentTab _paymentTab;
@@ -32,10 +31,8 @@ namespace PointGaming
             WindowTreeManager = new WindowTreeManager(this, null, false);
         }
 
-        public void Init(SocketSession session)
-        {
-            UserData = new UserDataManager(session);
-            
+        public void Init()
+        {            
             var tab = new TabItem
             {
                 Header = "Friends",
@@ -67,15 +64,15 @@ namespace PointGaming
 
             var b = new System.Windows.Data.Binding("Username");
             b.Mode = System.Windows.Data.BindingMode.OneWay;
-            b.Source = UserData.User;
+            b.Source = UserDataManager.UserData.User;
             menuItemUsername.SetBinding(MenuItem.HeaderProperty, b);
-            
-            UserData.StartChat();
+
+            UserDataManager.UserData.StartChat();
         }
 
         private void ProfileClick(object sender, EventArgs e)
         {
-            UserData.User.ViewProfile();
+            UserDataManager.UserData.User.ViewProfile();
         }
         
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -108,13 +105,14 @@ namespace PointGaming
                 
         public void LogOut(bool shouldShowLogInWindow, bool isFromWindowClosingEvent)
         {
-            if (UserData == null)
+            if (UserDataManager.UserData == null)
                 return;
 
             _allowClose = true;
 
             taskbarIcon.Visibility = System.Windows.Visibility.Collapsed;
 
+            WindowTreeManager.Save();
             WindowTreeManager.CloseChildren();
             
             _paymentTab.LoggingOut();
@@ -123,8 +121,8 @@ namespace PointGaming
 
             Hide();
 
-            UserData.LoggedOut();
-            UserData = null;
+            UserDataManager.UserData.LoggedOut();
+            UserDataManager.UserData = null;
 
             if (shouldShowLogInWindow)
             {
@@ -174,8 +172,8 @@ namespace PointGaming
 
         private void LogOutClick(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.Password = "";
-            Properties.Settings.Default.Save();
+            App.Settings.Password = "";
+            App.Settings.Save();
             LogOut(true, false);
         }
 

@@ -29,7 +29,7 @@ namespace PointGaming.Chat
             var args = new PropertyChangedEventArgs(propertyName);
             changedCallback(this, args);
         }
-        private UserDataManager _userData = HomeWindow.UserData;
+        private UserDataManager _userData = UserDataManager.UserData;
         
         private readonly ObservableCollection<ChatroomInviteNew> _invites = new ObservableCollection<ChatroomInviteNew>();
         public ObservableCollection<ChatroomInviteNew> Invites { get { return _invites; } }

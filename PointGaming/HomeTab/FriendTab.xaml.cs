@@ -24,7 +24,7 @@ namespace PointGaming.HomeTab
 
         private static readonly List<string> ChatAvailableStatuses = new List<string>(new[] { FriendStatusOnline, FriendStatusIdle });
 
-        private UserDataManager _userData = HomeWindow.UserData;
+        private UserDataManager _userData = UserDataManager.UserData;
         private ActiveGroupingCollectionView _FriendsView;
         public ActiveGroupingCollectionView Friends
         {
@@ -162,7 +162,7 @@ namespace PointGaming.HomeTab
                 var game_id = change.game_id;
 
                 LauncherInfo info;
-                if (!HomeWindow.UserData.TryGetGame(game_id, out info))
+                if (!UserDataManager.UserData.TryGetGame(game_id, out info))
                     throw new NotImplementedException("Game not found: " + game_id);
                 
                 var lobbies = user.Lobbies;
@@ -266,7 +266,7 @@ namespace PointGaming.HomeTab
             foreach (var game_id in lobbies)
             {
                 LauncherInfo info;
-                if (!HomeWindow.UserData.TryGetGame(game_id, out info))
+                if (!UserDataManager.UserData.TryGetGame(game_id, out info))
                     throw new NotImplementedException("Game not found: " + game_id);
                 if (!list.Contains(info))
                     list.Add(info);
