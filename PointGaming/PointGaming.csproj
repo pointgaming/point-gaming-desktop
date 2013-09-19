@@ -152,6 +152,14 @@
     </ApplicationDefinition>
     <Compile Include="ActiveGroupingCollectionView.cs" />
     <Compile Include="AudioChatSession.cs" />
+    <Compile Include="AudioChat\AudioChatClient.cs" />
+    <Compile Include="AudioChat\AudioMessage.cs" />
+    <Compile Include="AudioChat\BufferIO.cs" />
+    <Compile Include="AudioChat\Cryptography.cs" />
+    <Compile Include="AudioChat\IChatMessage.cs" />
+    <Compile Include="AudioChat\JoinRoomMessage.cs" />
+    <Compile Include="AudioChat\LeaveRoomMessage.cs" />
+    <Compile Include="AudioChat\Utf8String.cs" />
     <Compile Include="Audio\OpusChatCodec.cs" />
     <Compile Include="BitcoinMiner\CPUThreadMiner.cs" />
     <Compile Include="BitcoinMiner\Miner.cs" />
@@ -749,10 +757,6 @@
     <ProjectReference Include="..\ACTB\Aviad.WPF.Controls.csproj">
       <Project>{952E558B-6E94-49A5-BA50-EC50C044709C}</Project>
       <Name>Aviad.WPF.Controls</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PointGaming.AudioChat\PointGaming.AudioChat.csproj">
-      <Project>{65ED6CBC-EB2D-441D-96C9-BA514EF46B75}</Project>
-      <Name>PointGaming.AudioChat</Name>
     </ProjectReference>
     <ProjectReference Include="..\PointGaming.ClientWebService\PointGaming.ClientWebService.csproj">
       <Project>{473F8102-491D-4137-BB9A-CB8D34F66982}</Project>

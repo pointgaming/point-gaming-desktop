@@ -46,7 +46,7 @@ namespace PointGaming.AudioChat
             return buffer;
         }
 
-        public static void Main()
+        public static void Test()
         {
             try
             {
