@@ -40,6 +40,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -49,6 +50,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>true</SignManifests>
@@ -125,6 +127,7 @@
     <Reference Include="System.Net" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -182,6 +185,7 @@
     </Compile>
     <Compile Include="POCO\BetList.cs" />
     <Compile Include="POCO\BetterAccount.cs" />
+    <Compile Include="WcfClientSide.cs" />
     <Compile Include="WindowTreeManager.cs" />
     <Compile Include="SessionManager.cs" />
     <Compile Include="Chat\ChatroomSession.cs" />
@@ -749,6 +753,10 @@
     <ProjectReference Include="..\PointGaming.AudioChat\PointGaming.AudioChat.csproj">
       <Project>{65ED6CBC-EB2D-441D-96C9-BA514EF46B75}</Project>
       <Name>PointGaming.AudioChat</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PointGaming.ClientWebService\PointGaming.ClientWebService.csproj">
+      <Project>{473F8102-491D-4137-BB9A-CB8D34F66982}</Project>
+      <Name>PointGaming.ClientWebService</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

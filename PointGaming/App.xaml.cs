@@ -68,6 +68,8 @@ namespace PointGaming
                 LoggedOut();
                 
                 StartConsole();
+
+                WcfClientSide.AppStarted();
             }
             catch (Exception e)
             {
@@ -77,7 +79,6 @@ namespace PointGaming
 
         static void CurrentDomain_ProcessExit(object sender, EventArgs e)
         {
-            
         }
 
         [StructLayout(LayoutKind.Sequential)]
