@@ -6,7 +6,7 @@ namespace PointGaming.Audio
     /// <summary>
     /// Wraps the Opus API.
     /// </summary>
-    internal class API
+    internal class OpusAPI
     {
         [DllImport("opus.dll", CallingConvention = CallingConvention.Cdecl)]
         internal static extern IntPtr opus_encoder_create(int Fs, int channels, int application, out IntPtr error);

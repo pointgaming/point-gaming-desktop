@@ -15,9 +15,9 @@ using NA = NAudio;
 
 namespace PointGaming.Audio
 {
-    public delegate void AudioAvailable(NAudioTest source, byte[] data);
+    public delegate void AudioAvailable(NAudioSession source, byte[] data);
 
-    public partial class NAudioTest : IDisposable
+    public partial class NAudioSession : IDisposable
     {
         public event AudioAvailable AudioRecorded;
         public event Action AudioRecordEnded;
@@ -47,7 +47,7 @@ namespace PointGaming.Audio
 
         private object _startStopSynch = new object();
 
-        public NAudioTest(INetworkChatCodec codec)
+        public NAudioSession(INetworkChatCodec codec)
         {
             this.codec = codec;
             TriggerKey = System.Windows.Input.Key.LeftCtrl;

@@ -25,7 +25,7 @@ namespace PointGaming.Audio
                 throw new ArgumentOutOfRangeException("inputChannels");
 
             IntPtr error;
-            IntPtr decoder = API.opus_decoder_create(outputSampleRate, outputChannels, out error);
+            IntPtr decoder = OpusAPI.opus_decoder_create(outputSampleRate, outputChannels, out error);
             if ((Errors)error != Errors.OK)
             {
                 throw new Exception("Exception occured while creating decoder");
@@ -62,7 +62,7 @@ namespace PointGaming.Audio
             fixed (byte* bdec = decoded)
             {
                 decodedPtr = new IntPtr((void*)bdec);
-                length = API.opus_decode(_decoder, inputOpusData, dataLength, decodedPtr, frameCount, 0);
+                length = OpusAPI.opus_decode(_decoder, inputOpusData, dataLength, decodedPtr, frameCount, 0);
             }
             decodedLength = length * 2;
             if (length < 0)
@@ -114,7 +114,7 @@ namespace PointGaming.Audio
 
             if (_decoder != IntPtr.Zero)
             {
-                API.opus_decoder_destroy(_decoder);
+                OpusAPI.opus_decoder_destroy(_decoder);
                 _decoder = IntPtr.Zero;
             }
 

@@ -36,7 +36,7 @@ namespace PointGaming.AudioChat
     public class AudioChatSession : IDisposable
     {
         private UserDataManager _userData;
-        private NAudioTest _nAudioTest;
+        private NAudioSession _nAudioTest;
         private AudioChatClient _audioChatClient;
         private object _audioChatSynch = new object();
         private bool _hasBeenDisposed = false;
@@ -147,7 +147,7 @@ namespace PointGaming.AudioChat
         public AudioChatSession(UserDataManager userData)
         {
             _userData = userData;
-            _nAudioTest = new NAudioTest(new Opus16kCodec());
+            _nAudioTest = new NAudioSession(new Opus16kCodec());
             _nAudioTest.InputDeviceNumber = App.Settings.AudioInputDeviceIndex;
             _nAudioTest.TriggerKey = (System.Windows.Input.Key)_userData.Settings.MicTriggerKey;
             _nAudioTest.AudioRecorded += _nAudioTest_AudioRecorded;
@@ -319,7 +319,7 @@ namespace PointGaming.AudioChat
         private AudioRoomEx _speakingRoom = null;
         private bool _speakingRoomTeamOnly;
 
-        private void _nAudioTest_AudioRecorded(NAudioTest source, byte[] data)
+        private void _nAudioTest_AudioRecorded(NAudioSession source, byte[] data)
         {
             var isFirst = _speakingRoom == null;
             if (isFirst)

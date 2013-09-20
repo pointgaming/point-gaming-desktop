@@ -179,10 +179,10 @@
     <Compile Include="HomeTab\KeySelectDialog.xaml.cs">
       <DependentUpon>KeySelectDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Audio\API.cs" />
+    <Compile Include="Audio\OpusAPI.cs" />
     <Compile Include="Audio\INetworkChatCodec.cs" />
     <Compile Include="Audio\MixingWaveProvider.cs" />
-    <Compile Include="Audio\NAudioTest.cs" />
+    <Compile Include="Audio\NAudioSession.cs" />
     <Compile Include="Chat\PrivateChatSession.cs" />
     <Compile Include="Audio\OpusDecoder.cs" />
     <Compile Include="Audio\OpusEncoder.cs" />
