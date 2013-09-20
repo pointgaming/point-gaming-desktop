@@ -302,8 +302,8 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <CheckBox Grid.Column="0" Name="checkBoxVoiceMute" Content="Mute Voice"             Height="16" Margin="3" IsChecked="{Binding IsVoiceMuted}" />
-            <CheckBox Grid.Column="1" Name="checkBoxVoiceTeamOnly" Content="Team-Only Voice" Height="16" Margin="3" IsChecked="{Binding IsVoiceTeamOnly}" />
+            <CheckBox Grid.Column="0" Name="checkBoxVoiceMute" Content="Mute Voice" Height="16" Margin="3" IsChecked="{Binding IsVoiceMuted}" IsEnabled="{Binding IsVoiceConnected}"/>
+            <CheckBox Grid.Column="1" Name="checkBoxVoiceTeamOnly" Content="Team-Only Voice" Height="16" Margin="3" IsChecked="{Binding IsVoiceTeamOnly}" IsEnabled="{Binding IsVoiceConnected}"/>
         </Grid>
 
 

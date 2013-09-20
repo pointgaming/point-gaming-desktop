@@ -23,16 +23,6 @@ namespace PointGaming.AudioChat
 {
     public delegate void AudioStreamExistEvent(PgUser user, string roomId);
 
-    public interface IAudioRoom
-    {
-        string AudioRoomId { get; }
-        bool IsVoiceTeamOnly { get; }
-        bool IsVoiceEnabled { get; }
-        
-        void OnVoiceStarted(PgUser user);
-        void OnVoiceStopped(PgUser user);
-    }
-
     public class AudioChatSession : IDisposable
     {
         private UserDataManager _userData;
@@ -170,7 +160,7 @@ namespace PointGaming.AudioChat
             var audioChatPort = App.Settings.AudioChatPort;
             var endpoint = new System.Net.IPEndPoint(audioChatIp, audioChatPort);
             _audioChatClient = new AudioChatClient(endpoint, _userData.PgSession.AuthToken);
-            _audioChatClient.AudioReceived += _audioChatClient_MessageReceived;
+            _audioChatClient.MessageReceived += _audioChatClient_MessageReceived;
             _audioChatClient.Stopped += _audioChatClient_Stopped;
             _audioChatClient.Start();
 
@@ -186,7 +176,7 @@ namespace PointGaming.AudioChat
                 if (_hasBeenDisposed)
                     return;
 
-                _audioChatClient.AudioReceived -= _audioChatClient_MessageReceived;
+                _audioChatClient.MessageReceived -= _audioChatClient_MessageReceived;
                 _audioChatClient.Stopped -= _audioChatClient_Stopped;
 
                 ((Action)Connect).DelayInvoke(TimeSpan.FromSeconds(5));
@@ -195,6 +185,8 @@ namespace PointGaming.AudioChat
 
         private void _udpKeepAliveTimer_Tick(object sender, EventArgs e)
         {
+            CheckJoinTimeouts();
+            
             foreach (var room in _joinedRooms.Values)
                 SendJoinRoom(room);
         }
@@ -207,8 +199,10 @@ namespace PointGaming.AudioChat
                 FromUserId = _userData.User.Id
             };
             _audioChatClient.Send(message);
+            AddJoinRoomTimeout(roomEx);
+            OnVoiceConnectionChanged(roomEx, true);// todo remove when Nick adds joinroom feedback
         }
-
+        
         private void SendLeaveRoom(AudioRoomEx roomEx)
         {
             var message = new LeaveRoomMessage
@@ -217,6 +211,7 @@ namespace PointGaming.AudioChat
                 FromUserId = _userData.User.Id
             };
             _audioChatClient.Send(message);
+            OnVoiceConnectionChanged(roomEx, false);
         }
 
         void _nAudioTest_InputDeviceNumberChanged(int index)
@@ -237,7 +232,7 @@ namespace PointGaming.AudioChat
 
             lock (_audioChatSynch)
             {
-                _audioChatClient.AudioReceived -= _audioChatClient_MessageReceived;
+                _audioChatClient.MessageReceived -= _audioChatClient_MessageReceived;
                 _audioChatClient.Stopped -= _audioChatClient_Stopped;
                 _audioChatClient.Stop();
                 _audioChatClient = null;
@@ -285,33 +280,141 @@ namespace PointGaming.AudioChat
             }
         }
 
-        private void _audioChatClient_MessageReceived(AudioMessage obj)
+        private void _audioChatClient_MessageReceived(IVoiceMessage message)
         {
-            if (obj.FromUserId == _userData.User.Id)
+            switch (message.MessageType)
+            {
+                case (AudioMessage.MType):
+                    ReceivedVoice((AudioMessage)message);
+                    break;
+                case (JoinRoomMessage.MType):
+                    ReceivedJoin((JoinRoomMessage)message);
+                    break;
+                case (LeaveRoomMessage.MType):
+                    ReceivedLeave((LeaveRoomMessage)message);
+                    break;
+                default:
+                    Console.WriteLine("Unhandled message type: " + message.MessageType);
+                    break;
+            }
+        }
+        
+        private void ReceivedLeave(LeaveRoomMessage message)
+        {
+            AudioRoomEx roomEx;
+            if (!_joinedRooms.TryGetValue(message.RoomName, out roomEx))
                 return;
 
-            var isEnd = obj.Audio.Length == 0;
+            OnVoiceConnectionChanged(roomEx, false);
+        }
+
+        private void ReceivedJoin(JoinRoomMessage message)
+        {
+            AudioRoomEx roomEx;
+            if (!_joinedRooms.TryGetValue(message.RoomName, out roomEx))
+                return;
+
+            OnVoiceConnectionChanged(roomEx, message.IsSuccess);
+            RemoveJoinRoomTimeout(message.RoomName);
+        }
+
+        #region JoinTimeout
+
+        private class JoinTimeout
+        {
+            public AudioRoomEx RoomEx;
+            public DateTime Timeout;
+        }
+
+        private List<JoinTimeout> _joinTimeouts = new List<JoinTimeout>();
+
+        private void AddJoinRoomTimeout(AudioRoomEx roomEx)
+        {
+            var jr = new JoinTimeout
+            {
+                RoomEx = roomEx,
+                Timeout = DateTime.UtcNow + TimeSpan.FromSeconds(3),
+            };
+            lock (_joinTimeouts)
+            {
+                _joinTimeouts.Add(jr);
+            }
+        }
+
+        private void RemoveJoinRoomTimeout(string roomName)
+        {
+            lock (_joinTimeouts)
+            {
+                foreach (var item in _joinTimeouts)
+                {
+                    if (item.RoomEx.R.AudioRoomId == roomName)
+                    {
+                        _joinTimeouts.Remove(item);
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void CheckJoinTimeouts()
+        {
+            var now = DateTime.UtcNow;
+            List<JoinTimeout> timeouts = new List<JoinTimeout>();
+            lock (_joinTimeouts)
+            {
+                foreach (var item in _joinTimeouts)
+                {
+                    if (now >= item.Timeout)
+                        timeouts.Add(item);
+                    else
+                        break;// added in chronological order
+                }
+                foreach (var item in timeouts)
+                    _joinTimeouts.Remove(item);
+            }
+            foreach (var item in timeouts)
+            {
+                OnVoiceConnectionChanged(item.RoomEx, false);
+            }
+        }
+
+        #endregion JoinTimeout
+
+        private void OnVoiceConnectionChanged(AudioRoomEx roomEx, bool isConnected)
+        {
+            HomeWindow.Home.BeginInvokeUI((Action)delegate
+            {
+                roomEx.R.OnVoiceConnectionChanged(isConnected);
+            });
+        }
+            
+        private void ReceivedVoice(AudioMessage voiceMessage)
+        {
+            if (voiceMessage.FromUserId == _userData.User.Id)
+                return;
+
+            var isEnd = voiceMessage.Audio.Length == 0;
 
             //App.LogLine(obj.FromUserId + " " + obj.MessageNumber + " " + obj.Audio.Length);
 
-            var user = _userData.GetPgUser(obj.FromUserId);
+            var user = _userData.GetPgUser(voiceMessage.FromUserId);
 
             var isListening = false;
             AudioRoomEx roomEx;
-            if (_joinedRooms.TryGetValue(obj.RoomName, out roomEx))
+            if (_joinedRooms.TryGetValue(voiceMessage.RoomName, out roomEx))
             {
                 isListening = roomEx.R.IsVoiceEnabled && !user.IsMuted;
             }
 
             if (isEnd)
             {
-                _nAudioTest.AudioReceiveEnded(obj.FromUserId);
+                _nAudioTest.AudioReceiveEnded(voiceMessage.FromUserId);
                 roomEx.OnVoiceStopped(user);
             }
             else
             {
                 if (isListening)
-                    _nAudioTest.AudioReceived(obj.FromUserId, obj.Audio);
+                    _nAudioTest.AudioReceived(voiceMessage.FromUserId, voiceMessage.Audio);
                 roomEx.OnVoiceSent(user);
             }
         }

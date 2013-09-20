@@ -67,6 +67,24 @@ namespace PointGaming.Chat
                 IsSelfSpeaking = false;
         }
 
+        public void OnVoiceConnectionChanged(bool isConnected)
+        {
+            IsVoiceConnected = isConnected;
+        }
+
+        private bool _IsVoiceConnected = false;
+        public bool IsVoiceConnected
+        {
+            get { return _IsVoiceConnected; }
+            set
+            {
+                if (_IsVoiceConnected == value)
+                    return;
+                _IsVoiceConnected = value;
+                NotifyChanged("IsVoiceConnected");
+            }
+        }
+
         public string AudioRoomId
         {
             get

@@ -384,6 +384,20 @@ namespace PointGaming.GameRoom
         {
             user.IsSpeaking = false;
         }
+        public void OnVoiceConnectionChanged(bool isConnected)
+        {
+            IsVoiceConnected = isConnected;
+        }
+
+        private bool _IsVoiceConnected = false;
+        public bool IsVoiceConnected
+        {
+            get { return _IsVoiceConnected; }
+            set
+            {
+                SetProperty(ref _IsVoiceConnected, value, () => IsVoiceConnected);
+            }
+        }
 
         private bool _isVoiceMuted = false;
         public bool IsVoiceMuted

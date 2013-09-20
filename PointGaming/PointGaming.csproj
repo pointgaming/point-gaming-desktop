@@ -156,6 +156,7 @@
     <Compile Include="AudioChat\AudioMessage.cs" />
     <Compile Include="AudioChat\BufferIO.cs" />
     <Compile Include="AudioChat\Cryptography.cs" />
+    <Compile Include="AudioChat\IAudioRoom.cs" />
     <Compile Include="AudioChat\IChatMessage.cs" />
     <Compile Include="AudioChat\JoinRoomMessage.cs" />
     <Compile Include="AudioChat\LeaveRoomMessage.cs" />
@@ -204,12 +205,6 @@
     <Compile Include="Chat\ChatCommon.cs" />
     <Compile Include="Chat\RoomInviteWindow.xaml.cs">
       <DependentUpon>RoomInviteWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ClosableTab.xaml.cs">
-      <DependentUpon>ClosableTab.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ClosableTabHeader.xaml.cs">
-      <DependentUpon>ClosableTabHeader.xaml</DependentUpon>
     </Compile>
     <Compile Include="FriendshipManager.cs" />
     <Compile Include="GameRoom\Bet.cs" />
@@ -292,14 +287,6 @@
     <Page Include="Chat\RoomInviteWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ClosableTab.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ClosableTabHeader.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="GameRoom\BetDetailsDialogView.xaml">
       <SubType>Designer</SubType>

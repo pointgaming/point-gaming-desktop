@@ -10,7 +10,7 @@ namespace PointGaming.AudioChat
     public class AudioChatClient
     {
         public event Action<AudioChatClient> Stopped;
-        public event Action<AudioMessage> AudioReceived;
+        public event Action<IVoiceMessage> MessageReceived;
 
         private readonly byte[] _key;
         private readonly IPEndPoint _serverEndPoint;
@@ -21,7 +21,7 @@ namespace PointGaming.AudioChat
         private Socket _clientOut;
 
         private System.Threading.AutoResetEvent _are = new System.Threading.AutoResetEvent(false);
-        private List<IChatMessage> _messageQueue = new List<IChatMessage>();
+        private List<IVoiceMessage> _messageQueue = new List<IVoiceMessage>();
 
         public AudioChatClient(IPEndPoint serverEndPoint, string authToken)
         {
@@ -44,7 +44,7 @@ namespace PointGaming.AudioChat
             _shouldRun = false;
         }
 
-        public void Send(IChatMessage message)
+        public void Send(IVoiceMessage message)
         {
             if (!_isRunning)
                 return;
@@ -106,7 +106,7 @@ namespace PointGaming.AudioChat
         {
             try
             {
-                var queue = new List<IChatMessage>();
+                var queue = new List<IVoiceMessage>();
                 var buffer = new byte[ushort.MaxValue];
 
                 while (_shouldRun)
@@ -150,7 +150,7 @@ namespace PointGaming.AudioChat
 
             if (length == 1 && buffer[0] == 0)
             {
-                // server's response from join room.  do nothing
+                // todo remove this case.  Nicks's original response from join room... lame
             }
             else if (!HandleEncryptedMessage(buffer, length))
             {
@@ -183,25 +183,38 @@ namespace PointGaming.AudioChat
                 return false;
             var mType = buffer[position++];
 
+            var voiceMessage = Instantiate(mType);
+            if (voiceMessage == null)
+                return false;
+            if (!voiceMessage.Read(buffer, position, length))
+                return false;
+
+            var call = MessageReceived;
+            if (call != null)
+                call(voiceMessage);
+
+            return true;
+        }
+
+        private static IVoiceMessage Instantiate(byte mType)
+        {
+            IVoiceMessage m;
             switch (mType)
             {
                 case (AudioMessage.MType):
-                    {
-                        var m = new AudioMessage();
-                        if (!m.Read(buffer, position, length))
-                            return false;
-                        var call = AudioReceived;
-                        if (call != null)
-                            call(m);
-                        break;
-                    }
+                    m = new AudioMessage();
+                    break;
+                case (JoinRoomMessage.MType):
+                    m = new JoinRoomMessage();
+                    break;
+                case (LeaveRoomMessage.MType):
+                    m = new LeaveRoomMessage();
+                    break;
                 default:
-                    {
-                        return false;
-                    }
+                    m = null;
+                    break;
             }
-
-            return true;
+            return m;
         }
 
     }

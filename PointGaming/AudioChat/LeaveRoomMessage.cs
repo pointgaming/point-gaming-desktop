@@ -7,17 +7,27 @@ using System.Net.Sockets;
 
 namespace PointGaming.AudioChat
 {
-    public class LeaveRoomMessage : IChatMessage
+    public class LeaveRoomMessage : IVoiceMessage
     {
         public const byte MType = 2;
         public byte MessageType { get { return MType; } }
 
         public string RoomName;
         public string FromUserId;
+        public bool IsSuccess;
 
-        public bool Read(byte[] buffer, int offset, int length)
+        public bool Read(byte[] buffer, int position, int length)
         {
-            throw new NotImplementedException();
+            if (!BufferIO.ReadRawHex(buffer, length, ref position, 12, out RoomName))
+                return false;
+
+            if (position >= length)
+                return false;
+            IsSuccess = buffer[position++] == 1;
+
+            Console.WriteLine(string.Format("rx leave: roomname'{0}' issuccess '{1}'", RoomName, IsSuccess));
+
+            return true;
         }
 
         public int Write(byte[] buffer, byte[] key)

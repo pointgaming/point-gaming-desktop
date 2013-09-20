@@ -7,7 +7,7 @@ using System.Net.Sockets;
 
 namespace PointGaming.AudioChat
 {
-    public class AudioMessage : IChatMessage
+    public class AudioMessage : IVoiceMessage
     {
         public const byte MType = 3;
         public byte MessageType { get { return MType; } }
