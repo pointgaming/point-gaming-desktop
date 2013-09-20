@@ -11,13 +11,13 @@ using System.Threading;
 using System.Net;
 using NAudio.Wave.Compression;
 using System.Diagnostics;
-using NA = NAudio;
+using NAudio;
 
 namespace PointGaming.Voice
 {
-    public delegate void AudioAvailable(AudioHardwareSession source, byte[] data);
+    delegate void AudioAvailable(AudioHardwareSession source, byte[] data);
 
-    public class AudioHardwareSession : IDisposable
+    class AudioHardwareSession : IDisposable
     {
         public event AudioAvailable AudioRecorded;
         public event Action AudioRecordEnded;

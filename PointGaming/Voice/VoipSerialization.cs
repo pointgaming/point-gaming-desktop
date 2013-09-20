@@ -5,7 +5,7 @@ using System.Text;
 
 namespace PointGaming.Voice
 {
-    public static class VoipSerialization
+    static class VoipSerialization
     {
         public static bool ReadInt(byte[] buffer, int bufferLength, ref int position, out int value)
         {

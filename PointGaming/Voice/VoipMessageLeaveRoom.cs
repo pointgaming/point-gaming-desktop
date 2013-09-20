@@ -7,7 +7,7 @@ using System.Net.Sockets;
 
 namespace PointGaming.Voice
 {
-    public class VoipMessageLeaveRoom : IVoipMessage
+    class VoipMessageLeaveRoom : IVoipMessage
     {
         public const byte MType = 2;
         public byte MessageType { get { return MType; } }

@@ -72,7 +72,7 @@ namespace PointGaming.Voice
         {
             this._segmentLength = sampleRate / 25;// 2 bytes per sample, 20ms per segment
             this._decoder = OpusDecoder.Create(sampleRate, 1);
-            this._encoder = OpusEncoder.Create(sampleRate, 1, Application.Voip);
+            this._encoder = OpusEncoder.Create(sampleRate, 1, OpusAPI.Application.Voip);
             // 16kHz sample rate is 32kB/s raw.
             // Compressed bitrates:
             // 32768 is 4kB/s

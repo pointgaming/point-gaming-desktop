@@ -17,12 +17,9 @@ using PointGaming.Lobby;
 using PointGaming.GameRoom;
 using PointGaming.Chat;
 using PointGaming.Voice;
-using NA = NAudio;
 
 namespace PointGaming.Voice
 {
-    public delegate void AudioStreamExistEvent(PgUser user, string roomId);
-
     public class VoipSession : IDisposable
     {
         private UserDataManager _userData;
@@ -240,18 +237,7 @@ namespace PointGaming.Voice
 
             _udpKeepAliveTimer.Stop();
         }
-
-        public List<string> GetAudioInputDevices()
-        {
-            var devices = new List<string>();
-            for (int n = 0; n < NA.Wave.WaveIn.DeviceCount; n++)
-            {
-                var capabilities = NA.Wave.WaveIn.GetCapabilities(n);
-                devices.Add(capabilities.ProductName);
-            }
-            return devices;
-        }
-
+        
         public void SetAudioInputDevice(int deviceNumber)
         {
             if (!_nAudioTest.IsEnabled)

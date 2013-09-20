@@ -16,7 +16,7 @@ namespace PointGaming.HomeTab
         {
             InitializeComponent();
 
-            foreach (var item in UserDataManager.UserData.AudioSystem.GetAudioInputDevices())
+            foreach (var item in Voice.AudioHardware.GetAudioInputDevices())
                 comboBoxRecordingDevices.Items.Add(item);
             comboBoxRecordingDevices.SelectedIndex = App.Settings.AudioInputDeviceIndex;
             labelMicKey.Content = (Key)UserDataManager.UserData.Settings.MicTriggerKey;

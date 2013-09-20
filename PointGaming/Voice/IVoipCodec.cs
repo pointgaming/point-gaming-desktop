@@ -6,7 +6,7 @@ using NAudio.Wave;
 
 namespace PointGaming.Voice
 {
-    public interface IVoipCodec : IDisposable
+    interface IVoipCodec : IDisposable
     {
         /// <summary>
         /// Friendly Name for this codec

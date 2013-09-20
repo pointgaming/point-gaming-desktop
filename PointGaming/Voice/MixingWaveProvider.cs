@@ -2,23 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NA = NAudio;
+using NAudio;
+using NAudio.Wave;
 
 namespace PointGaming.Voice
 {
-    public class MixingWaveProvider : NA.Wave.IWaveProvider
+    class MixingWaveProvider : IWaveProvider
     {
-        private List<NA.Wave.IWaveProvider> _inputs = new List<NA.Wave.IWaveProvider>();
-        private NA.Wave.WaveFormat _waveFormat;
+        private List<IWaveProvider> _inputs = new List<IWaveProvider>();
+        private WaveFormat _waveFormat;
 
         public MixingWaveProvider(int sampleRate)
         {
-            _waveFormat = new NA.Wave.WaveFormat(sampleRate, 16, 1);
+            _waveFormat = new WaveFormat(sampleRate, 16, 1);
         }
 
-        public NA.Wave.WaveFormat WaveFormat { get { return _waveFormat; } }
+        public WaveFormat WaveFormat { get { return _waveFormat; } }
 
-        public void AddStream(NA.Wave.IWaveProvider waveProvider)
+        public void AddStream(IWaveProvider waveProvider)
         {
             if (waveProvider.WaveFormat.BitsPerSample != 16)
                 throw new ArgumentException("Only 16 bit audio currently supported", "waveProvider.WaveFormat");
@@ -30,7 +31,7 @@ namespace PointGaming.Voice
                 _inputs.Add(waveProvider);
             }
         }
-        public void RemoveStream(NA.Wave.IWaveProvider waveProvider)
+        public void RemoveStream(IWaveProvider waveProvider)
         {
             lock (_inputs)
             {

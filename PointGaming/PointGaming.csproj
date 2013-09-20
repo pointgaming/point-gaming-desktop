@@ -151,6 +151,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ActiveGroupingCollectionView.cs" />
+    <Compile Include="Voice\AudioHardware.cs" />
     <Compile Include="Voice\VoipSession.cs" />
     <Compile Include="Voice\VoipClient.cs" />
     <Compile Include="Voice\VoipMessageVoice.cs" />

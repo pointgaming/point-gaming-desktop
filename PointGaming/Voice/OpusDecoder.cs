@@ -2,10 +2,7 @@
 
 namespace PointGaming.Voice
 {
-    /// <summary>
-    /// Opus audio decoder.
-    /// </summary>
-    public class OpusDecoder : IDisposable
+    class OpusDecoder : IDisposable
     {
         /// <summary>
         /// Creates a new Opus decoder.
@@ -26,7 +23,7 @@ namespace PointGaming.Voice
 
             IntPtr error;
             IntPtr decoder = OpusAPI.opus_decoder_create(outputSampleRate, outputChannels, out error);
-            if ((Errors)error != Errors.OK)
+            if ((OpusAPI.Errors)error != OpusAPI.Errors.OK)
             {
                 throw new Exception("Exception occured while creating decoder");
             }
@@ -66,7 +63,7 @@ namespace PointGaming.Voice
             }
             decodedLength = length * 2;
             if (length < 0)
-                throw new Exception("Decoding failed - " + ((Errors)length).ToString());
+                throw new Exception("Decoding failed - " + ((OpusAPI.Errors)length).ToString());
 
             return decoded;
         }

@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 
 namespace PointGaming.Voice
 {
-    public class VoipCrypt
+    class VoipCrypt
     {
         public static byte[] AntiDos = { 0x8E, 0xAA, 0xCF, 0x12 };
 

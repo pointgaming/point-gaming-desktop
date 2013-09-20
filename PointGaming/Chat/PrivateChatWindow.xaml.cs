@@ -14,12 +14,10 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using PointGaming.HomeTab;
 using PointGaming.POCO;
-using PointGaming.Voice;
-using NA = NAudio;
 
 namespace PointGaming.Chat
 {
-    public partial class PrivateChatWindow : Window, IWeakEventListener, INotifyPropertyChanged, IVoiceRoom
+    public partial class PrivateChatWindow : Window, IWeakEventListener, INotifyPropertyChanged, Voice.IVoiceRoom
     {
         public WindowTreeManager WindowTreeManager;
         public event PropertyChangedEventHandler PropertyChanged;

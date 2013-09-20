@@ -7,7 +7,7 @@ using System.Net.Sockets;
 
 namespace PointGaming.Voice
 {
-    public class VoipClient
+    class VoipClient
     {
         public event Action<VoipClient> Stopped;
         public event Action<IVoipMessage> MessageReceived;

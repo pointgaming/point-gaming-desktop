@@ -3,10 +3,7 @@ using System.Collections.Generic;
 
 namespace PointGaming.Voice
 {
-    /// <summary>
-    /// Opus codec wrapper.
-    /// </summary>
-    public class OpusEncoder : IDisposable
+    class OpusEncoder : IDisposable
     {
         /// <summary>
         /// Creates a new Opus encoder.
@@ -15,7 +12,7 @@ namespace PointGaming.Voice
         /// <param name="inputChannels">Number of channels (1 or 2) in input signal.</param>
         /// <param name="application">Coding mode.</param>
         /// <returns>A new <c>OpusEncoder</c></returns>
-        public static OpusEncoder Create(int inputSamplingRate, int inputChannels, Application application)
+        public static OpusEncoder Create(int inputSamplingRate, int inputChannels, OpusAPI.Application application)
         {
             if (inputSamplingRate != 8000 &&
                 inputSamplingRate != 12000 &&
@@ -28,7 +25,7 @@ namespace PointGaming.Voice
 
             IntPtr error;
             IntPtr encoder = OpusAPI.opus_encoder_create(inputSamplingRate, inputChannels, (int)application, out error);
-            if ((Errors)error != Errors.OK)
+            if ((OpusAPI.Errors)error != OpusAPI.Errors.OK)
             {
                 throw new Exception("Exception occured while creating encoder");
             }
@@ -37,7 +34,7 @@ namespace PointGaming.Voice
 
         private IntPtr _encoder;
 
-        private OpusEncoder(IntPtr encoder, int inputSamplingRate, int inputChannels, Application application)
+        private OpusEncoder(IntPtr encoder, int inputSamplingRate, int inputChannels, OpusAPI.Application application)
         {
             _encoder = encoder;
             InputSamplingRate = inputSamplingRate;
@@ -69,7 +66,7 @@ namespace PointGaming.Voice
             }
             encodedLength = length;
             if (length < 0)
-                throw new Exception("Encoding failed - " + ((Errors)length).ToString());
+                throw new Exception("Encoding failed - " + ((OpusAPI.Errors)length).ToString());
 
             return encoded;
         }
@@ -114,7 +111,7 @@ namespace PointGaming.Voice
         /// <summary>
         /// Gets the coding mode of the encoder.
         /// </summary>
-        public Application Application { get; private set; }
+        public OpusAPI.Application Application { get; private set; }
 
         /// <summary>
         /// Gets or sets the size of memory allocated for reading encoded data.
@@ -132,18 +129,18 @@ namespace PointGaming.Voice
                 if (disposed)
                     throw new ObjectDisposedException("OpusEncoder");
                 int bitrate;
-                var ret = OpusAPI.opus_encoder_ctl(_encoder, Ctl.GetBitrateRequest, out bitrate);
+                var ret = OpusAPI.opus_encoder_ctl(_encoder, OpusAPI.Ctl.GetBitrateRequest, out bitrate);
                 if (ret < 0)
-                    throw new Exception("Encoder error - " + ((Errors)ret).ToString());
+                    throw new Exception("Encoder error - " + ((OpusAPI.Errors)ret).ToString());
                 return bitrate;
             }
             set
             {
                 if (disposed)
                     throw new ObjectDisposedException("OpusEncoder");
-                var ret = OpusAPI.opus_encoder_ctl(_encoder, Ctl.SetBitrateRequest, value);
+                var ret = OpusAPI.opus_encoder_ctl(_encoder, OpusAPI.Ctl.SetBitrateRequest, value);
                 if (ret < 0)
-                    throw new Exception("Encoder error - " + ((Errors)ret).ToString());
+                    throw new Exception("Encoder error - " + ((OpusAPI.Errors)ret).ToString());
             }
         }
 

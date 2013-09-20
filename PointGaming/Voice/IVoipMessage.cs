@@ -7,7 +7,7 @@ using System.Net.Sockets;
 
 namespace PointGaming.Voice
 {
-    public interface IVoipMessage
+    interface IVoipMessage
     {
         byte MessageType { get; }
         bool Read(byte[] buffer, int offset, int length);
