@@ -590,7 +590,7 @@ namespace PointGaming.HomeTab
             if (isSpeaking)
                 defaultUri += "SpeakerLoud.png";
             else
-                defaultUri += "SpeakerMute.png";
+                defaultUri += "SpeakerSilent.png";
 
             var source = new ImageSourceConverter().ConvertFromString(defaultUri) as ImageSource;
             return source;

@@ -289,11 +289,53 @@ namespace PointGaming
             get { return Team != null; }
         }
 
+        private bool _IsMuted;
         public bool IsMuted
         {
-            get;
-            set;
+            get { return _IsMuted; }
+            set
+            {
+                if (SetProperty(ref _IsMuted, value, () => IsMuted))
+                    OnPropertyChanged(() => SpeakIcon);
+            }
         }
+        private bool _IsSpeaking;
+        public bool IsSpeaking
+        {
+            get { return _IsSpeaking; }
+            set
+            {
+                if (SetProperty(ref _IsSpeaking, value, () => IsSpeaking))
+                    OnPropertyChanged(() => SpeakIcon);
+            }
+        }
+
+        public System.Windows.Media.ImageSource SpeakIcon
+        {
+            get {
+                var assembly = typeof(PgUser).Assembly;
+                var defaultUri = "pack://application:,,,/" + assembly.GetName().Name + ";component/Resources/";
+
+                if (IsSpeaking)
+                {
+                    if (IsMuted)
+                        defaultUri += "VoiceMutedTalking.png";
+                    else
+                        defaultUri += "VoiceEnabledTalking.png";
+                }
+                else
+                {
+                    if (IsMuted)
+                        defaultUri += "VoiceMuted.png";
+                    else
+                        defaultUri += "VoiceEnabled.png";
+                }
+
+                var source = new System.Windows.Media.ImageSourceConverter().ConvertFromString(defaultUri) as System.Windows.Media.ImageSource;
+                return source;
+            }
+        }
+
 
         public void ViewProfile()
         {

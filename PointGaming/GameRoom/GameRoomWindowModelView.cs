@@ -376,8 +376,14 @@ namespace PointGaming.GameRoom
         public string AudioRoomId { get { return _session.GameRoomId; } }
         public bool IsVoiceEnabled { get { return !IsVoiceMuted; } }
 
-        public void OnVoiceStarted(PgUser user) { }
-        public void OnVoiceStopped(PgUser user) { }
+        public void OnVoiceStarted(PgUser user)
+        {
+            user.IsSpeaking = true;
+        }
+        public void OnVoiceStopped(PgUser user)
+        {
+            user.IsSpeaking = false;
+        }
 
         private bool _isVoiceMuted = false;
         public bool IsVoiceMuted
@@ -426,6 +432,13 @@ namespace PointGaming.GameRoom
                 owner_id = user.Id,
             };
             _session.SetGameRoomSettings(poco);
+        }
+
+        public ICommand MuteUser { get { return new ActionCommand(MuteUserF); } }
+        private void MuteUserF(object sender)
+        {
+            PgUser user = sender as PgUser;
+            user.IsMuted = !user.IsMuted;
         }
     }
 }

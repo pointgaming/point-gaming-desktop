@@ -4,7 +4,6 @@
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:pg="clr-namespace:PointGaming"
         xmlns:pgr="clr-namespace:PointGaming.GameRoom"
-        xmlns:pght="clr-namespace:PointGaming.HomeTab"
         Name="This"
         WindowStartupLocation="CenterOwner"
         Title="{Binding DisplayName}" 
@@ -15,7 +14,6 @@
         Width="850" Height="730">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BtVC" />
-        <pght:SpeakingConverter x:Key="speakingConverter" />
     </Window.Resources>
     
     <i:Interaction.Triggers>
@@ -206,20 +204,23 @@
                   VerticalAlignment="Stretch">
                 <ListView.Resources>
                     <DataTemplate DataType="{x:Type pg:PgUser}">
-                        <Label Content="{Binding DisplayName}" HorizontalAlignment="Stretch" Width="Auto">
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="ContextMenuOpening">
-                                    <i:InvokeCommandAction Command="{Binding DataContext.CheckUserCanAdmin, ElementName=This}" CommandParameter="{Binding}" />
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Height="15" Width="15" Source="{Binding SpeakIcon}" />
 
-                            <Label.ToolTip>
-                                <ToolTip>
-                                    <pg:UserProfileTooltip UserProfile="{Binding}" />
-                                </ToolTip>
-                            </Label.ToolTip>
-                        </Label>
+                            <Label Content="{Binding DisplayName}" HorizontalAlignment="Stretch" Width="Auto">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="ContextMenuOpening">
+                                        <i:InvokeCommandAction Command="{Binding DataContext.CheckUserCanAdmin, ElementName=This}" CommandParameter="{Binding}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
 
+                                <Label.ToolTip>
+                                    <ToolTip>
+                                        <pg:UserProfileTooltip UserProfile="{Binding}" />
+                                    </ToolTip>
+                                </Label.ToolTip>
+                            </Label>
+                        </StackPanel>
                     </DataTemplate>
 
                     <pg:DataBindingProxy x:Key="dataContextProxy" Data="{Binding}" />
@@ -234,6 +235,15 @@
                         <MenuItem Header="Promote to owner" 
                               Command="{Binding Source={StaticResource dataContextProxy}, Path=Data.PromoteUser}" 
                               CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
+                        <MenuItem Header="Mute" 
+                              Command="{Binding Source={StaticResource dataContextProxy}, Path=Data.MuteUser}" 
+                              CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
+                    </ContextMenu>
+
+                    <ContextMenu Name="userContextMenu" x:Key="userContextMenu">
+                        <MenuItem Header="Mute" 
+                              Command="{Binding Source={StaticResource dataContextProxy}, Path=Data.MuteUser}" 
+                              CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
                     </ContextMenu>
                 </ListView.Resources>
 
@@ -242,7 +252,7 @@
                         <Setter Property="ContextMenu" Value="{DynamicResource adminUserContextMenu}" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding DataContext.CanAdmin, ElementName=This}" Value="False">
-                                <Setter Property="ContextMenu" Value="{x:Null}" />
+                                <Setter Property="ContextMenu" Value="{DynamicResource userContextMenu}" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>

@@ -773,13 +773,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\SpeakerLoud.png" />
-    <Resource Include="Resources\SpeakerMute.png" />
+    <Resource Include="Resources\SpeakerSilent.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\libraries\opus.dll">
       <Link>opus.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\VoiceEnabled.png" />
+    <Resource Include="Resources\VoiceEnabledTalking.png" />
+    <Resource Include="Resources\VoiceMuted.png" />
+    <Resource Include="Resources\VoiceMutedTalking.png" />
+    <Resource Include="Resources\VoiceDisabled.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
