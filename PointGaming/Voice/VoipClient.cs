@@ -59,6 +59,7 @@ namespace PointGaming.Voice
         {
             try
             {
+                Console.WriteLine("Voip client starting...");
                 _clientOut = new Socket(System.Net.Sockets.AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
                 IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, _serverEndPoint.Port);
                 _clientOut.Bind(endPoint);
@@ -69,6 +70,8 @@ namespace PointGaming.Voice
                 t.IsBackground = true;
                 t.Name = "Udp Audio Message Client Sender";
                 t.Start();
+
+                Console.WriteLine("Voip client started.");
 
                 while (_shouldRun)
                 {
@@ -100,6 +103,7 @@ namespace PointGaming.Voice
                         _clientOut.Dispose();
                 }
                 catch { }
+                Console.WriteLine("Voip client stopped.");
 
                 _shouldRun = false;
                 _isRunning = false;
@@ -131,8 +135,8 @@ namespace PointGaming.Voice
                         foreach (var message in queue)
                         {
                             int len = message.Write(buffer, _key);
-                            var str = "tx: 0x" + BitConverter.ToString(buffer, 0, len).Replace("-", string.Empty).ToLower();
-                            Console.WriteLine(str);
+                            //var str = "tx: 0x" + BitConverter.ToString(buffer, 0, len).Replace("-", string.Empty).ToLower();
+                            //Console.WriteLine(str);
                             _clientOut.SendTo(buffer, len, SocketFlags.None, _serverEndPoint);
                         }
                         queue.Clear();

@@ -59,9 +59,14 @@ namespace PointGaming.ClientWebService
             _wcfHost = new WcfServerConnection();
             _wcfHost.Start();
 
-            var prefix = "http://localhost:9779/";
+            var prefixes = new[]{
+                "http://localhost:9779/",
+                "http://local.pointgaming.com:9779/",
+                "http://127.0.0.1:9779/",
+            };
+            
             _httpServer = new SimpleHttpServer();
-            _httpServer.Start(prefix, ListenerCallback);
+            _httpServer.Start(prefixes, ListenerCallback);
         }
 
         protected override void OnStop()
@@ -231,11 +236,12 @@ namespace PointGaming.ClientWebService
         private bool _shouldListen;
         private AsyncCallback _responseHandler;
 
-        public void Start(string prefix, AsyncCallback responseHandler)
+        public void Start(string[] prefixes, AsyncCallback responseHandler)
         {
             _responseHandler = responseHandler;
             HttpListener listener = new HttpListener();
-            listener.Prefixes.Add(prefix);
+            foreach (var prefix in prefixes)
+                listener.Prefixes.Add(prefix);
             listener.Start();
             CWService.AppendConsoleLine("Listening...");
 

@@ -45,17 +45,17 @@ namespace PointGaming.Voice
             buffer[position++] = MessageType;
             VoipSerialization.WriteRawHex(buffer, ref position, RoomName);
 
-            Console.WriteLine("tx leave:");
-            Console.WriteLine("uid__: " + buffer.BytesToHex(0, 16));
-            Console.WriteLine("key__: " + key.BytesToHex());
-            Console.WriteLine("iv___: " + iv.BytesToHex());
-            Console.WriteLine("plain: " + buffer.BytesToHex(cryptoStart, position - cryptoStart));
+            var suid = buffer.BytesToHex(0, 16);
+            var skey = key.BytesToHex();
+            var siv = iv.BytesToHex();
+            var splain = buffer.BytesToHex(cryptoStart, position - cryptoStart);
 
             var encryptedData = VoipCrypt.Encrypt(key, iv, buffer, cryptoStart, position - cryptoStart);
             Buffer.BlockCopy(encryptedData, 0, buffer, cryptoStart, encryptedData.Length);
             position = cryptoStart + encryptedData.Length;
 
-            Console.WriteLine("crypt: " + buffer.BytesToHex(cryptoStart, position - cryptoStart));
+            var scrypt = buffer.BytesToHex(cryptoStart, position - cryptoStart);
+            Console.WriteLine("tx leave: uid[{0}] key[{1}] iv[{2}] plain[{3}] crypt[{4}]", suid, skey, siv, splain, scrypt);
 
             return position;
         }

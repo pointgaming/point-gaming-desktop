@@ -55,18 +55,18 @@ namespace PointGaming.Voice
             var audioStart = position;
             VoipSerialization.WriteRawBytes(buffer, ref position, Audio);
 
-            Console.WriteLine("tx audio:");
-            Console.WriteLine("uid__: " + buffer.BytesToHex(0, 16));
-            Console.WriteLine("key__: " + key.BytesToHex());
-            Console.WriteLine("iv___: " + iv.BytesToHex());
-            Console.WriteLine("plnxa: " + buffer.BytesToHex(cryptoStart, audioStart - cryptoStart));
-            Console.WriteLine("audio: " + buffer.BytesToHex(audioStart, position - audioStart));
-
+            var suid = buffer.BytesToHex(0, 16);
+            var skey = key.BytesToHex();
+            var siv = iv.BytesToHex();
+            var splainxa = buffer.BytesToHex(cryptoStart, audioStart - cryptoStart);
+            var saudio = buffer.BytesToHex(audioStart, position - audioStart);
+            
             var encryptedData = VoipCrypt.Encrypt(key, iv, buffer, cryptoStart, position - cryptoStart);
             Buffer.BlockCopy(encryptedData, 0, buffer, cryptoStart, encryptedData.Length);
             position = cryptoStart + encryptedData.Length;
 
-            Console.WriteLine("crypt: " + buffer.BytesToHex(cryptoStart, position - cryptoStart));
+            var scrypt = buffer.BytesToHex(cryptoStart, position - cryptoStart);
+            Console.WriteLine("tx audio: uid[{0}] key[{1}] iv[{2}] plainxa[{3}] audio[{4}] crypt[{5}]", suid, skey, siv, splainxa, saudio, scrypt);
 
             return position;
         }
