@@ -20,7 +20,7 @@ namespace PointGaming.HomeTab
                 comboBoxRecordingDevices.Items.Add(item);
             comboBoxRecordingDevices.SelectedIndex = App.Settings.AudioInputDeviceIndex;
             labelMicKey.Content = (Key)UserDataManager.UserData.Settings.MicTriggerKey;
-            UserDataManager.UserData.AudioSystem.RecordingDeviceChanged += AudioSystem_RecordingDeviceChanged;
+            UserDataManager.UserData.Voip.RecordingDeviceChanged += AudioSystem_RecordingDeviceChanged;
         }
 
         void AudioSystem_RecordingDeviceChanged(int obj)
@@ -79,7 +79,7 @@ namespace PointGaming.HomeTab
             labelMicKey.Content = key.Value;
             UserDataManager.UserData.Settings.MicTriggerKey = (int)key.Value;
             UserDataManager.UserData.Settings.Save();
-            UserDataManager.UserData.AudioSystem.TriggerKey = key.Value;
+            UserDataManager.UserData.Voip.TriggerKey = key.Value;
         }
         
         private void comboBoxRecordingDevices_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -87,7 +87,7 @@ namespace PointGaming.HomeTab
             var deviceIndex = comboBoxRecordingDevices.SelectedIndex;
             App.Settings.AudioInputDeviceIndex = deviceIndex;
             App.Settings.Save();
-            UserDataManager.UserData.AudioSystem.SetAudioInputDevice(deviceIndex);
+            UserDataManager.UserData.Voip.SetAudioInputDevice(deviceIndex);
         }
     }
 }

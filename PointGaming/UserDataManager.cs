@@ -40,7 +40,7 @@ namespace PointGaming
 
         public readonly ObservableCollection<LauncherInfo> Launchers = new ObservableCollection<LauncherInfo>();
 
-        public VoipSession AudioSystem;
+        public VoipSession Voip;
 
         public readonly UserSettings Settings;
 
@@ -53,8 +53,8 @@ namespace PointGaming
             User.Status = "online";
             _sessionManager = new SessionManager();
             Friendship = new FriendshipManager(PgSession);
-            AudioSystem = new VoipSession(this);
-            AudioSystem.Enable();
+            Voip = new VoipSession(this);
+            Voip.Enable();
 
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(5);
@@ -103,8 +103,7 @@ namespace PointGaming
             _friendLookup.Clear();
 
             timer.Stop();
-            AudioSystem.Disable();
-            AudioSystem.Dispose();
+            Voip.Dispose();
 
             PgSession.Begin(PgSession.Logout);
             _sessionManager = null;

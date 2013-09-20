@@ -43,7 +43,7 @@ namespace PointGaming.Chat
             _autoScroller = new AutoScroller(flowDocumentLog);
             PropertyChangedEventManager.AddListener(UserDataManager.UserData.Settings, this, "PropertyChanged");
             WindowTreeManager = new WindowTreeManager(this, HomeWindow.Home.WindowTreeManager);
-            _userData.AudioSystem.JoinRoom(this);
+            _userData.Voip.JoinRoom(this);
         }
 
         public bool IsVoiceTeamOnly { get { return false; } }
@@ -219,14 +219,14 @@ namespace PointGaming.Chat
         private void Window_Activated(object sender, EventArgs e)
         {
             this.StopFlashingWindow();
-            _userData.AudioSystem.TakeMicrophoneFocus(this);
+            _userData.Voip.TakeMicrophoneFocus(this);
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             _session.SendMessageFailed -= MessageSendFailed;
             _session.Leave();
-            _userData.AudioSystem.LeaveRoom(this);
+            _userData.Voip.LeaveRoom(this);
         }
 
         public void MessageSendFailed(string message)

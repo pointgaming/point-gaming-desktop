@@ -64,7 +64,7 @@ namespace PointGaming.GameRoom
             _session.ChatMessageReceived += ChatMessages_CollectionChanged;
             
             InitMembership();
-            _userData.AudioSystem.JoinRoom(this);
+            _userData.Voip.JoinRoom(this);
         }
 
         private void InitMembership()
@@ -274,7 +274,7 @@ namespace PointGaming.GameRoom
         public void ExitGameRoom()
         {
             _session.Leave();
-            _userData.AudioSystem.LeaveRoom(this);
+            _userData.Voip.LeaveRoom(this);
         }
 
         public ICommand WindowStateChanged { get { return new ActionCommand(HandleWindowState); } }
@@ -370,7 +370,7 @@ namespace PointGaming.GameRoom
         public ICommand Activated { get { return new ActionCommand(ActivatedF); } }
         private void ActivatedF(object sender)
         {
-            _userData.AudioSystem.TakeMicrophoneFocus(this);
+            _userData.Voip.TakeMicrophoneFocus(this);
         }
 
         public string AudioRoomId { get { return _session.GameRoomId; } }
