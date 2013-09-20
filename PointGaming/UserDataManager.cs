@@ -205,7 +205,7 @@ namespace PointGaming
             RestResponse<UserFullResponse> response = null;
             PgSession.BeginAndCallback(delegate
             {
-                var url = PgSession.GetWebAppFunction("/api/v1", "/users/" + userId + ".json");
+                var url = PgSession.GetWebAppFunction("/api", "/users/" + userId + ".json");
                 var client = new RestClient(url);
                 var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
                 response = (RestResponse<UserFullResponse>)client.Execute<UserFullResponse>(request);
