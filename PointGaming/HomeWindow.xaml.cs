@@ -103,7 +103,7 @@ namespace PointGaming
             }
         }
                 
-        public void LogOut(bool shouldShowLogInWindow, bool isFromWindowClosingEvent)
+        public void LogOut(bool showLoginWindow, bool isShutDown, bool isFromWindowClosingEvent)
         {
             if (UserDataManager.UserData == null)
                 return;
@@ -124,20 +124,19 @@ namespace PointGaming
             UserDataManager.UserData.LoggedOut();
             UserDataManager.UserData = null;
 
-            if (shouldShowLogInWindow)
+            if (showLoginWindow)
             {
                 var lw = new LoginWindow();
                 lw.Show();
             }
-            else
-            {
+
+            if (isShutDown)
                 App.IsShuttingDown = true;
-            }
 
             if (!isFromWindowClosingEvent)
                 Close();
 
-            if (!shouldShowLogInWindow)
+            if (isShutDown)
                 WaitForThreadsToDie();
         }
 
@@ -156,7 +155,7 @@ namespace PointGaming
                 return;
             }
 
-            LogOut(false, true);
+            LogOut(false, true, true);
         }
         private void ExitClick(object sender, RoutedEventArgs e)
         {
@@ -174,7 +173,7 @@ namespace PointGaming
         {
             App.Settings.Password = "";
             App.Settings.Save();
-            LogOut(true, false);
+            LogOut(true, false, false);
         }
 
         private void OpenClick(object sender, RoutedEventArgs e)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -14,9 +15,11 @@ namespace PointGaming
     {
         public bool IsLoggedIn;
         public SocketSession SocketSession;
+        public static LoginWindow Instance;
 
         public LoginWindow()
         {
+            Instance = this;
             HomeWindow.GuiThreadId = Thread.CurrentThread.ManagedThreadId;
 
             InitializeComponent();
@@ -150,6 +153,13 @@ namespace PointGaming
             }
         }
 
+        public void ProgramaticallyLogIn(string username, string password)
+        {
+            textBoxUsername.Text = username;
+            passwordBoxPassword.Password = password;
+            LogIn();
+        }
+
         private void LogIn()
         {
             var username = textBoxUsername.Text.Trim();
@@ -168,10 +178,15 @@ namespace PointGaming
                 return;
             }
 
+            DoLogin(username, password);
+        }
+
+        private void DoLogin(string username, string password)
+        {
             var workMessage = "Logging in...";
 
             SetWork(workMessage, Brushes.Black, false);
-            
+
             passwordBoxPassword.Clear();
 
             DateTime timeout = DateTime.Now + App.Settings.LogInTimeout;
@@ -203,6 +218,19 @@ namespace PointGaming
                     App.Settings.Save();
 
                     Close();
+
+                    foreach (var action in _loginSuccessActions)
+                    {
+                        try
+                        {
+                            action();
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("Login success action threw Exception: " + e.Message);
+                            Console.WriteLine(e.StackTrace);
+                        }
+                    }
                 }
                 else
                 {
@@ -213,8 +241,11 @@ namespace PointGaming
                     SetWork(message, Brushes.Red, true);
                     passwordBoxPassword.Focus();
                 }
+                _loginSuccessActions.Clear();
             });
         }
+
+        private readonly List<Action> _loginSuccessActions = new List<Action>();
 
         private void SetWork(string workMessage, Brush textColor, bool isEnabled)
         {
@@ -252,6 +283,7 @@ namespace PointGaming
 
         private void windowLogin_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            Instance = null;
             if (!IsLoggedIn)
             {
                 App.IsShuttingDown = true;
@@ -261,6 +293,11 @@ namespace PointGaming
         private void buttonQuit_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        internal void OnLoginSuccess(Action action)
+        {
+            _loginSuccessActions.Add(action);
         }
     }
 }

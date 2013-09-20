@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace PointGaming.ClientWebService
 {
-    // http://localhost:9779/lobby/1111?userid=2222&username=dean&sessionid=5555
+    // http://localhost:9779/joinchat/1111?username=dean&password=5555
     // http://localhost:9779/info
     //
     // to install/uninstall service:
@@ -155,9 +155,9 @@ namespace PointGaming.ClientWebService
             {
                 HandleInfo(context);
             }
-            else if (firstSeg == "lobby" || firstSeg == "lobby/")
+            else if (firstSeg == "joinchat" || firstSeg == "joinchat/")
             {
-                HandleJoinLobby(context);
+                HandleJoinChat(context);
             }
             else
                 Handle404(context);
@@ -179,7 +179,7 @@ namespace PointGaming.ClientWebService
             response.StatusCode = 402;
         }
 
-        private void HandleJoinLobby(HttpListenerContext context)
+        private void HandleJoinChat(HttpListenerContext context)
         {
             var segments = context.Request.Url.Segments;
             if (segments.Length != 3)
@@ -187,18 +187,18 @@ namespace PointGaming.ClientWebService
                 Handle404(context);
                 return;
             }
-            var lobbyId = segments[2];
+            var chatId = segments[2];
             var vars = SimpleHttpServer.ExplodeQuery(context.Request.Url.Query);
 
             var missing = new List<string>();
-            var requiredVars = new[] { "userid", "username", "sessionid" };
+            var requiredVars = new[] { "username", "password" };
             if (!SimpleHttpServer.Require(vars, requiredVars, missing))
             {
                 Handle402(context, CreateMissingMessage(missing));
                 return;
             }
 
-            _wcfHost.JoinLobby(lobbyId, vars["userid"], vars["username"], vars["sessionid"]);
+            _wcfHost.JoinChat(vars["username"], vars["password"], chatId);
 
             var response = context.Response;
             SimpleHttpServer.WriteResponse(response, "ok");

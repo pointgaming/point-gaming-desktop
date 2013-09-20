@@ -50,11 +50,11 @@ namespace PointGaming.ClientWebService
             _host = null;
         }
 
-        public void JoinLobby(string lobbyId, string userid, string username, string sessionid)
+        public void JoinChat(string username, string password, string chatid)
         {
             _service.InvokeClientOnActiveDesktopSession((Action<IWcfClientSide>)delegate(IWcfClientSide client)
             {
-                client.LoginAndJoinLobby(userid, username, sessionid, lobbyId);
+                client.LoginAndJoinChat(username, password, chatid);
             });
         }
 

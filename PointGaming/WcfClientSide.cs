@@ -42,9 +42,39 @@ namespace PointGaming
             _proxy.RegisterClientWithServer();
         }
 
-        public void LoginAndJoinLobby(string userId, string userName, string sessionId, string lobbyId)
+        public void LoginAndJoinChat(string username, string password, string chatId)
         {
-            Console.WriteLine("{0}, {1}, {2}, {3}", userId, userName, sessionId, lobbyId);
+            ((Action)delegate {
+                LoginAndJoinChatOnUI(username, password, chatId);
+            }).DelayInvoke(TimeSpan.FromTicks(1));
+        }
+
+        public void LoginAndJoinChatOnUI(string username, string password, string chatId)
+        {
+            Console.WriteLine("LoginAndJoinChatOnUI {0}, {1}, {2}", username, password, chatId);
+
+            bool isLoggedIn = UserDataManager.UserData != null;
+            bool isCorrectLogin = isLoggedIn && UserDataManager.UserData.User.Username == username;
+
+            bool needToLogout = isLoggedIn && !isCorrectLogin;
+            bool needToLogin = !isCorrectLogin;
+            
+            if (needToLogout)
+                HomeWindow.Home.LogOut(true, false, false);
+
+            if (needToLogin)
+            {
+                var lw = LoginWindow.Instance;
+                lw.OnLoginSuccess((Action)delegate
+                {
+                    UserDataManager.UserData.JoinChat(chatId);
+                });
+                lw.ProgramaticallyLogIn(username, password);
+            }
+            else
+            {
+                UserDataManager.UserData.JoinChat(chatId);
+            }
         }
     }
 }

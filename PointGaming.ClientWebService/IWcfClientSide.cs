@@ -5,6 +5,6 @@ namespace PointGaming.ClientWebService
     public interface IWcfClientSide
     {
         [OperationContract(IsOneWay = true)]
-        void LoginAndJoinLobby(string userId, string userName, string sessionId, string lobbyId);
+        void LoginAndJoinChat(string username, string password, string chatId);
     }
 }
