@@ -45,6 +45,7 @@ namespace PointGaming.Voice
             buffer[position++] = MessageType;
             VoipSerialization.WriteRawHex(buffer, ref position, RoomName);
 
+            Console.WriteLine("tx join:");
             Console.WriteLine("uid__: " + buffer.BytesToHex(0, 16));
             Console.WriteLine("key__: " + key.BytesToHex());
             Console.WriteLine("iv___: " + iv.BytesToHex());

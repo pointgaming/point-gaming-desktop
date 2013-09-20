@@ -1151,11 +1151,11 @@ namespace PointGaming.PgFonts
 
                     foreach (var family in sortedCollection)
                     {
-                        HomeWindow.Home.InvokeUI(delegate
+                        ((Action)(delegate
                         {
                             var newItem = new FontFamilyListItem(family.Value);
                             fontFamilyList.Items.Add(newItem);
-                        });
+                        })).InvokeUI();
                     }
                 }
             });

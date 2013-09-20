@@ -147,7 +147,7 @@ namespace PointGaming.Chat
         {
             if (sender == UserDataManager.UserData.Settings)
             {
-                this.BeginInvokeUI(UpdateChatFont);
+                ((Action)UpdateChatFont).BeginInvokeUI();
                 return true;
             }
             else if (sender == _otherUser)

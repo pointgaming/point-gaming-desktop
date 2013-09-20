@@ -46,7 +46,7 @@ namespace PointGaming
         {
             ((Action)delegate {
                 LoginAndJoinChatOnUI(username, password, chatId);
-            }).DelayInvoke(TimeSpan.FromTicks(1));
+            }).BeginInvokeUI();
         }
 
         public void LoginAndJoinChatOnUI(string username, string password, string chatId)

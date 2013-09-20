@@ -83,7 +83,7 @@ namespace PointGaming
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             SocketSession = new SocketSession();
-            SocketSession.SetThreadQueuerForCurrentThread(this.BeginInvokeUI);
+            SocketSession.SetThreadQueuerForCurrentThread(UIExtensionMethods.BeginInvokeUI);
 
             if (App.Settings.UpdateAutomatic)
                 CheckForUpdate();
@@ -205,7 +205,6 @@ namespace PointGaming
 
                     var userData = new UserDataManager(SocketSession);
                     var homeWindow = new HomeWindow();
-                    SocketSession.SetThreadQueuerForCurrentThread(HomeWindow.Home.BeginInvokeUI);
                     homeWindow.Init();
                     Hide();
                     homeWindow.Show();

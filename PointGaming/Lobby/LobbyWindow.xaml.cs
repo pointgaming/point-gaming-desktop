@@ -65,7 +65,7 @@ namespace PointGaming.Lobby
         {
             if (sender == UserDataManager.UserData.Settings)
             {
-                this.BeginInvokeUI(UpdateChatFont);
+                ((Action)UpdateChatFont).BeginInvokeUI();
                 return true;
             }
             else if (sender == _lobbySession.GameInfo)
@@ -195,10 +195,9 @@ namespace PointGaming.Lobby
         {
             if (!string.IsNullOrEmpty(errorMessage))
             {
-                this.BeginInvokeUI(delegate
-                {
+                ((Action)(delegate {
                     MessageDialog.Show(HomeWindow.Home, "Request Failed", errorMessage);
-                });
+                })).BeginInvokeUI();
             }
         }
 

@@ -86,10 +86,10 @@ namespace PointGaming.Voice
                         return;
                 }
                 // todo: dean: what happens when sending/recieving right when the home window is being closed?
-                HomeWindow.Home.BeginInvokeUI((Action)delegate
+                ((Action)(delegate
                 {
                     R.OnVoiceStarted(user);
-                });
+                })).BeginInvokeUI();
             }
             public void OnVoiceStopped(PgUser user)
             {
@@ -98,10 +98,10 @@ namespace PointGaming.Voice
                     if (!Senders.Remove(user))
                         return;
                 }
-                HomeWindow.Home.BeginInvokeUI((Action)delegate
+                ((Action)(delegate
                 {
                     R.OnVoiceStopped(user);
-                });
+                })).BeginInvokeUI();
             }
         }
 
@@ -176,7 +176,7 @@ namespace PointGaming.Voice
                 _audioChatClient.MessageReceived -= _audioChatClient_MessageReceived;
                 _audioChatClient.Stopped -= _audioChatClient_Stopped;
 
-                ((Action)Connect).DelayInvoke(TimeSpan.FromSeconds(5));
+                ((Action)Connect).DelayInvokeUI(TimeSpan.FromSeconds(5));
             }
         }
 
@@ -368,10 +368,10 @@ namespace PointGaming.Voice
 
         private void OnVoiceConnectionChanged(AudioRoomEx roomEx, bool isConnected)
         {
-            HomeWindow.Home.BeginInvokeUI((Action)delegate
+            ((Action)(delegate
             {
                 roomEx.R.OnVoiceConnectionChanged(isConnected);
-            });
+            })).BeginInvokeUI();
         }
             
         private void ReceivedVoice(VoipMessageVoice voiceMessage)

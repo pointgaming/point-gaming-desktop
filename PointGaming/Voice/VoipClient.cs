@@ -94,6 +94,13 @@ namespace PointGaming.Voice
             }
             finally
             {
+                try
+                {
+                    if (_clientOut != null)
+                        _clientOut.Dispose();
+                }
+                catch { }
+
                 _shouldRun = false;
                 _isRunning = false;
                 var call = Stopped;
@@ -124,7 +131,7 @@ namespace PointGaming.Voice
                         foreach (var message in queue)
                         {
                             int len = message.Write(buffer, _key);
-                            var str = "0x" + BitConverter.ToString(buffer, 0, len).Replace("-", string.Empty).ToLower();
+                            var str = "tx: 0x" + BitConverter.ToString(buffer, 0, len).Replace("-", string.Empty).ToLower();
                             Console.WriteLine(str);
                             _clientOut.SendTo(buffer, len, SocketFlags.None, _serverEndPoint);
                         }

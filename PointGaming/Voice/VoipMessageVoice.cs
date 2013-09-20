@@ -55,7 +55,7 @@ namespace PointGaming.Voice
             var audioStart = position;
             VoipSerialization.WriteRawBytes(buffer, ref position, Audio);
 
-            Console.WriteLine("Tx AudioMessage:");
+            Console.WriteLine("tx audio:");
             Console.WriteLine("uid__: " + buffer.BytesToHex(0, 16));
             Console.WriteLine("key__: " + key.BytesToHex());
             Console.WriteLine("iv___: " + iv.BytesToHex());

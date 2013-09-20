@@ -216,7 +216,7 @@ namespace PointGaming
                     }
                     if (user != null)
                     {
-                        HomeWindow.Home.BeginInvokeUI(delegate
+                        ((Action)(delegate
                         {
                             var rUser = response.Data.user;
                             user.Username = rUser.username;
@@ -224,7 +224,7 @@ namespace PointGaming
                             user.Points = rUser.points;
                             user.Avatar = rUser.avatar;
                             user.Team = GetPgTeam(rUser.team);
-                        });
+                        })).BeginInvokeUI();
                     }
                 }
             });

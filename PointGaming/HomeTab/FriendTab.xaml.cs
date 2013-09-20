@@ -481,17 +481,17 @@ namespace PointGaming.HomeTab
                 App.LogLine("Error requesting friend: " + errorMessage);
                 if (errorMessage == "User not found")
                 {
-                    this.BeginInvokeUI(delegate
+                    ((Action)(delegate
                     {
                         MessageDialog.Show(HomeWindow.Home, "User not found", errorMessage);
-                    });
+                    })).BeginInvokeUI();
                 }
                 else if (errorMessage == "You are already friends with that user")
                 {
-                    this.BeginInvokeUI(delegate
+                    ((Action)(delegate
                     {
                         MessageDialog.Show(HomeWindow.Home, "Already friends", errorMessage);
-                    });
+                    })).BeginInvokeUI();
                 }
             }
         }

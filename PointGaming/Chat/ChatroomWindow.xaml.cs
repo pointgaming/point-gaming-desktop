@@ -47,7 +47,7 @@ namespace PointGaming.Chat
 
         public bool ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
         {
-            this.BeginInvokeUI(UpdateChatFont);
+            ((Action)UpdateChatFont).BeginInvokeUI();
             return true;
         }
 

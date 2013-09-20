@@ -269,11 +269,11 @@ namespace PointGaming
 
     static class UIExtensionMethods
     {
-        public static void BeginInvokeUI(this Control c, Action a)
+        public static void BeginInvokeUI(this Action a)
         {
             try
             {
-                c.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)delegate()
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)delegate()
                 {
                     if (App.IsShuttingDown) return;
                     a();
@@ -281,18 +281,21 @@ namespace PointGaming
             }
             catch { }
         }
-        public static void DelayInvoke(this Action a, TimeSpan delay)
+        public static void DelayInvokeUI(this Action a, TimeSpan delay)
         {
-            var dt = new DispatcherTimer();
-            dt.Tick += (s, e) =>
+            ((Action)delegate
             {
-                dt.Stop();
-                a();
-            };
-            dt.Interval = delay;
-            dt.Start();
+                var dt = new DispatcherTimer();
+                dt.Tick += (s, e) =>
+                {
+                    dt.Stop();
+                    a();
+                };
+                dt.Interval = delay;
+                dt.Start();
+            }).BeginInvokeUI();
         }
-        public static void InvokeUI(this Control c, Action a)
+        public static void InvokeUI(this Action a)
         {
             if (Thread.CurrentThread.ManagedThreadId == HomeWindow.GuiThreadId)
             {
@@ -303,7 +306,7 @@ namespace PointGaming
                 AutoResetEvent areSelect = new AutoResetEvent(false);
                 try
                 {
-                    c.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)delegate()
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)delegate()
                     {
                         try
                         {

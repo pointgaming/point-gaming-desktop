@@ -112,11 +112,11 @@ namespace PointGaming.HomeTab
 
         private void _stratumSession_ConnectionFailure()
         {
-            this.BeginInvokeUI(delegate
+            ((Action)(delegate
             {
                 StopMining();
                 _reconnectTimer.Start();
-            });
+            })).BeginInvokeUI();
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
@@ -141,11 +141,11 @@ namespace PointGaming.HomeTab
             }
             else
             {
-                this.BeginInvokeUI(delegate
+                ((Action)(delegate
                 {
                     StopMining();
                     _reconnectTimer.Start();
-                });
+                })).BeginInvokeUI();
             }
         }
 

@@ -92,7 +92,7 @@ namespace PointGaming.Lobby
                 for (int i = 0; i < 5; i++)
                 {
                     if (_actions.MoveNext())
-                        HomeWindow.Home.BeginInvokeUI(_actions.Current);
+                        ((Action)_actions.Current).BeginInvokeUI();
                     else
                     {
                         _timer.Stop();
