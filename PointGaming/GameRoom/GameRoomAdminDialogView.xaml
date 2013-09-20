@@ -1,7 +1,6 @@
 ﻿<Window x:Class="PointGaming.GameRoom.GameRoomAdminDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:actb="clr-namespace:Aviad.WPF.Controls;assembly=Aviad.WPF.Controls"
         Title="Gameroom Admin" 
         Height="350" Width="450" Padding="5" 
         Icon="/PointGaming;component/PointGaming.ico"

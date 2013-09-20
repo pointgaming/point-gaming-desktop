@@ -755,10 +755,6 @@
     <Resource Include="Resources\Logos\world-of-warcraft.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ACTB\Aviad.WPF.Controls.csproj">
-      <Project>{952E558B-6E94-49A5-BA50-EC50C044709C}</Project>
-      <Name>Aviad.WPF.Controls</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PointGaming.ClientWebService\PointGaming.ClientWebService.csproj">
       <Project>{473F8102-491D-4137-BB9A-CB8D34F66982}</Project>
       <Name>PointGaming.ClientWebService</Name>
