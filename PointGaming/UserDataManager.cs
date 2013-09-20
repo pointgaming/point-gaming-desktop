@@ -16,8 +16,7 @@ using System.Security.Cryptography;
 using PointGaming.Lobby;
 using PointGaming.GameRoom;
 using PointGaming.Chat;
-using PointGaming.Audio;
-using PointGaming.AudioChat;
+using PointGaming.Voice;
 using NA = NAudio;
 
 
@@ -43,7 +42,7 @@ namespace PointGaming
 
         public readonly ObservableCollection<LauncherInfo> Launchers = new ObservableCollection<LauncherInfo>();
 
-        public AudioChatSession AudioSystem;
+        public VoipSession AudioSystem;
 
         public readonly UserSettings Settings;
 
@@ -56,7 +55,7 @@ namespace PointGaming
             User.Status = "online";
             _sessionManager = new SessionManager();
             Friendship = new FriendshipManager(PgSession);
-            AudioSystem = new AudioChatSession(this);
+            AudioSystem = new VoipSession(this);
             AudioSystem.Enable();
 
             timer = new DispatcherTimer();

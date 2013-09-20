@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PointGaming.Audio
+namespace PointGaming.Voice
 {
     /// <summary>
     /// Opus codec wrapper.

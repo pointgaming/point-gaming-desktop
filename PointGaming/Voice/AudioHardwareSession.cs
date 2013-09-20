@@ -13,11 +13,11 @@ using NAudio.Wave.Compression;
 using System.Diagnostics;
 using NA = NAudio;
 
-namespace PointGaming.Audio
+namespace PointGaming.Voice
 {
-    public delegate void AudioAvailable(NAudioSession source, byte[] data);
+    public delegate void AudioAvailable(AudioHardwareSession source, byte[] data);
 
-    public partial class NAudioSession : IDisposable
+    public class AudioHardwareSession : IDisposable
     {
         public event AudioAvailable AudioRecorded;
         public event Action AudioRecordEnded;
@@ -26,7 +26,7 @@ namespace PointGaming.Audio
         private WaveIn waveIn;
         private WaveOut waveOut;
         private MixingWaveProvider waveProvider;
-        private INetworkChatCodec codec;
+        private IVoipCodec codec;
         public System.Windows.Input.Key TriggerKey {get ; set;}
 
         private int _InputDeviceNumber;
@@ -47,7 +47,7 @@ namespace PointGaming.Audio
 
         private object _startStopSynch = new object();
 
-        public NAudioSession(INetworkChatCodec codec)
+        public AudioHardwareSession(IVoipCodec codec)
         {
             this.codec = codec;
             TriggerKey = System.Windows.Input.Key.LeftCtrl;

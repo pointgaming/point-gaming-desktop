@@ -17,7 +17,7 @@ using Microsoft.Expression.Interactivity.Core;
 
 namespace PointGaming.GameRoom
 {
-    class GameRoomWindowModelView : ViewModelBase, AudioChat.IAudioRoom
+    class GameRoomWindowModelView : ViewModelBase, Voice.IVoiceRoom
     {
         private UserDataManager _userData = UserDataManager.UserData;
         private GameRoom.GameRoomSession _session;

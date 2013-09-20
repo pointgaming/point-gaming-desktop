@@ -16,18 +16,18 @@ using System.Security.Cryptography;
 using PointGaming.Lobby;
 using PointGaming.GameRoom;
 using PointGaming.Chat;
-using PointGaming.Audio;
+using PointGaming.Voice;
 using NA = NAudio;
 
-namespace PointGaming.AudioChat
+namespace PointGaming.Voice
 {
     public delegate void AudioStreamExistEvent(PgUser user, string roomId);
 
-    public class AudioChatSession : IDisposable
+    public class VoipSession : IDisposable
     {
         private UserDataManager _userData;
-        private NAudioSession _nAudioTest;
-        private AudioChatClient _audioChatClient;
+        private AudioHardwareSession _nAudioTest;
+        private VoipClient _audioChatClient;
         private object _audioChatSynch = new object();
         private bool _hasBeenDisposed = false;
         
@@ -37,7 +37,7 @@ namespace PointGaming.AudioChat
 
         private long _microphonePriority = 1;
 
-        public void TakeMicrophoneFocus(IAudioRoom room)
+        public void TakeMicrophoneFocus(IVoiceRoom room)
         {
             AudioRoomEx roomEx;
             if (!_joinedRooms.TryGetValue(room.AudioRoomId, out roomEx))
@@ -72,11 +72,11 @@ namespace PointGaming.AudioChat
 
         private class AudioRoomEx
         {
-            public readonly IAudioRoom R;
+            public readonly IVoiceRoom R;
             public long MicrophonePriority;
             public readonly List<PgUser> Senders = new List<PgUser>();
 
-            public AudioRoomEx(IAudioRoom room)
+            public AudioRoomEx(IVoiceRoom room)
             {
                 this.R = room;
             }
@@ -110,7 +110,7 @@ namespace PointGaming.AudioChat
 
         private readonly Dictionary<string, AudioRoomEx> _joinedRooms = new Dictionary<string, AudioRoomEx>();
 
-        public void JoinRoom(IAudioRoom audioRoom)
+        public void JoinRoom(IVoiceRoom audioRoom)
         {
             AudioRoomEx roomEx;
             if (!_joinedRooms.TryGetValue(audioRoom.AudioRoomId, out roomEx))
@@ -121,7 +121,7 @@ namespace PointGaming.AudioChat
             SendJoinRoom(roomEx);
         }
 
-        public void LeaveRoom(IAudioRoom audioRoom)
+        public void LeaveRoom(IVoiceRoom audioRoom)
         {
             AudioRoomEx roomEx;
             if (!_joinedRooms.TryGetValue(audioRoom.AudioRoomId, out roomEx))
@@ -134,10 +134,10 @@ namespace PointGaming.AudioChat
             SendLeaveRoom(roomEx);
         }
         
-        public AudioChatSession(UserDataManager userData)
+        public VoipSession(UserDataManager userData)
         {
             _userData = userData;
-            _nAudioTest = new NAudioSession(new Opus16kCodec());
+            _nAudioTest = new AudioHardwareSession(new Opus16kCodec());
             _nAudioTest.InputDeviceNumber = App.Settings.AudioInputDeviceIndex;
             _nAudioTest.TriggerKey = (System.Windows.Input.Key)_userData.Settings.MicTriggerKey;
             _nAudioTest.AudioRecorded += _nAudioTest_AudioRecorded;
@@ -159,7 +159,7 @@ namespace PointGaming.AudioChat
             var audioChatIp = System.Net.IPAddress.Parse(App.Settings.AudioChatIp);
             var audioChatPort = App.Settings.AudioChatPort;
             var endpoint = new System.Net.IPEndPoint(audioChatIp, audioChatPort);
-            _audioChatClient = new AudioChatClient(endpoint, _userData.PgSession.AuthToken);
+            _audioChatClient = new VoipClient(endpoint, _userData.PgSession.AuthToken);
             _audioChatClient.MessageReceived += _audioChatClient_MessageReceived;
             _audioChatClient.Stopped += _audioChatClient_Stopped;
             _audioChatClient.Start();
@@ -167,7 +167,7 @@ namespace PointGaming.AudioChat
             _udpKeepAliveTimer.Start();
         }
 
-        void _audioChatClient_Stopped(AudioChatClient obj)
+        void _audioChatClient_Stopped(VoipClient obj)
         {
             lock (_audioChatSynch)
             {
@@ -193,7 +193,7 @@ namespace PointGaming.AudioChat
 
         private void SendJoinRoom(AudioRoomEx roomEx)
         {
-            var message = new JoinRoomMessage
+            var message = new VoipMessageJoinRoom
             {
                 RoomName = roomEx.R.AudioRoomId,
                 FromUserId = _userData.User.Id
@@ -205,7 +205,7 @@ namespace PointGaming.AudioChat
         
         private void SendLeaveRoom(AudioRoomEx roomEx)
         {
-            var message = new LeaveRoomMessage
+            var message = new VoipMessageLeaveRoom
             {
                 RoomName = roomEx.R.AudioRoomId,
                 FromUserId = _userData.User.Id
@@ -280,18 +280,18 @@ namespace PointGaming.AudioChat
             }
         }
 
-        private void _audioChatClient_MessageReceived(IVoiceMessage message)
+        private void _audioChatClient_MessageReceived(IVoipMessage message)
         {
             switch (message.MessageType)
             {
-                case (AudioMessage.MType):
-                    ReceivedVoice((AudioMessage)message);
+                case (VoipMessageVoice.MType):
+                    ReceivedVoice((VoipMessageVoice)message);
                     break;
-                case (JoinRoomMessage.MType):
-                    ReceivedJoin((JoinRoomMessage)message);
+                case (VoipMessageJoinRoom.MType):
+                    ReceivedJoin((VoipMessageJoinRoom)message);
                     break;
-                case (LeaveRoomMessage.MType):
-                    ReceivedLeave((LeaveRoomMessage)message);
+                case (VoipMessageLeaveRoom.MType):
+                    ReceivedLeave((VoipMessageLeaveRoom)message);
                     break;
                 default:
                     Console.WriteLine("Unhandled message type: " + message.MessageType);
@@ -299,7 +299,7 @@ namespace PointGaming.AudioChat
             }
         }
         
-        private void ReceivedLeave(LeaveRoomMessage message)
+        private void ReceivedLeave(VoipMessageLeaveRoom message)
         {
             AudioRoomEx roomEx;
             if (!_joinedRooms.TryGetValue(message.RoomName, out roomEx))
@@ -308,7 +308,7 @@ namespace PointGaming.AudioChat
             OnVoiceConnectionChanged(roomEx, false);
         }
 
-        private void ReceivedJoin(JoinRoomMessage message)
+        private void ReceivedJoin(VoipMessageJoinRoom message)
         {
             AudioRoomEx roomEx;
             if (!_joinedRooms.TryGetValue(message.RoomName, out roomEx))
@@ -388,7 +388,7 @@ namespace PointGaming.AudioChat
             });
         }
             
-        private void ReceivedVoice(AudioMessage voiceMessage)
+        private void ReceivedVoice(VoipMessageVoice voiceMessage)
         {
             if (voiceMessage.FromUserId == _userData.User.Id)
                 return;
@@ -422,7 +422,7 @@ namespace PointGaming.AudioChat
         private AudioRoomEx _speakingRoom = null;
         private bool _speakingRoomTeamOnly;
 
-        private void _nAudioTest_AudioRecorded(NAudioSession source, byte[] data)
+        private void _nAudioTest_AudioRecorded(AudioHardwareSession source, byte[] data)
         {
             var isFirst = _speakingRoom == null;
             if (isFirst)
@@ -434,7 +434,7 @@ namespace PointGaming.AudioChat
             if (isFirst)
                 _speakingRoomTeamOnly = _speakingRoom.R.IsVoiceTeamOnly;
 
-            var message = new AudioMessage
+            var message = new VoipMessageVoice
             {
                 RoomName = _speakingRoom.R.AudioRoomId,
                 FromUserId = _userData.User.Id,
@@ -452,7 +452,7 @@ namespace PointGaming.AudioChat
             if (_speakingRoom == null)
                 return;
 
-            var message = new AudioMessage
+            var message = new VoipMessageVoice
             {
                 RoomName = _speakingRoom.R.AudioRoomId,
                 FromUserId = _userData.User.Id,

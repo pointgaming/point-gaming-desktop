@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace PointGaming.AudioChat
+namespace PointGaming.Voice
 {
-    public interface IAudioRoom
+    public interface IVoiceRoom
     {
         string AudioRoomId { get; }
         bool IsVoiceTeamOnly { get; }

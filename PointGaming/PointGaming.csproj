@@ -151,17 +151,16 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ActiveGroupingCollectionView.cs" />
-    <Compile Include="AudioChat\AudioChatSession.cs" />
-    <Compile Include="AudioChat\AudioChatClient.cs" />
-    <Compile Include="AudioChat\AudioMessage.cs" />
-    <Compile Include="AudioChat\BufferIO.cs" />
-    <Compile Include="AudioChat\Cryptography.cs" />
-    <Compile Include="AudioChat\IAudioRoom.cs" />
-    <Compile Include="AudioChat\IChatMessage.cs" />
-    <Compile Include="AudioChat\JoinRoomMessage.cs" />
-    <Compile Include="AudioChat\LeaveRoomMessage.cs" />
-    <Compile Include="AudioChat\Utf8String.cs" />
-    <Compile Include="Audio\OpusChatCodec.cs" />
+    <Compile Include="Voice\VoipSession.cs" />
+    <Compile Include="Voice\VoipClient.cs" />
+    <Compile Include="Voice\VoipMessageVoice.cs" />
+    <Compile Include="Voice\VoipSerialization.cs" />
+    <Compile Include="Voice\VoipCrypt.cs" />
+    <Compile Include="Voice\IVoiceRoom.cs" />
+    <Compile Include="Voice\IVoipMessage.cs" />
+    <Compile Include="Voice\VoipMessageJoinRoom.cs" />
+    <Compile Include="Voice\VoipMessageLeaveRoom.cs" />
+    <Compile Include="Voice\VoipCodecOpus.cs" />
     <Compile Include="BitcoinMiner\CPUThreadMiner.cs" />
     <Compile Include="BitcoinMiner\Miner.cs" />
     <Compile Include="BitcoinMiner\Numerical.cs" />
@@ -180,14 +179,14 @@
     <Compile Include="HomeTab\KeySelectDialog.xaml.cs">
       <DependentUpon>KeySelectDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Audio\OpusAPI.cs" />
-    <Compile Include="Audio\INetworkChatCodec.cs" />
-    <Compile Include="Audio\MixingWaveProvider.cs" />
-    <Compile Include="Audio\NAudioSession.cs" />
+    <Compile Include="Voice\OpusAPI.cs" />
+    <Compile Include="Voice\IVoipCodec.cs" />
+    <Compile Include="Voice\MixingWaveProvider.cs" />
+    <Compile Include="Voice\AudioHardwareSession.cs" />
     <Compile Include="Chat\PrivateChatSession.cs" />
-    <Compile Include="Audio\OpusDecoder.cs" />
-    <Compile Include="Audio\OpusEncoder.cs" />
-    <Compile Include="Audio\SpeexChatCodec.cs" />
+    <Compile Include="Voice\OpusDecoder.cs" />
+    <Compile Include="Voice\OpusEncoder.cs" />
+    <Compile Include="Voice\VoipCodecSpeex.cs" />
     <Compile Include="Lobby\MatchesDialogModelView.cs" />
     <Compile Include="Lobby\MatchesDialogView.xaml.cs">
       <DependentUpon>MatchesDialogView.xaml</DependentUpon>

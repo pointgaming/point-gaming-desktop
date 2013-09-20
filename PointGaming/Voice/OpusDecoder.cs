@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PointGaming.Audio
+namespace PointGaming.Voice
 {
     /// <summary>
     /// Opus audio decoder.

@@ -7,10 +7,10 @@ using NSpeex;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 
-namespace PointGaming.Audio
+namespace PointGaming.Voice
 {
-    [Export(typeof(INetworkChatCodec))]
-    class NarrowBandSpeexCodec : SpeexChatCodec
+    [Export(typeof(IVoipCodec))]
+    class NarrowBandSpeexCodec : VoipCodecSpeex
     {
         public NarrowBandSpeexCodec() :
             base(BandMode.Narrow, 8000, "Speex Narrow Band")
@@ -19,8 +19,8 @@ namespace PointGaming.Audio
         }
     }
 
-    [Export(typeof(INetworkChatCodec))]
-    class WideBandSpeexCodec : SpeexChatCodec
+    [Export(typeof(IVoipCodec))]
+    class WideBandSpeexCodec : VoipCodecSpeex
     {
         public WideBandSpeexCodec() :
             base(BandMode.Wide, 16000, "Speex Wide Band (16kHz)")
@@ -29,8 +29,8 @@ namespace PointGaming.Audio
         }
     }
 
-    [Export(typeof(INetworkChatCodec))]
-    class UltraWideBandSpeexCodec : SpeexChatCodec
+    [Export(typeof(IVoipCodec))]
+    class UltraWideBandSpeexCodec : VoipCodecSpeex
     {
         public UltraWideBandSpeexCodec() :
             base(BandMode.UltraWide, 32000, "Speex Ultra Wide Band (32kHz)")
@@ -39,7 +39,7 @@ namespace PointGaming.Audio
         }
     }
 
-    class SpeexChatCodec : INetworkChatCodec
+    class VoipCodecSpeex : IVoipCodec
     {
         private WaveFormat recordingFormat;
         private SpeexDecoder decoder;
@@ -47,7 +47,7 @@ namespace PointGaming.Audio
         private WaveBuffer encoderInputBuffer;
         private string description;
 
-        public SpeexChatCodec(BandMode bandMode, int sampleRate, string description)
+        public VoipCodecSpeex(BandMode bandMode, int sampleRate, string description)
         {
             this.decoder = new SpeexDecoder(bandMode);
             this.encoder = new SpeexEncoder(bandMode);

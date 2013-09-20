@@ -5,9 +5,9 @@ using System.Text;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace PointGaming.AudioChat
+namespace PointGaming.Voice
 {
-    public class AesIO
+    public class VoipCrypt
     {
         public static byte[] AntiDos = { 0x8E, 0xAA, 0xCF, 0x12 };
 
@@ -55,15 +55,15 @@ namespace PointGaming.AudioChat
                 var plain = "b6a517de8eaacf120105726e616d65";
                 var message = "b7cecdddfe70e38ce85f869d6b1fb5eadea93e81a17317bfa797175553591acc";
 
-                message = AesEncrypt(key.HexToBytes(), iv.HexToBytes(), plain.HexToBytes(), 0, plain.Length>>1).BytesToHex();
+                message = Encrypt(key.HexToBytes(), iv.HexToBytes(), plain.HexToBytes(), 0, plain.Length>>1).BytesToHex();
 
-                plain = AesDecrypt(key.HexToBytes(), iv.HexToBytes(), message.HexToBytes()).BytesToHex();
+                plain = Decrypt(key.HexToBytes(), iv.HexToBytes(), message.HexToBytes()).BytesToHex();
 
                 string original = "Hello World.  This is a longer test.";
                 var originalData = System.Text.Encoding.UTF8.GetBytes(original);
 
-                byte[] encrypted = AesEncrypt(HardcodedKey, HardcodedIv, originalData, 0, original.Length);
-                byte[] roundtripData = AesDecrypt(HardcodedKey, HardcodedIv, encrypted);
+                byte[] encrypted = Encrypt(HardcodedKey, HardcodedIv, originalData, 0, original.Length);
+                byte[] roundtripData = Decrypt(HardcodedKey, HardcodedIv, encrypted);
                 var roundtrip = System.Text.Encoding.UTF8.GetString(roundtripData);
 
                 var keyy = HardcodedKey.BytesToHex();
@@ -89,7 +89,7 @@ namespace PointGaming.AudioChat
 
         private static readonly byte[] _zeros = new byte[32];
 
-        public static byte[] AesEncrypt(byte[] Key, byte[] IV, byte[] plainData, int offset, int length)
+        public static byte[] Encrypt(byte[] Key, byte[] IV, byte[] plainData, int offset, int length)
         {
             if (plainData == null || plainData.Length < offset + length)
                 throw new ArgumentNullException("plainData");
@@ -131,7 +131,7 @@ namespace PointGaming.AudioChat
             return encryptedData;
         }
 
-        public static byte[] AesDecrypt(byte[] Key, byte[] IV, byte[] encryptedData, int offset = 0, int length = int.MinValue)
+        public static byte[] Decrypt(byte[] Key, byte[] IV, byte[] encryptedData, int offset = 0, int length = int.MinValue)
         {
             if (length == int.MinValue)
                 length = encryptedData.Length - offset;

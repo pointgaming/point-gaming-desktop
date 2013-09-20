@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace PointGaming.Audio
+namespace PointGaming.Voice
 {
     /// <summary>
     /// Wraps the Opus API.

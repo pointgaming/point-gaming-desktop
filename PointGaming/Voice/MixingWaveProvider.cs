@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using NA = NAudio;
 
-namespace PointGaming.Audio
+namespace PointGaming.Voice
 {
     public class MixingWaveProvider : NA.Wave.IWaveProvider
     {

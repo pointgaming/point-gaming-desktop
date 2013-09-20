@@ -6,10 +6,10 @@ using NAudio.Wave;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 
-namespace PointGaming.Audio
+namespace PointGaming.Voice
 {
-    [Export(typeof(INetworkChatCodec))]
-    class Opus8kCodec : OpusChatCodec
+    [Export(typeof(IVoipCodec))]
+    class Opus8kCodec : VoipCodecOpus
     {
         public Opus8kCodec() :
             base(8000, "Opus 8kHz")
@@ -18,8 +18,8 @@ namespace PointGaming.Audio
         }
     }
 
-    [Export(typeof(INetworkChatCodec))]
-    class Opus12kCodec : OpusChatCodec
+    [Export(typeof(IVoipCodec))]
+    class Opus12kCodec : VoipCodecOpus
     {
         public Opus12kCodec() :
             base(12000, "Opus 12kHz")
@@ -28,8 +28,8 @@ namespace PointGaming.Audio
         }
     }
 
-    [Export(typeof(INetworkChatCodec))]
-    class Opus16kCodec : OpusChatCodec
+    [Export(typeof(IVoipCodec))]
+    class Opus16kCodec : VoipCodecOpus
     {
         public Opus16kCodec() :
             base(16000, "Opus 16kHz")
@@ -38,8 +38,8 @@ namespace PointGaming.Audio
         }
     }
 
-    [Export(typeof(INetworkChatCodec))]
-    class Opus24kCodec : OpusChatCodec
+    [Export(typeof(IVoipCodec))]
+    class Opus24kCodec : VoipCodecOpus
     {
         public Opus24kCodec() :
             base(24000, "Opus 24kHz")
@@ -48,8 +48,8 @@ namespace PointGaming.Audio
         }
     }
 
-    [Export(typeof(INetworkChatCodec))]
-    class Opus48kCodec : OpusChatCodec
+    [Export(typeof(IVoipCodec))]
+    class Opus48kCodec : VoipCodecOpus
     {
         public Opus48kCodec() :
             base(48000, "Opus 48kHz")
@@ -58,7 +58,7 @@ namespace PointGaming.Audio
         }
     }
 
-    class OpusChatCodec : INetworkChatCodec
+    class VoipCodecOpus : IVoipCodec
     {
         private WaveFormat _recordingFormat;
         private OpusDecoder _decoder;
@@ -68,7 +68,7 @@ namespace PointGaming.Audio
         private string _description;
         private readonly int _segmentLength;
 
-        public OpusChatCodec(int sampleRate, string description)
+        public VoipCodecOpus(int sampleRate, string description)
         {
             this._segmentLength = sampleRate / 25;// 2 bytes per sample, 20ms per segment
             this._decoder = OpusDecoder.Create(sampleRate, 1);

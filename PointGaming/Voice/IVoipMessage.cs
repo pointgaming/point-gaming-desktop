@@ -5,9 +5,9 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 
-namespace PointGaming.AudioChat
+namespace PointGaming.Voice
 {
-    public interface IVoiceMessage
+    public interface IVoipMessage
     {
         byte MessageType { get; }
         bool Read(byte[] buffer, int offset, int length);

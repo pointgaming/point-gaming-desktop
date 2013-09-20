@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace PointGaming.AudioChat
+namespace PointGaming.Voice
 {
-    public static class BufferIO
+    public static class VoipSerialization
     {
         public static bool ReadInt(byte[] buffer, int bufferLength, ref int position, out int value)
         {
@@ -77,31 +77,6 @@ namespace PointGaming.AudioChat
             var len = valueBytes.Length;
             WriteU8Length(buffer, ref position, len);
             Buffer.BlockCopy(valueBytes, 0, buffer, position, len);
-            position += len;
-        }
-
-        public static bool ReadUtf8String(byte[] buffer, int bufferLength, ref int position, Utf8String value)
-        {
-            int len;
-            if (!ReadU8Length(buffer, bufferLength, ref position, out len))
-                return false;
-
-            if (position + len > bufferLength)
-                return false;
-
-            value.Buffer = buffer;
-            value.Position = position;
-            value.Length = len;
-            position += len;
-
-            return true;
-        }
-
-        public static void WriteUtf8String(byte[] buffer, ref int position, Utf8String value)
-        {
-            var len = value.Length;
-            WriteU8Length(buffer, ref position, len);
-            Buffer.BlockCopy(value.Buffer, value.Position, buffer, position, len);
             position += len;
         }
 

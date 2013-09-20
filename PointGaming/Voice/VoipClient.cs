@@ -5,12 +5,12 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 
-namespace PointGaming.AudioChat
+namespace PointGaming.Voice
 {
-    public class AudioChatClient
+    public class VoipClient
     {
-        public event Action<AudioChatClient> Stopped;
-        public event Action<IVoiceMessage> MessageReceived;
+        public event Action<VoipClient> Stopped;
+        public event Action<IVoipMessage> MessageReceived;
 
         private readonly byte[] _key;
         private readonly IPEndPoint _serverEndPoint;
@@ -21,9 +21,9 @@ namespace PointGaming.AudioChat
         private Socket _clientOut;
 
         private System.Threading.AutoResetEvent _are = new System.Threading.AutoResetEvent(false);
-        private List<IVoiceMessage> _messageQueue = new List<IVoiceMessage>();
+        private List<IVoipMessage> _messageQueue = new List<IVoipMessage>();
 
-        public AudioChatClient(IPEndPoint serverEndPoint, string authToken)
+        public VoipClient(IPEndPoint serverEndPoint, string authToken)
         {
             _serverEndPoint = serverEndPoint;
             _key = authToken.GuidToHex().HexToBytes();
@@ -44,7 +44,7 @@ namespace PointGaming.AudioChat
             _shouldRun = false;
         }
 
-        public void Send(IVoiceMessage message)
+        public void Send(IVoipMessage message)
         {
             if (!_isRunning)
                 return;
@@ -106,7 +106,7 @@ namespace PointGaming.AudioChat
         {
             try
             {
-                var queue = new List<IVoiceMessage>();
+                var queue = new List<IVoipMessage>();
                 var buffer = new byte[ushort.MaxValue];
 
                 while (_shouldRun)
@@ -163,10 +163,10 @@ namespace PointGaming.AudioChat
             var position = 0;
 
             byte[] iv = new byte[16];
-            if (!BufferIO.ReadRawBytes(buffer, length, ref position, iv))
+            if (!VoipSerialization.ReadRawBytes(buffer, length, ref position, iv))
                 return false;
 
-            var decryptedData = AesIO.AesDecrypt(_key, iv, buffer, position, length - position);
+            var decryptedData = VoipCrypt.Decrypt(_key, iv, buffer, position, length - position);
             buffer = decryptedData;
             position = 0;
             length = buffer.Length;
@@ -174,9 +174,9 @@ namespace PointGaming.AudioChat
             position += 4;// nonce
 
             var antidos = new byte[4];
-            if (!BufferIO.ReadRawBytes(buffer, length, ref position, antidos))
+            if (!VoipSerialization.ReadRawBytes(buffer, length, ref position, antidos))
                 return false;
-            if (!AesIO.AntiDosCheck(antidos))
+            if (!VoipCrypt.AntiDosCheck(antidos))
                 return false;
 
             if (position >= length)
@@ -196,19 +196,19 @@ namespace PointGaming.AudioChat
             return true;
         }
 
-        private static IVoiceMessage Instantiate(byte mType)
+        private static IVoipMessage Instantiate(byte mType)
         {
-            IVoiceMessage m;
+            IVoipMessage m;
             switch (mType)
             {
-                case (AudioMessage.MType):
-                    m = new AudioMessage();
+                case (VoipMessageVoice.MType):
+                    m = new VoipMessageVoice();
                     break;
-                case (JoinRoomMessage.MType):
-                    m = new JoinRoomMessage();
+                case (VoipMessageJoinRoom.MType):
+                    m = new VoipMessageJoinRoom();
                     break;
-                case (LeaveRoomMessage.MType):
-                    m = new LeaveRoomMessage();
+                case (VoipMessageLeaveRoom.MType):
+                    m = new VoipMessageLeaveRoom();
                     break;
                 default:
                     m = null;

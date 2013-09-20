@@ -5,9 +5,9 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 
-namespace PointGaming.AudioChat
+namespace PointGaming.Voice
 {
-    public class JoinRoomMessage : IVoiceMessage
+    public class VoipMessageJoinRoom : IVoipMessage
     {
         public const byte MType = 1;
         public byte MessageType { get { return MType; } }
@@ -18,7 +18,7 @@ namespace PointGaming.AudioChat
 
         public bool Read(byte[] buffer, int position, int length)
         {
-            if (!BufferIO.ReadRawHex(buffer, length, ref position, 12, out RoomName))
+            if (!VoipSerialization.ReadRawHex(buffer, length, ref position, 12, out RoomName))
                 return false;
 
             if (position >= length)
@@ -33,24 +33,24 @@ namespace PointGaming.AudioChat
         public int Write(byte[] buffer, byte[] key)
         {
             var position = 0;
-            BufferIO.WriteRawGuid(buffer, ref position, FromUserId);
-            var iv = AesIO.GenerateIv();
-            BufferIO.WriteRawBytes(buffer, ref position, iv);
+            VoipSerialization.WriteRawGuid(buffer, ref position, FromUserId);
+            var iv = VoipCrypt.GenerateIv();
+            VoipSerialization.WriteRawBytes(buffer, ref position, iv);
             
             var cryptoStart = position;
             var nonce = new byte[4];
-            AesIO.CryptoRNG.GetBytes(nonce);
-            BufferIO.WriteRawBytes(buffer, ref position, nonce);
-            BufferIO.WriteRawBytes(buffer, ref position, AesIO.AntiDos);
+            VoipCrypt.CryptoRNG.GetBytes(nonce);
+            VoipSerialization.WriteRawBytes(buffer, ref position, nonce);
+            VoipSerialization.WriteRawBytes(buffer, ref position, VoipCrypt.AntiDos);
             buffer[position++] = MessageType;
-            BufferIO.WriteRawHex(buffer, ref position, RoomName);
+            VoipSerialization.WriteRawHex(buffer, ref position, RoomName);
 
             Console.WriteLine("uid__: " + buffer.BytesToHex(0, 16));
             Console.WriteLine("key__: " + key.BytesToHex());
             Console.WriteLine("iv___: " + iv.BytesToHex());
             Console.WriteLine("plain: " + buffer.BytesToHex(cryptoStart, position - cryptoStart));
 
-            var encryptedData = AesIO.AesEncrypt(key, iv, buffer, cryptoStart, position - cryptoStart);
+            var encryptedData = VoipCrypt.Encrypt(key, iv, buffer, cryptoStart, position - cryptoStart);
             Buffer.BlockCopy(encryptedData, 0, buffer, cryptoStart, encryptedData.Length);
             position = cryptoStart + encryptedData.Length;
 
