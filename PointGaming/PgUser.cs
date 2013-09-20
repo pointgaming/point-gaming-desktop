@@ -19,20 +19,9 @@ namespace PointGaming
         string PocoType { get; }
     }
 
-    public class PgTeam : IBetOperand
+    public class PgTeam : ViewModelBase, IBetOperand
     {
         public string PocoType { get { return "Team"; } }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyChanged(string propertyName)
-        {
-            var changedCallback = PropertyChanged;
-            if (changedCallback == null)
-                return;
-            var args = new PropertyChangedEventArgs(propertyName);
-            changedCallback(this, args);
-        }
-
 
         private string _id;
         public string Id
@@ -43,7 +32,7 @@ namespace PointGaming
                 if (value == _id)
                     return;
                 _id = value;
-                NotifyChanged("Id");
+                OnPropertyChanged("Id");
             }
         }
         private string _name;
@@ -55,27 +44,18 @@ namespace PointGaming
                 if (value == _name)
                     return;
                 _name = value;
-                NotifyChanged("Name");
-                NotifyChanged("ShortDescription");
+                OnPropertyChanged("Name");
+                OnPropertyChanged("ShortDescription");
             }
         }
 
         public string ShortDescription { get { return _name; } }
     }
 
-    public class PgUser : IBetOperand
+    public class PgUser : ViewModelBase, IBetOperand
     {
         public string PocoType { get { return "User"; } }
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyChanged(string propertyName)
-        {
-            var changedCallback = PropertyChanged;
-            if (changedCallback == null)
-                return;
-            var args = new PropertyChangedEventArgs(propertyName);
-            changedCallback(this, args);
-        }
-
+        
         /// <summary>
         /// Warning: you should probably be using UserDataManager.GetPgUser() so that only one PgUser is initalized per user._id
         /// </summary>
@@ -86,7 +66,7 @@ namespace PointGaming
 
         void Lobbies_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            NotifyChanged("Lobby");
+            OnPropertyChanged("Lobby");
         }
 
         private string _id;
@@ -98,7 +78,7 @@ namespace PointGaming
                 if (value == _id)
                     return;
                 _id = value;
-                NotifyChanged("Id");
+                OnPropertyChanged("Id");
             }
         }
 
@@ -111,9 +91,9 @@ namespace PointGaming
                 if (value == _username)
                     return;
                 _username = value;
-                NotifyChanged("Username");
-                NotifyChanged("ShortDescription");
-                NotifyChanged("DisplayName");
+                OnPropertyChanged("Username");
+                OnPropertyChanged("ShortDescription");
+                OnPropertyChanged("DisplayName");
             }
         }
 
@@ -126,10 +106,10 @@ namespace PointGaming
                 if (value == _rank)
                     return;
                 _rank = value;
-                NotifyChanged("Rank");
-                NotifyChanged("IsAdmin");
-                NotifyChanged("LobbyGroupName");
-                NotifyChanged("DisplayName");
+                OnPropertyChanged("Rank");
+                OnPropertyChanged("IsAdmin");
+                OnPropertyChanged("LobbyGroupName");
+                OnPropertyChanged("DisplayName");
             }
         }
         public bool IsAdmin { 
@@ -145,8 +125,8 @@ namespace PointGaming
                 if (value == _isFriend)
                     return;
                 _isFriend = value;
-                NotifyChanged("IsFriend");
-                NotifyChanged("LobbyGroupName");
+                OnPropertyChanged("IsFriend");
+                OnPropertyChanged("LobbyGroupName");
             }
         }
         
@@ -224,7 +204,7 @@ namespace PointGaming
                 if (value == _slug)
                     return;
                 _slug = value;
-                NotifyChanged("Slug");
+                OnPropertyChanged("Slug");
             }
         }
 
@@ -237,7 +217,7 @@ namespace PointGaming
                 if (value == _status)
                     return;
                 _status = value;
-                NotifyChanged("Status");
+                OnPropertyChanged("Status");
             }
         }
 
@@ -250,7 +230,7 @@ namespace PointGaming
                 if (value == _points)
                     return;
                 _points = value;
-                NotifyChanged("Points");
+                OnPropertyChanged("Points");
             }
         }
 
@@ -269,7 +249,7 @@ namespace PointGaming
                 if (value == _avatar)
                     return;
                 _avatar = value;
-                NotifyChanged("Avatar");
+                OnPropertyChanged("Avatar");
             }
         }
 
@@ -284,10 +264,10 @@ namespace PointGaming
                 if (_team != null)
                     _team.PropertyChanged -= _team_PropertyChanged;
                 _team = value;
-                NotifyChanged("Team");
-                NotifyChanged("TeamName");
-                NotifyChanged("HasTeam");
-                NotifyChanged("GameRoomGroupName");
+                OnPropertyChanged("Team");
+                OnPropertyChanged("TeamName");
+                OnPropertyChanged("HasTeam");
+                OnPropertyChanged("GameRoomGroupName");
                 if (_team != null)
                     _team.PropertyChanged += _team_PropertyChanged;
             }
@@ -297,7 +277,7 @@ namespace PointGaming
         {
             if (e.PropertyName == "Name")
             {
-                NotifyChanged("TeamName");
+                OnPropertyChanged("TeamName");
             }
         }
         public string TeamName
