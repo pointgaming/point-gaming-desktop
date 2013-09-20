@@ -41,27 +41,29 @@ namespace PointGaming
                 handler(this, args);
         }
 
-        protected void SetProperty<T>(ref T field, T value, Expression<Func<T>> expression)
+        protected bool SetProperty<T>(ref T field, T value, Expression<Func<T>> expression)
         {
             if (field == null && value == null)
-                return;
+                return false;
             if (field != null && field.Equals(value))
-                return;
+                return false;
             field = value;
             OnPropertyChanged(expression);
+            return true;
         }
 
-        protected void SetProperty<T>(object synch, ref T field, T value, Expression<Func<T>> expression)
+        protected bool SetProperty<T>(object synch, ref T field, T value, Expression<Func<T>> expression)
         {
             lock (synch)
             {
                 if (field == null && value == null)
-                    return;
+                    return false;
                 if (field != null && field.Equals(value))
-                    return;
+                    return false;
                 field = value;
             }
             OnPropertyChanged(expression);
+            return true;
         }
 
         protected void OnPropertyChanged<T>(Expression<Func<T>> propertySelector)

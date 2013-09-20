@@ -48,8 +48,7 @@
                 </Grid.RowDefinitions>
                 <Image Grid.Row="0" Grid.Column="0" Height="25" Width="25" Source="{Binding IsSelfSpeaking, Converter={StaticResource speakingConverter}}" />
                 <Image Grid.Row="1" Grid.Column="0" Height="25" Width="25" Source="{Binding IsOtherSpeaking, Converter={StaticResource speakingConverter}}" />
-                <CheckBox Margin="2,0,2,0" Grid.Row="0" Grid.Column="1" Content="Speak" HorizontalAlignment="Left" Name="checkboxSpeak" VerticalAlignment="Center" Checked="checkboxSpeak_Checked" Unchecked="checkboxSpeak_Unchecked" />
-                <CheckBox Margin="2,0,2,0" Grid.Row="1" Grid.Column="1" Content="Listen" HorizontalAlignment="Left" Name="checkboxListen" VerticalAlignment="Center" Checked="checkboxListen_Checked" Unchecked="checkboxListen_Unchecked" />
+                <CheckBox Margin="2,0,2,0" Grid.Row="1" Grid.Column="1" Content="Mute Voice" HorizontalAlignment="Left" Name="checkboxMute" VerticalAlignment="Center" />
             </Grid>
         </Grid>
     </Grid>

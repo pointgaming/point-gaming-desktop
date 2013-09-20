@@ -151,7 +151,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ActiveGroupingCollectionView.cs" />
-    <Compile Include="AudioChatSession.cs" />
+    <Compile Include="AudioChat\AudioChatSession.cs" />
     <Compile Include="AudioChat\AudioChatClient.cs" />
     <Compile Include="AudioChat\AudioMessage.cs" />
     <Compile Include="AudioChat\BufferIO.cs" />

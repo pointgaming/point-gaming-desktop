@@ -309,6 +309,12 @@ namespace PointGaming
             get { return Team != null; }
         }
 
+        public bool IsMuted
+        {
+            get;
+            set;
+        }
+
         public void ViewProfile()
         {
             System.Diagnostics.Process.Start(App.Settings.WebServerUrl + "/u/" + Slug);

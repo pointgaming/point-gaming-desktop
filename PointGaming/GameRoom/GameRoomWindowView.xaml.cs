@@ -23,6 +23,14 @@ namespace PointGaming.GameRoom
         {
             InitializeComponent();
             WindowTreeManager = new WindowTreeManager(this, null);
+            Activated += GameRoomWindow_Activated;
+        }
+
+        void GameRoomWindow_Activated(object sender, EventArgs e)
+        {
+            var viewModel = (GameRoomWindowModelView)DataContext;
+            if (viewModel.Activated.CanExecute(null))
+                viewModel.Activated.Execute(null);
         }
 
         private void ChatTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -46,13 +54,6 @@ namespace PointGaming.GameRoom
             // Clear input after text sent
             ChatTextBox.Text = null;
             e.Handled = true;
-        }
-
-        private void This_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            var viewModel = (GameRoomWindowModelView)DataContext;
-            if (viewModel.WindowClosing.CanExecute(null))
-                viewModel.WindowClosing.Execute(null);
         }
     }
 }

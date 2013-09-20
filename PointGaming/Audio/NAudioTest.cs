@@ -162,7 +162,15 @@ namespace PointGaming.Audio
 
         public void AudioReceived(string streamId, byte[] b)
         {
-            byte[] decoded = codec.Decode(b, 0, b.Length);
+            byte[] decoded;
+            try
+            {
+                decoded = codec.Decode(b, 0, b.Length);
+            }
+            catch
+            {
+                return;
+            }
             lock (_startStopSynch)
             {
                 if (waveOut == null)

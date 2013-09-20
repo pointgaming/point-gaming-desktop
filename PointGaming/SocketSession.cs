@@ -23,6 +23,7 @@ namespace PointGaming
 
         private class CallbackAction
         {
+            public string ThreadName;
             public int ThreadId;
             public Action Action;
             public Action Callback;
@@ -86,7 +87,7 @@ namespace PointGaming
         public void Begin(Action action)
         {
             var threadId = Thread.CurrentThread.ManagedThreadId;
-            var ca = new CallbackAction { Action = action, Callback = null, ThreadId = threadId, };
+            var ca = new CallbackAction { Action = action, Callback = null, ThreadId = threadId, ThreadName = Thread.CurrentThread.Name, };
             lock (_workQueue)
             {
                 _workQueue.Add(ca);
@@ -97,7 +98,7 @@ namespace PointGaming
         public void BeginAndCallback(Action action, Action callback)
         {
             var threadId = Thread.CurrentThread.ManagedThreadId;
-            var ca = new CallbackAction { Action = action, Callback = callback, ThreadId = threadId,};
+            var ca = new CallbackAction { Action = action, Callback = callback, ThreadId = threadId, ThreadName = Thread.CurrentThread.Name, };
             lock (_workQueue)
             {
                 _workQueue.Add(ca);
@@ -164,12 +165,15 @@ namespace PointGaming
                         item.Action();
                         if (item.Callback != null)
                         {
-                            Action<Action> queuer;
+                            Action<Action> queuer = null;
                             lock (_threadQueuers)
                             {
-                                queuer = _threadQueuers[item.ThreadId];
+                                _threadQueuers.TryGetValue(item.ThreadId, out queuer);
                             }
-                            queuer(item.Callback);
+                            if (queuer == null)
+                                item.Callback();
+                            else
+                                queuer(item.Callback);
                         }
                     }
                     catch (Exception e)

@@ -17,11 +17,11 @@ namespace PointGaming.AudioChat
         public byte[] Audio;
 
         public bool Read(byte[] buffer, int position, int length)
-        {            
-            if (!BufferIO.ReadRawGuid(buffer, length, ref position, true, out FromUserId))
+        {
+            if (!BufferIO.ReadRawHex(buffer, length, ref position, 12,  out RoomName))
                 return false;
 
-            if (!BufferIO.ReadRawHex(buffer, length, ref position, 12,  out RoomName))
+            if (!BufferIO.ReadRawGuid(buffer, length, ref position, true, out FromUserId))
                 return false;
 
             if (position >= length)
@@ -30,6 +30,8 @@ namespace PointGaming.AudioChat
 
             if (!BufferIO.ReadRemainingRawBytes(buffer, length, ref position, out Audio))
                 return false;
+
+            Console.WriteLine("rx audio: rn " + RoomName + " fuid " + FromUserId + " to " + IsTeamOnly + " audio " + Audio.BytesToHex());
 
             return true;
         }
@@ -49,12 +51,22 @@ namespace PointGaming.AudioChat
             buffer[position++] = MessageType;
             BufferIO.WriteRawHex(buffer, ref position, RoomName);
 
-            buffer[position++] = (byte)(IsTeamOnly ? 0 : 1);
+            buffer[position++] = (byte)(IsTeamOnly ? 1 : 0);
+            var audioStart = position;
             BufferIO.WriteRawBytes(buffer, ref position, Audio);
+
+            Console.WriteLine("Tx AudioMessage:");
+            Console.WriteLine("uid__: " + buffer.BytesToHex(0, 16));
+            Console.WriteLine("key__: " + key.BytesToHex());
+            Console.WriteLine("iv___: " + iv.BytesToHex());
+            Console.WriteLine("plnxa: " + buffer.BytesToHex(cryptoStart, audioStart - cryptoStart));
+            Console.WriteLine("audio: " + buffer.BytesToHex(audioStart, position - audioStart));
 
             var encryptedData = AesIO.AesEncrypt(key, iv, buffer, cryptoStart, position - cryptoStart);
             Buffer.BlockCopy(encryptedData, 0, buffer, cryptoStart, encryptedData.Length);
             position = cryptoStart + encryptedData.Length;
+
+            Console.WriteLine("crypt: " + buffer.BytesToHex(cryptoStart, position - cryptoStart));
 
             return position;
         }

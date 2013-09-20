@@ -98,7 +98,10 @@ namespace PointGaming
         
         public void LoggedOut()
         {
-            _userLookup.Clear();
+            lock (_userLookup)
+            {
+                _userLookup.Clear();
+            }
             Friends.Clear();
             _friendLookup.Clear();
 
@@ -144,16 +147,20 @@ namespace PointGaming
         public PgUser GetPgUser(UserBase userBase)
         {
             PgUser user;
-            if (_userLookup.TryGetValue(userBase._id, out user))
-                return user;
-
-            user = new PgUser
+            lock (_userLookup)
             {
-                Id = userBase._id,
-                Username = userBase.username ?? "unknown",
-                Status = "unknown",
-            };
-            _userLookup[userBase._id] = user;
+                if (_userLookup.TryGetValue(userBase._id, out user))
+                    return user;
+
+                user = new PgUser
+                {
+                    Id = userBase._id,
+                    Username = userBase.username ?? "unknown",
+                    Status = "unknown",
+                };
+
+                _userLookup[userBase._id] = user;
+            }
             LookupUserData(userBase._id);
             return user;
         }
@@ -207,14 +214,21 @@ namespace PointGaming
                 if (response.IsOk())
                 {
                     PgUser user;
-                    if (_userLookup.TryGetValue(userId, out user))
+                    lock (_userLookup)
                     {
-                        var rUser = response.Data.user;
-                        user.Username = rUser.username;
-                        user.Slug = rUser.slug;
-                        user.Points = rUser.points;
-                        user.Avatar = rUser.avatar;
-                        user.Team = GetPgTeam(rUser.team);
+                        _userLookup.TryGetValue(userId, out user);
+                    }
+                    if (user != null)
+                    {
+                        HomeWindow.Home.BeginInvokeUI(delegate
+                        {
+                            var rUser = response.Data.user;
+                            user.Username = rUser.username;
+                            user.Slug = rUser.slug;
+                            user.Points = rUser.points;
+                            user.Avatar = rUser.avatar;
+                            user.Team = GetPgTeam(rUser.team);
+                        });
                     }
                 }
             });

@@ -20,7 +20,7 @@ using NA = NAudio;
 
 namespace PointGaming.Chat
 {
-    public partial class PrivateChatWindow : Window, IWeakEventListener, INotifyPropertyChanged
+    public partial class PrivateChatWindow : Window, IWeakEventListener, INotifyPropertyChanged, IAudioRoom
     {
         public WindowTreeManager WindowTreeManager;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -46,9 +46,35 @@ namespace PointGaming.Chat
             _autoScroller = new AutoScroller(flowDocumentLog);
             PropertyChangedEventManager.AddListener(UserDataManager.UserData.Settings, this, "PropertyChanged");
             WindowTreeManager = new WindowTreeManager(this, HomeWindow.Home.WindowTreeManager);
-            _userData.AudioSystem.AudioStarted += AudioSystem_AudioStarted;
-            _userData.AudioSystem.AudioStopped += AudioSystem_AudioStopped;
-            _userData.AudioSystem.SpeakingRoomChanged += AudioSystem_SpeakingRoomChanged;
+            _userData.AudioSystem.JoinRoom(this);
+        }
+
+        public bool IsVoiceTeamOnly { get { return false; } }
+        public bool IsVoiceEnabled { get { return checkboxMute.IsChecked == false; } }
+
+        public void OnVoiceStarted(PgUser user)
+        {
+            if (user == _otherUser)
+                IsOtherSpeaking = true;
+            else
+                IsSelfSpeaking = true;
+        }
+        public void OnVoiceStopped(PgUser user)
+        {
+            if (user == _otherUser)
+                IsOtherSpeaking = false;
+            else
+                IsSelfSpeaking = false;
+        }
+
+        public string AudioRoomId
+        {
+            get
+            {
+                var ids = new string[] { _userData.User.Id, _otherUser.Id };
+                Array.Sort(ids);
+                return ids[0] + " " + ids[1];
+            }
         }
 
         private bool _IsSelfSpeaking;
@@ -76,32 +102,6 @@ namespace PointGaming.Chat
             }
         }
 
-        private void AudioSystem_AudioStopped(PgUser obj, string roomId)
-        {
-            if (roomId != AudioRoomName)
-                return;
-            if (obj == _otherUser)
-                IsOtherSpeaking = false;
-            else
-                IsSelfSpeaking = false;
-        }
-
-        private void AudioSystem_AudioStarted(PgUser obj, string roomId)
-        {
-            if (roomId != AudioRoomName)
-                return;
-            if (obj == _otherUser)
-                IsOtherSpeaking = true;
-            else
-                IsSelfSpeaking = true;
-        }
-
-        private void AudioSystem_SpeakingRoomChanged(string obj)
-        {
-            if (obj != AudioRoomName)
-                checkboxSpeak.IsChecked = false;
-        }
-        
         public void Init(PrivateChatSession session, PgUser otherUser)
         {
             _session = session;
@@ -204,53 +204,19 @@ namespace PointGaming.Chat
         private void Window_Activated(object sender, EventArgs e)
         {
             this.StopFlashingWindow();
+            _userData.AudioSystem.TakeMicrophoneFocus(this);
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             _session.SendMessageFailed -= MessageSendFailed;
             _session.Leave();
-            _userData.AudioSystem.UnsetSpeakingRoomId(AudioRoomName);
-            _userData.AudioSystem.LeaveRoom(AudioRoomName);
+            _userData.AudioSystem.LeaveRoom(this);
         }
 
         public void MessageSendFailed(string message)
         {
             MessageDialog.Show(this, "Failed to Send Message", "Failed to send message.  User is not online or doesn't exist.");
-        }
-
-        private string AudioRoomName
-        {
-            get
-            {
-                var ids = new string[] { _userData.User.Id, _otherUser.Id };
-                Array.Sort(ids);
-                return ids[0] + " " + ids[1];
-            }
-        }
-
-        private void checkboxSpeak_Checked(object sender, RoutedEventArgs e)
-        {
-            if (checkboxListen.IsChecked != true)
-                checkboxListen.IsChecked = true;// todo verify that this causes checkboxListen_Checked to be called
-            _userData.AudioSystem.SpeakingIntoRoomId = AudioRoomName;
-        }
-
-        private void checkboxSpeak_Unchecked(object sender, RoutedEventArgs e)
-        {
-            _userData.AudioSystem.UnsetSpeakingRoomId(AudioRoomName);
-        }
-
-        private void checkboxListen_Checked(object sender, RoutedEventArgs e)
-        {
-            _userData.AudioSystem.JoinRoom(AudioRoomName);
-        }
-
-        private void checkboxListen_Unchecked(object sender, RoutedEventArgs e)
-        {
-            if (checkboxSpeak.IsChecked == true)
-                checkboxSpeak.IsChecked = false;// todo verify that this causes checkboxSpeak_Unchecked to be called
-            _userData.AudioSystem.LeaveRoom(AudioRoomName);
         }
     }
 }

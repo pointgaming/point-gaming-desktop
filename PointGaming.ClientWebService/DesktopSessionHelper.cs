@@ -319,8 +319,8 @@ namespace PointGaming.ClientWebService
             AccessFlags acessF = AccessFlags.TOKEN_ASSIGN_PRIMARY | AccessFlags.TOKEN_DUPLICATE | AccessFlags.TOKEN_QUERY | AccessFlags.TOKEN_ADJUST_DEFAULT | AccessFlags.TOKEN_ADJUST_SESSIONID;
             //AccessFlags acessF = AccessFlags.MAXIMUM_ALLOWED;
 
-            uint dwSessionId = GetSessionId();
-            //uint dwSessionId = WTSGetActiveConsoleSessionId();
+            //uint dwSessionId = GetSessionId();
+            uint dwSessionId = WTSGetActiveConsoleSessionId();
             var gotUser = WTSQueryUserToken(dwSessionId, out hToken);
 
             if (!gotUser)
@@ -374,8 +374,6 @@ namespace PointGaming.ClientWebService
                 CWService.AppendConsoleLine("Failed to create process: " + Marshal.GetLastWin32Error());
             }
 
-
-            CWService.AppendConsoleLine(""+res);
             DestroyEnvironmentBlock(pEnv);
             CloseHandle(hTokenDup);
         }

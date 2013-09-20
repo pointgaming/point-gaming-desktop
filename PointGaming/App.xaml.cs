@@ -281,6 +281,17 @@ namespace PointGaming
             }
             catch { }
         }
+        public static void DelayInvoke(this Action a, TimeSpan delay)
+        {
+            var dt = new DispatcherTimer();
+            dt.Tick += (s, e) =>
+            {
+                dt.Stop();
+                a();
+            };
+            dt.Interval = delay;
+            dt.Start();
+        }
         public static void InvokeUI(this Control c, Action a)
         {
             if (Thread.CurrentThread.ManagedThreadId == HomeWindow.GuiThreadId)

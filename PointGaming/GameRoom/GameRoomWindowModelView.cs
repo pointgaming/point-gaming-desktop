@@ -17,7 +17,7 @@ using Microsoft.Expression.Interactivity.Core;
 
 namespace PointGaming.GameRoom
 {
-    class GameRoomWindowModelView : ViewModelBase
+    class GameRoomWindowModelView : ViewModelBase, AudioChat.IAudioRoom
     {
         private UserDataManager _userData = UserDataManager.UserData;
         private GameRoom.GameRoomSession _session;
@@ -64,10 +64,7 @@ namespace PointGaming.GameRoom
             _session.ChatMessageReceived += ChatMessages_CollectionChanged;
             
             InitMembership();
-
-            _userData.AudioSystem.AudioStarted += AudioSystem_AudioStarted;
-            _userData.AudioSystem.AudioStopped += AudioSystem_AudioStopped;
-            _userData.AudioSystem.SpeakingRoomChanged += AudioSystem_SpeakingRoomChanged;
+            _userData.AudioSystem.JoinRoom(this);
         }
 
         private void InitMembership()
@@ -82,33 +79,7 @@ namespace PointGaming.GameRoom
 
             SetMembershipCount();
         }
-
-        private void AudioSystem_AudioStopped(PgUser obj, string roomId)
-        {
-            if (roomId != AudioRoomName)
-                return;
-            if (obj == _userData.User)
-                IsSelfSpeaking = false;
-            else
-                IsOtherSpeaking = false;
-        }
-
-        private void AudioSystem_AudioStarted(PgUser obj, string roomId)
-        {
-            if (roomId != AudioRoomName)
-                return;
-            if (obj == _userData.User)
-                IsSelfSpeaking = true;
-            else
-                IsOtherSpeaking = true;
-        }
-
-        private void AudioSystem_SpeakingRoomChanged(string obj)
-        {
-            if (obj != AudioRoomName)
-                IsSpeak = false;
-        }
-
+                
         public string DisplayName { get { return _session.GameRoom.DisplayName; } }
 
         public string TeamAvatar
@@ -303,6 +274,7 @@ namespace PointGaming.GameRoom
         public void ExitGameRoom()
         {
             _session.Leave();
+            _userData.AudioSystem.LeaveRoom(this);
         }
 
         public ICommand WindowStateChanged { get { return new ActionCommand(HandleWindowState); } }
@@ -395,119 +367,36 @@ namespace PointGaming.GameRoom
             }
         }
 
-        private bool _isChatMuted = false;
-        public bool IsChatMuted
+        public ICommand Activated { get { return new ActionCommand(ActivatedF); } }
+        private void ActivatedF(object sender)
         {
-            get { return _isChatMuted; } // TODO: load mute status from API
-            set { }
-        }
-        
-        public ICommand ToggleChatMuted { get { return new ActionCommand(MuteChat); } }
-        private void MuteChat(object sender)
-        {
-            _manager.ShowMessage(_session.ChatroomId, "Mute/Unmute Chat", "TODO: mute chat in socket API");
+            _userData.AudioSystem.TakeMicrophoneFocus(this);
         }
 
-        private bool _isMicMuted = false;
-        public bool IsMicMuted
-        {
-            get { return _isMicMuted; } // TODO: load mic mute status from API
-            set { }
-        }
+        public string AudioRoomId { get { return _session.GameRoomId; } }
+        public bool IsVoiceEnabled { get { return !IsVoiceMuted; } }
 
-        public ICommand ToggleChatMicMuted { get { return new ActionCommand(MuteMicChat); } }
-        private void MuteMicChat(object sender)
-        {
-            _manager.ShowMessage(_session.ChatroomId, "Mute/Unmute Chat Microphone", "TODO: mute chat microphone");
-        }
+        public void OnVoiceStarted(PgUser user) { }
+        public void OnVoiceStopped(PgUser user) { }
 
-        private bool _IsOtherSpeaking = false;
-        public bool IsOtherSpeaking
+        private bool _isVoiceMuted = false;
+        public bool IsVoiceMuted
         {
-            get { return _IsOtherSpeaking; }
-            set { _IsOtherSpeaking = value; OnPropertyChanged("IsOtherSpeaking"); }
-        }
-
-        private bool _IsSelfSpeaking = false;
-        public bool IsSelfSpeaking
-        {
-            get { return _IsSelfSpeaking; }
-            set { _IsOtherSpeaking = value; OnPropertyChanged("IsSelfSpeaking"); }
-        }
-
-
-        private string AudioRoomName
-        {
-            get
-            {
-                return _session.GameRoomId;
-            }
-        }
-
-        private bool _IsSpeak = false;
-        public bool IsSpeak
-        {
-            get { return _IsSpeak; }
+            get { return _isVoiceMuted; }
             set
             {
-                if (_IsSpeak == value)
-                    return;
-                _IsSpeak = value;
-
-                if (_IsSpeak)
-                {
-                    if (!IsListen)
-                        IsListen = true;
-                    _userData.AudioSystem.SpeakingIntoRoomId = AudioRoomName;
-                }
-                else
-                    _userData.AudioSystem.UnsetSpeakingRoomId(AudioRoomName);
-
-                OnPropertyChanged("IsSpeak");
+                SetProperty(ref _isVoiceMuted, value, () => IsVoiceMuted);
             }
         }
-        
-        private bool _IsListen = false;
-        public bool IsListen
+
+        private bool _isVoiceTeamOnly = true;
+        public bool IsVoiceTeamOnly
         {
-            get { return _IsListen; }
+            get { return _isVoiceTeamOnly; }
             set
             {
-                if (_IsListen == value)
-                    return;
-                _IsListen = value;
-
-                if (_IsListen)
-                    _userData.AudioSystem.JoinRoom(AudioRoomName);
-                else
-                {
-                    if (IsSpeak)
-                        IsSpeak = false;
-                    _userData.AudioSystem.LeaveRoom(AudioRoomName);
-                }
-
-                OnPropertyChanged("IsListen");
+                SetProperty(ref _isVoiceTeamOnly, value, () => IsVoiceTeamOnly);
             }
-        }
-
-        public ICommand WindowClosing { get { return new ActionCommand(WindowClosingF);}}
-        private void WindowClosingF(object sender)
-        {
-            _userData.AudioSystem.UnsetSpeakingRoomId(AudioRoomName);
-            _userData.AudioSystem.LeaveRoom(AudioRoomName);
-        }
-
-        private bool _isTeamOnlyChat = true;
-        public bool IsTeamOnlyChat
-        {
-            get { return _isTeamOnlyChat; } // TODO: load team chat status from API
-            set { }
-        }
-
-        public ICommand ToggleTeamOnlyChat { get { return new ActionCommand(ChatTeamOnly); } }
-        private void ChatTeamOnly(object sender)
-        {
-            _manager.ShowMessage(_session.ChatroomId, "Change Team Only Requirement", "TODO: change chat's team only status in socket API");
         }
 
         public ICommand CheckUserCanAdmin { get { return new ActionCommand(CheckCanAdmin); } }

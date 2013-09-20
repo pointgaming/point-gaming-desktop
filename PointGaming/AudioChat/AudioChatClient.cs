@@ -11,8 +11,6 @@ namespace PointGaming.AudioChat
     {
         public event Action<AudioChatClient> Stopped;
         public event Action<AudioMessage> AudioReceived;
-        public event Action<JoinRoomMessage> JoinReceived;
-        public event Action<LeaveRoomMessage> LeaveReceived;
 
         private readonly byte[] _key;
         private readonly IPEndPoint _serverEndPoint;
@@ -48,6 +46,8 @@ namespace PointGaming.AudioChat
 
         public void Send(IChatMessage message)
         {
+            if (!_isRunning)
+                return;
             lock (_messageQueue)
             {
                 _messageQueue.Add(message);
@@ -146,13 +146,15 @@ namespace PointGaming.AudioChat
 
         private void HandleMessage(byte[] buffer, int length)
         {
+            Console.WriteLine("rx: " + buffer.BytesToHex(0, length));
+
             if (length == 1 && buffer[0] == 0)
             {
                 // server's response from join room.  do nothing
             }
             else if (!HandleEncryptedMessage(buffer, length))
             {
-                Console.WriteLine("Unrecognized audio chat message: " + buffer.BytesToHex());
+                Console.WriteLine("Unrecognized audio chat message: " + buffer.BytesToHex(0, length));
             }
         }
 
