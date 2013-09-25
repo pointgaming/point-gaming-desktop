@@ -14,6 +14,8 @@
         Width="850" Height="730">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BtVC" />
+        <pg:InverseBooleanToVisibilityConverter x:Key="IBtVC" />
+        <BitmapImage x:Key="ImageVoiceDisabled" UriSource="/PointGaming;component/Resources/VoiceDisabled.png" />
     </Window.Resources>
     
     <i:Interaction.Triggers>
@@ -205,8 +207,9 @@
                 <ListView.Resources>
                     <DataTemplate DataType="{x:Type pg:PgUser}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Height="15" Width="15" Source="{Binding SpeakIcon}" />
-
+                            <Image Height="15" Width="15" Source="{Binding SpeakIcon}" Visibility="{Binding DataContext.IsVoiceConnected, Converter=BtVC}" />
+                            <Image Height="15" Width="15" Source="{StaticResource ImageVoiceDisabled}" Visibility="{Binding DataContext.IsVoiceConnected, Converter=IBtVC}" />
+                            
                             <Label Content="{Binding DisplayName}" HorizontalAlignment="Stretch" Width="Auto">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="ContextMenuOpening">
