@@ -14,13 +14,15 @@ namespace PointGaming.ClientWebService
     // http://localhost:9779/joinchat/1111?username=dean&password=5555
     // http://localhost:9779/info
     //
-    // to install/uninstall service:
-    // open cmd as admin
-    // g:
-    // cd "whitepaperclip\point-gaming-desktop\output\Debug"
+    // to install service:
+    // open cmd as administrator (in windows 7: search for cmd, on result: right click and choose run as admin)
+    // cd to the point gaming app directory
     // "C:\Windows\Microsoft.NET\Framework\v4.0.30319\InstallUtil.exe" PointGaming.ClientWebService.exe
+    // open up services.msc, and start the service in there
+    
+    // to uninstall service:
+    // same thing except:
     // "C:\Windows\Microsoft.NET\Framework\v4.0.30319\InstallUtil.exe" /u PointGaming.ClientWebService.exe
-
 
     public partial class CWService : System.ServiceProcess.ServiceBase
     {

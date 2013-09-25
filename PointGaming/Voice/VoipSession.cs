@@ -390,6 +390,9 @@ namespace PointGaming.Voice
             if (_joinedRooms.TryGetValue(voiceMessage.RoomName, out roomEx))
             {
                 isListening = roomEx.R.IsVoiceEnabled && !user.IsMuted;
+
+                if (isListening && roomEx.R.IsVoiceTeamOnly)
+                    isListening = _userData.User.Team == user.Team;
             }
 
             if (isEnd)
