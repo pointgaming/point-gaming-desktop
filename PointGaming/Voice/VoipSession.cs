@@ -197,7 +197,6 @@ namespace PointGaming.Voice
             };
             _audioChatClient.Send(message);
             AddJoinRoomTimeout(roomEx);
-            OnVoiceConnectionChanged(roomEx, true);// todo remove when Nick adds joinroom feedback
         }
         
         private void SendLeaveRoom(AudioRoomEx roomEx)
