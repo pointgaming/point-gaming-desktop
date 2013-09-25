@@ -207,8 +207,8 @@
                 <ListView.Resources>
                     <DataTemplate DataType="{x:Type pg:PgUser}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Height="15" Width="15" Source="{Binding SpeakIcon}" Visibility="{Binding DataContext.IsVoiceConnected, Converter=BtVC}" />
-                            <Image Height="15" Width="15" Source="{StaticResource ImageVoiceDisabled}" Visibility="{Binding DataContext.IsVoiceConnected, Converter=IBtVC}" />
+                            <Image Height="15" Width="15" Source="{Binding SpeakIcon}" Visibility="{Binding ElementName=This, Path=DataContext.IsVoiceConnected, Converter={StaticResource BtVC}}" />
+                            <Image Height="15" Width="15" Source="{StaticResource ImageVoiceDisabled}" Visibility="{Binding ElementName=This, Path=DataContext.IsVoiceConnected, Converter={StaticResource IBtVC}}" />
                             
                             <Label Content="{Binding DisplayName}" HorizontalAlignment="Stretch" Width="Auto">
                                 <i:Interaction.Triggers>
