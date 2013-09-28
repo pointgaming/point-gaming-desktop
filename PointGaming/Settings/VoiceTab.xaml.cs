@@ -89,28 +89,46 @@ namespace PointGaming.Settings
             progressBarVolume.Maximum = short.MaxValue;
             progressBarVolume.Value = 0;
 
+            sliderTime.Minimum = 0;
+            sliderTime.Maximum = 10;
+            sliderTime.Value = 10;
+
             _voiceTester = new Voice.VoiceTester();
             _voiceTester.OnVoiceEvent += new Voice.VoiceTester.Event(vt_OnVoiceEvent);
             UserDataManager.UserData.Voip.TestVoiceStart(_voiceTester);
         }
+
+        private bool _isRecording = false;
 
         void vt_OnVoiceEvent(Voice.VoiceTester.EventType type, TimeSpan time, short maxValue)
         {
             if (type == Voice.VoiceTester.EventType.Recorded)
             {
                 progressBarVolume.Value = maxValue;
+
+                if (!_isRecording)
+                {
+                    _isRecording = true;
+                    sliderTime.Value = 0;
+                }
             }
             else if (type == Voice.VoiceTester.EventType.RecordEnded)
             {
+                _isRecording = false;
                 progressBarVolume.Value = 0;
+
+                sliderTime.Value = 0;
+                sliderTime.Maximum = time.TotalMilliseconds;
             }
             else if (type == Voice.VoiceTester.EventType.Played)
             {
                 progressBarVolume.Value = maxValue;
+                sliderTime.Value = time.TotalMilliseconds;
             }
             else if (type == Voice.VoiceTester.EventType.PlayEnded)
             {
                 progressBarVolume.Value = 0;
+                sliderTime.Value = sliderTime.Maximum;
             }
         }
     }

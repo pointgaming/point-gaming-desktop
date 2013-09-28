@@ -34,5 +34,8 @@
 
         <Label Grid.Row="3" Grid.Column="0" Height="28" Content="Volume" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
         <ProgressBar Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Name="progressBarVolume" Margin="0,2,0,2" />
+        <Label Grid.Row="4" Grid.Column="0" Height="28" Content="Time" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+        <!--<ProgressBar Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Name="progressBarTime" Margin="0,2,0,2" />-->
+        <Slider Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Name="sliderTime"  Margin="0,2,0,2" IsEnabled="False" />
     </Grid>
 </UserControl>
