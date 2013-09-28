@@ -15,21 +15,6 @@ namespace PointGaming.HomeTab
         public DebugTab()
         {
             InitializeComponent();
-
-            foreach (var item in Voice.AudioHardware.GetAudioInputDevices())
-                comboBoxRecordingDevices.Items.Add(item);
-            comboBoxRecordingDevices.SelectedIndex = App.Settings.AudioInputDeviceIndex;
-            labelMicKey.Content = (Key)UserDataManager.UserData.Settings.MicTriggerKey;
-            UserDataManager.UserData.Voip.RecordingDeviceChanged += AudioSystem_RecordingDeviceChanged;
-        }
-
-        void AudioSystem_RecordingDeviceChanged(int obj)
-        {
-            if (obj == App.Settings.AudioInputDeviceIndex)
-                return;
-            App.Settings.AudioInputDeviceIndex = obj;
-            App.Settings.Save();
-            comboBoxRecordingDevices.SelectedIndex = obj;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -39,8 +24,6 @@ namespace PointGaming.HomeTab
 
             App.DebugBox = textBoxConsole;
         }
-
-        public string ProgramVersion { get { return "Version " + App.Version; } }
 
         private void buttonChooseChatFont_Click(object sender, RoutedEventArgs e)
         {
@@ -63,31 +46,6 @@ namespace PointGaming.HomeTab
                 UserDataManager.UserData.Settings.ChatFontSize = size;
                 UserDataManager.UserData.Settings.Save();
             }
-        }
-
-        private void buttonSetMicKey_Click(object sender, RoutedEventArgs e)
-        {
-            SetAudioInputDeviceTriggerKey();
-        }
-
-
-        private void SetAudioInputDeviceTriggerKey()
-        {
-            var key = KeySelectDialog.Show(HomeWindow.Home, "Select Microphone Key", "Press new microphone hotkey.");
-            if (!key.HasValue)
-                return;
-            labelMicKey.Content = key.Value;
-            UserDataManager.UserData.Settings.MicTriggerKey = (int)key.Value;
-            UserDataManager.UserData.Settings.Save();
-            UserDataManager.UserData.Voip.TriggerKey = key.Value;
-        }
-        
-        private void comboBoxRecordingDevices_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var deviceIndex = comboBoxRecordingDevices.SelectedIndex;
-            App.Settings.AudioInputDeviceIndex = deviceIndex;
-            App.Settings.Save();
-            UserDataManager.UserData.Voip.SetAudioInputDevice(deviceIndex);
         }
     }
 }

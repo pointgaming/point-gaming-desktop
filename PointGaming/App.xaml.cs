@@ -49,7 +49,7 @@ namespace PointGaming
 
         private static StreamWriter _logWriter;
 
-        public static readonly ApplicationSettings Settings;
+        public static readonly PointGaming.Settings.SettingsApplication Settings;
 
         static App()
         {
@@ -70,7 +70,7 @@ namespace PointGaming
                 path = path.Replace(' ', '_');
                 ApplicationSettingsPath = path;
 
-                Settings = ApplicationSettings.Load();
+                Settings = PointGaming.Settings.SettingsApplication.Load();
 
                 LoggedOut();
                 

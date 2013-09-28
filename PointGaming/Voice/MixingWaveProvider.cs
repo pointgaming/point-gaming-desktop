@@ -108,5 +108,27 @@ namespace PointGaming.Voice
                 buffer[bufferIndex++] = hi;
             }
         }
+
+
+        public static short GetMaxValue(byte[] buffer, int length)
+        {
+            short result = 0;
+            var i = 0;
+            var end = length;
+            while (i < end)
+            {
+                var sumI = i >> 1;
+                var lo = (ushort)buffer[i++];
+                var hi = (ushort)buffer[i++];
+                var valueU = lo | (hi << 8);
+                var value = (short)valueU;
+                if (value < 0)
+                    value *= -1;
+                if (value > result)
+                    result = value;
+            }
+
+            return result;
+        }
     }
 }

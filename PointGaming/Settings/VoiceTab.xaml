@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="PointGaming.Settings.VoiceTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" Loaded="UserControl_Loaded" Padding="10">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="3" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto"/>
+            
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+
+        <Label Grid.Row="0" Grid.Column="0" Height="28" Content="Microphone"  VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+        <ComboBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Height="23" Name="comboBoxRecordingDevices" SelectionChanged="comboBoxRecordingDevices_SelectionChanged" />
+
+        <Label Grid.Row="1" Grid.Column="0" Height="28" Content="Hotkey" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+        <Label Grid.Row="1" Grid.Column="2" Height="28" Name="labelMicKey" Content="Left Ctrl" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Width="100" />
+        <Button Grid.Row="1" Grid.Column="3" Content="Set Hotkey" Height="23" Name="buttonSetMicKey" Width="75" Click="buttonSetMicKey_Click" HorizontalAlignment="Left" />
+
+        <TextBox Grid.Row="2" Grid.ColumnSpan="4" TextWrapping="Wrap" IsReadOnly="True" Margin="0,20,0,0"
+                 Text="Press and hold microphone hotkey to test voice capture and release to playback." />
+
+        <Label Grid.Row="3" Grid.Column="0" Height="28" Content="Volume" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+        <ProgressBar Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Name="progressBarVolume" Margin="0,2,0,2" />
+    </Grid>
+</UserControl>

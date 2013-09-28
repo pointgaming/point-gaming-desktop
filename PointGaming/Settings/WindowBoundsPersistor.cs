@@ -7,7 +7,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace PointGaming
+namespace PointGaming.Settings
 {
     public class WindowBoundsPersistor
     {

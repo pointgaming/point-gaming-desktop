@@ -34,6 +34,16 @@ namespace PointGaming.Voice
 
         private long _microphonePriority = 1;
 
+        public void TestVoiceStart(VoiceTester tester)
+        {
+            tester.Init(_nAudioTest);
+            _voiceTester = tester;
+        }
+        public void TestVoiceStop()
+        {
+            _voiceTester = null;
+        }
+
         public void TakeMicrophoneFocus(IVoiceRoom room)
         {
             AudioRoomEx roomEx;
@@ -410,8 +420,17 @@ namespace PointGaming.Voice
         private AudioRoomEx _speakingRoom = null;
         private bool _speakingRoomTeamOnly;
 
-        private void _nAudioTest_AudioRecorded(AudioHardwareSession source, byte[] data)
+        private VoiceTester _voiceTester = null;
+
+        private void _nAudioTest_AudioRecorded(AudioHardwareSession source, byte[] data, short maxValue)
         {
+            var vt = _voiceTester;
+            if (vt != null)
+            {
+                vt.Recorded(data, maxValue);
+                return;
+            }
+
             var isFirst = _speakingRoom == null;
             if (isFirst)
                 _speakingRoom = GetSpeakingRoom();
@@ -437,6 +456,13 @@ namespace PointGaming.Voice
 
         private void _nAudioTest_AudioRecordEnded()
         {
+            var vt = _voiceTester;
+            if (vt != null)
+            {
+                vt.RecordEnded();
+                return;
+            }
+
             if (_speakingRoom == null)
                 return;
 

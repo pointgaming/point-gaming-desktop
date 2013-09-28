@@ -187,6 +187,11 @@ namespace PointGaming
         {
 
         }
+
+        private void SettingsClick(object sender, RoutedEventArgs e)
+        {
+            Settings.SettingsWindow.ShowDialog(null);
+        }
     }
 
     public class GlassExtender

@@ -151,7 +151,21 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ActiveGroupingCollectionView.cs" />
+    <Compile Include="Settings\AboutTab.xaml.cs">
+      <DependentUpon>AboutTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\ISettingsTab.cs" />
+    <Compile Include="Settings\SettingsApplication.cs" />
+    <Compile Include="Settings\SettingsUser.cs" />
+    <Compile Include="Settings\SettingsWindow.xaml.cs">
+      <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\VoiceTab.xaml.cs">
+      <DependentUpon>VoiceTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Voice\AudioHardware.cs" />
+    <Compile Include="Voice\VoiceTester.cs" />
+    <Compile Include="Voice\IVoiceTester.cs" />
     <Compile Include="Voice\VoipSession.cs" />
     <Compile Include="Voice\VoipClient.cs" />
     <Compile Include="Voice\VoipMessageVoice.cs" />
@@ -194,7 +208,7 @@
     </Compile>
     <Compile Include="POCO\BetList.cs" />
     <Compile Include="POCO\BetterAccount.cs" />
-    <Compile Include="ReliableSettings.cs" />
+    <Compile Include="Settings\SettingsSaver.cs" />
     <Compile Include="WcfClientSide.cs" />
     <Compile Include="WindowTreeManager.cs" />
     <Compile Include="SessionManager.cs" />
@@ -275,7 +289,7 @@
     <Compile Include="Users\UserProfileTooltip.xaml.cs">
       <DependentUpon>UserProfileTooltip.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WindowBoundsPersistor.cs" />
+    <Compile Include="Settings\WindowBoundsPersistor.cs" />
     <Page Include="Chat\PrivateChatWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -399,6 +413,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PgFonts\FontChooser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Settings\AboutTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Settings\SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Settings\VoiceTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

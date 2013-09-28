@@ -29,7 +29,7 @@ namespace PointGaming
             }
         }
         private List<WindowTreeManager> _children = new List<WindowTreeManager>();
-        private WindowBoundsPersistor _windowBoundsPersistor;
+        private Settings.WindowBoundsPersistor _windowBoundsPersistor;
         private bool _shouldAutoCloseChildrenOnClosing;
 
         public WindowTreeManager(Window window, WindowTreeManager parent, bool shouldAutoCloseChildrenOnClosing = true)
@@ -39,7 +39,7 @@ namespace PointGaming
             _shouldAutoCloseChildrenOnClosing = shouldAutoCloseChildrenOnClosing;
             
             var windowName = window.GetType().Name;
-            _windowBoundsPersistor = new WindowBoundsPersistor(window, windowName);
+            _windowBoundsPersistor = new Settings.WindowBoundsPersistor(window, windowName);
             _windowBoundsPersistor.Load();
 
             window.Closing += SelfClosing;

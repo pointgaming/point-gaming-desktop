@@ -197,10 +197,13 @@
         <Grid Grid.Column="3" Grid.RowSpan="3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Label Grid.Row="0" Content="{Binding MembershipCount, FallbackValue=Total (0)}" Height="28" HorizontalAlignment="Left" Name="labelMembershipTotal" VerticalAlignment="Top" />
-            <ListView Grid.Row="1" Name="listBoxMembership"
+            <Label Grid.Row="0" Margin="2"><Hyperlink Click="ShowVoiceSettingsClick">Voice Settings</Hyperlink></Label>
+            
+            <Label Grid.Row="1" Content="{Binding MembershipCount, FallbackValue=Total (0)}" Height="28" HorizontalAlignment="Left" Name="labelMembershipTotal" VerticalAlignment="Top" />
+            <ListView Grid.Row="2" Name="listBoxMembership"
                   ItemsSource="{Binding Membership}"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch">

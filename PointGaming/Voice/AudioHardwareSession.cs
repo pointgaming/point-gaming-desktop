@@ -15,7 +15,7 @@ using NAudio;
 
 namespace PointGaming.Voice
 {
-    delegate void AudioAvailable(AudioHardwareSession source, byte[] data);
+    delegate void AudioAvailable(AudioHardwareSession source, byte[] data, short maxValue);
 
     class AudioHardwareSession : IDisposable
     {
@@ -203,14 +203,18 @@ namespace PointGaming.Voice
         {
             int callCount = codec.Encode(e.Buffer, 0, e.BytesRecorded);
             for (int i = 0; i < callCount; i++)
-                OnAudioRecorded(codec.GetEncoded());
+            {
+                short maxValue;
+                var encoded = codec.GetEncoded(out maxValue);
+                OnAudioRecorded(encoded, maxValue);
+            }
         }
 
         private DateTime _trickleTimeout;
         private bool _isTrickleStarted = false;
         private bool _lastTrickleSent = true;
 
-        private void OnAudioRecorded(byte[] encoded)
+        private void OnAudioRecorded(byte[] encoded, short maxValue)
         {
             var isKeyDown = System.Windows.Input.Keyboard.IsKeyDown(TriggerKey);
             if (isKeyDown)
@@ -224,7 +228,7 @@ namespace PointGaming.Voice
 
             var call = AudioRecorded;
             if (call != null)
-                call(this, encoded);
+                call(this, encoded, maxValue);
 
             if (!isKeyDown)
             {

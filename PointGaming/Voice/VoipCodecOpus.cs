@@ -105,24 +105,28 @@ namespace PointGaming.Voice
             return _bufferCount / _segmentLength;
         }
 
-        public byte[] GetEncoded()
+        public byte[] GetEncoded(out short maxValue)
         {
             byte[] encoded;
 
             if (_bufferCount >= _segmentLength)
             {
                 int encodedLength;
+                maxValue = MixingWaveProvider.GetMaxValue(_encoderInputBuffer, _segmentLength);
                 var encodedOut = _encoder.Encode(_encoderInputBuffer, _segmentLength, out encodedLength);
                 encoded = new byte[encodedLength];
                 Buffer.BlockCopy(encodedOut, 0, encoded, 0, encodedLength);
                 ShiftLeftoverSamplesDown(_segmentLength);
             }
             else
+            {
                 encoded = new byte[0];
+                maxValue = 0;
+            }
             
             return encoded;
         }
-
+        
         private void FeedSamplesIntoEncoderInputBuffer(byte[] data, int offset, int length)
         {
             Buffer.BlockCopy(data, offset, _encoderInputBuffer, _bufferCount, length);

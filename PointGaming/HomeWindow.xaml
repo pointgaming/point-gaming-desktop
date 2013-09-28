@@ -46,6 +46,7 @@
         <Menu Grid.Row="0" Height="28" HorizontalAlignment="Stretch" Name="menu1" VerticalAlignment="Top">
             <MenuItem Header="Username" Name="menuItemUsername">
                 <MenuItem Header="View Profile" Click="ProfileClick" />
+                <MenuItem Header="Settings" Click="SettingsClick" />
                 <MenuItem Header="Log Out" Click="LogOutClick" />
             </MenuItem>
         </Menu>

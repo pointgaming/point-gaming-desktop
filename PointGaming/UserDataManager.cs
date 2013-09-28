@@ -42,12 +42,12 @@ namespace PointGaming
 
         public VoipSession Voip;
 
-        public readonly UserSettings Settings;
+        public readonly PointGaming.Settings.SettingsUser Settings;
 
         public UserDataManager(SocketSession session)
         {
             UserData = this;
-            Settings = UserSettings.Load(session.User.username);
+            Settings = PointGaming.Settings.SettingsUser.Load(session.User.username);
             PgSession = session;
             User = GetPgUser(session.User);
             User.Status = "online";

@@ -55,5 +55,10 @@ namespace PointGaming.GameRoom
             ChatTextBox.Text = null;
             e.Handled = true;
         }
+
+        private void ShowVoiceSettingsClick(object sender, RoutedEventArgs e)
+        {
+            Settings.SettingsWindow.ShowDialog(typeof(Settings.VoiceTab));
+        }
     }
 }
