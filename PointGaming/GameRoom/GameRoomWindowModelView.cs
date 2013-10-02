@@ -409,7 +409,7 @@ namespace PointGaming.GameRoom
             }
         }
 
-        private bool _isVoiceTeamOnly = true;
+        private bool _isVoiceTeamOnly = false;
         public bool IsVoiceTeamOnly
         {
             get { return _isVoiceTeamOnly; }

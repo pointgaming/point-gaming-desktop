@@ -94,6 +94,7 @@ namespace PointGaming.Voice
                 {
                     if (Senders.Contains(user))
                         return;
+                    Senders.Add(user);
                 }
                 // todo: dean: what happens when sending/recieving right when the home window is being closed?
                 ((Action)(delegate
@@ -476,6 +477,7 @@ namespace PointGaming.Voice
 
             _audioChatClient.Send(message);
             _speakingRoom.OnVoiceStopped(_userData.User);
+            _speakingRoom = null;
         }
     }
 

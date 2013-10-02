@@ -45,7 +45,6 @@ namespace PointGaming.Settings
                 return;
             labelMicKey.Content = key.Value;
             UserDataManager.UserData.Settings.MicTriggerKey = (int)key.Value;
-            UserDataManager.UserData.Settings.Save();
             UserDataManager.UserData.Voip.TriggerKey = key.Value;
         }
 
@@ -206,15 +205,9 @@ namespace PointGaming.Settings
 
         private void sliderAmplifier_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            labelAmplifier.Content = string.Format("{0:0.00}", Math.Pow(10, sliderAmplifier.Value));
-            ((Action)delegate {
-                var amp = Math.Pow(10, sliderAmplifier.Value);
-                if (UserDataManager.UserData.Settings.VoiceAmplifier != amp)
-                {
-                    UserDataManager.UserData.Settings.VoiceAmplifier = amp;
-                    UserDataManager.UserData.Settings.Save();
-                }
-            }).DelayInvokeUI(TimeSpan.FromSeconds(1.0));
+            var amp = Math.Pow(10, sliderAmplifier.Value);
+            labelAmplifier.Content = string.Format("{0:0.00}", amp);
+            UserDataManager.UserData.Settings.VoiceAmplifier = amp;
         }
     }
 }

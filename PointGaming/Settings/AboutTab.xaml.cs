@@ -14,7 +14,7 @@ using System.Windows.Shapes;
 
 namespace PointGaming.Settings
 {
-    public partial class AboutTab : UserControl
+    public partial class AboutTab : UserControl, ISettingsTab
     {
         public AboutTab()
         {
@@ -23,5 +23,8 @@ namespace PointGaming.Settings
 
         public string ProgramVersion { get { return "Version " + App.Version; } }
 
+        public void SettingsClosing()
+        {
+        }
     }
 }

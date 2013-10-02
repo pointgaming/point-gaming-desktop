@@ -38,5 +38,17 @@ namespace PointGaming.Settings
                 sw.SetInitialTab(tabType);
             sw.ShowDialog();
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            foreach (var item in tabControlMain.Items)
+            {
+                TabItem ti = item as TabItem;
+                var settingsTab = ti.Content as ISettingsTab;
+                if (settingsTab != null)
+                    settingsTab.SettingsClosing();
+            }
+            UserDataManager.UserData.Settings.Save();
+        }
     }
 }
