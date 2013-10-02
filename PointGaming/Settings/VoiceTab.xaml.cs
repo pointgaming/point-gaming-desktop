@@ -149,13 +149,14 @@ namespace PointGaming.Settings
                 fractionGreen = (signalPower - minRed) / (centerGreen - minRed);
             else if (signalPower > centerGreen && signalPower < maxRed)
                 fractionGreen = (maxRed - signalPower) / (maxRed - centerGreen);
+            fractionGreen = Math.Sqrt(fractionGreen);// make changing green more aggressive
 
             Color color;
             if (fractionGreen <= 0.5)
                 color = Color.FromRgb(255, (byte)(255 * fractionGreen * 2), 0);
             else
                 color = Color.FromRgb((byte)(255 - 255 * (fractionGreen - 0.5) * 2), 255, 0);
-          
+
             var brush = new SolidColorBrush(color);
             var rect = (Rectangle)progressBarPower.Template.FindName("PART_Indicator", progressBarPower);
 
@@ -171,7 +172,7 @@ namespace PointGaming.Settings
             var lgBrush = new LinearGradientBrush();
             lgBrush.StartPoint = oldBrush.StartPoint;
             lgBrush.EndPoint = oldBrush.EndPoint;
-            
+
             for (int i = 0; i < sats.Length; i++)
             {
                 hslColor.Saturation = sats[i];
@@ -184,7 +185,7 @@ namespace PointGaming.Settings
             rect.Fill = lgBrush;
         }
 
-        private double[] _powerBuffer = new double[4];
+        private double[] _powerBuffer = new double[8];
         private int _powerBufferIndex = 0;
 
         private double AveragePower(double signalPower)

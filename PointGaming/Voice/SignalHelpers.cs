@@ -27,11 +27,11 @@ namespace PointGaming.Voice
         public static double CalculatePowerInDb(short[] x, int offset, int count, double sampleFrequency)
         {
             var dTime = 1.0 / sampleFrequency;
-            double energySum = 0;
+            long energySum = 0;
             int end = offset + count;
             for (int i = offset; i < end; i++)
             {
-                double cur = x[i];
+                long cur = x[i];// convert to long to prevent overflow
                 energySum += cur * cur;
             }
             var power = CalcPowerInDb(count, dTime, energySum);
@@ -44,7 +44,7 @@ namespace PointGaming.Voice
         public static double CalculatePowerInDb(byte[] x, int offset, int count, double sampleFrequency)
         {
             var dTime = 1.0 / sampleFrequency;
-            double energySum = 0;
+            long energySum = 0;
             int end = offset + count;
             int i = offset;
             while (i < end)
@@ -54,10 +54,10 @@ namespace PointGaming.Voice
                 var valueU = lo | (hi << 8);
                 var value = (short)valueU;
 
-                double cur = (double)value;// convert to double to prevent overflow
+                long cur = (long)value;// convert to long to prevent overflow
                 energySum += cur * cur;
             }
-            var power = CalcPowerInDb(count, dTime, energySum);
+            var power = CalcPowerInDb(count >> 1, dTime, energySum);
             return power;
         }
 
