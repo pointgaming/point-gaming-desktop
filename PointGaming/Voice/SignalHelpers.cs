@@ -83,14 +83,16 @@ namespace PointGaming.Voice
                 var hi = (ushort)x[i + 1];
                 var valueU = lo | (hi << 8);
                 var value = (short)valueU;
-                
-                double cur = (double)value;// convert to double to prevent overflow
-                cur *= multiplier;
-                value = (short)cur;
-                if (cur <= short.MinValue)
+
+                double ampValue = multiplier * value;
+                ampValue = Math.Round(ampValue);
+
+                if (ampValue <= short.MinValue)
                     value = short.MinValue;
-                else if (cur >= short.MaxValue)
+                else if (ampValue >= short.MaxValue)
                     value = short.MaxValue;
+                else
+                    value = (short)ampValue;
 
                 x[i] = (byte)value;
                 x[i + 1] = (byte)(value >> 8);
