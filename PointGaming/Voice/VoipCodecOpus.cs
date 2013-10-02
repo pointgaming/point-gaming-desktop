@@ -67,7 +67,7 @@ namespace PointGaming.Voice
         private int _bufferCount;
         private string _description;
         private readonly int _segmentLength;
-
+        
         public VoipCodecOpus(int sampleRate, string description)
         {
             this._segmentLength = sampleRate / 25;// 2 bytes per sample, 20ms per segment
@@ -105,14 +105,14 @@ namespace PointGaming.Voice
             return _bufferCount / _segmentLength;
         }
 
-        public byte[] GetEncoded(out short maxValue)
+        public byte[] GetEncoded(out double signalPower)
         {
             byte[] encoded;
 
             if (_bufferCount >= _segmentLength)
             {
                 int encodedLength;
-                maxValue = MixingWaveProvider.GetMaxValue(_encoderInputBuffer, _segmentLength);
+                signalPower = SignalHelpers.CalculatePowerInDb(_encoderInputBuffer, 0, _segmentLength, (double)_recordingFormat.SampleRate);
                 var encodedOut = _encoder.Encode(_encoderInputBuffer, _segmentLength, out encodedLength);
                 encoded = new byte[encodedLength];
                 Buffer.BlockCopy(encodedOut, 0, encoded, 0, encodedLength);
@@ -121,7 +121,7 @@ namespace PointGaming.Voice
             else
             {
                 encoded = new byte[0];
-                maxValue = 0;
+                signalPower = 0;
             }
             
             return encoded;

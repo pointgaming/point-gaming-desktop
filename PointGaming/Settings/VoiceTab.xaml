@@ -15,6 +15,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -22,20 +23,24 @@
         </Grid.RowDefinitions>
         
 
-        <Label Grid.Row="0" Grid.Column="0" Height="28" Content="Microphone"  VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+        <Label Grid.Row="0" Grid.Column="0" Height="28" Content="Device"  VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
         <ComboBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Height="23" Name="comboBoxRecordingDevices" SelectionChanged="comboBoxRecordingDevices_SelectionChanged" />
 
         <Label Grid.Row="1" Grid.Column="0" Height="28" Content="Hotkey" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
         <Label Grid.Row="1" Grid.Column="2" Height="28" Name="labelMicKey" Content="Left Ctrl" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Width="100" />
         <Button Grid.Row="1" Grid.Column="3" Content="Set Hotkey" Height="23" Name="buttonSetMicKey" Width="75" Click="buttonSetMicKey_Click" HorizontalAlignment="Left" />
 
-        <TextBox Grid.Row="2" Grid.ColumnSpan="4" TextWrapping="Wrap" IsReadOnly="True" Margin="0,20,0,0"
-                 Text="Press and hold microphone hotkey to test voice capture and release to playback." />
+        <Label Grid.Row="2" Grid.Column="0" Height="28" Content="Amplifier"  VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+        <Label Grid.Row="2" Grid.Column="2" Height="28" Name="labelAmplifier" Content="1.00" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Width="95" Margin="0,0,5,0" />
+        <Slider Grid.Row="2" Grid.Column="3" Height="23" Name="sliderAmplifier" Margin="0,2,0,2" ValueChanged="sliderAmplifier_ValueChanged" TickPlacement="BottomRight" TickFrequency="0.5" LargeChange="0.5" Maximum="2" Minimum="-1" />
+        
+        <TextBox Grid.Row="3" Grid.ColumnSpan="4" TextWrapping="Wrap" IsReadOnly="True" Margin="0,20,0,0"
+                 Text="Press and hold the hotkey to test voice capture. Release to playback. Adjust the amplifier setting so that the power is green while vocalizing. If there is no indication of power then verify your microphone is connected to the correct jack and the correct input device is selected." BorderThickness="0"/>
 
-        <Label Grid.Row="3" Grid.Column="0" Height="28" Content="Volume" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
-        <ProgressBar Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Name="progressBarVolume" Margin="0,2,0,2" />
-        <Label Grid.Row="4" Grid.Column="0" Height="28" Content="Time" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+        <Label Grid.Row="4" Grid.Column="0" Height="28" Content="Power" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+        <ProgressBar Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Name="progressBarPower" Margin="0,2,0,2" />
+        <Label Grid.Row="5" Grid.Column="0" Height="28" Content="Time" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
         <!--<ProgressBar Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Name="progressBarTime" Margin="0,2,0,2" />-->
-        <Slider Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Name="sliderTime"  Margin="0,2,0,2" IsEnabled="False" />
+        <Slider Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="2" Name="sliderTime"  Margin="0,2,0,2" IsEnabled="False" />
     </Grid>
 </UserControl>

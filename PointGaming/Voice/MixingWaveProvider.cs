@@ -117,7 +117,6 @@ namespace PointGaming.Voice
             var end = length;
             while (i < end)
             {
-                var sumI = i >> 1;
                 var lo = (ushort)buffer[i++];
                 var hi = (ushort)buffer[i++];
                 var valueU = lo | (hi << 8);

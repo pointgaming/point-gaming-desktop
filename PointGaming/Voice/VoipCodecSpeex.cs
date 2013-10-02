@@ -79,14 +79,14 @@ namespace PointGaming.Voice
         }
 
         byte[] outputBufferTemp;
-        public byte[] GetEncoded(out short maxValue)
+        public byte[] GetEncoded(out double signalPower)
         {
-            maxValue = 0;
+            signalPower = 0;
             int samplesToEncode = encoder.FrameSize;
             if (encoderInputBuffer.ShortBufferCount < encoder.FrameSize)
                 return new byte[0];
 
-            maxValue = MixingWaveProvider.GetMaxValue(encoderInputBuffer.ByteBuffer, samplesToEncode * 2);
+            signalPower = SignalHelpers.CalculatePowerInDb(encoderInputBuffer.ByteBuffer, 0, samplesToEncode * 2, recordingFormat.SampleRate);
             int bytesWritten = encoder.Encode(encoderInputBuffer.ShortBuffer, 0, samplesToEncode, outputBufferTemp, 0, outputBufferTemp.Length);
             byte[] encoded = new byte[bytesWritten];
             Array.Copy(outputBufferTemp, 0, encoded, 0, bytesWritten);

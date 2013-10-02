@@ -30,7 +30,9 @@ namespace PointGaming.Settings
         public string WindowBounds { get { return _WindowBounds; } set { SetProperty(this, ref _WindowBounds, value, () => WindowBounds); } }
         private int _MicTriggerKey = 118;
         public int MicTriggerKey { get { return _MicTriggerKey; } set { SetProperty(this, ref _MicTriggerKey, value, () => MicTriggerKey); } }
-        
+        private double _VoiceAmplifier = 1.0;
+        public double VoiceAmplifier { get { return _VoiceAmplifier; } set { SetProperty(this, ref _VoiceAmplifier, value, () => VoiceAmplifier); } }
+
         private SettingsSaver<SettingsUser> _saver;
 
         public static SettingsUser Load(string username)

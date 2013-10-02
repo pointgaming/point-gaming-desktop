@@ -422,12 +422,12 @@ namespace PointGaming.Voice
 
         private VoiceTester _voiceTester = null;
 
-        private void _nAudioTest_AudioRecorded(AudioHardwareSession source, byte[] data, short maxValue)
+        private void _nAudioTest_AudioRecorded(AudioHardwareSession source, byte[] data, double signalPower)
         {
             var vt = _voiceTester;
             if (vt != null)
             {
-                vt.Recorded(data, maxValue);
+                vt.Recorded(data, signalPower);
                 return;
             }
 

@@ -26,12 +26,12 @@ namespace PointGaming.Voice
         private static readonly long SampleTicks = TimeSpan.FromMilliseconds(20).Ticks;
         private AudioHardwareSession _nAudioTest;
         private readonly List<byte[]> Data = new List<byte[]>();
-        private readonly List<short> MaxValues = new List<short>();
+        private readonly List<double> PowerValues = new List<double>();
         private bool _shouldPlayback = false;
         private bool _shouldClearOnRecord = true;
         public bool IsAutoPlayback = true;
 
-        public delegate void Event(VoiceTester.EventType type, TimeSpan time, short maxValue);
+        public delegate void Event(VoiceTester.EventType type, TimeSpan time, double signalPower);
 
         public enum EventType
         {
@@ -41,14 +41,14 @@ namespace PointGaming.Voice
             PlayEnded,
         }
         public event VoiceTester.Event OnVoiceEvent;
-        private void OnEvent(EventType type, TimeSpan time, short maxValue)
+        private void OnEvent(EventType type, TimeSpan time, double signalPower)
         {
             var call = OnVoiceEvent;
             if (call != null)
             {
                 ((Action)delegate
                 {
-                    call(type, time, maxValue);
+                    call(type, time, signalPower);
                 }).BeginInvokeUI();
             }
         }
@@ -58,7 +58,7 @@ namespace PointGaming.Voice
             _nAudioTest = nAudioTest;
         }
 
-        internal void Recorded(byte[] data, short maxValue)
+        internal void Recorded(byte[] data, double signalPower)
         {
             TimeSpan dTime;
             lock (Data)
@@ -66,16 +66,16 @@ namespace PointGaming.Voice
                 if (_shouldClearOnRecord)
                 {
                     Data.Clear();
-                    MaxValues.Clear();
+                    PowerValues.Clear();
                     _shouldClearOnRecord = false;
                 }
 
                 _shouldPlayback = false;
                 Data.Add(data);
-                MaxValues.Add(maxValue);
+                PowerValues.Add(signalPower);
                 dTime = TimeSpan.FromTicks(SampleTicks * Data.Count);
             }
-            OnEvent(EventType.Recorded, dTime, maxValue);
+            OnEvent(EventType.Recorded, dTime, signalPower);
         }
 
         internal void RecordEnded()
@@ -122,19 +122,19 @@ namespace PointGaming.Voice
             while (true)
             {
                 byte[] data;
-                short maxValue;
+                double signalPower;
                 lock (Data)
                 {
                     if (offset >= Data.Count || !_shouldPlayback)
                         break;
                     data = Data[offset];
-                    maxValue = MaxValues[offset];
+                    signalPower = PowerValues[offset];
                 }
                 offset++;
 
                 _nAudioTest.AudioReceived(PlaybackStreamId, data);
                 var dTime = TimeSpan.FromTicks(SampleTicks * offset);
-                OnEvent(EventType.Played, dTime, maxValue);
+                OnEvent(EventType.Played, dTime, signalPower);
 
                 var sleepSpan = (start + dTime) - DateTime.UtcNow;
                 if (sleepSpan.Ticks > 0)

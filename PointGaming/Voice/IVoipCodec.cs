@@ -31,7 +31,7 @@ namespace PointGaming.Voice
         /// <summary>
         /// Returns a block of encoded data
         /// </summary>
-        byte[] GetEncoded(out short maxValue);
+        byte[] GetEncoded(out double signalPower);
         /// <summary>
         /// Decodes a block of audio
         /// </summary>
