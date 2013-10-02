@@ -22,6 +22,15 @@ namespace PointGaming.Voice
 {
     public class VoipSession : IDisposable
     {
+        public static void VoipDebug(string s)
+        {
+            //Console.WriteLine(s);
+        }
+        public static void VoipDebug(string s, params object[] os)
+        {
+            VoipDebug(string.Format(s, os));
+        }
+
         private UserDataManager _userData;
         private AudioHardwareSession _nAudioTest;
         private VoipClient _audioChatClient;
@@ -290,7 +299,7 @@ namespace PointGaming.Voice
                     ReceivedLeave((VoipMessageLeaveRoom)message);
                     break;
                 default:
-                    Console.WriteLine("Unhandled message type: " + message.MessageType);
+                    VoipSession.VoipDebug("Unhandled message type: " + message.MessageType);
                     break;
             }
         }

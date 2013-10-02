@@ -69,21 +69,21 @@ namespace PointGaming.Voice
                 var keyy = HardcodedKey.BytesToHex();
                 var ivv = HardcodedIv.BytesToHex();
 
-                Console.WriteLine("plainr: {0}", original);
-                Console.WriteLine("plainx: {0}", originalData.BytesToHex());
-                Console.WriteLine("cryptx: {0}", encrypted.BytesToHex());
-                Console.WriteLine("plainx: {0}", roundtripData.BytesToHex());
-                Console.WriteLine("plainr: {0}", roundtrip);
+                VoipSession.VoipDebug("plainr: {0}", original);
+                VoipSession.VoipDebug("plainx: {0}", originalData.BytesToHex());
+                VoipSession.VoipDebug("cryptx: {0}", encrypted.BytesToHex());
+                VoipSession.VoipDebug("plainx: {0}", roundtripData.BytesToHex());
+                VoipSession.VoipDebug("plainr: {0}", roundtrip);
 
                 var opensslRes = File.ReadAllBytes("C:\\OpenSSL-Win32\\bin\\test\\test.bin");
                 var opensslRess = opensslRes.BytesToHex();
 
 
-                Console.WriteLine("Equal:      {0}", original == roundtrip);
+                VoipSession.VoipDebug("Equal:      {0}", original == roundtrip);
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error: {0}", e.Message);
+                VoipSession.VoipDebug("Error: {0}", e.Message);
             }
         }
 

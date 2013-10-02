@@ -25,7 +25,7 @@ namespace PointGaming.Voice
                 return false;
             IsSuccess = buffer[position++] == 1;
 
-            Console.WriteLine(string.Format("rx join: roomname[{0}] issuccess[{1}]", RoomName, IsSuccess));
+            VoipSession.VoipDebug(string.Format("rx join: roomname[{0}] issuccess[{1}]", RoomName, IsSuccess));
 
             return true;
         }
@@ -55,7 +55,7 @@ namespace PointGaming.Voice
             position = cryptoStart + encryptedData.Length;
 
             var scrypt = buffer.BytesToHex(cryptoStart, position - cryptoStart);
-            Console.WriteLine("tx join: uid[{0}] key[{1}] iv[{2}] plain[{3}] crypt[{4}]", suid, skey, siv, splain, scrypt);
+            VoipSession.VoipDebug("tx join: uid[{0}] key[{1}] iv[{2}] plain[{3}] crypt[{4}]", suid, skey, siv, splain, scrypt);
 
             return position;
         }
