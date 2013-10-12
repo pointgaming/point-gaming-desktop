@@ -36,7 +36,7 @@ namespace PointGaming.Voice
         private VoipClient _audioChatClient;
         private object _audioChatSynch = new object();
         private bool _hasBeenDisposed = false;
-        
+
         public event Action<int> RecordingDeviceChanged;
 
         public DispatcherTimer _udpKeepAliveTimer;
@@ -150,7 +150,7 @@ namespace PointGaming.Voice
             _joinedRooms.Remove(audioRoom.AudioRoomId);
             SendLeaveRoom(roomEx);
         }
-        
+
         public VoipSession(UserDataManager userData)
         {
             _userData = userData;
@@ -160,6 +160,7 @@ namespace PointGaming.Voice
             _nAudioTest.AudioRecorded += _nAudioTest_AudioRecorded;
             _nAudioTest.AudioRecordEnded += _nAudioTest_AudioRecordEnded;
             _nAudioTest.InputDeviceNumberChanged += _nAudioTest_InputDeviceNumberChanged;
+            _nAudioTest.AudioSystemTick += _nAudioTest_AudioSystemTick;
 
             _udpKeepAliveTimer = new DispatcherTimer();
             _udpKeepAliveTimer.Interval = TimeSpan.FromSeconds(55);
@@ -203,7 +204,7 @@ namespace PointGaming.Voice
         private void _udpKeepAliveTimer_Tick(object sender, EventArgs e)
         {
             CheckJoinTimeouts();
-            
+
             foreach (var room in _joinedRooms.Values)
                 SendJoinRoom(room);
         }
@@ -218,7 +219,7 @@ namespace PointGaming.Voice
             _audioChatClient.Send(message);
             AddJoinRoomTimeout(roomEx);
         }
-        
+
         private void SendLeaveRoom(AudioRoomEx roomEx)
         {
             var message = new VoipMessageLeaveRoom
@@ -236,7 +237,7 @@ namespace PointGaming.Voice
             if (call != null)
                 call(index);
         }
-        
+
         public void Dispose()
         {
             _hasBeenDisposed = true;
@@ -256,7 +257,7 @@ namespace PointGaming.Voice
 
             _udpKeepAliveTimer.Stop();
         }
-        
+
         public void SetAudioInputDevice(int deviceNumber)
         {
             if (!_nAudioTest.IsEnabled)
@@ -303,7 +304,7 @@ namespace PointGaming.Voice
                     break;
             }
         }
-        
+
         private void ReceivedLeave(VoipMessageLeaveRoom message)
         {
             AudioRoomEx roomEx;
@@ -392,12 +393,50 @@ namespace PointGaming.Voice
                 roomEx.R.OnVoiceConnectionChanged(isConnected);
             })).BeginInvokeUI();
         }
-            
+
         private void ReceivedVoice(VoipMessageVoice voiceMessage)
         {
             if (voiceMessage.FromUserId == _userData.User.Id)
                 return;
 
+            lock (_messageOrderers)
+            {
+                VoiceOrderer vo;
+                if (!_messageOrderers.TryGetValue(voiceMessage.FromUserId, out vo))
+                {
+                    vo = new VoiceOrderer(this);
+                    _messageOrderers[voiceMessage.FromUserId] = vo;
+                }
+                vo.AddMessage(voiceMessage);
+            }
+        }
+
+        void _nAudioTest_AudioSystemTick()
+        {
+            lock (_messageOrderers)
+            {
+                var nowPrecise = DateTimePrecise.UtcNow;
+                foreach (var item in _messageOrderers.Values)
+                    item.Process(nowPrecise);
+            }
+
+            // incase a end voice udp packet is never received
+            var stops = new List<Tuple<PgUser, AudioRoomEx>>();
+            var stopThreshold = DateTime.UtcNow - TimeSpan.FromSeconds(1);
+            lock (_receivedTimes)
+            {
+                foreach (var kvp in _receivedTimes)
+                {
+                    if (kvp.Value <= stopThreshold)
+                        stops.Add(kvp.Key);
+                }
+            }
+            foreach (var stop in stops)
+                Stop(stop.Item1, stop.Item2);
+        }
+
+        private void PlayVoice(VoipMessageVoice voiceMessage)
+        {
             var isEnd = voiceMessage.Audio.Length == 0;
 
             //App.LogLine(obj.FromUserId + " " + obj.MessageNumber + " " + obj.Audio.Length);
@@ -416,14 +455,110 @@ namespace PointGaming.Voice
 
             if (isEnd)
             {
-                _nAudioTest.AudioReceiveEnded(voiceMessage.FromUserId);
-                roomEx.OnVoiceStopped(user);
+                Stop(user, roomEx);
             }
             else
             {
                 if (isListening)
-                    _nAudioTest.AudioReceived(voiceMessage.FromUserId, voiceMessage.Audio);
+                    _nAudioTest.AudioReceived(user.Id, voiceMessage.Audio);
                 roomEx.OnVoiceSent(user);
+                lock (_receivedTimes)
+                {
+                    _receivedTimes[new Tuple<PgUser, AudioRoomEx>(user, roomEx)] = DateTime.UtcNow;
+                }
+            }
+        }
+
+        private void Stop(PgUser user, AudioRoomEx roomEx)
+        {
+            _nAudioTest.AudioReceiveEnded(user.Id);
+            roomEx.OnVoiceStopped(user);
+            lock (_receivedTimes)
+            {
+                _receivedTimes.Remove(new Tuple<PgUser, AudioRoomEx>(user, roomEx));
+            }
+        }
+
+        private readonly Dictionary<Tuple<PgUser, AudioRoomEx>, DateTime> _receivedTimes = new Dictionary<Tuple<PgUser, AudioRoomEx>, DateTime>();
+        private readonly Dictionary<string, VoiceOrderer> _messageOrderers = new Dictionary<string, VoiceOrderer>();
+
+        private class VoiceOrderer
+        {
+            private readonly VoipSession _voipSession;
+            private DateTime _lastMessageTime;
+            private LinkedList<VoipMessageVoice> _voices = new LinkedList<VoipMessageVoice>();
+
+            private TimeSpan _minTransmittionDelay = TimeSpan.FromDays(365);
+            private TimeSpan _maxTransmittionDelay = TimeSpan.FromDays(-365);
+            private TimeSpan _jitterTime;
+
+            private static readonly TimeSpan MaxLag = TimeSpan.FromSeconds(2);
+
+            public VoiceOrderer(VoipSession vs)
+            {
+                _voipSession = vs;
+            }
+
+            public void AddMessage(VoipMessageVoice item)
+            {
+                var prev = _voices.Last;
+                while (prev != null)
+                {
+                    if (prev.Value.TxTime < item.TxTime)
+                        break;
+                    prev = prev.Previous;
+                }
+                if (prev != null)
+                    _voices.AddAfter(prev, item);
+                else
+                    _voices.AddFirst(item);
+
+                var transmittionDelay = (item.RxTime - item.TxTime);
+
+                if (transmittionDelay < _minTransmittionDelay)
+                {
+                    _minTransmittionDelay = transmittionDelay;
+                    _jitterTime = _maxTransmittionDelay - _minTransmittionDelay;
+                    if (_jitterTime > MaxLag) _jitterTime = MaxLag;
+                }
+                if (transmittionDelay > _maxTransmittionDelay)
+                {
+                    _maxTransmittionDelay = transmittionDelay;
+                    _jitterTime = _maxTransmittionDelay - _minTransmittionDelay;
+                    if (_jitterTime > MaxLag) _jitterTime = MaxLag;
+                }
+            }
+
+            public void Process(DateTime nowPrecise)
+            {
+                // if the two computers have synchronized clocks, then:
+                // minTransmittionDelay is the time difference of the fastest transmittion
+                // maxTransmittionDelay is the time difference of the slowest transmittion
+
+                // if the tranmitter had a clock that was behind the recipient's, then it would just seem like the delay was larger
+                // if the transmitter had a clock that was ahead of the recipient's, it would make the delay smaller, even negative!
+
+                // if there was no jitter, then we'd want to play the voice as soon as it was received.
+
+                // but since there is jitter, we need to schedule a voice message to play.
+                while (_voices.First != null)
+                {
+                    var vm = _voices.First.Value;
+                    var scheduleTime = vm.TxTime + _minTransmittionDelay + _jitterTime;
+
+                    if (scheduleTime >= nowPrecise)
+                    {
+                        _voices.RemoveFirst();
+
+                        if (vm.TxTime != _lastMessageTime)// prevent playing duplicate udp packets
+                        {
+                            _voipSession.PlayVoice(vm);
+                            _lastMessageTime = vm.TxTime;
+                        }
+                    }
+                    else
+                        break;
+                }
             }
         }
 
@@ -458,7 +593,7 @@ namespace PointGaming.Voice
                 Audio = data,
                 IsTeamOnly = _speakingRoomTeamOnly,
             };
-            
+
             _audioChatClient.Send(message);
             if (isFirst)
                 _speakingRoom.OnVoiceSent(_userData.User);

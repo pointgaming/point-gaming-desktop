@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Net;
@@ -7,6 +8,35 @@ using System.Net.Sockets;
 
 namespace PointGaming.Voice
 {
+    class DateTimePrecise
+    {
+        private static long _startTick;
+        private static Stopwatch _stopWatch;
+
+        static DateTimePrecise()
+        {
+            _startTick = DateTime.UtcNow.Ticks;
+            _stopWatch = Stopwatch.StartNew();
+        }
+
+        public static long UtcNowTicks
+        {
+            get
+            {
+                return _startTick + _stopWatch.ElapsedTicks;
+            }
+        }
+
+        public static DateTime UtcNow
+        {
+            get
+            {
+                return new DateTime(_startTick + _stopWatch.ElapsedTicks);
+            }
+        }
+    }
+
+
     class VoipMessageVoice : IVoipMessage
     {
         public const byte MType = 3;
@@ -15,9 +45,14 @@ namespace PointGaming.Voice
         public string FromUserId;
         public bool IsTeamOnly;
         public byte[] Audio;
-
+        public DateTime RxTime;
+        public DateTime TxTime;
+        
         public bool Read(byte[] buffer, int position, int length)
         {
+            RxTime = DateTimePrecise.UtcNow;
+            var rxkTicks = (uint)(RxTime.Ticks / 1000);
+
             if (!VoipSerialization.ReadRawHex(buffer, length, ref position, 12,  out RoomName))
                 return false;
 
@@ -28,16 +63,25 @@ namespace PointGaming.Voice
                 return false;
             IsTeamOnly = buffer[position++] == 1;
 
+            uint txkTicks;
+            if (!VoipSerialization.ReadUInt(buffer, length, ref position, out txkTicks))
+                return false;
+            var dTime = (int)(txkTicks - rxkTicks);
+            TxTime = RxTime.AddTicks(1000L * (long)dTime);
+            
             if (!VoipSerialization.ReadRemainingRawBytes(buffer, length, ref position, out Audio))
                 return false;
 
-            VoipSession.VoipDebug("rx audio: rn " + RoomName + " fuid " + FromUserId + " to " + IsTeamOnly + " audio " + Audio.BytesToHex());
+            VoipSession.VoipDebug("rx audio: rn " + RoomName + " fuid " + FromUserId + " @ " + TxTime + " to " + IsTeamOnly + " audio " + Audio.BytesToHex());
 
             return true;
         }
 
         public int Write(byte[] buffer, byte[] key)
         {
+            TxTime = DateTimePrecise.UtcNow;
+            var txkTicks = (uint)(TxTime.Ticks / 1000);
+
             var position = 0;
             VoipSerialization.WriteRawGuid(buffer, ref position, FromUserId);
             var iv = VoipCrypt.GenerateIv();
@@ -52,6 +96,7 @@ namespace PointGaming.Voice
             VoipSerialization.WriteRawHex(buffer, ref position, RoomName);
 
             buffer[position++] = (byte)(IsTeamOnly ? 1 : 0);
+            VoipSerialization.WriteUInt(buffer, ref position, txkTicks);
             var audioStart = position;
             VoipSerialization.WriteRawBytes(buffer, ref position, Audio);
 

@@ -14,8 +14,7 @@
         Width="850" Height="730">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BtVC" />
-        <pg:InverseBooleanToVisibilityConverter x:Key="IBtVC" />
-        <BitmapImage x:Key="ImageVoiceDisabled" UriSource="/PointGaming;component/Resources/VoiceDisabled.png" />
+        <pgr:GameRoomSpeakingConverter x:Key="SpeakingConverter" />
     </Window.Resources>
     
     <i:Interaction.Triggers>
@@ -210,8 +209,16 @@
                 <ListView.Resources>
                     <DataTemplate DataType="{x:Type pg:PgUser}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Height="15" Width="15" Source="{Binding SpeakIcon}" Visibility="{Binding ElementName=This, Path=DataContext.IsVoiceConnected, Converter={StaticResource BtVC}}" />
-                            <Image Height="15" Width="15" Source="{StaticResource ImageVoiceDisabled}" Visibility="{Binding ElementName=This, Path=DataContext.IsVoiceConnected, Converter={StaticResource IBtVC}}" />
+                            <Image Height="15" Width="15">
+                                <Image.Source>
+                                    <MultiBinding Converter="{StaticResource SpeakingConverter}">
+                                        <Binding Path="SpeakingRoomId" />
+                                        <Binding Path="IsMuted" />
+                                        <Binding ElementName="This" Path="DataContext.AudioRoomId" />
+                                        <Binding ElementName="This" Path="DataContext.IsVoiceConnected" />
+                                    </MultiBinding>
+                                </Image.Source>
+                            </Image>
                             
                             <Label Content="{Binding DisplayName}" HorizontalAlignment="Stretch" Width="Auto">
                                 <i:Interaction.Triggers>

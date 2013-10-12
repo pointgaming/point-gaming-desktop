@@ -22,6 +22,7 @@ namespace PointGaming.Voice
         public event AudioAvailable AudioRecorded;
         public event Action AudioRecordEnded;
         public event Action<int> InputDeviceNumberChanged;
+        public event Action AudioSystemTick;
 
         private WaveIn waveIn;
         private WaveOut waveOut;
@@ -213,6 +214,10 @@ namespace PointGaming.Voice
                 var encoded = codec.GetEncoded(out signalPower);
                 OnAudioRecorded(encoded, signalPower);
             }
+
+            var call = AudioSystemTick;
+            if (call != null)
+                call();
         }
 
         private DateTime _trickleTimeout;

@@ -7,6 +7,18 @@ namespace PointGaming.Voice
 {
     static class VoipSerialization
     {
+        public static bool ReadUInt(byte[] buffer, int bufferLength, ref int position, out uint value)
+        {
+            int v;
+            var res = ReadInt(buffer, bufferLength, ref position, out v);
+            value = (uint)v;
+            return res;
+        }
+        public static void WriteUInt(byte[] buffer, ref int position, uint value)
+        {
+            WriteInt(buffer, ref position, (int)value);
+        }
+
         public static bool ReadInt(byte[] buffer, int bufferLength, ref int position, out int value)
         {
             value = 0;

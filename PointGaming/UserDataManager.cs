@@ -68,6 +68,8 @@ namespace PointGaming
         }
         public void ChatWith(PgUser friend)
         {
+            if (friend == User)
+                return;
             _sessionManager.ChatWith(friend);
         }
         public void CreateChatroomWith(PgUser a, PgUser b)

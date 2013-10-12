@@ -43,7 +43,6 @@ namespace PointGaming.Chat
             _autoScroller = new AutoScroller(flowDocumentLog);
             PropertyChangedEventManager.AddListener(UserDataManager.UserData.Settings, this, "PropertyChanged");
             WindowTreeManager = new WindowTreeManager(this, HomeWindow.Home.WindowTreeManager);
-            _userData.Voip.JoinRoom(this);
         }
 
         public bool IsVoiceTeamOnly { get { return false; } }
@@ -126,6 +125,8 @@ namespace PointGaming.Chat
 
             _session.ChatMessageReceived += ChatMessages_CollectionChanged;
             _session.SendMessageFailed += MessageSendFailed;
+
+            _userData.Voip.JoinRoom(this);
         }
 
         void ChatMessages_CollectionChanged(ChatMessage item)

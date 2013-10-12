@@ -57,6 +57,7 @@ namespace PointGaming.GameRoom
                 _window = new GameRoomWindow();
                 _window.DataContext = modelView;
                 _window.Owner = _lobbySession.Window;
+                _window.Closing += _window_Closing;
 
                 LoadBets();
                 LoadMatch();
@@ -64,6 +65,12 @@ namespace PointGaming.GameRoom
 
             _window.WindowTreeManager.Parent = _lobbySession.Window.WindowTreeManager;
             _window.ShowNormal(shouldActivate);
+        }
+
+        void _window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            _window = null;
+            _lobbySession.DisplayToggled -= _lobbySession_DisplayToggled;
         }
 
         public void ShowLobby(bool shouldActivate)
@@ -136,11 +143,7 @@ namespace PointGaming.GameRoom
         public void OnDestroy(GameRoomPoco poco)
         {
             if (_window != null)
-            {
                 _window.Close();
-                _window = null;
-                _lobbySession.DisplayToggled -= _lobbySession_DisplayToggled;
-            }
         }
 
         #region match

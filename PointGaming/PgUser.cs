@@ -295,47 +295,19 @@ namespace PointGaming
             get { return _IsMuted; }
             set
             {
-                if (SetProperty(ref _IsMuted, value, () => IsMuted))
-                    OnPropertyChanged(() => SpeakIcon);
+                SetProperty(ref _IsMuted, value, () => IsMuted);
+                    
             }
         }
-        private bool _IsSpeaking;
-        public bool IsSpeaking
+        private string _SpeakingRoomId;
+        public string SpeakingRoomId
         {
-            get { return _IsSpeaking; }
+            get { return _SpeakingRoomId; }
             set
             {
-                if (SetProperty(ref _IsSpeaking, value, () => IsSpeaking))
-                    OnPropertyChanged(() => SpeakIcon);
+                SetProperty(ref _SpeakingRoomId, value, () => SpeakingRoomId);
             }
         }
-
-        public System.Windows.Media.ImageSource SpeakIcon
-        {
-            get {
-                var assembly = typeof(PgUser).Assembly;
-                var defaultUri = "pack://application:,,,/" + assembly.GetName().Name + ";component/Resources/";
-
-                if (IsSpeaking)
-                {
-                    if (IsMuted)
-                        defaultUri += "VoiceMutedTalking.png";
-                    else
-                        defaultUri += "VoiceEnabledTalking.png";
-                }
-                else
-                {
-                    if (IsMuted)
-                        defaultUri += "VoiceMuted.png";
-                    else
-                        defaultUri += "VoiceEnabled.png";
-                }
-
-                var source = new System.Windows.Media.ImageSourceConverter().ConvertFromString(defaultUri) as System.Windows.Media.ImageSource;
-                return source;
-            }
-        }
-
 
         public void ViewProfile()
         {

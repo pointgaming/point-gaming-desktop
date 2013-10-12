@@ -33,7 +33,7 @@ namespace PointGaming.GameRoom
                 return _groupedMembership; 
             }
         }
-
+        
         private string _MembershipCount = "Total (0)";
         public string MembershipCount
         {
@@ -378,11 +378,12 @@ namespace PointGaming.GameRoom
 
         public void OnVoiceStarted(PgUser user)
         {
-            user.IsSpeaking = true;
+            user.SpeakingRoomId = AudioRoomId;
         }
         public void OnVoiceStopped(PgUser user)
         {
-            user.IsSpeaking = false;
+            if (user.SpeakingRoomId == AudioRoomId)
+                user.SpeakingRoomId = null;
         }
         public void OnVoiceConnectionChanged(bool isConnected)
         {
@@ -455,4 +456,49 @@ namespace PointGaming.GameRoom
             user.IsMuted = !user.IsMuted;
         }
     }
+
+
+    public class GameRoomSpeakingConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            string speakingRoomId = (string)values[0];
+            bool isMuted = (bool)values[1];
+            string audioRoomId = (string)values[2];
+            bool isConnected = (bool)values[3];
+
+            var isSpeaking = speakingRoomId == audioRoomId;
+            var assembly = typeof(GameRoomSpeakingConverter).Assembly;
+            var defaultUri = "pack://application:,,,/" + assembly.GetName().Name + ";component/Resources/";
+
+            if (!isConnected)
+            {
+                defaultUri += "VoiceDisabled.png";
+            }
+            else if (isSpeaking)
+            {
+                if (isMuted)
+                    defaultUri += "VoiceMutedTalking.png";
+                else
+                    defaultUri += "VoiceEnabledTalking.png";
+            }
+            else
+            {
+                if (isMuted)
+                    defaultUri += "VoiceMuted.png";
+                else
+                    defaultUri += "VoiceEnabled.png";
+            }
+
+            var source = new System.Windows.Media.ImageSourceConverter().ConvertFromString(defaultUri) as System.Windows.Media.ImageSource;
+            return source;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
 }
