@@ -399,26 +399,27 @@ namespace PointGaming.Voice
             if (voiceMessage.FromUserId == _userData.User.Id)
                 return;
 
+            VoiceOrderer vo;
             lock (_messageOrderers)
             {
-                VoiceOrderer vo;
                 if (!_messageOrderers.TryGetValue(voiceMessage.FromUserId, out vo))
                 {
                     vo = new VoiceOrderer(this);
                     _messageOrderers[voiceMessage.FromUserId] = vo;
-                }
-                vo.AddMessage(voiceMessage);
+                }   
             }
+            vo.AddMessage(voiceMessage);
         }
 
         void _nAudioTest_AudioSystemTick()
         {
+            var todos = new List<VoiceOrderer>();
             lock (_messageOrderers)
             {
-                var nowPrecise = DateTimePrecise.UtcNow;
-                foreach (var item in _messageOrderers.Values)
-                    item.Process(nowPrecise);
+                todos.AddRange(_messageOrderers.Values);
             }
+            foreach (var item in todos)
+                item.Process();
 
             // incase a end voice udp packet is never received
             var stops = new List<Tuple<PgUser, AudioRoomEx>>();
@@ -482,83 +483,114 @@ namespace PointGaming.Voice
         private readonly Dictionary<Tuple<PgUser, AudioRoomEx>, DateTime> _receivedTimes = new Dictionary<Tuple<PgUser, AudioRoomEx>, DateTime>();
         private readonly Dictionary<string, VoiceOrderer> _messageOrderers = new Dictionary<string, VoiceOrderer>();
 
+
         private class VoiceOrderer
         {
+            private static readonly byte[] _static = new byte[]
+            {
+                72, 169, 123, 76, 4, 105, 125, 8, 56, 83, 146, 204,
+                177, 123, 128, 246, 196, 42, 200, 215, 148, 61, 179,
+                115, 102, 107, 152, 217, 9, 202, 147, 226, 240, 173,
+                131, 191, 150, 94, 168, 177, 43, 36, 224, 167, 235,
+                73, 121, 80, 126, 18, 41, 216, 60, 250, 185, 170,
+                164, 118, 31, 23, 69, 8, 27, 96, 29, 204, 120, 22,
+                32, 119, 150, 50, 64
+            };
+
             private readonly VoipSession _voipSession;
-            private DateTime _lastMessageTime;
-            private LinkedList<VoipMessageVoice> _voices = new LinkedList<VoipMessageVoice>();
+            private readonly VoipMessageVoice[] _voices = new VoipMessageVoice[100];// 20ms per: 2 seconds total
 
-            private TimeSpan _minTransmittionDelay = TimeSpan.FromDays(365);
-            private TimeSpan _maxTransmittionDelay = TimeSpan.FromDays(-365);
-            private TimeSpan _jitterTime;
-
-            private static readonly TimeSpan MaxLag = TimeSpan.FromSeconds(2);
+            private int _nextPlayNumber = 0;
+            private int _maxPlayNumber = -1;
+            private int _jitterNumber = 0;
+            private int _jitterNumberActive = 10;// put 200ms delay on the first transmittion until jitter is figured out better
+            private int _jitterWait;
 
             public VoiceOrderer(VoipSession vs)
             {
                 _voipSession = vs;
             }
 
+            private DateTime _lastReceivedTime;
+            private VoipMessageVoice _firstItem;
+
             public void AddMessage(VoipMessageVoice item)
             {
-                var prev = _voices.Last;
-                while (prev != null)
+                lock (_voices)
                 {
-                    if (prev.Value.TxTime < item.TxTime)
-                        break;
-                    prev = prev.Previous;
-                }
-                if (prev != null)
-                    _voices.AddAfter(prev, item);
-                else
-                    _voices.AddFirst(item);
+                    var now = DateTime.UtcNow;
 
-                var transmittionDelay = (item.RxTime - item.TxTime);
+                    if (now - _lastReceivedTime > TimeSpan.FromMilliseconds(500))
+                    {
+                        if (_maxPlayNumber > 100)
+                            _jitterNumberActive = _jitterNumber;
+                        _nextPlayNumber = 0;
+                        _maxPlayNumber = -1;
+                        _jitterNumber = 0;
+                        _jitterWait = 0;
+                        _firstItem = item;
+                    }
+                    _lastReceivedTime = now;
 
-                if (transmittionDelay < _minTransmittionDelay)
-                {
-                    _minTransmittionDelay = transmittionDelay;
-                    _jitterTime = _maxTransmittionDelay - _minTransmittionDelay;
-                    if (_jitterTime > MaxLag) _jitterTime = MaxLag;
-                }
-                if (transmittionDelay > _maxTransmittionDelay)
-                {
-                    _maxTransmittionDelay = transmittionDelay;
-                    _jitterTime = _maxTransmittionDelay - _minTransmittionDelay;
-                    if (_jitterTime > MaxLag) _jitterTime = MaxLag;
+                    var expectedNumber = _maxPlayNumber + 1;
+                    var diff = expectedNumber - item.MessageNumber;
+                    if (diff != 0)
+                    {
+                        if (diff < 0)
+                            diff *= -1;
+                        if (diff > _jitterNumber)
+                        {
+                            if (diff > _voices.Length - 10)
+                                diff = _voices.Length - 10;
+                            _jitterNumber = diff;
+                        }
+                    }
+
+                    if (item.MessageNumber > _maxPlayNumber)
+                    {
+                        _maxPlayNumber = item.MessageNumber;
+                    }
+
+                    var index = item.MessageNumber % _voices.Length;
+                    _voices[index] = item;
                 }
             }
 
-            public void Process(DateTime nowPrecise)
+            public void Process()
             {
-                // if the two computers have synchronized clocks, then:
-                // minTransmittionDelay is the time difference of the fastest transmittion
-                // maxTransmittionDelay is the time difference of the slowest transmittion
+                VoipMessageVoice cur;
 
-                // if the tranmitter had a clock that was behind the recipient's, then it would just seem like the delay was larger
-                // if the transmitter had a clock that was ahead of the recipient's, it would make the delay smaller, even negative!
-
-                // if there was no jitter, then we'd want to play the voice as soon as it was received.
-
-                // but since there is jitter, we need to schedule a voice message to play.
-                while (_voices.First != null)
+                lock (_voices)
                 {
-                    var vm = _voices.First.Value;
-                    var scheduleTime = vm.TxTime + _minTransmittionDelay + _jitterTime;
-
-                    if (scheduleTime >= nowPrecise)
+                    if (_nextPlayNumber > _maxPlayNumber)
+                        return;
+                    if (_nextPlayNumber == 0)
                     {
-                        _voices.RemoveFirst();
-
-                        if (vm.TxTime != _lastMessageTime)// prevent playing duplicate udp packets
-                        {
-                            _voipSession.PlayVoice(vm);
-                            _lastMessageTime = vm.TxTime;
-                        }
+                        _jitterWait++;
+                        if (_jitterWait <= _jitterNumberActive)
+                            return;
                     }
-                    else
-                        break;
+
+                    var ix = _nextPlayNumber % _voices.Length;
+                    cur = _voices[ix];
+                    _voices[ix] = null;
+
+                    if (cur == null)
+                    {
+                        cur = new VoipMessageVoice
+                        {
+                            Audio = _static,
+                            FromUserId = _firstItem.FromUserId,
+                            IsTeamOnly = _firstItem.IsTeamOnly,
+                            MessageNumber = _nextPlayNumber,
+                            RoomName = _firstItem.RoomName,
+                        };
+                    }
+
+                    _nextPlayNumber++;
                 }
+
+                _voipSession.PlayVoice(cur);
             }
         }
 
@@ -566,6 +598,7 @@ namespace PointGaming.Voice
         private bool _speakingRoomTeamOnly;
 
         private VoiceTester _voiceTester = null;
+        private int _messageNumber;
 
         private void _nAudioTest_AudioRecorded(AudioHardwareSession source, byte[] data, double signalPower)
         {
@@ -578,7 +611,10 @@ namespace PointGaming.Voice
 
             var isFirst = _speakingRoom == null;
             if (isFirst)
+            {
                 _speakingRoom = GetSpeakingRoom();
+                _messageNumber = 0;
+            }
 
             if (_speakingRoom == null)
                 return;
@@ -592,6 +628,7 @@ namespace PointGaming.Voice
                 FromUserId = _userData.User.Id,
                 Audio = data,
                 IsTeamOnly = _speakingRoomTeamOnly,
+                MessageNumber = _messageNumber++,
             };
 
             _audioChatClient.Send(message);
@@ -617,6 +654,7 @@ namespace PointGaming.Voice
                 FromUserId = _userData.User.Id,
                 Audio = new byte[0],
                 IsTeamOnly = _speakingRoomTeamOnly,
+                MessageNumber = _messageNumber++,
             };
 
             _audioChatClient.Send(message);
