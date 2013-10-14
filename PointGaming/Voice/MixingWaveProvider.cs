@@ -7,40 +7,81 @@ using NAudio.Wave;
 
 namespace PointGaming.Voice
 {
+    //class SineWaveProvider : IWaveProvider
+    //{
+    //    private double _frequency;
+    //    private double _phaseInverse;
+    //    private WaveFormat _waveFormat;
+
+    //    public WaveFormat WaveFormat { get { return _waveFormat; } }
+
+    //    public SineWaveProvider(int sampleRate, double frequency)
+    //    {
+    //        _waveFormat = new WaveFormat(sampleRate, 16, 1);
+    //        _frequency = frequency;
+
+    //        var period = sampleRate / frequency;
+    //        _phaseInverse = 2.0 * Math.PI / period;
+    //    }
+
+    //    private long _time;
+
+    //    public int Read(byte[] buffer, int offset, int count)
+    //    {
+    //        int end = count >> 1;
+    //        for (int i = 0; i < end; i++)
+    //        {
+    //            var time = (_time + i) * _phaseInverse;
+    //            var valueD = 1000 * Math.Cos(time);
+    //            var value = (short)valueD;
+    //            buffer[offset++] = (byte)(value);
+    //            buffer[offset++] = (byte)(value >> 8);
+    //        }
+    //        _time += end;
+
+    //        return count;
+    //    }
+    //}
+
+
     class MixingWaveProvider : IWaveProvider
     {
-        private List<IWaveProvider> _inputs = new List<IWaveProvider>();
+        private Dictionary<string, IWaveProvider> _inputs = new Dictionary<string, IWaveProvider>();
         private WaveFormat _waveFormat;
 
         public MixingWaveProvider(int sampleRate)
         {
             _waveFormat = new WaveFormat(sampleRate, 16, 1);
+            //_inputs.Add("test", new SineWaveProvider(sampleRate, 800));
         }
 
         public WaveFormat WaveFormat { get { return _waveFormat; } }
 
-        public void AddStream(IWaveProvider waveProvider)
-        {
-            if (waveProvider.WaveFormat.BitsPerSample != 16)
-                throw new ArgumentException("Only 16 bit audio currently supported", "waveProvider.WaveFormat");
-            if (!waveProvider.WaveFormat.Equals(_waveFormat))
-                throw new ArgumentException("All incoming channels must have the same format", "waveProvider.WaveFormat");
 
+        public void AddSamples(string id, byte[] data, int offset, int count)
+        {
             lock (_inputs)
             {
-                _inputs.Add(waveProvider);
+                IWaveProvider wp;
+                if (!_inputs.TryGetValue(id, out wp))
+                {
+                    wp = new BufferedWaveProvider(_waveFormat);
+                    _inputs[id] = wp;
+                }
+                (wp as BufferedWaveProvider).AddSamples(data, offset, count);
             }
         }
-        public void RemoveStream(IWaveProvider waveProvider)
+
+        public void RemoveStream(string id)
         {
             lock (_inputs)
             {
-                this._inputs.Remove(waveProvider);
+                this._inputs.Remove(id);
             }
         }
 
         private readonly byte[] _inputBuffer = new byte[32000];
-        private readonly float[] _sumBuffer = new float[16000];
+        private readonly int[] _sumBuffer = new int[16000];
 
         public int Read(byte[] buffer, int offset, int count)
         {
@@ -56,7 +97,7 @@ namespace PointGaming.Voice
 
             lock (_inputs)
             {
-                foreach (var input in _inputs)
+                foreach (var input in _inputs.Values)
                 {
                     int readFromThisStream = input.Read(_inputBuffer, 0, count);
                     if (readFromThisStream > bytesRead)

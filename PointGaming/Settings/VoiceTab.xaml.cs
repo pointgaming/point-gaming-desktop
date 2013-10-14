@@ -51,6 +51,9 @@ namespace PointGaming.Settings
         private void comboBoxRecordingDevices_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var deviceIndex = comboBoxRecordingDevices.SelectedIndex;
+            if (deviceIndex == App.Settings.AudioInputDeviceIndex)
+                return;
+
             App.Settings.AudioInputDeviceIndex = deviceIndex;
             App.Settings.Save();
             UserDataManager.UserData.Voip.SetAudioInputDevice(deviceIndex);

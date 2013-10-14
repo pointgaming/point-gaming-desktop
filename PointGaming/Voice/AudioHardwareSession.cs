@@ -159,8 +159,6 @@ namespace PointGaming.Voice
             }
         }
 
-        private Dictionary<string, BufferedWaveProvider> _myStreams = new Dictionary<string, BufferedWaveProvider>();
-
         public void AudioReceived(string streamId, byte[] b)
         {
             byte[] decoded;
@@ -176,28 +174,14 @@ namespace PointGaming.Voice
             {
                 if (waveOut == null)
                     return;
-
-                BufferedWaveProvider wp;
-                if (!_myStreams.TryGetValue(streamId, out wp))
-                {
-                    wp = new BufferedWaveProvider(codec.RecordFormat);
-                    wp.DiscardOnBufferOverflow = true;
-                    waveProvider.AddStream(wp);
-                    _myStreams[streamId] = wp;
-                }
-                wp.AddSamples(decoded, 0, decoded.Length);
+                waveProvider.AddSamples(streamId, decoded, 0, decoded.Length);
             }
         }
         public void AudioReceiveEnded(string streamId)
         {
             lock (_startStopSynch)
             {
-                BufferedWaveProvider wp;
-                if (_myStreams.TryGetValue(streamId, out wp))
-                {
-                    _myStreams.Remove(streamId);
-                    waveProvider.RemoveStream(wp);
-                }
+                waveProvider.RemoveStream(streamId);
             }
         }
 
