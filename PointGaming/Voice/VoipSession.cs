@@ -475,7 +475,8 @@ namespace PointGaming.Voice
                 }
             }
 
-            VoipDebug(DebugCountTick, message);
+            if (message != null)
+                VoipDebug(DebugCountTick, message);
         }
 
         internal void PlayVoice(VoipMessageVoice voiceMessage)
