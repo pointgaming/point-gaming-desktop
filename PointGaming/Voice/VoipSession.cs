@@ -24,7 +24,7 @@ namespace PointGaming.Voice
     {
         internal static bool DebugConnection = false;
         internal static bool DebugPacketContent = false;
-        internal static bool DebugCountTick = false;
+        internal static bool DebugCountTick = true;
 
         public static void VoipDebug(bool enabled, string s)
         {
@@ -418,8 +418,6 @@ namespace PointGaming.Voice
 
         void _nAudioTest_AudioSystemTick()
         {
-            CountTick("AS");
-
             var todos = new List<VoiceUdpOrderer>();
             lock (_messageOrderers)
             {
@@ -477,8 +475,7 @@ namespace PointGaming.Voice
                 }
             }
 
-            if (message != null)
-                Console.WriteLine(message);
+            VoipDebug(DebugCountTick, message);
         }
 
         internal void PlayVoice(VoipMessageVoice voiceMessage)
@@ -568,7 +565,8 @@ namespace PointGaming.Voice
                 StreamNumber = _streamNumber,
             };
 
-            _audioChatClient.Send(message);
+            if ((message.MessageNumber & 1) == 0)
+                _audioChatClient.Send(message);
             if (isFirst)
                 _speakingRoom.OnVoiceSent(_userData.User);
         }
