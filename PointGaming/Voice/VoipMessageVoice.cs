@@ -40,7 +40,7 @@ namespace PointGaming.Voice
             if (!VoipSerialization.ReadRemainingRawBytes(buffer, length, ref position, out Audio))
                 return false;
 
-            VoipSession.VoipDebug("rx audio: rn " + RoomName + " fuid " + FromUserId + " @ " + MessageNumber + " to " + IsTeamOnly + " audio " + Audio.BytesToHex());
+            VoipSession.VoipDebug(VoipSession.DebugPacketContent, "rx audio: rn " + RoomName + " fuid " + FromUserId + " @ " + MessageNumber + " to " + IsTeamOnly + " audio " + Audio.BytesToHex());
 
             return true;
         }
@@ -78,7 +78,7 @@ namespace PointGaming.Voice
             position = cryptoStart + encryptedData.Length;
 
             var scrypt = buffer.BytesToHex(cryptoStart, position - cryptoStart);
-            VoipSession.VoipDebug("tx audio: uid[{0}] key[{1}] iv[{2}] plainxa[{3}] audio[{4}] crypt[{5}]", suid, skey, siv, splainxa, saudio, scrypt);
+            VoipSession.VoipDebug(VoipSession.DebugPacketContent, "tx audio: uid[{0}] key[{1}] iv[{2}] plainxa[{3}] audio[{4}] crypt[{5}]", suid, skey, siv, splainxa, saudio, scrypt);
 
             return position;
         }

@@ -21,11 +21,12 @@ namespace PointGaming.Voice
             if (!VoipSerialization.ReadRawHex(buffer, length, ref position, 12, out RoomName))
                 return false;
 
-            if (position >= length)
+            byte isSuccess;
+            if (!VoipSerialization.ReadByte(buffer, length, ref position, out isSuccess))
                 return false;
-            IsSuccess = buffer[position++] == 1;
+            IsSuccess = isSuccess == 1;
 
-            VoipSession.VoipDebug(string.Format("rx join: roomname[{0}] issuccess[{1}]", RoomName, IsSuccess));
+            VoipSession.VoipDebug(VoipSession.DebugPacketContent, string.Format("rx join: roomname[{0}] issuccess[{1}]", RoomName, IsSuccess));
 
             return true;
         }
@@ -42,7 +43,7 @@ namespace PointGaming.Voice
             VoipCrypt.CryptoRNG.GetBytes(nonce);
             VoipSerialization.WriteRawBytes(buffer, ref position, nonce);
             VoipSerialization.WriteRawBytes(buffer, ref position, VoipCrypt.AntiDos);
-            buffer[position++] = MessageType;
+            VoipSerialization.WriteByte(buffer, ref position, MessageType);
             VoipSerialization.WriteRawHex(buffer, ref position, RoomName);
 
             var suid = buffer.BytesToHex(0, 16);
@@ -55,7 +56,7 @@ namespace PointGaming.Voice
             position = cryptoStart + encryptedData.Length;
 
             var scrypt = buffer.BytesToHex(cryptoStart, position - cryptoStart);
-            VoipSession.VoipDebug("tx join: uid[{0}] key[{1}] iv[{2}] plain[{3}] crypt[{4}]", suid, skey, siv, splain, scrypt);
+            VoipSession.VoipDebug(VoipSession.DebugPacketContent, "tx join: uid[{0}] key[{1}] iv[{2}] plain[{3}] crypt[{4}]", suid, skey, siv, splain, scrypt);
 
             return position;
         }

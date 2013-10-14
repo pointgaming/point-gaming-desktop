@@ -69,21 +69,21 @@ namespace PointGaming.Voice
                 var keyy = HardcodedKey.BytesToHex();
                 var ivv = HardcodedIv.BytesToHex();
 
-                VoipSession.VoipDebug("plainr: {0}", original);
-                VoipSession.VoipDebug("plainx: {0}", originalData.BytesToHex());
-                VoipSession.VoipDebug("cryptx: {0}", encrypted.BytesToHex());
-                VoipSession.VoipDebug("plainx: {0}", roundtripData.BytesToHex());
-                VoipSession.VoipDebug("plainr: {0}", roundtrip);
+                VoipSession.VoipDebug(VoipSession.DebugPacketContent, "plainr: {0}", original);
+                VoipSession.VoipDebug(VoipSession.DebugPacketContent, "plainx: {0}", originalData.BytesToHex());
+                VoipSession.VoipDebug(VoipSession.DebugPacketContent, "cryptx: {0}", encrypted.BytesToHex());
+                VoipSession.VoipDebug(VoipSession.DebugPacketContent, "plainx: {0}", roundtripData.BytesToHex());
+                VoipSession.VoipDebug(VoipSession.DebugPacketContent, "plainr: {0}", roundtrip);
 
                 var opensslRes = File.ReadAllBytes("C:\\OpenSSL-Win32\\bin\\test\\test.bin");
                 var opensslRess = opensslRes.BytesToHex();
 
 
-                VoipSession.VoipDebug("Equal:      {0}", original == roundtrip);
+                VoipSession.VoipDebug(VoipSession.DebugPacketContent, "Equal:      {0}", original == roundtrip);
             }
             catch (Exception e)
             {
-                VoipSession.VoipDebug("Error: {0}", e.Message);
+                VoipSession.VoipDebug(VoipSession.DebugPacketContent, "Error: {0}", e.Message);
             }
         }
 

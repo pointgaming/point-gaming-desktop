@@ -172,6 +172,7 @@
     <Compile Include="Voice\SignalHelpers.cs" />
     <Compile Include="Voice\VoiceTester.cs" />
     <Compile Include="Voice\IVoiceTester.cs" />
+    <Compile Include="Voice\VoiceUdpOrderer.cs" />
     <Compile Include="Voice\VoipSession.cs" />
     <Compile Include="Voice\VoipClient.cs" />
     <Compile Include="Voice\VoipMessageVoice.cs" />

@@ -59,7 +59,7 @@ namespace PointGaming.Voice
         {
             try
             {
-                VoipSession.VoipDebug("Voip client starting...");
+                VoipSession.VoipDebug(VoipSession.DebugConnection, "Voip client starting...");
                 _clientOut = new Socket(System.Net.Sockets.AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
                 IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, _serverEndPoint.Port);
                 _clientOut.Bind(endPoint);
@@ -71,7 +71,7 @@ namespace PointGaming.Voice
                 t.Name = "Udp Audio Message Client Sender";
                 t.Start();
 
-                VoipSession.VoipDebug("Voip client started.");
+                VoipSession.VoipDebug(VoipSession.DebugConnection, "Voip client started.");
 
                 while (_shouldRun)
                 {
@@ -92,8 +92,8 @@ namespace PointGaming.Voice
             }
             catch (Exception e)
             {
-                VoipSession.VoipDebug(e.Message);
-                VoipSession.VoipDebug(e.StackTrace);
+                VoipSession.VoipDebug(VoipSession.DebugConnection, e.Message);
+                VoipSession.VoipDebug(VoipSession.DebugConnection, e.StackTrace);
             }
             finally
             {
@@ -103,7 +103,7 @@ namespace PointGaming.Voice
                         _clientOut.Dispose();
                 }
                 catch { }
-                VoipSession.VoipDebug("Voip client stopped.");
+                VoipSession.VoipDebug(VoipSession.DebugConnection, "Voip client stopped.");
 
                 _shouldRun = false;
                 _isRunning = false;
@@ -145,8 +145,8 @@ namespace PointGaming.Voice
             }
             catch (Exception e)
             {
-                VoipSession.VoipDebug(e.Message);
-                VoipSession.VoipDebug(e.StackTrace);
+                VoipSession.VoipDebug(VoipSession.DebugConnection, e.Message);
+                VoipSession.VoipDebug(VoipSession.DebugConnection, e.StackTrace);
             }
             finally
             {
@@ -157,7 +157,7 @@ namespace PointGaming.Voice
 
         private void HandleMessage(byte[] buffer, int length)
         {
-            VoipSession.VoipDebug("rx: " + buffer.BytesToHex(0, length));
+            VoipSession.VoipDebug(VoipSession.DebugPacketContent, "rx: " + buffer.BytesToHex(0, length));
 
             if (length == 1 && buffer[0] == 0)
             {
@@ -165,7 +165,7 @@ namespace PointGaming.Voice
             }
             else if (!HandleEncryptedMessage(buffer, length))
             {
-                VoipSession.VoipDebug("Unrecognized audio chat message: " + buffer.BytesToHex(0, length));
+                VoipSession.VoipDebug(VoipSession.DebugPacketContent, "Unrecognized audio chat message: " + buffer.BytesToHex(0, length));
             }
         }
 
@@ -190,9 +190,9 @@ namespace PointGaming.Voice
             if (!VoipCrypt.AntiDosCheck(antidos))
                 return false;
 
-            if (position >= length)
+            byte mType;
+            if (!VoipSerialization.ReadByte(buffer, length, ref position, out mType))
                 return false;
-            var mType = buffer[position++];
 
             var voiceMessage = Instantiate(mType);
             if (voiceMessage == null)
