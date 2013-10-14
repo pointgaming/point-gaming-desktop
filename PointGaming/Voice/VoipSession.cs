@@ -565,8 +565,7 @@ namespace PointGaming.Voice
                 StreamNumber = _streamNumber,
             };
 
-            if ((message.MessageNumber & 1) == 0)
-                _audioChatClient.Send(message);
+            _audioChatClient.Send(message);
             if (isFirst)
                 _speakingRoom.OnVoiceSent(_userData.User);
         }
