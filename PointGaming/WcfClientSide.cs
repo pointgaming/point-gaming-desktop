@@ -28,7 +28,7 @@ namespace PointGaming
                 catch (Exception e)
                 {
                     Console.WriteLine("Failed to connect to PointGaming client web service: " + e.Message);
-                    Console.WriteLine(e.StackTrace);
+                    //Console.WriteLine(e.StackTrace);
                 }
             });
             t.IsBackground = true;

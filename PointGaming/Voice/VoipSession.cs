@@ -22,6 +22,7 @@ namespace PointGaming.Voice
 {
     public class VoipSession : IDisposable
     {
+        private static bool EnableDebugCountTick = false;
         public static void VoipDebug(string s)
         {
             //Console.WriteLine(s);
@@ -413,6 +414,8 @@ namespace PointGaming.Voice
 
         void _nAudioTest_AudioSystemTick()
         {
+            DebugCountTick("AS");
+
             var todos = new List<VoiceOrderer>();
             lock (_messageOrderers)
             {
@@ -434,6 +437,44 @@ namespace PointGaming.Voice
             }
             foreach (var stop in stops)
                 Stop(stop.Item1, stop.Item2);
+        }
+
+        private DateTime _tickStart = DateTime.UtcNow;
+        private int _tickSeconds;
+        private Dictionary<string, int> _tickCount = new Dictionary<string, int>();
+
+        private void DebugCountTick(string tickName)
+        {
+            if (!EnableDebugCountTick)
+                return;
+
+            string message = null;
+            var now = DateTime.UtcNow;
+
+            lock (_tickCount)
+            {
+                int tickCount;
+                if (!_tickCount.TryGetValue(tickName, out tickCount))
+                    tickCount = 0;
+                tickCount++;
+                _tickCount[tickName] = tickCount;
+
+                var tickSeconds = (int)((now - _tickStart).TotalSeconds);
+                if (tickSeconds > _tickSeconds)
+                {
+                    _tickSeconds = tickSeconds;
+
+                    message = "";
+
+                    foreach (var kvp in _tickCount)
+                        message += kvp.Key + ": " + kvp.Value + " | ";
+
+                    _tickCount.Clear();
+                }
+            }
+
+            if (message != null)
+                Console.WriteLine(message);
         }
 
         private void PlayVoice(VoipMessageVoice voiceMessage)
@@ -498,62 +539,101 @@ namespace PointGaming.Voice
             };
 
             private readonly VoipSession _voipSession;
-            private readonly VoipMessageVoice[] _voices = new VoipMessageVoice[100];// 20ms per: 2 seconds total
+            private readonly VoipMessageVoice[] _voices = new VoipMessageVoice[200];// 20ms per: 2 seconds total
 
             private int _nextPlayNumber = 0;
             private int _maxPlayNumber = -1;
-            private int _jitterNumber = 0;
+            private double _jitterNumber = 0;
             private int _jitterNumberActive = 10;// put 200ms delay on the first transmittion until jitter is figured out better
             private int _jitterWait;
+            private int[] _jitters = new int[8];
+            private int _jittersIx = 0;
+
+
+            private DateTime _streamStartTime;
 
             public VoiceOrderer(VoipSession vs)
             {
                 _voipSession = vs;
             }
 
-            private DateTime _lastReceivedTime;
             private VoipMessageVoice _firstItem;
+            private int _lastStreamNumber = -1;
+            private readonly List<int> _prevStreamNumbers = new List<int>();
 
             public void AddMessage(VoipMessageVoice item)
             {
                 lock (_voices)
                 {
-                    var now = DateTime.UtcNow;
+                    if (!ShouldAddToStream(item))
+                        return;
 
-                    if (now - _lastReceivedTime > TimeSpan.FromMilliseconds(500))
-                    {
-                        if (_maxPlayNumber > 100)
-                            _jitterNumberActive = _jitterNumber;
-                        _nextPlayNumber = 0;
-                        _maxPlayNumber = -1;
-                        _jitterNumber = 0;
-                        _jitterWait = 0;
-                        _firstItem = item;
-                    }
-                    _lastReceivedTime = now;
-
-                    var expectedNumber = _maxPlayNumber + 1;
-                    var diff = expectedNumber - item.MessageNumber;
-                    if (diff != 0)
-                    {
-                        if (diff < 0)
-                            diff *= -1;
-                        if (diff > _jitterNumber)
-                        {
-                            if (diff > _voices.Length - 10)
-                                diff = _voices.Length - 10;
-                            _jitterNumber = diff;
-                        }
-                    }
+                    CalcJitter(item.MessageNumber);
 
                     if (item.MessageNumber > _maxPlayNumber)
-                    {
                         _maxPlayNumber = item.MessageNumber;
-                    }
 
                     var index = item.MessageNumber % _voices.Length;
                     _voices[index] = item;
                 }
+            }
+
+            private bool ShouldAddToStream(VoipMessageVoice item)
+            {
+                if (item.StreamNumber == _lastStreamNumber)
+                    return true;
+                
+                if (_prevStreamNumbers.Contains(item.StreamNumber))
+                    return false;// don't play packets from recently played streams
+
+                if (_maxPlayNumber > 50)
+                    SetActiveJitter();
+
+                InitStream(item);
+                
+                return true;
+            }
+
+            private void CalcJitter(int messageNumber)
+            {
+                var now = DateTime.UtcNow;
+                var actualTime = (now - _streamStartTime).TotalMilliseconds;
+                var expectedTime = messageNumber * 20.0;
+
+                var diff = Math.Abs(actualTime - expectedTime);
+                if (diff > _jitterNumber)
+                    _jitterNumber = diff;
+            }
+
+            private void InitStream(VoipMessageVoice item)
+            {
+                _nextPlayNumber = 0;
+                _maxPlayNumber = -1;
+                _jitterNumber = 0;
+                _jitterWait = 0;
+                _firstItem = item;
+                _streamStartTime = DateTime.UtcNow;
+
+                _lastStreamNumber = item.StreamNumber;
+                while (_prevStreamNumbers.Count >= 4)
+                    _prevStreamNumbers.RemoveAt(3);
+                _prevStreamNumbers.Insert(0, _lastStreamNumber);
+            }
+
+            private void SetActiveJitter()
+            {
+                var active = (int)Math.Ceiling(_jitterNumber / 20);
+                if (active > _voices.Length >> 1)
+                    active = _voices.Length >> 1;
+                _jitters[(_jittersIx++) & 0x7] = active;
+
+                var max = 0;
+                foreach (var v in _jitters)
+                    if (v > max)
+                        max = v;
+
+                _jitterNumberActive = max;
+                Console.WriteLine("New _jitterNumber: " + _jitterNumberActive);
             }
 
             public void Process()
@@ -590,6 +670,8 @@ namespace PointGaming.Voice
                     _nextPlayNumber++;
                 }
 
+                _voipSession.DebugCountTick(cur.FromUserId);
+
                 _voipSession.PlayVoice(cur);
             }
         }
@@ -599,6 +681,7 @@ namespace PointGaming.Voice
 
         private VoiceTester _voiceTester = null;
         private int _messageNumber;
+        private int _streamNumber;
 
         private void _nAudioTest_AudioRecorded(AudioHardwareSession source, byte[] data, double signalPower)
         {
@@ -614,6 +697,7 @@ namespace PointGaming.Voice
             {
                 _speakingRoom = GetSpeakingRoom();
                 _messageNumber = 0;
+                _streamNumber++;
             }
 
             if (_speakingRoom == null)
@@ -629,6 +713,7 @@ namespace PointGaming.Voice
                 Audio = data,
                 IsTeamOnly = _speakingRoomTeamOnly,
                 MessageNumber = _messageNumber++,
+                StreamNumber = _streamNumber,
             };
 
             _audioChatClient.Send(message);
@@ -655,6 +740,7 @@ namespace PointGaming.Voice
                 Audio = new byte[0],
                 IsTeamOnly = _speakingRoomTeamOnly,
                 MessageNumber = _messageNumber++,
+                StreamNumber = _streamNumber,
             };
 
             _audioChatClient.Send(message);

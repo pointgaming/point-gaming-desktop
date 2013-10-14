@@ -18,6 +18,7 @@ namespace PointGaming.Voice
         public bool IsTeamOnly;
         public byte[] Audio;
         public int MessageNumber;
+        public int StreamNumber;
         
         public bool Read(byte[] buffer, int position, int length)
         {
@@ -27,13 +28,15 @@ namespace PointGaming.Voice
             if (!VoipSerialization.ReadRawGuid(buffer, length, ref position, true, out FromUserId))
                 return false;
 
-            if (position >= length)
+            byte value;
+            if (!VoipSerialization.ReadByte(buffer, length, ref position, out value))
                 return false;
-            IsTeamOnly = buffer[position++] == 1;
+            IsTeamOnly = value == 1;
 
+            if (!VoipSerialization.ReadInt(buffer, length, ref position, out StreamNumber))
+                return false;
             if (!VoipSerialization.ReadInt(buffer, length, ref position, out MessageNumber))
                 return false;
-            
             if (!VoipSerialization.ReadRemainingRawBytes(buffer, length, ref position, out Audio))
                 return false;
 
@@ -41,7 +44,7 @@ namespace PointGaming.Voice
 
             return true;
         }
-
+        
         public int Write(byte[] buffer, byte[] key)
         {
             var position = 0;
@@ -54,10 +57,12 @@ namespace PointGaming.Voice
             VoipCrypt.CryptoRNG.GetBytes(nonce);
             VoipSerialization.WriteRawBytes(buffer, ref position, nonce);
             VoipSerialization.WriteRawBytes(buffer, ref position, VoipCrypt.AntiDos);
-            buffer[position++] = MessageType;
+            VoipSerialization.WriteByte(buffer, ref position, MessageType);
             VoipSerialization.WriteRawHex(buffer, ref position, RoomName);
 
-            buffer[position++] = (byte)(IsTeamOnly ? 1 : 0);
+            var isTeamOnly = (byte)(IsTeamOnly ? 1 : 0);
+            VoipSerialization.WriteByte(buffer, ref position, isTeamOnly);
+            VoipSerialization.WriteInt(buffer, ref position, StreamNumber);
             VoipSerialization.WriteInt(buffer, ref position, MessageNumber);
             var audioStart = position;
             VoipSerialization.WriteRawBytes(buffer, ref position, Audio);

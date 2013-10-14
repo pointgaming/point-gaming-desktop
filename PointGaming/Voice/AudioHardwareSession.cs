@@ -181,6 +181,7 @@ namespace PointGaming.Voice
                 if (!_myStreams.TryGetValue(streamId, out wp))
                 {
                     wp = new BufferedWaveProvider(codec.RecordFormat);
+                    wp.DiscardOnBufferOverflow = true;
                     waveProvider.AddStream(wp);
                     _myStreams[streamId] = wp;
                 }
