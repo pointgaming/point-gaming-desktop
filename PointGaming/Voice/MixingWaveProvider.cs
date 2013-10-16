@@ -51,12 +51,12 @@ namespace PointGaming.Voice
         private Dictionary<string, IVoipCodec> _decoders = new Dictionary<string, IVoipCodec>();
         private WaveFormat _waveFormat;
         private List<IVoipCodec> _freeDecoders = new List<IVoipCodec>();
-        private IVoipCodec _codec;
+        private IVoipCodec _decoder;
 
-        public MixingWaveProvider(int sampleRate, IVoipCodec codec)
+        public MixingWaveProvider(int sampleRate, IVoipCodec decoder)
         {
-            _codec = codec;
-            _freeDecoders.Add(codec);
+            _decoder = decoder;
+            _freeDecoders.Add(decoder);
             _waveFormat = new WaveFormat(sampleRate, 16, 1);
             //_inputs.Add("test", new SineWaveProvider(sampleRate, 800));
         }
@@ -75,7 +75,7 @@ namespace PointGaming.Voice
                 {
                     wp = new BufferedWaveProvider(_waveFormat);
                     _inputs[id] = wp;
-                    var codec = GetFreeCodec();
+                    var codec = GetFreeDecoder();
                     _decoders[id] = codec;
                 }
 
@@ -99,11 +99,11 @@ namespace PointGaming.Voice
             }
         }
 
-        private IVoipCodec GetFreeCodec()
+        private IVoipCodec GetFreeDecoder()
         {
             var ixLast = _freeDecoders.Count - 1;
             if (ixLast == -1)
-                return _codec.Duplicate();
+                return _decoder.Duplicate(VoipCodecMode.Decode);
             var last = _freeDecoders[ixLast];
             _freeDecoders.RemoveAt(ixLast);
             return last;

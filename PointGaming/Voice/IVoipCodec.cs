@@ -11,19 +11,11 @@ namespace PointGaming.Voice
         /// <summary>
         /// Creates a deep copy of the codec instance
         /// </summary>
-        IVoipCodec Duplicate();
+        IVoipCodec Duplicate(VoipCodecMode mode);
         /// <summary>
         /// Friendly Name for this codec
         /// </summary>
         string Name { get; }
-        /// <summary>
-        /// Tests whether the codec is available on this system
-        /// </summary>
-        bool IsAvailable { get; }
-        /// <summary>
-        /// Bitrate
-        /// </summary>
-        int BitsPerSecond { get; }
         /// <summary>
         /// Preferred PCM format for recording in (usually 8kHz mono 16 bit)
         /// </summary>
@@ -40,5 +32,13 @@ namespace PointGaming.Voice
         /// Decodes a block of audio
         /// </summary>
         byte[] Decode(byte[] data, int offset, int length);
+    }
+
+    [Flags]
+    enum VoipCodecMode
+    {
+        Encode = 1,
+        Decode = 2,
+        Both = 3,
     }
 }
