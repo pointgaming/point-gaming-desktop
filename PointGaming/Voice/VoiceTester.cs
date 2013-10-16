@@ -132,7 +132,7 @@ namespace PointGaming.Voice
                 }
                 offset++;
 
-                _nAudioTest.AudioReceived(PlaybackStreamId, data);
+                _nAudioTest.AudioReceived(PlaybackStreamId, data, true);
                 var dTime = TimeSpan.FromTicks(SampleTicks * offset);
                 OnEvent(EventType.Played, dTime, signalPower);
 

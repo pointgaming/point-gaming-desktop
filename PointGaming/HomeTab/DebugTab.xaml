@@ -14,6 +14,11 @@
         <StackPanel Orientation="Vertical">
             <TextBox Height="23" Name="textBoxFontChoice" Width="100" Visibility="Collapsed" Text="The font chosen will be used for Point Gaming chat windows." />
             <Button Content="Choose chat font..." Height="23" HorizontalAlignment="Left" Name="buttonChooseChatFont" VerticalAlignment="Top" Width="120" Margin="0,2.5,0,2.5" Click="buttonChooseChatFont_Click" />
+            <StackPanel Orientation="Horizontal">
+                <CheckBox Content="A" Height="16" Name="checkBoxA" Margin="2,2,2,2" />
+                <CheckBox Content="B" Height="16" Name="checkBoxB" Margin="2,2,2,2" />
+                <Button Content="Play Checked" Height="23" HorizontalAlignment="Left" Name="buttonPlayChecked" VerticalAlignment="Top" Width="120" Margin="0,2.5,0,2.5" Click="buttonPlayChecked_Click" />
+            </StackPanel>
         </StackPanel>
         <TextBox Grid.Row="1" HorizontalAlignment="Stretch" Name="textBoxConsole" VerticalAlignment="Stretch" 
                  VerticalScrollBarVisibility="Auto" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto" FontFamily="Consolas"/>

@@ -46,15 +46,22 @@ namespace PointGaming.Voice
         private SpeexEncoder encoder;
         private WaveBuffer encoderInputBuffer;
         private string description;
+        private BandMode _bandMode;
 
         public VoipCodecSpeex(BandMode bandMode, int sampleRate, string description)
         {
+            _bandMode = bandMode;
             this.decoder = new SpeexDecoder(bandMode);
             this.encoder = new SpeexEncoder(bandMode);
             this.recordingFormat = new WaveFormat(sampleRate, 16, 1);
             this.description = description;
             this.encoderInputBuffer = new WaveBuffer(this.recordingFormat.AverageBytesPerSecond); // more than enough
             outputBufferTemp = new byte[this.recordingFormat.AverageBytesPerSecond];
+        }
+
+        public IVoipCodec Duplicate()
+        {
+            return new VoipCodecSpeex(_bandMode, recordingFormat.SampleRate, description);
         }
 
         public string Name
@@ -79,19 +86,22 @@ namespace PointGaming.Voice
         }
 
         byte[] outputBufferTemp;
-        public byte[] GetEncoded(out double signalPower)
+        public double GetEncoded(out byte[] encoded)
         {
-            signalPower = 0;
+            double signalPower = 0;
             int samplesToEncode = encoder.FrameSize;
             if (encoderInputBuffer.ShortBufferCount < encoder.FrameSize)
-                return new byte[0];
+            {
+                encoded = new byte[0];
+                return signalPower;
+            }
 
             signalPower = SignalHelpers.CalculatePowerInDb(encoderInputBuffer.ByteBuffer, 0, samplesToEncode * 2, recordingFormat.SampleRate);
             int bytesWritten = encoder.Encode(encoderInputBuffer.ShortBuffer, 0, samplesToEncode, outputBufferTemp, 0, outputBufferTemp.Length);
-            byte[] encoded = new byte[bytesWritten];
+            encoded = new byte[bytesWritten];
             Array.Copy(outputBufferTemp, 0, encoded, 0, bytesWritten);
             ShiftLeftoverSamplesDown(samplesToEncode);
-            return encoded;
+            return signalPower;
         }
 
         private void ShiftLeftoverSamplesDown(int samplesEncoded)

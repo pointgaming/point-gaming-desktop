@@ -24,7 +24,9 @@ namespace PointGaming.Voice
     {
         internal static bool DebugConnection = false;
         internal static bool DebugPacketContent = false;
-        internal static bool DebugCountTick = true;
+        internal static bool DebugCountTick = false;
+        internal static bool DebugSaveReceivedPackets = false;
+        internal static bool DebugSaveSentPackets = false;
 
         public static void VoipDebug(bool enabled, string s)
         {
@@ -404,21 +406,21 @@ namespace PointGaming.Voice
             if (voiceMessage.FromUserId == _userData.User.Id)
                 return;
 
-            VoiceUdpOrderer vo;
+            PacketOrderer vo;
             lock (_messageOrderers)
             {
                 if (!_messageOrderers.TryGetValue(voiceMessage.FromUserId, out vo))
                 {
-                    vo = new VoiceUdpOrderer(this);
+                    vo = new PacketOrderer(this);
                     _messageOrderers[voiceMessage.FromUserId] = vo;
-                }   
+                }
             }
             vo.AddMessage(voiceMessage);
         }
 
         void _nAudioTest_AudioSystemTick()
         {
-            var todos = new List<VoiceUdpOrderer>();
+            var todos = new List<PacketOrderer>();
             lock (_messageOrderers)
             {
                 todos.AddRange(_messageOrderers.Values);
@@ -439,6 +441,23 @@ namespace PointGaming.Voice
             }
             foreach (var stop in stops)
                 Stop(stop.Item1, stop.Item2);
+
+            lock (_playStreams)
+            {
+                var removes = new List<string>();
+                foreach (var ps in _playStreams.Values)
+                {
+                    var part = ps.Parts[ps.Index++];
+                    _nAudioTest.AudioReceived(ps.Id, part.Audio, ps.IsEncoded);
+                    if (ps.Index == ps.Parts.Count)
+                        removes.Add(ps.Id);
+                }
+                foreach (var item in removes)
+                {
+                    _playStreams.Remove(item);
+                    _nAudioTest.AudioReceiveEnded(item);
+                }
+            }
         }
 
         private DateTime _tickStart = DateTime.UtcNow;
@@ -504,7 +523,7 @@ namespace PointGaming.Voice
             else
             {
                 if (isListening)
-                    _nAudioTest.AudioReceived(user.Id, voiceMessage.Audio);
+                    _nAudioTest.AudioReceived(user.Id, voiceMessage.Audio, true);
                 roomEx.OnVoiceSent(user);
                 lock (_receivedTimes)
                 {
@@ -524,7 +543,7 @@ namespace PointGaming.Voice
         }
 
         private readonly Dictionary<Tuple<PgUser, AudioRoomEx>, DateTime> _receivedTimes = new Dictionary<Tuple<PgUser, AudioRoomEx>, DateTime>();
-        private readonly Dictionary<string, VoiceUdpOrderer> _messageOrderers = new Dictionary<string, VoiceUdpOrderer>();
+        private readonly Dictionary<string, PacketOrderer> _messageOrderers = new Dictionary<string, PacketOrderer>();
 
         private AudioRoomEx _speakingRoom = null;
         private bool _speakingRoomTeamOnly;
@@ -533,12 +552,12 @@ namespace PointGaming.Voice
         private int _messageNumber;
         private int _streamNumber;
 
-        private void _nAudioTest_AudioRecorded(AudioHardwareSession source, byte[] data, double signalPower)
+        private void _nAudioTest_AudioRecorded(AudioHardwareSession source, byte[] encoded, double signalPower)
         {
             var vt = _voiceTester;
             if (vt != null)
             {
-                vt.Recorded(data, signalPower);
+                vt.Recorded(encoded, signalPower);
                 return;
             }
 
@@ -554,22 +573,39 @@ namespace PointGaming.Voice
                 return;
 
             if (isFirst)
+            {
                 _speakingRoomTeamOnly = _speakingRoom.R.IsVoiceTeamOnly;
+
+                if (DebugSaveSentPackets)
+                    _audioRec = new SerialPacketStream 
+                    {
+                        Id = _userData.User.Id,
+                        Parts = new List<SerialPacket>(),
+                        IsEncoded = true,
+                        RoomName = _speakingRoom.R.AudioRoomId,
+                        StreamNumber = _streamNumber,
+                    };
+            }
 
             var message = new VoipMessageVoice
             {
                 RoomName = _speakingRoom.R.AudioRoomId,
                 FromUserId = _userData.User.Id,
-                Audio = data,
+                Audio = encoded,
                 IsTeamOnly = _speakingRoomTeamOnly,
                 MessageNumber = _messageNumber++,
                 StreamNumber = _streamNumber,
             };
 
+            if (DebugSaveSentPackets)
+                _audioRec.Parts.Add(new SerialPacket(_audioRec.Parts.Count, encoded));
+
             _audioChatClient.Send(message);
             if (isFirst)
                 _speakingRoom.OnVoiceSent(_userData.User);
         }
+
+        private SerialPacketStream _audioRec;
 
         private void _nAudioTest_AudioRecordEnded()
         {
@@ -596,6 +632,22 @@ namespace PointGaming.Voice
             _audioChatClient.Send(message);
             _speakingRoom.OnVoiceStopped(_userData.User);
             _speakingRoom = null;
+
+            if (DebugSaveSentPackets)
+            {
+                _audioRec.Write(SerialPacketStream.AppDataPath(_audioRec));
+                _audioRec = null;
+            }
+        }
+        
+        private Dictionary<string, SerialPacketStream> _playStreams = new Dictionary<string, SerialPacketStream>();
+
+        internal void Play(SerialPacketStream ps)
+        {
+            lock (_playStreams)
+            {
+                _playStreams.Add(ps.Id, ps);
+            }
         }
     }
 

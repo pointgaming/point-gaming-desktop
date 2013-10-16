@@ -47,5 +47,46 @@ namespace PointGaming.HomeTab
                 UserDataManager.UserData.Settings.Save();
             }
         }
+
+        private void buttonPlayChecked_Click(object sender, RoutedEventArgs e)
+        {
+            if (checkBoxA.IsChecked == true)
+                AskAndPlayFile();
+            if (checkBoxB.IsChecked == true)
+                AskAndPlayFile();
+        }
+
+        private static void AskAndPlayFile()
+        {
+            try
+            {
+                var fileName = AskForFile();
+                if (fileName != null)
+                {
+                    var stream = Voice.SerialPacketStream.Read(fileName);
+                    UserDataManager.UserData.Voip.Play(stream);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Failed to play file: " + e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
+        }
+
+        private static string AskForFile()
+        {
+            // Create OpenFileDialog
+            var dlg = new Microsoft.Win32.OpenFileDialog();
+            // Set filter for file extension and default file extension
+            dlg.DefaultExt = ".pga";
+            dlg.Filter = "Point Gaming Audio (.pga)|*.pga";
+            // Display OpenFileDialog by calling ShowDialog method
+            var result = dlg.ShowDialog();
+            // Get the selected file name and display in a TextBox
+            if (result != true)
+                return null;
+            return dlg.FileName;
+        }
     }
 }

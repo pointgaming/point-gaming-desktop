@@ -12,7 +12,7 @@ namespace PointGaming.Voice
     class Opus8kCodec : VoipCodecOpus
     {
         public Opus8kCodec() :
-            base(8000, "Opus 8kHz")
+            base(8000, 12400, "Opus 8kHz")
         {
 
         }
@@ -22,7 +22,7 @@ namespace PointGaming.Voice
     class Opus12kCodec : VoipCodecOpus
     {
         public Opus12kCodec() :
-            base(12000, "Opus 12kHz")
+            base(12000, 18600, "Opus 12kHz")
         {
 
         }
@@ -32,7 +32,7 @@ namespace PointGaming.Voice
     class Opus16kCodec : VoipCodecOpus
     {
         public Opus16kCodec() :
-            base(16000, "Opus 16kHz")
+            base(16000, 24800, "Opus 16kHz")
         {
 
         }
@@ -42,7 +42,7 @@ namespace PointGaming.Voice
     class Opus24kCodec : VoipCodecOpus
     {
         public Opus24kCodec() :
-            base(24000, "Opus 24kHz")
+            base(24000, 37200, "Opus 24kHz")
         {
 
         }
@@ -52,7 +52,7 @@ namespace PointGaming.Voice
     class Opus48kCodec : VoipCodecOpus
     {
         public Opus48kCodec() :
-            base(48000, "Opus 48kHz")
+            base(48000, 74400, "Opus 48kHz")
         {
 
         }
@@ -68,7 +68,7 @@ namespace PointGaming.Voice
         private string _description;
         private readonly int _segmentLength;
         
-        public VoipCodecOpus(int sampleRate, string description)
+        public VoipCodecOpus(int sampleRate, int bitrate, string description)
         {
             this._segmentLength = sampleRate / 25;// 2 bytes per sample, 20ms per segment
             this._decoder = OpusDecoder.Create(sampleRate, 1);
@@ -78,10 +78,15 @@ namespace PointGaming.Voice
             // 32768 is 4kB/s
             // 24800 is 3kB/s (3100B/s, same as Speex 16kHz)
             // 8192 is 1kB/s
-            this._encoder.Bitrate = 24800;
+            this._encoder.Bitrate = bitrate;
             this._recordingFormat = new WaveFormat(sampleRate, 16, 1);
             this._description = description;
             this._encoderInputBuffer = new byte[this._recordingFormat.AverageBytesPerSecond]; // more than enough
+        }
+
+        public IVoipCodec Duplicate()
+        {
+            return new VoipCodecOpus(_recordingFormat.SampleRate, _encoder.Bitrate, _description);
         }
 
         public string Name
@@ -105,9 +110,9 @@ namespace PointGaming.Voice
             return _bufferCount / _segmentLength;
         }
 
-        public byte[] GetEncoded(out double signalPower)
+        public double GetEncoded(out byte[] encoded)
         {
-            byte[] encoded;
+            double signalPower = 0;
 
             if (_bufferCount >= _segmentLength)
             {
@@ -124,7 +129,7 @@ namespace PointGaming.Voice
                 signalPower = 0;
             }
             
-            return encoded;
+            return signalPower;
         }
         
         private void FeedSamplesIntoEncoderInputBuffer(byte[] data, int offset, int length)

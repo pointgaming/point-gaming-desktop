@@ -46,42 +46,95 @@ namespace PointGaming.Voice
 
     class MixingWaveProvider : IWaveProvider
     {
+        private HashSet<string> _removes = new HashSet<string>();
         private Dictionary<string, IWaveProvider> _inputs = new Dictionary<string, IWaveProvider>();
+        private Dictionary<string, IVoipCodec> _decoders = new Dictionary<string, IVoipCodec>();
         private WaveFormat _waveFormat;
+        private List<IVoipCodec> _freeDecoders = new List<IVoipCodec>();
+        private IVoipCodec _codec;
 
-        public MixingWaveProvider(int sampleRate)
+        public MixingWaveProvider(int sampleRate, IVoipCodec codec)
         {
+            _codec = codec;
+            _freeDecoders.Add(codec);
             _waveFormat = new WaveFormat(sampleRate, 16, 1);
             //_inputs.Add("test", new SineWaveProvider(sampleRate, 800));
         }
 
         public WaveFormat WaveFormat { get { return _waveFormat; } }
 
-
-        public void AddSamples(string id, byte[] data, int offset, int count)
+        public void AddSamples(string id, byte[] data, int offset, int count, bool isEncoded)
         {
             lock (_inputs)
             {
+                if (_removes.Contains(id))
+                    _removes.Remove(id);
+
                 IWaveProvider wp;
                 if (!_inputs.TryGetValue(id, out wp))
                 {
                     wp = new BufferedWaveProvider(_waveFormat);
                     _inputs[id] = wp;
+                    var codec = GetFreeCodec();
+                    _decoders[id] = codec;
                 }
+
+                if (isEncoded)
+                {
+                    var codec = _decoders[id];
+                    try
+                    {
+                        data = codec.Decode(data, offset, count);
+                        offset = 0;
+                        count = data.Length;
+                        isEncoded = false;
+                    }
+                    catch
+                    {
+                        return;
+                    }
+                }
+
                 (wp as BufferedWaveProvider).AddSamples(data, offset, count);
             }
         }
 
-        public void RemoveStream(string id)
+        private IVoipCodec GetFreeCodec()
+        {
+            var ixLast = _freeDecoders.Count - 1;
+            if (ixLast == -1)
+                return _codec.Duplicate();
+            var last = _freeDecoders[ixLast];
+            _freeDecoders.RemoveAt(ixLast);
+            return last;
+        }
+
+        internal void RemoveStreamOnEmpty(string id)
         {
             lock (_inputs)
             {
-                this._inputs.Remove(id);
+                _removes.Add(id);
+            }
+        }
+
+        internal void RemoveStream(string id)
+        {
+            lock (_inputs)
+            {
+                _removes.Remove(id);
+                _inputs.Remove(id);
+                IVoipCodec codec;
+                if (_decoders.TryGetValue(id, out codec))
+                {
+                    _decoders.Remove(id);
+                    _freeDecoders.Add(codec);
+                }
             }
         }
 
         private readonly byte[] _inputBuffer = new byte[32000];
         private readonly int[] _sumBuffer = new int[16000];
+        private readonly List<string> _emptyStreamIds = new List<string>();
 
         public int Read(byte[] buffer, int offset, int count)
         {
@@ -97,14 +150,22 @@ namespace PointGaming.Voice
 
             lock (_inputs)
             {
-                foreach (var input in _inputs.Values)
+                _emptyStreamIds.Clear();
+
+                foreach (var kvp in _inputs)
                 {
-                    int readFromThisStream = input.Read(_inputBuffer, 0, count);
+                    int readFromThisStream = kvp.Value.Read(_inputBuffer, 0, count);
                     if (readFromThisStream > bytesRead)
                         bytesRead = readFromThisStream;
                     if (readFromThisStream > 0)
                         AddChannel(readFromThisStream);
+                    else
+                        _emptyStreamIds.Add(kvp.Key);
                 }
+
+                foreach (var id in _emptyStreamIds)
+                    if (_removes.Contains(id))
+                        RemoveStream(id);
             }
 
             FinishMix(buffer, offset, bytesRead);
@@ -135,6 +196,7 @@ namespace PointGaming.Voice
             while (sumBufferIndex < sumBUfferEnd)
             {
                 var valueF = _sumBuffer[sumBufferIndex++];
+                //valueF /= _inputs.Count;
                 // clip
                 if (valueF > short.MaxValue)
                     valueF = short.MaxValue;

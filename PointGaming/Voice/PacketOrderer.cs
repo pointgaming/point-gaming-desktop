@@ -5,7 +5,7 @@ using System.Text;
 
 namespace PointGaming.Voice
 {
-    class VoiceUdpOrderer
+    class PacketOrderer
     {
         private static readonly byte[] _static = new byte[]
             {
@@ -32,7 +32,7 @@ namespace PointGaming.Voice
 
         private DateTime _streamStartTime;
 
-        public VoiceUdpOrderer(VoipSession vs)
+        public PacketOrderer(VoipSession vs)
         {
             _voipSession = vs;
         }
@@ -41,8 +41,13 @@ namespace PointGaming.Voice
         private int _lastStreamNumber = -1;
         private readonly List<int> _prevStreamNumbers = new List<int>();
 
+        private SerialPacketStream _ps;
+
         public void AddMessage(VoipMessageVoice item)
         {
+            if (VoipSession.DebugSaveReceivedPackets)
+                SavePacket(item);
+
             lock (_voices)
             {
                 if (!ShouldAddToStream(item))
@@ -57,7 +62,7 @@ namespace PointGaming.Voice
                 _voices[index] = item;
             }
         }
-
+        
         private bool ShouldAddToStream(VoipMessageVoice item)
         {
             if (item.StreamNumber == _lastStreamNumber)
@@ -87,6 +92,9 @@ namespace PointGaming.Voice
 
         private void InitStream(VoipMessageVoice item)
         {
+            if (VoipSession.DebugSaveReceivedPackets)
+                SavePacketStream(); 
+
             _nextPlayNumber = 0;
             _maxPlayNumber = -1;
             _jitterNumber = 0;
@@ -98,6 +106,22 @@ namespace PointGaming.Voice
             while (_prevStreamNumbers.Count >= 4)
                 _prevStreamNumbers.RemoveAt(3);
             _prevStreamNumbers.Insert(0, _lastStreamNumber);
+        }
+
+        private void SavePacket(VoipMessageVoice item)
+        {
+            if (_ps == null)
+                _ps = new SerialPacketStream(item, true);
+            var poco = new SerialPacket(item);
+            _ps.Parts.Add(poco);
+        }
+        private void SavePacketStream()
+        {
+            if (_ps != null)
+            {
+                _ps.Write(SerialPacketStream.AppDataPath(_ps));
+                _ps = null;
+            }
         }
 
         private void SetActiveJitter()

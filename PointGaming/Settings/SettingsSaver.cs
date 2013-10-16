@@ -12,33 +12,13 @@ namespace PointGaming.Settings
     class SettingsSaver<T> where T : INotifyPropertyChanged
     {
         private const string _settingsFileName = "settings.js";
-        private const string _okChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-1234567890";
         private string _saveFilePath;
-
-        private static string FilenameFilter(string s)
-        {
-            var ok = new List<char>(_okChars.ToCharArray());
-            var filtered = new List<char>();
-            foreach (var c in s)
-            {
-                var cc = c;
-                if (!ok.Contains(cc))
-                {
-                    int ix = cc;
-                    ix = ix % ok.Count;
-                    cc = ok[ix];
-                }
-                filtered.Add(cc);
-            }
-
-            return new string(filtered.ToArray());
-        }
-        
+                
         public SettingsSaver(string extraPath)
         {
             var directory = App.ApplicationSettingsPath;
             if (extraPath != null && extraPath.Length > 0)
-                _saveFilePath = Path.Combine(directory, FilenameFilter(extraPath), _settingsFileName);
+                _saveFilePath = Path.Combine(directory, extraPath.FilterFilename(), _settingsFileName);
             else
                 _saveFilePath = Path.Combine(directory, _settingsFileName);
         }

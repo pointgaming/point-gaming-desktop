@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -574,6 +575,26 @@ namespace PointGaming
                     window.Visibility = Visibility.Visible;
                 }
             }
+        }
+
+        private const string _filenameCharsOk = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-1234567890";
+        public static string FilterFilename(this string s)
+        {
+            var ok = new List<char>(_filenameCharsOk.ToCharArray());
+            var filtered = new List<char>();
+            foreach (var c in s)
+            {
+                var cc = c;
+                if (!ok.Contains(cc))
+                {
+                    int ix = cc;
+                    ix = ix % ok.Count;
+                    cc = ok[ix];
+                }
+                filtered.Add(cc);
+            }
+
+            return new string(filtered.ToArray());
         }
     }
 }

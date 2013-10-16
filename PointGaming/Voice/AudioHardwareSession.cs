@@ -15,7 +15,7 @@ using NAudio;
 
 namespace PointGaming.Voice
 {
-    delegate void AudioAvailable(AudioHardwareSession source, byte[] data, double signalPower);
+    delegate void AudioAvailable(AudioHardwareSession source, byte[] encoded, double signalPower);
 
     class AudioHardwareSession : IDisposable
     {
@@ -140,7 +140,7 @@ namespace PointGaming.Voice
                     return;
 
                 waveOut = new WaveOut();
-                waveProvider = new MixingWaveProvider(codec.RecordFormat.SampleRate);
+                waveProvider = new MixingWaveProvider(codec.RecordFormat.SampleRate, codec);
                 waveOut.DesiredLatency = 100;
                 waveOut.Init(waveProvider);
                 waveOut.Play();
@@ -159,29 +159,21 @@ namespace PointGaming.Voice
             }
         }
 
-        public void AudioReceived(string streamId, byte[] b)
+        public void AudioReceived(string streamId, byte[] b, bool isEncoded)
         {
-            byte[] decoded;
-            try
-            {
-                decoded = codec.Decode(b, 0, b.Length);
-            }
-            catch
-            {
-                return;
-            }
             lock (_startStopSynch)
             {
                 if (waveOut == null)
                     return;
-                waveProvider.AddSamples(streamId, decoded, 0, decoded.Length);
+                waveProvider.AddSamples(streamId, b, 0, b.Length, isEncoded);
             }
         }
+
         public void AudioReceiveEnded(string streamId)
         {
             lock (_startStopSynch)
             {
-                waveProvider.RemoveStream(streamId);
+                waveProvider.RemoveStreamOnEmpty(streamId);
             }
         }
 
@@ -195,8 +187,8 @@ namespace PointGaming.Voice
             int callCount = codec.Encode(e.Buffer, 0, e.BytesRecorded);
             for (int i = 0; i < callCount; i++)
             {
-                double signalPower;
-                var encoded = codec.GetEncoded(out signalPower);
+                byte[] encoded;
+                var signalPower = codec.GetEncoded(out encoded);
                 OnAudioRecorded(encoded, signalPower);
             }
 

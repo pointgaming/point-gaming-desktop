@@ -9,6 +9,10 @@ namespace PointGaming.Voice
     interface IVoipCodec : IDisposable
     {
         /// <summary>
+        /// Creates a deep copy of the codec instance
+        /// </summary>
+        IVoipCodec Duplicate();
+        /// <summary>
         /// Friendly Name for this codec
         /// </summary>
         string Name { get; }
@@ -29,9 +33,9 @@ namespace PointGaming.Voice
         /// </summary>
         int Encode(byte[] data, int offset, int length);
         /// <summary>
-        /// Returns a block of encoded data
+        /// Returns the signal power
         /// </summary>
-        byte[] GetEncoded(out double signalPower);
+        double GetEncoded(out byte[] encoded);
         /// <summary>
         /// Decodes a block of audio
         /// </summary>
