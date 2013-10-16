@@ -143,8 +143,8 @@ namespace PointGaming.Settings
             // bad is full red, then it adds more green until it becomes yellow
             // after yellow, it looses red to become green
 
-            var minRed = Voice.SignalHelpers.Power16bInt16000HzMaximum - 2;
-            var centerGreen = Voice.SignalHelpers.Power16bInt16000HzMaximum - 1;
+            var minRed = Voice.SignalHelpers.Power16bInt16000HzMaximum - 3;
+            var centerGreen = Voice.SignalHelpers.Power16bInt16000HzMaximum - 1.5;
             var maxRed = Voice.SignalHelpers.Power16bInt16000HzMaximum;
 
             var fractionGreen = 0.0;
