@@ -40,12 +40,12 @@ namespace PointGaming.Settings
 
         private void SetAudioInputDeviceTriggerKey()
         {
-            var key = KeySelectDialog.Show(HomeWindow.Home, "Select Microphone Key", "Press new microphone hotkey.");
-            if (!key.HasValue)
+            var binding = KeySelectDialog.Show(HomeWindow.Home, "Select Microphone Key", "Assign the microphone hotkey by pressing/clicking the desired keyboard key/mouse button.  This window must be focused, and for mouse buttons the mouse pointer must be inside this textbox.", PermittedInputBindings.KeyboardKeysAndMouseButtons);
+            if (binding == null)
                 return;
-            labelMicKey.Content = key.Value;
-            UserDataManager.UserData.Settings.MicTriggerKey = (int)key.Value;
-            UserDataManager.UserData.Voip.TriggerKey = key.Value;
+            labelMicKey.Content = binding.ToString();
+            UserDataManager.UserData.Settings.MicTriggerInput = binding;
+            UserDataManager.UserData.Voip.TriggerInput = binding;
         }
 
         private void comboBoxRecordingDevices_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -84,7 +84,7 @@ namespace PointGaming.Settings
             foreach (var item in Voice.AudioHardware.GetAudioInputDevices())
                 comboBoxRecordingDevices.Items.Add(item);
             comboBoxRecordingDevices.SelectedIndex = App.Settings.AudioInputDeviceIndex;
-            labelMicKey.Content = (Key)UserDataManager.UserData.Settings.MicTriggerKey;
+            labelMicKey.Content = UserDataManager.UserData.Settings.MicTriggerInput;
             UserDataManager.UserData.Voip.RecordingDeviceChanged += AudioSystem_RecordingDeviceChanged;
 
             progressBarPower.Minimum = Voice.SignalHelpers.Power16bInt16000HzMinimumNonZero;

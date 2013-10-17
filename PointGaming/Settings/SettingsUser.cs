@@ -28,8 +28,8 @@ namespace PointGaming.Settings
         public bool BitcoinMinerEnabled { get { return _BitcoinMinerEnabled; } set { SetProperty(this, ref _BitcoinMinerEnabled, value, () => BitcoinMinerEnabled); } }
         private string _WindowBounds = "";
         public string WindowBounds { get { return _WindowBounds; } set { SetProperty(this, ref _WindowBounds, value, () => WindowBounds); } }
-        private int _MicTriggerKey = 118;
-        public int MicTriggerKey { get { return _MicTriggerKey; } set { SetProperty(this, ref _MicTriggerKey, value, () => MicTriggerKey); } }
+        private InputBinding _MicTriggerInput = new InputBinding { KeyboardKey = System.Windows.Input.Key.LeftCtrl, };
+        public InputBinding MicTriggerInput { get { return _MicTriggerInput; } set { SetProperty(this, ref _MicTriggerInput, value, () => MicTriggerInput); } }
         private double _VoiceAmplifier = 1.0;
         public double VoiceAmplifier { get { return _VoiceAmplifier; } set { SetProperty(this, ref _VoiceAmplifier, value, () => VoiceAmplifier); } }
 

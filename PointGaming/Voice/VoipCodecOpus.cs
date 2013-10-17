@@ -12,7 +12,7 @@ namespace PointGaming.Voice
     class Opus8kCodec : VoipCodecOpus
     {
         public Opus8kCodec() :
-            base(8000, 12400, "Opus 8kHz")
+            base(8000, 12400, "Opus 8kS/s 10%")
         {
 
         }
@@ -22,7 +22,7 @@ namespace PointGaming.Voice
     class Opus12kCodec : VoipCodecOpus
     {
         public Opus12kCodec() :
-            base(12000, 18600, "Opus 12kHz")
+            base(12000, 18600, "Opus 12kS/s 10%")
         {
 
         }
@@ -32,7 +32,7 @@ namespace PointGaming.Voice
     class Opus16kCodec : VoipCodecOpus
     {
         public Opus16kCodec() :
-            base(16000, 24800, "Opus 16kHz")
+            base(16000, 24800, "Opus 16kS/s 10%")
         {
 
         }
@@ -42,17 +42,27 @@ namespace PointGaming.Voice
     class Opus24kCodec : VoipCodecOpus
     {
         public Opus24kCodec() :
-            base(24000, 37200, "Opus 24kHz")
+            base(24000, 37200, "Opus 24kS/s 10%")
+        {
+
+        }
+    }
+    
+    [Export(typeof(IVoipCodec))]
+    class Opus48kCodec10Pct : VoipCodecOpus
+    {
+        public Opus48kCodec10Pct() :
+            base(48000, 76800, "Opus 48kS/s 10%")
         {
 
         }
     }
 
     [Export(typeof(IVoipCodec))]
-    class Opus48kCodec : VoipCodecOpus
+    class Opus48kCodec20Pct : VoipCodecOpus
     {
-        public Opus48kCodec() :
-            base(48000, 153600, "Opus 48kHz")// 74400
+        public Opus48kCodec20Pct() :
+            base(48000, 153600, "Opus 48kS/s 20%")
         {
 
         }

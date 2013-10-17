@@ -12,6 +12,7 @@ using System.Net;
 using NAudio.Wave.Compression;
 using System.Diagnostics;
 using NAudio;
+using System.Windows.Input;
 
 namespace PointGaming.Voice
 {
@@ -28,7 +29,7 @@ namespace PointGaming.Voice
         private WaveOut waveOut;
         private MixingWaveProvider waveProvider;
         private IVoipCodec codec;
-        public System.Windows.Input.Key TriggerKey {get ; set;}
+        public InputBinding TriggerInput { get; set; }
 
         private int _InputDeviceNumber;
         public int InputDeviceNumber
@@ -51,7 +52,7 @@ namespace PointGaming.Voice
         public AudioHardwareSession(IVoipCodec codec)
         {
             this.codec = codec;
-            TriggerKey = System.Windows.Input.Key.LeftCtrl;
+            TriggerInput = new InputBinding { KeyboardKey = System.Windows.Input.Key.LeftCtrl };
         }
 
         public void Enable()
@@ -203,21 +204,22 @@ namespace PointGaming.Voice
 
         private void OnAudioRecorded(byte[] encoded, double signalPower)
         {
-            var isKeyDown = System.Windows.Input.Keyboard.IsKeyDown(TriggerKey);
-            if (isKeyDown)
+            bool isMicTriggered = TriggerInput.IsDown;
+
+            if (isMicTriggered)
             {
                 _lastTrickleSent = false;
                 _isTrickleStarted = false;
             }
 
-            if (!isKeyDown && _lastTrickleSent)
+            if (!isMicTriggered && _lastTrickleSent)
                 return;
 
             var call = AudioRecorded;
             if (call != null)
                 call(this, encoded, signalPower);
 
-            if (!isKeyDown)
+            if (!isMicTriggered)
             {
                 if (!_isTrickleStarted)
                 {
@@ -226,13 +228,13 @@ namespace PointGaming.Voice
                 }
             }
 
-            if (!isKeyDown && DateTime.UtcNow > _trickleTimeout)
+            if (!isMicTriggered && DateTime.UtcNow > _trickleTimeout)
             {
                 OnAudioRecordEnded();
                 _lastTrickleSent = true;// gotta trickle a littme more after the key goes up
             }
         }
-
+        
         private void OnAudioRecordEnded()
         {
             var call = AudioRecordEnded;

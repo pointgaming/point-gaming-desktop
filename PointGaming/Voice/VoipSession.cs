@@ -161,9 +161,9 @@ namespace PointGaming.Voice
         public VoipSession(UserDataManager userData)
         {
             _userData = userData;
-            _nAudioTest = new AudioHardwareSession(new Opus48kCodec());
+            _nAudioTest = new AudioHardwareSession(new Opus48kCodec20Pct());
             _nAudioTest.InputDeviceNumber = App.Settings.AudioInputDeviceIndex;
-            _nAudioTest.TriggerKey = (System.Windows.Input.Key)_userData.Settings.MicTriggerKey;
+            _nAudioTest.TriggerInput = _userData.Settings.MicTriggerInput;
             _nAudioTest.AudioRecorded += _nAudioTest_AudioRecorded;
             _nAudioTest.AudioRecordEnded += _nAudioTest_AudioRecordEnded;
             _nAudioTest.InputDeviceNumberChanged += _nAudioTest_InputDeviceNumberChanged;
@@ -285,11 +285,11 @@ namespace PointGaming.Voice
             _nAudioTest.Disable();
         }
 
-        public System.Windows.Input.Key TriggerKey
+        public InputBinding TriggerInput
         {
             set
             {
-                _nAudioTest.TriggerKey = value;
+                _nAudioTest.TriggerInput = value;
             }
         }
 
