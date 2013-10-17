@@ -17,7 +17,7 @@ using PointGaming.POCO;
 
 namespace PointGaming.Chat
 {
-    public partial class PrivateChatWindow : Window, IWeakEventListener, INotifyPropertyChanged, Voice.IVoiceRoom
+    public partial class PrivateChatWindow : Window, IWeakEventListener, INotifyPropertyChanged
     {
         public WindowTreeManager WindowTreeManager;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -45,77 +45,6 @@ namespace PointGaming.Chat
             WindowTreeManager = new WindowTreeManager(this, HomeWindow.Home.WindowTreeManager);
         }
 
-        public bool IsVoiceTeamOnly { get { return false; } }
-        public bool IsVoiceEnabled { get { return checkboxMute.IsChecked == false; } }
-
-        public void OnVoiceStarted(PgUser user)
-        {
-            if (user == _otherUser)
-                IsOtherSpeaking = true;
-            else
-                IsSelfSpeaking = true;
-        }
-        public void OnVoiceStopped(PgUser user)
-        {
-            if (user == _otherUser)
-                IsOtherSpeaking = false;
-            else
-                IsSelfSpeaking = false;
-        }
-
-        public void OnVoiceConnectionChanged(bool isConnected)
-        {
-            IsVoiceConnected = isConnected;
-        }
-
-        private bool _IsVoiceConnected = false;
-        public bool IsVoiceConnected
-        {
-            get { return _IsVoiceConnected; }
-            set
-            {
-                if (_IsVoiceConnected == value)
-                    return;
-                _IsVoiceConnected = value;
-                NotifyChanged("IsVoiceConnected");
-            }
-        }
-
-        public string AudioRoomId
-        {
-            get
-            {
-                var ids = new string[] { _userData.User.Id, _otherUser.Id };
-                Array.Sort(ids);
-                return ids[0] + " " + ids[1];
-            }
-        }
-
-        private bool _IsSelfSpeaking;
-        public bool IsSelfSpeaking
-        {
-            get { return _IsSelfSpeaking; }
-            set
-            {
-                if (value == _IsSelfSpeaking)
-                    return;
-                _IsSelfSpeaking = value;
-                NotifyChanged("IsSelfSpeaking");
-            }
-        }
-        private bool _IsOtherSpeaking;
-        public bool IsOtherSpeaking
-        {
-            get { return _IsOtherSpeaking; }
-            set
-            {
-                if (value == _IsOtherSpeaking)
-                    return;
-                _IsOtherSpeaking = value;
-                NotifyChanged("IsOtherSpeaking");
-            }
-        }
-
         public void Init(PrivateChatSession session, PgUser otherUser)
         {
             _session = session;
@@ -125,8 +54,6 @@ namespace PointGaming.Chat
 
             _session.ChatMessageReceived += ChatMessages_CollectionChanged;
             _session.SendMessageFailed += MessageSendFailed;
-
-            _userData.Voip.JoinRoom(this);
         }
 
         void ChatMessages_CollectionChanged(ChatMessage item)
@@ -220,14 +147,12 @@ namespace PointGaming.Chat
         private void Window_Activated(object sender, EventArgs e)
         {
             this.StopFlashingWindow();
-            _userData.Voip.TakeMicrophoneFocus(this);
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             _session.SendMessageFailed -= MessageSendFailed;
             _session.Leave();
-            _userData.Voip.LeaveRoom(this);
         }
 
         public void MessageSendFailed(string message)
