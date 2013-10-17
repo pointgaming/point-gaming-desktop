@@ -52,7 +52,7 @@ namespace PointGaming.Voice
     class Opus48kCodec : VoipCodecOpus
     {
         public Opus48kCodec() :
-            base(48000, 74400, "Opus 48kHz")
+            base(48000, 153600, "Opus 48kHz")// 74400
         {
 
         }

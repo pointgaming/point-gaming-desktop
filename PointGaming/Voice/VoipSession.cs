@@ -161,7 +161,7 @@ namespace PointGaming.Voice
         public VoipSession(UserDataManager userData)
         {
             _userData = userData;
-            _nAudioTest = new AudioHardwareSession(new Opus16kCodec());
+            _nAudioTest = new AudioHardwareSession(new Opus48kCodec());
             _nAudioTest.InputDeviceNumber = App.Settings.AudioInputDeviceIndex;
             _nAudioTest.TriggerKey = (System.Windows.Input.Key)_userData.Settings.MicTriggerKey;
             _nAudioTest.AudioRecorded += _nAudioTest_AudioRecorded;
