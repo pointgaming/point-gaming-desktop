@@ -112,8 +112,7 @@ namespace PointGaming
 
             taskbarIcon.Visibility = System.Windows.Visibility.Collapsed;
 
-            WindowTreeManager.Save();
-            WindowTreeManager.CloseChildren();
+            WindowTreeManager.ManualClosing();
             
             _paymentTab.LoggingOut();
 

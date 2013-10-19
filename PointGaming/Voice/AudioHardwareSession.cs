@@ -29,7 +29,7 @@ namespace PointGaming.Voice
         private WaveOut waveOut;
         private MixingWaveProvider waveProvider;
         private IVoipCodec codec;
-        public InputBinding TriggerInput { get; set; }
+        public Settings.ControlBinding TriggerInput { get; set; }
 
         private int _InputDeviceNumber;
         public int InputDeviceNumber
@@ -52,7 +52,7 @@ namespace PointGaming.Voice
         public AudioHardwareSession(IVoipCodec codec)
         {
             this.codec = codec;
-            TriggerInput = new InputBinding { KeyboardKey = System.Windows.Input.Key.LeftCtrl };
+            TriggerInput = new Settings.ControlBinding { KeyboardKey = System.Windows.Input.Key.LeftCtrl };
         }
 
         public void Enable()

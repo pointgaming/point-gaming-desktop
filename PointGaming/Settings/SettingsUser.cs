@@ -18,18 +18,21 @@ namespace PointGaming.Settings
         public string ChatFontFamily { get { return _ChatFontFamily; } set { SetProperty(this, ref _ChatFontFamily, value, () => ChatFontFamily); } }
         private double _ChatFontSize = 12;
         public double ChatFontSize { get { return _ChatFontSize; } set { SetProperty(this, ref _ChatFontSize, value, () => ChatFontSize); } }
-        private List<string> _LaunchList = new List<string>();
-        public List<string> LaunchList { get { return _LaunchList; } set { SetProperty(this, ref _LaunchList, value, () => LaunchList); } }
+        private List<HomeTab.LauncherInfo> _LauncherList = new List<HomeTab.LauncherInfo>();
+        public List<HomeTab.LauncherInfo> LauncherList { get { return _LauncherList; } set { SetProperty(this, ref _LauncherList, value, () => LauncherList); } }
         private double _UserIdleMinutes = 10;
         public double UserIdleMinutes { get { return _UserIdleMinutes; } set { SetProperty(this, ref _UserIdleMinutes, value, () => UserIdleMinutes); } }
         private bool _BitcoinMinerOnlyWheUserIdle = true;
         public bool BitcoinMinerOnlyWheUserIdle { get { return _BitcoinMinerOnlyWheUserIdle; } set { SetProperty(this, ref _BitcoinMinerOnlyWheUserIdle, value, () => BitcoinMinerOnlyWheUserIdle); } }
         private bool _BitcoinMinerEnabled = false;
         public bool BitcoinMinerEnabled { get { return _BitcoinMinerEnabled; } set { SetProperty(this, ref _BitcoinMinerEnabled, value, () => BitcoinMinerEnabled); } }
-        private string _WindowBounds = "";
-        public string WindowBounds { get { return _WindowBounds; } set { SetProperty(this, ref _WindowBounds, value, () => WindowBounds); } }
-        private InputBinding _MicTriggerInput = new InputBinding { KeyboardKey = System.Windows.Input.Key.LeftCtrl, };
-        public InputBinding MicTriggerInput { get { return _MicTriggerInput; } set { SetProperty(this, ref _MicTriggerInput, value, () => MicTriggerInput); } }
+        private List<WindowPersistInfo> _WindowBounds = new List<WindowPersistInfo>();
+        public List<WindowPersistInfo> WindowBounds { get { return _WindowBounds; } set { SetProperty(this, ref _WindowBounds, value, () => WindowBounds); } }
+        private ControlBinding _MicTriggerInput = new ControlBinding { KeyboardKey = System.Windows.Input.Key.LeftCtrl, };
+        public ControlBinding MicTriggerInput { get { return _MicTriggerInput; } set { SetProperty(this, ref _MicTriggerInput, value, () => MicTriggerInput); } }
+        private bool _MicTriggerSoundOffEnabled = true;
+        public bool MicTriggerSoundOffEnabled { get { return _MicTriggerSoundOffEnabled; } set { SetProperty(this, ref _MicTriggerSoundOffEnabled, value, () => MicTriggerSoundOffEnabled); } }
+
         private double _VoiceAmplifier = 1.0;
         public double VoiceAmplifier { get { return _VoiceAmplifier; } set { SetProperty(this, ref _VoiceAmplifier, value, () => VoiceAmplifier); } }
 

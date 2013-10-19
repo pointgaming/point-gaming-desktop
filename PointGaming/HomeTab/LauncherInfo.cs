@@ -10,19 +10,11 @@ using System.Windows.Media;
 using System.Windows.Controls;
 using System.Diagnostics;
 using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace PointGaming.HomeTab
 {
-    public class LauncherPoco
-    {
-        public string Id { get; set; }
-        public bool IsOfficialGame { get; set; }
-        public string DisplayName { get; set; }
-        public string FilePath { get; set; }
-        public string Arguments { get; set; }
-        public int PlayerCount { get; set; }
-    }
-
+    [JsonObject(MemberSerialization.OptIn)]
     public class LauncherInfo : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -36,6 +28,7 @@ namespace PointGaming.HomeTab
         }
 
         private string _id;
+        [JsonProperty]
         public string Id
         {
             get { return _id; }
@@ -49,6 +42,7 @@ namespace PointGaming.HomeTab
         }
 
         private bool _isOfficialGame;
+        [JsonProperty]
         public bool IsOfficialGame
         {
             get { return _isOfficialGame; }
@@ -62,6 +56,7 @@ namespace PointGaming.HomeTab
         }
 
         private string _displayName;
+        [JsonProperty]
         public string DisplayName
         {
             get { return _displayName; }
@@ -78,6 +73,7 @@ namespace PointGaming.HomeTab
         }
 
         private string _filePath;
+        [JsonProperty]
         public string FilePath
         {
             get { return _filePath; }
@@ -93,6 +89,7 @@ namespace PointGaming.HomeTab
         }
 
         private string _arguments;
+        [JsonProperty]
         public string Arguments
         {
             get { return _arguments; }
@@ -121,6 +118,16 @@ namespace PointGaming.HomeTab
         private ImageSource _fileIcon;
         public ImageSource FileIcon { get { return _fileIcon; } }
 
+
+        public LauncherInfo()
+        {
+        }
+
+        public LauncherInfo(LauncherInfo other)
+        {
+            CopyFrom(other);
+        }
+
         public LauncherInfo(POCO.GamePoco poco)
         {
             Id = poco._id;
@@ -142,32 +149,9 @@ namespace PointGaming.HomeTab
             FilePath = filePath;
             Arguments = arguments;
         }
-        public LauncherInfo(LauncherPoco poco)
-        {
-            Id = poco.Id;
-            DisplayName = poco.DisplayName;
-            PlayerCount = poco.PlayerCount;
 
-            IsOfficialGame = poco.IsOfficialGame;
-            FilePath = poco.FilePath;
-            Arguments = poco.Arguments;
-        }
-        public LauncherPoco ToPoco()
-        {
-            LauncherPoco poco = new LauncherPoco
-            {
-                Id = Id,
-                DisplayName = DisplayName,
-                PlayerCount = PlayerCount,
 
-                IsOfficialGame = IsOfficialGame,
-                FilePath = FilePath,
-                Arguments = Arguments,
-            };
-            return poco;
-        }
-
-        public void CopyFrom(LauncherInfo other)
+        public LauncherInfo CopyFrom(LauncherInfo other)
         {
             Id = other.Id;
             DisplayName = other.DisplayName;
@@ -176,6 +160,8 @@ namespace PointGaming.HomeTab
             IsOfficialGame = other.IsOfficialGame;
             FilePath = other.FilePath;
             Arguments = other.Arguments;
+
+            return this;
         }
 
         public void Update(LauncherInfo other)
@@ -267,19 +253,6 @@ namespace PointGaming.HomeTab
         public override string ToString()
         {
             return DisplayName;
-        }
-
-        public static LauncherInfo FromJson(string value)
-        {
-            var poco = Newtonsoft.Json.JsonConvert.DeserializeObject<LauncherPoco>(value);
-
-            return new LauncherInfo(poco);
-        }
-        public string ToJson()
-        {
-            var poco = ToPoco();
-            var value = Newtonsoft.Json.JsonConvert.SerializeObject(poco);
-            return value;
         }
     }
 }

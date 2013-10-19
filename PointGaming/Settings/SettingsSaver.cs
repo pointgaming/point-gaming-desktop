@@ -9,7 +9,12 @@ using Newtonsoft.Json;
 
 namespace PointGaming.Settings
 {
-    class SettingsSaver<T> where T : INotifyPropertyChanged
+    abstract class SettingsSaver
+    {
+        protected object FileSystemSynch = new object();
+    }
+
+    class SettingsSaver<T> : SettingsSaver where T : INotifyPropertyChanged
     {
         private const string _settingsFileName = "settings.js";
         private string _saveFilePath;
@@ -29,10 +34,13 @@ namespace PointGaming.Settings
 
             try
             {
-                if (File.Exists(_saveFilePath))
+                lock (FileSystemSynch)
                 {
-                    string fileData = File.ReadAllText(_saveFilePath);
-                    settings = JsonConvert.DeserializeObject<T>(fileData, new JsonSerializerSettings { });
+                    if (File.Exists(_saveFilePath))
+                    {
+                        string fileData = File.ReadAllText(_saveFilePath);
+                        settings = JsonConvert.DeserializeObject<T>(fileData, new JsonSerializerSettings { });
+                    }
                 }
             }
             catch (Exception e)
@@ -55,24 +63,26 @@ namespace PointGaming.Settings
             {
                 FileInfo fi = new FileInfo(_saveFilePath);
                 DirectoryInfo di = fi.Directory;
-                if (!di.Exists)
-                    di.Create();
+
+                lock (FileSystemSynch)
+                {
+                    if (!di.Exists)
+                        di.Create();
+                }
 
                 string fileData;
                 lock (settings)
                 {
-                    var jsonSettings  = new JsonSerializerSettings
-                    {
-                        NullValueHandling = NullValueHandling.Ignore,
-                        DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate
-                    };
-                    fileData = JsonConvert.SerializeObject(settings, Formatting.Indented, jsonSettings);
+                    fileData = JsonConvert.SerializeObject(settings, Formatting.Indented);
                 }
 
-                using (StreamWriter writer = File.CreateText(_saveFilePath))
+                lock (FileSystemSynch)
                 {
-                    writer.Write(fileData);
-                    writer.Close();
+                    using (StreamWriter writer = File.CreateText(_saveFilePath))
+                    {
+                        writer.Write(fileData);
+                        writer.Close();
+                    }
                 }
             }
             catch (Exception e)

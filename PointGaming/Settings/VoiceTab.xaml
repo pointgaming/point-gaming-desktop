@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" Loaded="UserControl_Loaded" Padding="10">
+             d:DesignHeight="500" d:DesignWidth="300" Loaded="UserControl_Loaded" Padding="10">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -14,12 +14,13 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
 
@@ -33,14 +34,20 @@
         <Label Grid.Row="2" Grid.Column="0" Height="28" Content="Amplifier"  VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
         <Label Grid.Row="2" Grid.Column="2" Height="28" Name="labelAmplifier" Content="1.00" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Width="95" Margin="0,0,5,0" />
         <Slider Grid.Row="2" Grid.Column="3" Height="23" Name="sliderAmplifier" Margin="0,2,0,2" ValueChanged="sliderAmplifier_ValueChanged" TickPlacement="BottomRight" TickFrequency="0.5" LargeChange="0.5" Maximum="2" Minimum="-1" />
-        
-        <TextBox Grid.Row="3" Grid.ColumnSpan="4" TextWrapping="Wrap" IsReadOnly="True" Margin="0,20,0,0"
+
+        <Label Grid.Row="3" Grid.Column="0" Height="28" Content="Tx Sound Off"  VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+        <Label Grid.Row="3" Grid.Column="2" Height="28" Name="labelTxSoundOff" Content="Enabled" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Width="100" />
+        <Button Grid.Row="3" Grid.Column="3" Content="Toggle" Height="23" Name="buttonToggleTxSoundOff" Width="75" HorizontalAlignment="Left" Click="buttonToggleTxSoundOff_Click" />
+
+
+        <TextBox Grid.Row="4" Grid.ColumnSpan="4" TextWrapping="Wrap" IsReadOnly="True" Margin="0,20,0,0"
                  Text="Press and hold the hotkey to test voice capture. Release to playback. Adjust the amplifier setting so that the power is green while vocalizing. If there is no indication of power then verify your microphone is connected to the correct jack and the correct input device is selected." BorderThickness="0"/>
 
-        <Label Grid.Row="4" Grid.Column="0" Height="28" Content="Power" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
-        <ProgressBar Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Name="progressBarPower" Margin="0,2,0,2" />
-        <Label Grid.Row="5" Grid.Column="0" Height="28" Content="Time" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+        <Label Grid.Row="5" Grid.Column="0" Height="28" Content="Power" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+        <ProgressBar Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="2" Name="progressBarPower" Margin="0,2,0,2" />
+        
+        <Label Grid.Row="6" Grid.Column="0" Height="28" Content="Time" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
         <!--<ProgressBar Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Name="progressBarTime" Margin="0,2,0,2" />-->
-        <Slider Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="2" Name="sliderTime"  Margin="0,2,0,2" IsEnabled="False" />
+        <Slider Grid.Row="6" Grid.Column="2" Grid.ColumnSpan="2" Name="sliderTime"  Margin="0,2,0,2" IsEnabled="False" />
     </Grid>
 </UserControl>

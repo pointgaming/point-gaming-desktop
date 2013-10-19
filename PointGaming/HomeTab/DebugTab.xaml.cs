@@ -48,12 +48,49 @@ namespace PointGaming.HomeTab
             }
         }
 
+        private int _streamNumberNoise;
+
         private void buttonPlayChecked_Click(object sender, RoutedEventArgs e)
         {
             if (checkBoxA.IsChecked == true)
                 AskAndPlayFile();
             if (checkBoxB.IsChecked == true)
                 AskAndPlayFile();
+
+            var rng = System.Security.Cryptography.RandomNumberGenerator.Create();
+            var format = UserDataManager.UserData.Voip.Codec.RecordFormat;
+            var sampleRate = format.SampleRate;
+            var samplesPer20ms = sampleRate / 50;
+
+
+
+            var stream = new Voice.SerialPacketStream
+            {
+                Id = "x",
+                Index = 0,
+                IsEncoded = false,
+                IsTeamOnly = false,
+                Parts = new System.Collections.Generic.List<Voice.SerialPacket>(),
+                RoomName = "x",
+                StreamNumber = _streamNumberNoise++,
+            };
+
+            for (int j = 0; j < 3; j++)
+            {
+                byte[] data = new byte[samplesPer20ms * 2];
+                rng.GetBytes(data);
+                var packet = new Voice.SerialPacket
+                {
+                    MessageNumber = j,
+                    RxTime = Voice.DateTimePrecise.UtcNow,
+                    Audio = data,
+                };
+                stream.Parts.Add(packet);
+            }
+
+            stream.Write(Voice.SerialPacketStream.AppDataPath(stream));
+
+            UserDataManager.UserData.Voip.Play(stream);
         }
 
         private static void AskAndPlayFile()
@@ -63,7 +100,7 @@ namespace PointGaming.HomeTab
                 var fileName = AskForFile();
                 if (fileName != null)
                 {
-                    var stream = Voice.SerialPacketStream.Read(fileName);
+                    var stream = Voice.SerialPacketStream.Read(new System.IO.FileInfo(fileName));
                     UserDataManager.UserData.Voip.Play(stream);
                 }
             }

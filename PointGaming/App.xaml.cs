@@ -48,6 +48,18 @@ namespace PointGaming
             return typeof(App).Assembly.GetName().Version;
         } }
 
+        public static string ResourcesUri { get {
+            var uri = "pack://application:,,,/" + (typeof(App).Assembly).GetName().Name + ";component/Resources/";
+            return uri;
+        } }
+
+        public static System.IO.Stream GetResourceFileStream(string fileName)
+        {
+            var uri = new Uri(App.ResourcesUri + fileName);
+            var stream = Application.GetResourceStream(uri).Stream;
+            return stream;
+        }
+
         private static StreamWriter _logWriter;
 
         public static readonly PointGaming.Settings.SettingsApplication Settings;

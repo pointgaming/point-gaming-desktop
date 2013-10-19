@@ -159,6 +159,7 @@
       <DependentUpon>AboutTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings\HslColor.cs" />
+    <Compile Include="Settings\ControlBinding.cs" />
     <Compile Include="Settings\ISettingsTab.cs" />
     <Compile Include="Settings\SettingsApplication.cs" />
     <Compile Include="Settings\SettingsUser.cs" />
@@ -489,6 +490,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <Resource Include="Resources\micTrigger.pga" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">

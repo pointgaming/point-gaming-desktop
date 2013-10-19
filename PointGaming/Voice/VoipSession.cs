@@ -38,6 +38,8 @@ namespace PointGaming.Voice
             VoipDebug(enabled, string.Format(s, os));
         }
 
+        internal readonly IVoipCodec Codec = new Opus48kCodec20Pct();
+
         private UserDataManager _userData;
         private AudioHardwareSession _nAudioTest;
         private VoipClient _audioChatClient;
@@ -49,6 +51,7 @@ namespace PointGaming.Voice
         public DispatcherTimer _udpKeepAliveTimer;
 
         private long _microphonePriority = 1;
+        private SerialPacketStream _micTrigger;
 
         public void TestVoiceStart(VoiceTester tester)
         {
@@ -137,10 +140,13 @@ namespace PointGaming.Voice
         public void JoinRoom(IVoiceRoom audioRoom)
         {
             AudioRoomEx roomEx;
-            if (!_joinedRooms.TryGetValue(audioRoom.AudioRoomId, out roomEx))
+            lock (_joinedRooms)
             {
-                roomEx = new AudioRoomEx(audioRoom);
-                _joinedRooms[audioRoom.AudioRoomId] = roomEx;
+                if (!_joinedRooms.TryGetValue(audioRoom.AudioRoomId, out roomEx))
+                {
+                    roomEx = new AudioRoomEx(audioRoom);
+                    _joinedRooms[audioRoom.AudioRoomId] = roomEx;
+                }
             }
             SendJoinRoom(roomEx);
         }
@@ -148,20 +154,26 @@ namespace PointGaming.Voice
         public void LeaveRoom(IVoiceRoom audioRoom)
         {
             AudioRoomEx roomEx;
-            if (!_joinedRooms.TryGetValue(audioRoom.AudioRoomId, out roomEx))
-                return;
+            lock (_joinedRooms)
+            {
+                if (!_joinedRooms.TryGetValue(audioRoom.AudioRoomId, out roomEx))
+                    return;
+            }
 
             foreach (var sender in roomEx.Senders)
                 _nAudioTest.AudioReceiveEnded(sender.Id);
 
-            _joinedRooms.Remove(audioRoom.AudioRoomId);
+            lock (_joinedRooms)
+            {
+                _joinedRooms.Remove(audioRoom.AudioRoomId);
+            }
             SendLeaveRoom(roomEx);
         }
 
         public VoipSession(UserDataManager userData)
         {
             _userData = userData;
-            _nAudioTest = new AudioHardwareSession(new Opus48kCodec20Pct());
+            _nAudioTest = new AudioHardwareSession(Codec);
             _nAudioTest.InputDeviceNumber = App.Settings.AudioInputDeviceIndex;
             _nAudioTest.TriggerInput = _userData.Settings.MicTriggerInput;
             _nAudioTest.AudioRecorded += _nAudioTest_AudioRecorded;
@@ -174,6 +186,9 @@ namespace PointGaming.Voice
             _udpKeepAliveTimer.Tick += _udpKeepAliveTimer_Tick;
 
             Connect();
+
+            var stream = App.GetResourceFileStream("micTrigger.pga");
+            _micTrigger = SerialPacketStream.Read(stream);
         }
 
         private void Connect()
@@ -212,8 +227,11 @@ namespace PointGaming.Voice
         {
             CheckJoinTimeouts();
 
-            foreach (var room in _joinedRooms.Values)
-                SendJoinRoom(room);
+            lock (_joinedRooms)
+            {
+                foreach (var room in _joinedRooms.Values)
+                    SendJoinRoom(room);
+            }
         }
 
         private void SendJoinRoom(AudioRoomEx roomEx)
@@ -285,7 +303,7 @@ namespace PointGaming.Voice
             _nAudioTest.Disable();
         }
 
-        public InputBinding TriggerInput
+        public Settings.ControlBinding TriggerInput
         {
             set
             {
@@ -315,8 +333,11 @@ namespace PointGaming.Voice
         private void ReceivedLeave(VoipMessageLeaveRoom message)
         {
             AudioRoomEx roomEx;
-            if (!_joinedRooms.TryGetValue(message.RoomName, out roomEx))
-                return;
+            lock (_joinedRooms)
+            {
+                if (!_joinedRooms.TryGetValue(message.RoomName, out roomEx))
+                    return;
+            }
 
             OnVoiceConnectionChanged(roomEx, false);
         }
@@ -324,8 +345,11 @@ namespace PointGaming.Voice
         private void ReceivedJoin(VoipMessageJoinRoom message)
         {
             AudioRoomEx roomEx;
-            if (!_joinedRooms.TryGetValue(message.RoomName, out roomEx))
-                return;
+            lock (_joinedRooms)
+            {
+                if (!_joinedRooms.TryGetValue(message.RoomName, out roomEx))
+                    return;
+            }
 
             OnVoiceConnectionChanged(roomEx, message.IsSuccess);
             RemoveJoinRoomTimeout(message.RoomName);
@@ -447,9 +471,12 @@ namespace PointGaming.Voice
                 var removes = new List<string>();
                 foreach (var ps in _playStreams.Values)
                 {
-                    var part = ps.Parts[ps.Index++];
-                    _nAudioTest.AudioReceived(ps.Id, part.Audio, ps.IsEncoded);
-                    if (ps.Index == ps.Parts.Count)
+                    if (ps.Index < ps.Parts.Count)
+                    {
+                        var part = ps.Parts[ps.Index++];
+                        _nAudioTest.AudioReceived(ps.Id, part.Audio, ps.IsEncoded);
+                    }
+                    if (ps.Index >= ps.Parts.Count)
                         removes.Add(ps.Id);
                 }
                 foreach (var item in removes)
@@ -508,12 +535,15 @@ namespace PointGaming.Voice
 
             var isListening = false;
             AudioRoomEx roomEx;
-            if (_joinedRooms.TryGetValue(voiceMessage.RoomName, out roomEx))
+            lock (_joinedRooms)
             {
-                isListening = roomEx.R.IsVoiceEnabled && !user.IsMuted;
+                if (_joinedRooms.TryGetValue(voiceMessage.RoomName, out roomEx))
+                {
+                    isListening = roomEx.R.IsVoiceEnabled && !user.IsMuted;
 
-                if (isListening && roomEx.R.IsVoiceTeamOnly)
-                    isListening = _userData.User.Team == user.Team;
+                    if (isListening && roomEx.R.IsVoiceTeamOnly)
+                        isListening = _userData.User.Team == user.Team;
+                }
             }
 
             if (isEnd)
@@ -524,7 +554,8 @@ namespace PointGaming.Voice
             {
                 if (isListening)
                     _nAudioTest.AudioReceived(user.Id, voiceMessage.Audio, true);
-                roomEx.OnVoiceSent(user);
+                if (roomEx != null)
+                    roomEx.OnVoiceSent(user);
                 lock (_receivedTimes)
                 {
                     _receivedTimes[new Tuple<PgUser, AudioRoomEx>(user, roomEx)] = DateTime.UtcNow;
@@ -567,6 +598,8 @@ namespace PointGaming.Voice
                 _speakingRoom = GetSpeakingRoom();
                 _messageNumber = 0;
                 _streamNumber++;
+
+                _micTrigger.Index = 0;
             }
 
             if (_speakingRoom == null)
@@ -574,6 +607,9 @@ namespace PointGaming.Voice
 
             if (isFirst)
             {
+                if (UserDataManager.UserData.Settings.MicTriggerSoundOffEnabled)
+                    Play(_micTrigger);
+
                 _speakingRoomTeamOnly = _speakingRoom.R.IsVoiceTeamOnly;
 
                 if (DebugSaveSentPackets)
@@ -646,7 +682,8 @@ namespace PointGaming.Voice
         {
             lock (_playStreams)
             {
-                _playStreams.Add(ps.Id, ps);
+                if (!_playStreams.ContainsKey(ps.Id))
+                    _playStreams.Add(ps.Id, ps);
             }
         }
     }

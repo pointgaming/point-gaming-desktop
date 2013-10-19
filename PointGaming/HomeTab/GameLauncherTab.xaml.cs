@@ -30,19 +30,12 @@ namespace PointGaming.HomeTab
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            var settingsList = UserDataManager.UserData.Settings.LaunchList;
+            var settingsList = UserDataManager.UserData.Settings.LauncherList;
             if (settingsList == null)
-                settingsList = new List<string>();
+                settingsList = new List<HomeTab.LauncherInfo>();
 
-            foreach (var launcherString in settingsList)
-            {
-                try
-                {
-                    var launcher = LauncherInfo.FromJson(launcherString);
-                    AddOrUpdate(launcher);
-                }
-                catch { }
-            }
+            foreach (var launcher in settingsList)
+                AddOrUpdate(new LauncherInfo(launcher));
 
             Launchers.CollectionChanged += _launchers_CollectionChanged;
 
@@ -94,12 +87,10 @@ namespace PointGaming.HomeTab
 
         private void SaveLauncherList()
         {
-            var settingsList = new List<string>();
+            var settingsList = new List<LauncherInfo>();
             foreach (var item in Launchers)
-            {
-                settingsList.Add(item.ToJson());
-            }
-            UserDataManager.UserData.Settings.LaunchList = settingsList;
+                settingsList.Add(new LauncherInfo(item));
+            UserDataManager.UserData.Settings.LauncherList = settingsList;
             UserDataManager.UserData.Settings.Save();
         }
 

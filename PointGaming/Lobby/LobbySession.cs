@@ -126,9 +126,9 @@ namespace PointGaming.Lobby
                     call(this);
             };
 
-            while (GameRoomManager.Count < MinRoomCount)
+            for (int i = 0; i < MinRoomCount; i++ )
             {
-                var position = GameRoomManager.Count + 1;
+                var position = i + 1;
                 var fake = CreateFakeRoom(position);
                 yield return delegate { GameRoomManager.Add(fake); };
             }

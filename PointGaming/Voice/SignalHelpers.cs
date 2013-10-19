@@ -99,5 +99,39 @@ namespace PointGaming.Voice
                 i += 2;
             }
         }
+
+        internal static byte[] ShortsToBytes(this short[] data)
+        {
+            var x = new byte[data.Length << 1];
+            Buffer.BlockCopy(data, 0, x, 0, x.Length);
+            return x;
+        }
+        internal static short[] BytesToShorts(this byte[] data)
+        {
+            var x = new short[data.Length >> 1];
+            Buffer.BlockCopy(data, 0, x, 0, data.Length);
+            return x;
+        }
+
+
+        /// <summary>
+        /// Makes the signal quickly come from silent to full volume at time 0%-3%, then from time 3%-100% it drops down to 0.22% of the signal
+        /// </summary>
+        internal static void LogNormal(short[] values)
+        {
+            var sMul = 1.0 / (Math.Sqrt(2 * Math.PI));
+
+            var timeMul = 20.0 / (double)values.Length;
+
+            values[0] = 0;
+            for (int i = 1; i < values.Length; i++)
+            {
+                double x = i * timeMul;
+                var top = (Math.Log(x) - 0.5);
+                var e9 = -0.5 * top * top;
+                var px = 2.5 * sMul * Math.Exp(e9) / x;
+                values[i] = (short)(values[i] * px);
+            }
+        }
     }
 }

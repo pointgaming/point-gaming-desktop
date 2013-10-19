@@ -41,7 +41,7 @@ namespace PointGaming.Settings
         {
             var rect = new Rect(_bounds.Left, _bounds.Top, _bounds.Width, _bounds.Height);
             var desktopInfo = GetDesktopInfo();
-            var ras = new RectAndSize
+            var ras = new WindowPersistInfo
             {
                 Name = _windowName,
                 Left = rect.Left,
@@ -52,15 +52,15 @@ namespace PointGaming.Settings
                 ScreenHeight = desktopInfo.Height,
             };
 
-            var oldSizes = GetOldSizes();
-            oldSizes[_windowName] = ras;
-            SaveSizes(oldSizes);
+            var saved = LoadAll();
+            saved[_windowName] = ras;
+            SaveAll(saved);
         }
         public void Load()
         {
-            var oldSizes = GetOldSizes();
-            RectAndSize ras;
-            if (!oldSizes.TryGetValue(_windowName, out ras))
+            var saved = LoadAll();
+            WindowPersistInfo ras;
+            if (!saved.TryGetValue(_windowName, out ras))
                 return;
             
             _bounds = new Rect(ras.Left, ras.Top, ras.Width, ras.Height);
@@ -76,28 +76,21 @@ namespace PointGaming.Settings
             _window.WindowStartupLocation = WindowStartupLocation.Manual;
         }
 
-        private static Dictionary<string, RectAndSize> GetOldSizes()
+        private static Dictionary<string, WindowPersistInfo> LoadAll()
         {
-            Dictionary<string, RectAndSize> oldSizes = new Dictionary<string, RectAndSize>();
-            try
-            {
-                var old = UserDataManager.UserData.Settings.WindowBounds;
-                var old2 = SimpleJson.SimpleJson.DeserializeObject<Foo>(old);
-                foreach (var item in old2.sizes)
-                    oldSizes[item.Name] = item;
-            }
-            catch { }
-            return oldSizes;
+            var saved = new Dictionary<string, WindowPersistInfo>();
+            var savedList = UserDataManager.UserData.Settings.WindowBounds;
+            foreach (var item in savedList)
+                saved[item.Name] = item;
+            return saved;
         }
 
-        private static void SaveSizes(Dictionary<string, RectAndSize> sizes)
+        private static void SaveAll(Dictionary<string, WindowPersistInfo> sizes)
         {
-            var foo = new Foo();
-            foo.sizes = new List<RectAndSize>(sizes.Values);
-            var neww = SimpleJson.SimpleJson.SerializeObject(foo);
+            var nsizes = new List<WindowPersistInfo>(sizes.Values);
             if (UserDataManager.UserData != null)
             {
-                UserDataManager.UserData.Settings.WindowBounds = neww;
+                UserDataManager.UserData.Settings.WindowBounds = nsizes;
                 UserDataManager.UserData.Settings.Save();
             }
         }
@@ -110,21 +103,16 @@ namespace PointGaming.Settings
                 Height = System.Windows.SystemParameters.VirtualScreenHeight
             };
         }
+    }
 
-        private class Foo
-        {
-            public List<RectAndSize> sizes { get; set; }
-        }
-
-        private class RectAndSize
-        {
-            public string Name { get; set; }
-            public double Top {get;set;}
-            public double Left { get; set; }
-            public double Width { get; set; }
-            public double Height { get; set; }
-            public double ScreenWidth { get; set; }
-            public double ScreenHeight { get; set; }
-        }
+    public class WindowPersistInfo
+    {
+        public string Name { get; set; }
+        public double Top { get; set; }
+        public double Left { get; set; }
+        public double Width { get; set; }
+        public double Height { get; set; }
+        public double ScreenWidth { get; set; }
+        public double ScreenHeight { get; set; }
     }
 }

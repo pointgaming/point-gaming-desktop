@@ -2,18 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace PointGaming.Voice
 {
+    [JsonObject(MemberSerialization.OptIn)]
     class SerialPacketStream
     {
+        [JsonProperty]
         public bool IsEncoded { get; set; }
+        [JsonProperty]
         public string Id { get; set; }
+        [JsonProperty]
         public int StreamNumber { get; set; }
+        [JsonProperty]
         public string RoomName { get; set; }
+        [JsonProperty]
         public bool IsTeamOnly { get; set; }
 
         public int Index { get; set; }
+        [JsonProperty]
         public List<SerialPacket> Parts { get; set; }
 
         public SerialPacketStream() { }
@@ -43,9 +51,17 @@ namespace PointGaming.Voice
             }
         }
 
-        public static SerialPacketStream Read(string filePath)
+        public static SerialPacketStream Read(System.IO.FileInfo filePath)
         {
-            using (var tr = new System.IO.StreamReader(System.IO.File.Open(filePath, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.Read), Encoding.UTF8))
+            using (var stream = System.IO.File.Open(filePath.FullName, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.Read))
+            {
+                return Read(stream);
+            }
+        }
+
+        public static SerialPacketStream Read(System.IO.Stream stream)
+        {
+            using (var tr = new System.IO.StreamReader(stream, Encoding.UTF8))
             {
                 Newtonsoft.Json.JsonSerializer ser = new Newtonsoft.Json.JsonSerializer();
 

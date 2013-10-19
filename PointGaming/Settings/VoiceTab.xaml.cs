@@ -35,12 +35,7 @@ namespace PointGaming.Settings
 
         private void buttonSetMicKey_Click(object sender, RoutedEventArgs e)
         {
-            SetAudioInputDeviceTriggerKey();
-        }
-
-        private void SetAudioInputDeviceTriggerKey()
-        {
-            var binding = KeySelectDialog.Show(HomeWindow.Home, "Select Microphone Key", "Assign the microphone hotkey by pressing/clicking the desired keyboard key/mouse button.  This window must be focused, and for mouse buttons the mouse pointer must be inside this textbox.", PermittedInputBindings.KeyboardKeysAndMouseButtons);
+            var binding = KeySelectDialog.Show(HomeWindow.Home, "Select Microphone Key", "Assign the microphone hotkey by pressing/clicking the desired keyboard key/mouse button.  This window must be focused, and for mouse buttons the mouse pointer must be inside this textbox.", PermittedControlBinding.KeyboardKeysAndMouseButtons);
             if (binding == null)
                 return;
             labelMicKey.Content = binding.ToString();
@@ -80,6 +75,8 @@ namespace PointGaming.Settings
             if (_loadedOnce)
                 return;
             _loadedOnce = true;
+
+            SetTxSoundOffLabel();
 
             foreach (var item in Voice.AudioHardware.GetAudioInputDevices())
                 comboBoxRecordingDevices.Items.Add(item);
@@ -212,6 +209,19 @@ namespace PointGaming.Settings
             var amp = Math.Pow(10, sliderAmplifier.Value);
             labelAmplifier.Content = string.Format("{0:0.00}", amp);
             UserDataManager.UserData.Settings.VoiceAmplifier = amp;
+        }
+
+        private void buttonToggleTxSoundOff_Click(object sender, RoutedEventArgs e)
+        {
+            var value = !UserDataManager.UserData.Settings.MicTriggerSoundOffEnabled;
+            UserDataManager.UserData.Settings.MicTriggerSoundOffEnabled = value;
+            SetTxSoundOffLabel();
+        }
+
+        private void SetTxSoundOffLabel()
+        {
+            var value = UserDataManager.UserData.Settings.MicTriggerSoundOffEnabled;
+            labelTxSoundOff.Content = value ? "Enabled" : "Disabled";
         }
     }
 }

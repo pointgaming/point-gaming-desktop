@@ -30,13 +30,13 @@ namespace PointGaming
         }
         private List<WindowTreeManager> _children = new List<WindowTreeManager>();
         private Settings.WindowBoundsPersistor _windowBoundsPersistor;
-        private bool _shouldAutoCloseChildrenOnClosing;
+        private bool _autoClosing;
 
-        public WindowTreeManager(Window window, WindowTreeManager parent, bool shouldAutoCloseChildrenOnClosing = true)
+        public WindowTreeManager(Window window, WindowTreeManager parent, bool autoClosing = true)
         {
             Parent = parent;
             _window = window;
-            _shouldAutoCloseChildrenOnClosing = shouldAutoCloseChildrenOnClosing;
+            _autoClosing = autoClosing;
             
             var windowName = window.GetType().Name;
             _windowBoundsPersistor = new Settings.WindowBoundsPersistor(window, windowName);
@@ -47,22 +47,22 @@ namespace PointGaming
 
         private void SelfClosing(object sender, CancelEventArgs e)
         {
-            _windowBoundsPersistor.Save();
-
-            if (!_shouldAutoCloseChildrenOnClosing)
+            if (!_autoClosing)
                 return;
+
+            ManualClosing();
+        }
+
+        public void ManualClosing()
+        {
+            _windowBoundsPersistor.Save();
             CloseChildren();
 
             if (Parent != null)
                 Parent.ChildRemoved(this);
         }
 
-        public void Save()
-        {
-            _windowBoundsPersistor.Save();
-        }
-
-        public void CloseChildren()
+        private void CloseChildren()
         {
             var needToClose = new List<WindowTreeManager>(_children);
             _children.Clear();
