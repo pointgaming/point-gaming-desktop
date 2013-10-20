@@ -24,17 +24,11 @@ namespace PointGaming.Settings
 
         private void LocationChanged(object sender, EventArgs e)
         {
-            if (_window.WindowState != WindowState.Normal)
-                return;
-            _bounds.X = _window.Left;
-            _bounds.Y = _window.Top;
+            _bounds = _window.RestoreBounds;
         }
         private void SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (_window.WindowState != WindowState.Normal)
-                return;
-            _bounds.Width = _window.Width;
-            _bounds.Height = _window.Height;
+            _bounds = _window.RestoreBounds;
         }
 
         public void Save()
