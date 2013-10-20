@@ -158,6 +158,7 @@
     <Compile Include="Settings\AboutTab.xaml.cs">
       <DependentUpon>AboutTab.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Settings\ControlState.cs" />
     <Compile Include="Settings\HslColor.cs" />
     <Compile Include="Settings\ControlBinding.cs" />
     <Compile Include="Settings\ISettingsTab.cs" />
@@ -490,7 +491,6 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <Resource Include="Resources\micTrigger.pga" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
@@ -800,6 +800,7 @@
       <Link>opus.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\MicActivate.wav" />
     <Resource Include="Resources\VoiceEnabled.png" />
     <Resource Include="Resources\VoiceEnabledTalking.png" />
     <Resource Include="Resources\VoiceMuted.png" />

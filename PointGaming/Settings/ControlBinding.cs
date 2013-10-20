@@ -43,24 +43,7 @@ namespace PointGaming.Settings
                 }
                 else if (IsMouseButtonSet)
                 {
-                    switch (MButton)
-                    {
-                        case MouseButton.Left:
-                            result = Mouse.LeftButton == MouseButtonState.Pressed;
-                            break;
-                        case MouseButton.Right:
-                            result = Mouse.RightButton == MouseButtonState.Pressed;
-                            break;
-                        case MouseButton.Middle:
-                            result = Mouse.MiddleButton == MouseButtonState.Pressed;
-                            break;
-                        case MouseButton.XButton1:
-                            result = Mouse.XButton1 == MouseButtonState.Pressed;
-                            break;
-                        case MouseButton.XButton2:
-                            result = Mouse.XButton2 == MouseButtonState.Pressed;
-                            break;
-                    }
+                    result = ControlState.IsMouseButtonDown(MButton);
                 }
                 return result;
             }

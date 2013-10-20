@@ -133,5 +133,30 @@ namespace PointGaming.Voice
                 values[i] = (short)(values[i] * px);
             }
         }
+
+        public static SerialPacketStream ReadAudioResource(string fileName, NAudio.Wave.WaveFormat format) 
+        {
+            if (fileName.ToLower().EndsWith(".wav"))
+            {
+                var stream2 = App.GetResourceFileStream("MicActivate.wav");
+                NAudio.Wave.WaveFileReader r = new NAudio.Wave.WaveFileReader(stream2);
+                NAudio.Wave.ResamplerDmoStream s = new NAudio.Wave.ResamplerDmoStream(r, format);
+                var length = (int)s.Length;
+                byte[] resampled = new byte[length];
+                s.Read(resampled, 0, length);
+                var sps = new SerialPacketStream(resampled, format.SampleRate, fileName, 0, "self", false);
+                return sps;
+            }
+            else if (fileName.ToLower().EndsWith(".pga"))
+            {
+                var stream = App.GetResourceFileStream("micTrigger.pga");
+                var sps = SerialPacketStream.Read(stream);
+                return sps;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

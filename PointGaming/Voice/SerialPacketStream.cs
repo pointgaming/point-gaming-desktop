@@ -36,6 +36,33 @@ namespace PointGaming.Voice
             Parts = new List<SerialPacket>();
         }
 
+        public SerialPacketStream(byte[] data, int sampleRate, string id, int streamNumber, string roomName, bool isTeamOnly)
+        {
+            Id = id;
+            StreamNumber = streamNumber;
+            RoomName = roomName;
+            IsTeamOnly = isTeamOnly;
+            IsEncoded = false;
+            Parts = new List<SerialPacket>();
+
+            var bytesPer20ms = sampleRate / 25;
+            var start = 0;
+            int messageNumber = 0;
+            while (start < data.Length)
+            {
+                var end = start + bytesPer20ms;
+                if (end > data.Length)
+                    end = data.Length;
+
+                var buffer = new byte[bytesPer20ms];
+                Buffer.BlockCopy(data, start, buffer, 0, end - start);
+                var sp = new SerialPacket { Audio = buffer, MessageNumber = messageNumber++, RxTime = DateTimePrecise.UtcNow };
+                Parts.Add(sp);
+                start = end;
+            }
+        }
+
+
         public void Write(string filePath)
         {
             Parts.Sort((one, two) => (one.MessageNumber.CompareTo(two.MessageNumber)));

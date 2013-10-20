@@ -187,8 +187,7 @@ namespace PointGaming.Voice
 
             Connect();
 
-            var stream = App.GetResourceFileStream("micTrigger.pga");
-            _micTrigger = SerialPacketStream.Read(stream);
+            _micTrigger = SignalHelpers.ReadAudioResource("MicActivate.wav", Codec.RecordFormat);
         }
 
         private void Connect()
