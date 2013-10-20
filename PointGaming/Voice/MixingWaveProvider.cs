@@ -7,43 +7,6 @@ using NAudio.Wave;
 
 namespace PointGaming.Voice
 {
-    //class SineWaveProvider : IWaveProvider
-    //{
-    //    private double _frequency;
-    //    private double _phaseInverse;
-    //    private WaveFormat _waveFormat;
-
-    //    public WaveFormat WaveFormat { get { return _waveFormat; } }
-
-    //    public SineWaveProvider(int sampleRate, double frequency)
-    //    {
-    //        _waveFormat = new WaveFormat(sampleRate, 16, 1);
-    //        _frequency = frequency;
-
-    //        var period = sampleRate / frequency;
-    //        _phaseInverse = 2.0 * Math.PI / period;
-    //    }
-
-    //    private long _time;
-
-    //    public int Read(byte[] buffer, int offset, int count)
-    //    {
-    //        int end = count >> 1;
-    //        for (int i = 0; i < end; i++)
-    //        {
-    //            var time = (_time + i) * _phaseInverse;
-    //            var valueD = 1000 * Math.Cos(time);
-    //            var value = (short)valueD;
-    //            buffer[offset++] = (byte)(value);
-    //            buffer[offset++] = (byte)(value >> 8);
-    //        }
-    //        _time += end;
-
-    //        return count;
-    //    }
-    //}
-
-
     class MixingWaveProvider : IWaveProvider
     {
         private HashSet<string> _removes = new HashSet<string>();
@@ -58,7 +21,6 @@ namespace PointGaming.Voice
             _decoder = decoder;
             _freeDecoders.Add(decoder);
             _waveFormat = new WaveFormat(sampleRate, 16, 1);
-            //_inputs.Add("test", new SineWaveProvider(sampleRate, 800));
         }
 
         public WaveFormat WaveFormat { get { return _waveFormat; } }
@@ -70,14 +32,7 @@ namespace PointGaming.Voice
                 if (_removes.Contains(id))
                     _removes.Remove(id);
 
-                IWaveProvider wp;
-                if (!_inputs.TryGetValue(id, out wp))
-                {
-                    wp = new BufferedWaveProvider(_waveFormat);
-                    _inputs[id] = wp;
-                    var codec = GetFreeDecoder();
-                    _decoders[id] = codec;
-                }
+                var wp = GetChannel(id);
 
                 if (isEncoded)
                 {
@@ -97,6 +52,28 @@ namespace PointGaming.Voice
 
                 (wp as BufferedWaveProvider).AddSamples(data, offset, count);
             }
+        }
+
+        private IWaveProvider GetChannel(string id)
+        {
+            IWaveProvider wp;
+            if (!_inputs.TryGetValue(id, out wp))
+            {
+                var bwp = new BufferedWaveProvider(_waveFormat);
+                AddChopPrevention(bwp);
+                wp = bwp;
+                _inputs[id] = wp;
+                var codec = GetFreeDecoder();
+                _decoders[id] = codec;
+            }
+            return wp;
+        }
+
+        private void AddChopPrevention(BufferedWaveProvider bwp)
+        {
+            var delayOf20Ms = (_waveFormat.SampleRate / 25);
+            byte[] delay = new byte[delayOf20Ms * 2];
+            bwp.AddSamples(delay, 0, delay.Length);
         }
 
         private IVoipCodec GetFreeDecoder()
@@ -154,13 +131,22 @@ namespace PointGaming.Voice
 
                 foreach (var kvp in _inputs)
                 {
-                    int readFromThisStream = kvp.Value.Read(_inputBuffer, 0, count);
+                    var channel = kvp.Value;
+                    int readFromThisStream = channel.Read(_inputBuffer, 0, count);
                     if (readFromThisStream > bytesRead)
                         bytesRead = readFromThisStream;
                     if (readFromThisStream > 0)
                         AddChannel(readFromThisStream);
                     else
                         _emptyStreamIds.Add(kvp.Key);
+
+                    if (channel is BufferedWaveProvider)
+                    {
+                        var bwp = channel as BufferedWaveProvider;
+                        if (bwp.BufferedBytes == 0)
+                            _emptyStreamIds.Add(kvp.Key);
+                    }
+                        
                 }
 
                 foreach (var id in _emptyStreamIds)
