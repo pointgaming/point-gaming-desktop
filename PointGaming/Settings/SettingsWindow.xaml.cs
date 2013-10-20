@@ -18,8 +18,6 @@ namespace PointGaming.Settings
         public SettingsWindow()
         {
             InitializeComponent();
-            
-            var wtm = new WindowTreeManager(this, HomeWindow.Home.WindowTreeManager);
         }
 
         public void SetInitialTab(Type tabType)
@@ -30,10 +28,11 @@ namespace PointGaming.Settings
                 tabControlMain.SelectedItem = tabAbout;
         }
 
-        public static void ShowDialog(Type tabType)
+        public static void ShowDialog(WindowTreeManager parent, Type tabType)
         {
             Settings.SettingsWindow sw = new Settings.SettingsWindow();
-            sw.Owner = HomeWindow.Home;
+            parent.AddChild(sw);
+            sw.Owner = parent.Self;
             if (tabType != null)
                 sw.SetInitialTab(tabType);
             sw.ShowDialog();

@@ -58,7 +58,7 @@ namespace PointGaming.GameRoom
 
         private void ShowVoiceSettingsClick(object sender, RoutedEventArgs e)
         {
-            Settings.SettingsWindow.ShowDialog(typeof(Settings.VoiceTab));
+            Settings.SettingsWindow.ShowDialog(WindowTreeManager, typeof(Settings.VoiceTab));
         }
     }
 }

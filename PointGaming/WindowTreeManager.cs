@@ -15,6 +15,8 @@ namespace PointGaming
     {
         private Window _window;
 
+        public Window Self { get { return _window; } }
+
         private WindowTreeManager _parent;
         public WindowTreeManager Parent
         {
@@ -31,6 +33,13 @@ namespace PointGaming
         private List<WindowTreeManager> _children = new List<WindowTreeManager>();
         private Settings.WindowBoundsPersistor _windowBoundsPersistor;
         private bool _autoClosing;
+
+
+        public void AddChild(Window window, bool autoClosing = true)
+        {
+            new WindowTreeManager(window, this, autoClosing);
+        }
+
 
         public WindowTreeManager(Window window, WindowTreeManager parent, bool autoClosing = true)
         {
