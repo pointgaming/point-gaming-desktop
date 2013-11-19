@@ -220,19 +220,28 @@
                                 </Image.Source>
                             </Image>
                             
-                            <Label Content="{Binding DisplayName}" HorizontalAlignment="Stretch" Width="Auto">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="ContextMenuOpening">
-                                        <i:InvokeCommandAction Command="{Binding DataContext.CheckUserCanAdmin, ElementName=This}" CommandParameter="{Binding}" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
+                            <Grid Width="Auto" HorizontalAlignment="Stretch">
 
-                                <Label.ToolTip>
-                                    <ToolTip>
-                                        <pg:UserProfileTooltip UserProfile="{Binding}" />
-                                    </ToolTip>
-                                </Label.ToolTip>
-                            </Label>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="40" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Column="0" Content="{Binding DisplayName}" HorizontalAlignment="Left">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="ContextMenuOpening">
+                                            <i:InvokeCommandAction Command="{Binding DataContext.CheckUserCanAdmin, ElementName=This}" CommandParameter="{Binding}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+
+                                    <Label.ToolTip>
+                                        <ToolTip>
+                                            <pg:UserProfileTooltip UserProfile="{Binding}" />
+                                        </ToolTip>
+                                    </Label.ToolTip>
+                                </Label>
+                                <Label Grid.Column="1" Content="{Binding DisplayPoints}" HorizontalAlignment="Right" />
+                            </Grid>
                         </StackPanel>
                     </DataTemplate>
 

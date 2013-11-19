@@ -134,6 +134,11 @@ namespace PointGaming
         {
             get { return Rank != null ? Rank + Username : Username; }
         }
+
+        public string DisplayPoints
+        {
+            get { return Convert.ToString(Points); }
+        }
         public string ShortDescription { get { return _username; } }
 
         public string GameRoomGroupName
