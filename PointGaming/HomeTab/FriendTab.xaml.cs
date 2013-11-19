@@ -26,6 +26,7 @@ namespace PointGaming.HomeTab
 
         private UserDataManager _userData = UserDataManager.UserData;
         private ActiveGroupingCollectionView _FriendsView;
+
         public ActiveGroupingCollectionView Friends
         {
             get
@@ -190,6 +191,7 @@ namespace PointGaming.HomeTab
             if (_userData.TryGetFriend(friendStatus._id, out friendData))
             {
                 friendData.Status = friendStatus.status;
+                RefreshFriendsGrid();
             }
         }
 
@@ -518,6 +520,12 @@ namespace PointGaming.HomeTab
             var launcher = user.Lobby;
             if (launcher != null)
                 _userData.JoinChat(SessionManager.PrefixGameLobby + launcher.Id);
+        }
+
+        private void RefreshFriendsGrid()
+        {
+            Friends.Refresh();
+            dataGridFriends.Items.Refresh();
         }
     }
 
