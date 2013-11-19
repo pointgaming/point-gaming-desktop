@@ -232,6 +232,31 @@ namespace PointGaming.Lobby
             });
         }
 
+        public void TakeOverRoomAt(GameRoomItem item, Action<string> onCreated)
+        {
+            RestResponse<GameRoomPoco> response = null;
+            _userData.PgSession.BeginAndCallback(delegate
+            {
+                var url = _userData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + item.Id + "/take_over");
+                var client = new RestClient(url);
+                var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+                response = (RestResponse<GameRoomPoco>)client.Execute<GameRoomPoco>(request);
+            }, delegate
+            {
+                if (response.IsOk() && response.Data != null)
+                {
+                    var gameRoom = response.Data;
+                    if (onCreated != null)
+                        onCreated(gameRoom._id);
+                }
+                else
+                {
+                    string reason = String.IsNullOrEmpty(response.ErrorMessage) ? response.Content : response.ErrorMessage;
+                    MessageDialog.Show(_window, "Join Failed", reason);
+                }
+            });
+        }
+
         public static void LookupGameRoom(UserDataManager userData, string id, Action<GameRoomItem> onLookupResponse)
         {
             RestResponse<GameRoomSinglePoco> response = null;

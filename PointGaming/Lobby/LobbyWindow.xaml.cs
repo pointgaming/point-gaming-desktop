@@ -277,7 +277,7 @@ namespace PointGaming.Lobby
             GameRoomItem item;
             if (((DependencyObject)sender).TryGetPresentedParent(out item))
             {
-                _lobbySession.CreateRoomAt(item.Position, "New game room", OnMyRoomCreated, true);
+                _lobbySession.TakeOverRoomAt(item, OnMyRoomCreated);
             }
         }
 
