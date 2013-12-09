@@ -256,5 +256,15 @@ namespace PointGaming
             List<BetPoco> bets = new List<BetPoco>();
             callback(bets);
         }
+
+        public bool CanTakeOverRoom(GameRoomItem gameRoom)
+        {
+            var url = PgSession.GetWebAppFunction("/api", "/game_rooms/" + gameRoom.Id + "/can_take_over");
+            var client = new RestClient(url);
+            var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+            RestResponse response = (RestResponse)client.Execute(request);
+            var result = Newtonsoft.Json.Linq.JObject.Parse(response.Content);
+            return Convert.ToBoolean(((Newtonsoft.Json.Linq.JProperty)result.First).Value.ToString());
+        }
     }
 }

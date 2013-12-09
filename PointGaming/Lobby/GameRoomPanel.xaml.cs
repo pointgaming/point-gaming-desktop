@@ -50,6 +50,10 @@ namespace PointGaming.Lobby
             if (e.ChangedButton == MouseButton.Right)
             {
                 // TODO: show context menu only if user has takeover rights
+                GameRoomItem item;
+                var a = ((DependencyObject)sender).TryGetPresentedParent(out item);
+                if (_userData.CanTakeOverRoom(item) == false)
+                    ((Control)buttonButtonJoin.ContextMenu.Items[1]).IsEnabled = false;
             }
         }
         
