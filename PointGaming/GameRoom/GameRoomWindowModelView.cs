@@ -203,6 +203,51 @@ namespace PointGaming.GameRoom
 
         private void CheckBots()
         {
+            LoadTeamBot();
+            if ( _session.GameRoom.IsTeamBotPlaced == true)
+            {
+                var teamBot = _session.GameRoom.TeamBot;
+                if (_teamBots.Count == 0)
+                {
+                    _teamBots.Add(teamBot);
+                    _groupedMembershipList.Add(teamBot);
+                }
+            }
+            else if (_teamBots.Count > 0)
+            {
+                var teamBot = _teamBots[0];
+                _teamBots.RemoveAt(0);
+                _groupedMembershipList.Remove(teamBot);
+            }
+
+        }
+
+        private void LoadTeamBot()
+        {
+            var url = UserDataManager.UserData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + this._session.GameRoom.Id + "/team_bot");
+            var client = new RestSharp.RestClient(url);
+            var request = new RestSharp.RestRequest(RestSharp.Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+            RestSharp.RestResponse response = (RestSharp.RestResponse)client.Execute(request);
+            var result = Newtonsoft.Json.Linq.JObject.Parse(response.Content);
+            if (((Newtonsoft.Json.Linq.JProperty)result.First).Name != "errors")
+            {
+                var teamBot = new PgUser();
+                var name = ((Newtonsoft.Json.Linq.JProperty)result.First).Value.ToString();
+                var team = new PgTeam();
+                team.Name = "Team Bots";
+                teamBot.Id = "bot_" + name;
+                teamBot.Username =  name;
+                teamBot.Points = Convert.ToInt32(((Newtonsoft.Json.Linq.JProperty)result.First.Next).Value.ToString());
+                teamBot.Team = team;
+                _session.GameRoom.TeamBot = teamBot;
+                _session.GameRoom.IsTeamBotPlaced = true;
+            }
+            else
+                _session.GameRoom.IsTeamBotPlaced = false;
+        }
+        /*
+        private void CheckBots()
+        {
             List<PgUser> removes = new List<PgUser>();
 
             foreach (var teamBot in _teamBots)
@@ -258,6 +303,7 @@ namespace PointGaming.GameRoom
             botUser.Team = user.Team;
             return botUser;
         }
+         */
 
         private void SetMembershipCount()
         {
@@ -300,6 +346,7 @@ namespace PointGaming.GameRoom
             if (IsGameRoomOwner)
             {
                 _manager.AdminGameRoom(_session.ChatroomId);
+                CheckBots();
             }
             else
             {

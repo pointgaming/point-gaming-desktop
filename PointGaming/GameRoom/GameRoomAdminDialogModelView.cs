@@ -37,6 +37,8 @@ namespace PointGaming.GameRoom
             _isTeamBotPlaced = _session.GameRoom.IsTeamBotPlaced;
             _bettingType = _session.GameRoom.BettingType == null ? "1v1" : _session.GameRoom.BettingType;
             _isAdvertising = _session.GameRoom.IsAdvertising;
+
+            PrepareHoldControl();
         }
 
         public string GameRoomTitle
@@ -102,7 +104,7 @@ namespace PointGaming.GameRoom
                 OnPropertyChanged("IsTeamBetting");
             }
         }
-
+        private bool _shouldSendHoldRequest;
         private bool _isTeamBotPlaced;
         public bool IsTeamBotPlaced
         {
@@ -112,7 +114,20 @@ namespace PointGaming.GameRoom
                 if (value == _isTeamBotPlaced)
                     return;
                 _isTeamBotPlaced = value;
+                _shouldSendHoldRequest = !_shouldSendHoldRequest;
                 OnPropertyChanged("IsTeamBotPlaced");
+            }
+        }
+
+        private bool _canHold;
+        public bool CanHold
+        {
+            get { return _canHold; }
+            set
+            {
+                if (value == _canHold)
+                    return;
+                _canHold = value;
             }
         }
 
@@ -141,6 +156,28 @@ namespace PointGaming.GameRoom
             _session.SetGameRoomSettings(poco);
 
             // TODO: set team bot if bot assignment has changed.
+            if (_shouldSendHoldRequest)
+            {
+                var server_action = IsTeamBotPlaced == true ? "/hold" : "/unhold";
+                var url = UserDataManager.UserData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + poco._id + server_action);
+                var client = new RestSharp.RestClient(url);
+                var request = new RestSharp.RestRequest(RestSharp.Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+                RestSharp.RestResponse response = (RestSharp.RestResponse)client.Execute(request);
+            }
+        }
+
+        public void PrepareHoldControl()
+        {
+            var canHoldUrl = UserDataManager.UserData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + _session.GameRoomId + "/can_hold");
+            var client = new RestSharp.RestClient(canHoldUrl);
+            var request = new RestSharp.RestRequest(RestSharp.Method.GET);
+            RestSharp.RestResponse response = (RestSharp.RestResponse)client.Execute(request);
+            var result = Newtonsoft.Json.Linq.JObject.Parse(response.Content);
+
+            this.CanHold = Convert.ToBoolean(((Newtonsoft.Json.Linq.JProperty)result.First).Value.ToString());
+            this.IsTeamBotPlaced = Convert.ToBoolean(((Newtonsoft.Json.Linq.JProperty)result.First.Next).Value.ToString());
+
+            _shouldSendHoldRequest = false;
         }
 
     }

@@ -227,7 +227,8 @@
                                     <ColumnDefinition Width="40" />
                                 </Grid.ColumnDefinitions>
 
-                                <Label Grid.Column="0" Content="{Binding DisplayName}" HorizontalAlignment="Left">
+                                <Label Grid.Column="0" HorizontalAlignment="Left">
+                                    <TextBlock Text="{Binding DisplayName}" TextWrapping="Wrap"/>
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="ContextMenuOpening">
                                             <i:InvokeCommandAction Command="{Binding DataContext.CheckUserCanAdmin, ElementName=This}" CommandParameter="{Binding}" />

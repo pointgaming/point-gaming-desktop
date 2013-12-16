@@ -50,6 +50,20 @@ namespace PointGaming
         }
 
         public string ShortDescription { get { return _name; } }
+
+        private int _points;
+
+        public int Points
+        {
+            get { return _points; }
+            set
+            {
+                if (value == _points)
+                    return;
+                _points = value;
+                OnPropertyChanged("Points");
+            }
+        }
     }
 
     public class PgUser : ViewModelBase, IBetOperand
@@ -193,7 +207,8 @@ namespace PointGaming
             {
                 PgUser a = x as PgUser;
                 PgUser b = y as PgUser;
-                var groupCmp = a.GameRoomGroupName.CompareTo(b.GameRoomGroupName);
+                var TeamBotGroupName = "Team Bots";
+                var groupCmp = a.GameRoomGroupName == TeamBotGroupName ? -1 : a.GameRoomGroupName.CompareTo(b.GameRoomGroupName);
                 if (groupCmp != 0)
                     return groupCmp;
                 return -1 * a.Points.CompareTo(b.Points);

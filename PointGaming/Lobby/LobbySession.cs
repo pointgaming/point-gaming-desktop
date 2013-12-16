@@ -257,6 +257,22 @@ namespace PointGaming.Lobby
             });
         }
 
+        public void HoldRoomAt(GameRoomItem item)
+        {
+            var url = _userData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + item.Id + "/hold");
+            var client = new RestClient(url);
+            var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+            RestResponse response = (RestResponse)client.Execute(request);
+        }
+
+        public void UnHoldRoomAt(GameRoomItem item)
+        {
+            var url = _userData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + item.Id + "/unhold");
+            var client = new RestClient(url);
+            var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+            RestResponse response = (RestResponse)client.Execute(request);
+        }
+
         public static void LookupGameRoom(UserDataManager userData, string id, Action<GameRoomItem> onLookupResponse)
         {
             RestResponse<GameRoomSinglePoco> response = null;
