@@ -42,6 +42,7 @@ namespace PointGaming.POCO
         public int member_count { get; set; }
         public int max_member_count { get; set; }
         public string description { get; set; }
+        public bool is_team_bot_placed { get; set; }
         public UserBase owner { get; set; }
         public List<UserBase> members { get; set; }
         public List<MatchPoco> matches { get; set; }

@@ -303,6 +303,18 @@ namespace PointGaming.Lobby
             }
         }
 
+        private PgUser _teamBot;
+        public PgUser TeamBot
+        {
+            get { return _teamBot; }
+            set
+            {
+                if (value == _teamBot)
+                    return;
+                _teamBot = value;
+            }
+        }
+
         public FlowDocument DescriptionDocument
         {
             get
@@ -332,7 +344,9 @@ namespace PointGaming.Lobby
             IsAdvertising = poco.is_advertising;
             IsBetting = poco.betting;
             BettingType = poco.betting_type;
+            IsTeamBotPlaced = poco.is_team_bot_placed;
             Owner = UserDataManager.UserData.GetPgUser(poco.owner);
+
         }
 
         public POCO.GameRoomPoco ToPoco()
@@ -351,6 +365,7 @@ namespace PointGaming.Lobby
                 password = Password,
                 max_member_count = MaxMemberCount,
                 member_count = MemberCount,
+                is_team_bot_placed = IsTeamBotPlaced,
             };
             return poco;
         }
@@ -367,6 +382,7 @@ namespace PointGaming.Lobby
             IsAdvertising = poco.is_advertising;
             Owner = UserDataManager.UserData.GetPgUser(poco.owner);
             MatchId = poco.match_id;
+            IsTeamBotPlaced = poco.is_team_bot_placed;
         }
     }
 }

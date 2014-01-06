@@ -57,8 +57,7 @@
 
                 <StackPanel Grid.Row="2" Orientation="Vertical">
                     <CheckBox Content="Advertise in lobby's active games" Height="16" Margin="3" IsChecked="{Binding IsAdvertising, Mode=TwoWay}" />
-                    <CheckBox Content="Place team bot (holds game room)" Height="16" Margin="3" IsChecked="{Binding IsTeamBotPlaced, Mode=TwoWay}" />
-                    <CheckBox Content="Enable Betting" Height="16" Margin="3"  IsChecked="True" IsEnabled="False" />
+                    <CheckBox Content="Place team bot (holds game room)" Height="16" Margin="3" IsChecked="{Binding IsTeamBotPlaced, Mode=TwoWay}" IsEnabled="{Binding CanHold, Mode=TwoWay}" />
                 </StackPanel>
 
                 <Grid Grid.Row="3" Grid.ColumnSpan="2" Width="250" HorizontalAlignment="Center" Margin="20">
