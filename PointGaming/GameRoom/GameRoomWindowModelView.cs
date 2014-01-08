@@ -197,7 +197,7 @@ namespace PointGaming.GameRoom
                     _groupedMembershipList.Add(item as PgUser);
             
             CheckBots();
-
+            Membership.Refresh();
             SetMembershipCount();
         }
 
@@ -222,6 +222,11 @@ namespace PointGaming.GameRoom
 
         }
 
+        public static string TeamBotGroupName
+        {
+            get { return "Team Bot"; }
+        }
+
         private void LoadTeamBot()
         {
             var url = UserDataManager.UserData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + this._session.GameRoom.Id + "/team_bot");
@@ -234,7 +239,7 @@ namespace PointGaming.GameRoom
                 var teamBot = new PgUser();
                 var name = ((Newtonsoft.Json.Linq.JProperty)result.First).Value.ToString();
                 var team = new PgTeam();
-                team.Name = "Team Bots";
+                team.Name = GameRoomWindowModelView.TeamBotGroupName;
                 teamBot.Id = "bot_" + name;
                 teamBot.Username =  name;
                 teamBot.Points = Convert.ToInt32(((Newtonsoft.Json.Linq.JProperty)result.First.Next).Value.ToString());

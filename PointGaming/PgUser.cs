@@ -207,7 +207,7 @@ namespace PointGaming
             {
                 PgUser a = x as PgUser;
                 PgUser b = y as PgUser;
-                var TeamBotGroupName = "Team Bots";
+                var TeamBotGroupName = GameRoom.GameRoomWindowModelView.TeamBotGroupName;
                 var groupCmp = a.GameRoomGroupName == TeamBotGroupName ? -1 : a.GameRoomGroupName.CompareTo(b.GameRoomGroupName);
                 if (groupCmp != 0)
                     return groupCmp;

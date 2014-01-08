@@ -291,8 +291,19 @@
                                             <Expander IsExpanded="True">
                                                 <Expander.Header>
                                                     <TextBlock>
-                                                     <Run Text="{Binding Path=Name, Mode=OneWay}" />
-                                                     <Run Text=" (" /><Run Text="{Binding Path=ItemCount, Mode=OneWay}" /><Run Text=")" />
+                                                        <Run Text="{Binding Path=Name, Mode=OneWay}" />
+                                                        <TextBlock>
+                                                            <TextBlock.Style>
+                                                                <Style TargetType="TextBlock">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Path=Name}" Value="Team Bot">
+                                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </TextBlock.Style>
+                                                            <Run Text=" (" /><Run Text="{Binding Path=ItemCount, Mode=OneWay}" /><Run Text=")" />
+                                                        </TextBlock>
                                                     </TextBlock>
                                                 </Expander.Header>
                                                 <ItemsPresenter />
