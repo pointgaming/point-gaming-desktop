@@ -81,9 +81,21 @@
                     </Grid>
                 </TabItem>
                 <TabItem Header="Active Games" Name="tabItemActiveGames">
-                    <Grid>
-                        <Label Grid.Row="0" Content="weeja: 5v5 Dust 2 No Scrubs Will ban for being bad No 8 digs" Height="28" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    </Grid>
+                    <ListBox Name="listBoxActiveGames" ItemsSource="{Binding ActiveGames}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Owner.DisplayName}" />
+                                    <TextBlock Text =": " />
+                                    <TextBlock>
+                                        <Hyperlink>
+                                            <Run Text="{Binding Description}" />
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </TabItem>
             </TabControl>
         </Grid>

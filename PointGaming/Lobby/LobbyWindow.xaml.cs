@@ -98,6 +98,7 @@ namespace PointGaming.Lobby
             InitGroupedMembers( _lobbySession );
             itemsControlGameRoomList.ItemsSource = _lobbySession.GameRoomManager.AllGameRooms;
             itemsControlJoinedGameRoomList.ItemsSource = _lobbySession.JoinedGameRooms;
+            listBoxActiveGames.ItemsSource = _lobbySession.ActiveGames;
 
             PropertyChangedEventManager.AddListener(_lobbySession.GameInfo, this, "PropertyChanged");
 

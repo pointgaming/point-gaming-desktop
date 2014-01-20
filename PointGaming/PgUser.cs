@@ -208,6 +208,7 @@ namespace PointGaming
                 PgUser a = x as PgUser;
                 PgUser b = y as PgUser;
                 var TeamBotGroupName = GameRoom.GameRoomWindowModelView.TeamBotGroupName;
+                /*
                 var teamBotCmp = 0;
                 if ((a.GameRoomGroupName == TeamBotGroupName) && (b.GameRoomGroupName != TeamBotGroupName))
                     teamBotCmp = -1;
@@ -216,6 +217,11 @@ namespace PointGaming
                 else if ((a.GameRoomGroupName == TeamBotGroupName) && (b.GameRoomGroupName == a.GameRoomGroupName))
                     teamBotCmp = 0;
                 var groupCmp = teamBotCmp == 0 ? a.GameRoomGroupName.CompareTo(b.GameRoomGroupName) : teamBotCmp;
+                */
+                var specialPrefix = "!";
+                var aGameRoomGroupName = a.GameRoomGroupName == TeamBotGroupName ? specialPrefix + TeamBotGroupName : a.GameRoomGroupName;
+                var bGameRoomGroupName = b.GameRoomGroupName == TeamBotGroupName ? specialPrefix + TeamBotGroupName : b.GameRoomGroupName;
+                var groupCmp = aGameRoomGroupName.CompareTo(bGameRoomGroupName);
                 if (groupCmp != 0)
                     return groupCmp;
                 return -1 * a.Points.CompareTo(b.Points);

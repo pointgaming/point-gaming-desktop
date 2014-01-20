@@ -28,6 +28,9 @@ namespace PointGaming.Lobby
         private readonly ObservableCollection<GameRoomItem> _joinedGameRooms = new ObservableCollection<GameRoomItem>();
         public ObservableCollection<GameRoomItem> JoinedGameRooms { get { return _joinedGameRooms; } }
 
+        private ObservableCollection<GameRoomItem> _activeGames = new ObservableCollection<GameRoomItem>();
+        public ObservableCollection<GameRoomItem> ActiveGames { get { return this._activeGames; } }
+
         public event Action<LobbySession> LoadGameRoomsComplete;
         public event Action<GameRoomItem> DisplayToggled;
 
@@ -67,8 +70,34 @@ namespace PointGaming.Lobby
                 {
                     var gameRooms = response.Data.game_rooms;
                     LoadGameRooms(gameRooms);
+
+                    FillAdvertisedGames(gameRooms);
                 }
             });
+        }
+
+        private void FillAdvertisedGames(List<GameRoomPoco> gameRooms)
+        {
+            foreach (var item in gameRooms)
+            {
+                if (item.is_advertising == true)
+                    this.ActiveGames.Add(new GameRoomItem(item));
+            }
+        }
+
+        private void UpdateActiveGames(GameRoomItem gameRoom)
+        {
+            var isPresentInList = false;
+            foreach (var item in ActiveGames)
+                if (item.Id == gameRoom.Id)
+                {
+                    isPresentInList = true;
+                    break;
+                }
+            if (gameRoom.IsAdvertising && !isPresentInList)
+                ActiveGames.Add(gameRoom);
+            else if (!gameRoom.IsAdvertising && isPresentInList)
+                ActiveGames.Remove(gameRoom);
         }
 
         private class ListInvoker
@@ -309,6 +338,7 @@ namespace PointGaming.Lobby
                 GameRoomManager.Move(room, poco.position);
 
             room.Update(poco);
+            UpdateActiveGames(room);
         }
         public void OnGameRoomDestroy(GameRoomPoco poco)
         {
