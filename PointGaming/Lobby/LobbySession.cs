@@ -346,6 +346,7 @@ namespace PointGaming.Lobby
             if (!GameRoomManager.TryGetItemById(poco._id, out item))
                 return;
             GameRoomManager.Remove(item);
+            ActiveGames.Remove(item);
         }
         
         public void GameRoomJoining(GameRoomSession gameRoomSession)

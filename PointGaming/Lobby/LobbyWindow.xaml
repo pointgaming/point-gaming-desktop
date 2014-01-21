@@ -85,13 +85,13 @@
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Owner.DisplayName}" />
-                                    <TextBlock Text =": " />
                                     <TextBlock>
                                         <Hyperlink>
-                                            <Run Text="{Binding Description}" />
+                                            <TextBlock Text="{Binding DisplayName}" />
                                         </Hyperlink>
                                     </TextBlock>
+                                    <TextBlock Text =": " />
+                                    <TextBlock Text="{Binding Description}" />
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
