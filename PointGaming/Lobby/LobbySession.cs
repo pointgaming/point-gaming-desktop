@@ -88,14 +88,20 @@ namespace PointGaming.Lobby
         private void UpdateActiveGames(GameRoomItem gameRoom)
         {
             var isPresentInList = false;
+            var index = 0;
             foreach (var item in ActiveGames)
                 if (item.Id == gameRoom.Id)
                 {
                     isPresentInList = true;
+                    index = ActiveGames.IndexOf(item);
                     break;
                 }
             if (gameRoom.IsAdvertising && !isPresentInList)
                 ActiveGames.Add(gameRoom);
+            else if (gameRoom.IsAdvertising && isPresentInList)
+            {
+                ActiveGames[index] = gameRoom;
+            }
             else if (!gameRoom.IsAdvertising && isPresentInList)
                 ActiveGames.Remove(gameRoom);
         }
@@ -284,22 +290,6 @@ namespace PointGaming.Lobby
                     MessageDialog.Show(_window, "Join Failed", reason);
                 }
             });
-        }
-
-        public void HoldRoomAt(GameRoomItem item)
-        {
-            var url = _userData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + item.Id + "/hold");
-            var client = new RestClient(url);
-            var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
-            RestResponse response = (RestResponse)client.Execute(request);
-        }
-
-        public void UnHoldRoomAt(GameRoomItem item)
-        {
-            var url = _userData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + item.Id + "/unhold");
-            var client = new RestClient(url);
-            var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
-            RestResponse response = (RestResponse)client.Execute(request);
         }
 
         public static void LookupGameRoom(UserDataManager userData, string id, Action<GameRoomItem> onLookupResponse)

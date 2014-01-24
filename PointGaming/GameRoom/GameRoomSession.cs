@@ -128,6 +128,7 @@ namespace PointGaming.GameRoom
                     GameRoom.Password = response.Data.password;
                     GameRoom.IsBetting = response.Data.betting;
                     GameRoom.BettingType = response.Data.betting_type;
+                    GameRoom.IsTeamBotPlaced = response.Data.is_team_bot_placed;
                 }
                 else
                 {

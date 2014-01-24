@@ -282,24 +282,6 @@ namespace PointGaming.Lobby
             }
         }
 
-        private void GameRoomPanel_HoldClick(object sender, RoutedEventArgs e)
-        {
-            GameRoomItem item;
-            if (((DependencyObject)sender).TryGetPresentedParent(out item))
-            {
-                _lobbySession.HoldRoomAt(item);
-            }
-        }
-
-        private void GameRoomPanel_UnHoldClick(object sender, RoutedEventArgs e)
-        {
-            GameRoomItem item;
-            if (((DependencyObject)sender).TryGetPresentedParent(out item))
-            {
-                _lobbySession.UnHoldRoomAt(item);
-            }
-        }
-
         private void OnMyRoomCreated(string id)
         {
             _userData.JoinChat(SessionManager.PrefixGameRoom + id);
