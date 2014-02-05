@@ -46,5 +46,6 @@ namespace PointGaming.POCO
         public UserBase owner { get; set; }
         public List<UserBase> members { get; set; }
         public List<MatchPoco> matches { get; set; }
+        public List<UserBase> admins { get; set; }
     }
 }

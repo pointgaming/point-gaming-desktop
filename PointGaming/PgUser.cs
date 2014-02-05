@@ -126,8 +126,17 @@ namespace PointGaming
                 OnPropertyChanged("DisplayName");
             }
         }
+
+        private bool _isAdmin;
         public bool IsAdmin { 
-            get { return !string.IsNullOrEmpty(Rank); } 
+            get { return _isAdmin; }
+            set
+            {
+                if (value == _isAdmin)
+                    return;
+                _isAdmin = value;
+
+            }
         }
 
         private bool _isFriend;
@@ -208,16 +217,6 @@ namespace PointGaming
                 PgUser a = x as PgUser;
                 PgUser b = y as PgUser;
                 var TeamBotGroupName = GameRoom.GameRoomWindowModelView.TeamBotGroupName;
-                /*
-                var teamBotCmp = 0;
-                if ((a.GameRoomGroupName == TeamBotGroupName) && (b.GameRoomGroupName != TeamBotGroupName))
-                    teamBotCmp = -1;
-                else if ((a.GameRoomGroupName != TeamBotGroupName) && (b.GameRoomGroupName == TeamBotGroupName))
-                    teamBotCmp = 1;
-                else if ((a.GameRoomGroupName == TeamBotGroupName) && (b.GameRoomGroupName == a.GameRoomGroupName))
-                    teamBotCmp = 0;
-                var groupCmp = teamBotCmp == 0 ? a.GameRoomGroupName.CompareTo(b.GameRoomGroupName) : teamBotCmp;
-                */
                 var specialPrefix = "!";
                 var aGameRoomGroupName = a.GameRoomGroupName == TeamBotGroupName ? specialPrefix + TeamBotGroupName : a.GameRoomGroupName;
                 var bGameRoomGroupName = b.GameRoomGroupName == TeamBotGroupName ? specialPrefix + TeamBotGroupName : b.GameRoomGroupName;
@@ -366,6 +365,18 @@ namespace PointGaming
         public override string ToString()
         {
             return Username;
+        }
+
+        private bool _isOwner;
+        public bool isOwner
+        {
+            get { return _isOwner; }
+            set
+            {
+                if (value == _isOwner)
+                    return;
+                _isOwner = value;
+            }
         }
     }
 

@@ -76,7 +76,7 @@ namespace PointGaming.GameRoom
                 _groupedMembershipList.Add(item);
 
             CheckBots();
-
+            SynchronizeMembersList();
             SetMembershipCount();
         }
                 
@@ -197,8 +197,19 @@ namespace PointGaming.GameRoom
                     _groupedMembershipList.Add(item as PgUser);
             
             CheckBots();
+            SynchronizeMembersList();
             Membership.Refresh();
             SetMembershipCount();
+        }
+
+        private void SynchronizeMembersList()
+        {
+            PgUser[] newList = new PgUser[Membership.Count];
+            int i = 0;
+            foreach (var item in Membership)
+                if (((PgUser)item).GameRoomGroupName != "Team Bot")
+                    newList[i++] = (PgUser)item;
+            this._session.GameRoom.Members = newList;
         }
 
         private void CheckBots()
@@ -241,7 +252,7 @@ namespace PointGaming.GameRoom
                 var team = new PgTeam();
                 team.Name = GameRoomWindowModelView.TeamBotGroupName;
                 teamBot.Id = "bot_" + name;
-                teamBot.Username =  name;
+                teamBot.Username = name;
                 teamBot.Points = Convert.ToInt32(((Newtonsoft.Json.Linq.JProperty)result.First.Next).Value.ToString());
                 teamBot.Team = team;
                 _session.GameRoom.TeamBot = teamBot;
@@ -250,65 +261,6 @@ namespace PointGaming.GameRoom
             else
                 _session.GameRoom.IsTeamBotPlaced = false;
         }
-        /*
-        private void CheckBots()
-        {
-            List<PgUser> removes = new List<PgUser>();
-
-            foreach (var teamBot in _teamBots)
-            {
-                bool shouldPlace = false;
-                foreach (var user in _session.Membership)
-                {
-                    if (user.HasTeam && user.Team == teamBot.Team)
-                    {
-                        shouldPlace = true;
-                        break;
-                    }
-                }
-                if (!shouldPlace)
-                    removes.Add(teamBot);
-            }
-
-            foreach (var bot in removes)
-            {
-                _teamBots.Remove(bot);
-                _groupedMembershipList.Remove(bot);
-            }
-
-            foreach (var user in _session.Membership)
-            {
-                if (!user.HasTeam)
-                    continue;
-
-                bool shouldPlace = true;
-                foreach (var teamBot in _teamBots)
-                {
-                    if (user.Team == teamBot.Team)
-                    {
-                        shouldPlace = false;
-                        break;
-                    }
-                }
-                if (shouldPlace)
-                {
-                    var newBot = CreateBotForTeam(user);
-                    _teamBots.Add(newBot);
-                    _groupedMembershipList.Add(newBot);
-                }
-            }
-        }
-
-        private PgUser CreateBotForTeam(PgUser user)
-        {
-            // placeholder bot group; TODO: get bot(s) from socket API
-            PgUser botUser = new PgUser();
-            botUser.Id = "bot_" + user.Team.Id;
-            botUser.Username = "bot_" + user.Team.Name;
-            botUser.Team = user.Team;
-            return botUser;
-        }
-         */
 
         private void SetMembershipCount()
         {

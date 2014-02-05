@@ -452,6 +452,7 @@ namespace PointGaming
                 GameRoomAdminDialog dialog = new GameRoomAdminDialog();
                 dialog.DataContext = modelView;
                 dialog.ShowDialog();
+                RefreshAdminsList(dialog, modelView);
 
                 if (dialog.DialogResult == true)
                 {
@@ -651,5 +652,13 @@ namespace PointGaming
                 gameRoom.OnBetDestroy(bet);
         }
         #endregion
+        private void RefreshAdminsList(GameRoomAdminDialog dialog, GameRoomAdminDialogModelView modelView)
+        {
+            var adminsCollection = dialog.adminsListBox.Items;
+            PgUser[] admins = new PgUser[adminsCollection.Count];
+            for (int i = 0; i < admins.Length; i++)
+                admins[i] = (PgUser)adminsCollection[i];
+            modelView.Admins = admins;
+        }
     }
 }

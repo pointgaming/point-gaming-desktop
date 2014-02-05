@@ -226,6 +226,7 @@ namespace PointGaming.Lobby
             {
                 PgUser[] allMembers = new PgUser[_members.Length + 1];
                 _members.CopyTo(allMembers, 0);
+                Owner.isOwner = true;
                 allMembers[_members.Length] = Owner;
                 return allMembers; 
             }
@@ -235,6 +236,50 @@ namespace PointGaming.Lobby
                     return;
                 _members = value;
                 NotifyChanged("Members");
+            }
+        }
+        private PgUser[] _admins = new PgUser[0];
+        public PgUser[] Admins
+        {
+            get
+            {
+                PgUser[] allAdmins = new PgUser[_admins.Length + 1];
+                _admins.CopyTo(allAdmins, 0);
+                Owner.isOwner = true;
+                allAdmins[_admins.Length] = Owner;
+                return allAdmins;
+            }
+            set
+            {
+                if (value == _admins)
+                    return;
+                _admins = value;
+                NotifyChanged("Admins");
+            }
+        }
+
+        public PgUser[] AdminsWithoutOwner
+        {
+            get { return _admins; }
+        }
+
+        public PgUser[] MembersNotAdmins
+        {
+            get
+            {
+                PgUser[] notAdmins = new PgUser[Members.Length - Admins.Length];
+                var found = false;
+                var index = 0;
+                for (int i = 0; i < Members.Length; i++)
+                {
+                    found = false;
+                    for (int j = 0; j < Admins.Length; j++)
+                        if (Members[i] == Admins[j])
+                            found = true;
+                    if (found == false)
+                        notAdmins[index++] = Members[i];
+                }
+                return notAdmins;
             }
         }
 
@@ -346,7 +391,15 @@ namespace PointGaming.Lobby
             BettingType = poco.betting_type;
             IsTeamBotPlaced = poco.is_team_bot_placed;
             Owner = UserDataManager.UserData.GetPgUser(poco.owner);
+            FillAdmins(poco.admins);
+        }
 
+        private void FillAdmins(List<POCO.UserBase> admins)
+        {
+            PgUser[] pgAdmins = new PgUser[admins.Count];
+            for (int i = 0; i < admins.Count; i++)
+                pgAdmins[i] = UserDataManager.UserData.GetPgUser(admins[i]);
+            Admins = pgAdmins;
         }
 
         public POCO.GameRoomPoco ToPoco()

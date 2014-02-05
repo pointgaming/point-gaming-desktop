@@ -70,5 +70,34 @@
                 </Grid>
             </Grid>
         </TabItem>
+        <TabItem Header="Admins">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Margin="5">Players</Label>
+                <ListBox Grid.Row="1" Grid.Column="0" Margin="5" Height="200" ItemsSource="{Binding NotAdmins}" Name="membersListBox"
+                         AllowDrop="False"
+                         MouseMove="ListBox_MouseMove"
+                         PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown"
+                         DragEnter="ListBox_DragEnter"
+                         Drop="membersListBox_Drop">
+                </ListBox>
+                <Label Grid.Row="0" Grid.Column="1" Margin="5">Admins</Label>
+                <ListBox Grid.Row="1" Grid.Column="1" Margin="5" Height="200" ItemsSource="{Binding Admins}" Name="adminsListBox"
+                         AllowDrop="True"
+                         MouseMove="ListBox_MouseMove"
+                         PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown"
+                         DragEnter="ListBox_DragEnter"
+                         Drop="adminsListBox_Drop"
+                         AlternationCount="1000">
+                </ListBox>
+            </Grid>
+        </TabItem>
     </TabControl>
 </Window>

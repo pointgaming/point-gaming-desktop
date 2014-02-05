@@ -38,6 +38,10 @@ namespace PointGaming.GameRoom
             _bettingType = _session.GameRoom.BettingType == null ? "1v1" : _session.GameRoom.BettingType;
             _isAdvertising = _session.GameRoom.IsAdvertising;
             _members = _session.GameRoom.Members;
+            //temporary admins view does not include owner cause he cannot be disabled now, later admins must be initialized with complete list
+            //_admins = session.GameRoom.Admins;
+            _admins = session.GameRoom.AdminsWithoutOwner;
+            _notAdmins = session.GameRoom.MembersNotAdmins;
 
             PrepareControls();
         }
@@ -161,18 +165,29 @@ namespace PointGaming.GameRoom
             }
         }
 
+        private PgUser[] _admins;
+        public PgUser[] Admins
+        {
+            get { return _admins; }
+            set
+            {
+                if (value == _admins)
+                    return;
+                _admins = value;
+            }
+        }
+
+        private PgUser[] _notAdmins;
+        public PgUser[] NotAdmins
+        {
+            get { return _notAdmins; }
+        }
+
         public void UpdateGameRoomSettings()
         {
-            // TODO: set team bot if bot assignment has changed.
-            /*
-            if (_shouldSendHoldRequest || _shouldSendAdvertisingRequest)
-            {
-                var url = UserDataManager.UserData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + _session.GameRoomId + "/update_settings", "team_bot=" + IsTeamBotPlaced, "advertising=" + IsAdvertising);
-                var client = new RestSharp.RestClient(url);
-                var request = new RestSharp.RestRequest(RestSharp.Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
-                RestSharp.RestResponse response = (RestSharp.RestResponse)client.Execute(request);
-            }
-            */
+            string[] adminsIds = new string[Admins.Length];
+            for (int i = 0; i < adminsIds.Length; i++)
+                adminsIds[i] = Admins[i].Id;
             var poco = new
             {
                 _id = _session.GameRoom.Id,
@@ -180,10 +195,11 @@ namespace PointGaming.GameRoom
                 is_advertising = IsAdvertising,
                 password = Password,
                 betting_type = _bettingType,
-                is_team_bot_placed = IsTeamBotPlaced
+                is_team_bot_placed = IsTeamBotPlaced,
+                admins = adminsIds
             };
-
-            if (_shouldSendAdvertisingRequest || _shouldSendHoldRequest || _shouldSendPasswordDescriptionRequest)
+            // TO DO: remove true when the smart logic for drag&drop is done
+            if (_shouldSendAdvertisingRequest || _shouldSendHoldRequest || _shouldSendPasswordDescriptionRequest || true)
                 _session.SetGameRoomSettings(poco);
         }
 
