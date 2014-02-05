@@ -188,6 +188,7 @@ namespace PointGaming.GameRoom
             string[] adminsIds = new string[Admins.Length];
             for (int i = 0; i < adminsIds.Length; i++)
                 adminsIds[i] = Admins[i].Id;
+            _session.GameRoom.Admins = Admins;
             var poco = new
             {
                 _id = _session.GameRoom.Id,
