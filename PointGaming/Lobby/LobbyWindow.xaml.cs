@@ -24,6 +24,20 @@ namespace PointGaming.Lobby
     {
         public WindowTreeManager WindowTreeManager;
 
+        public event RoutedEventHandler Message_Click;
+        public event RoutedEventHandler SendFriendRequest_Click;
+        public event RoutedEventHandler InviteToTeam_Click;
+        public event RoutedEventHandler ViewProfile_Click;
+        public event RoutedEventHandler Block_Click;
+        public event RoutedEventHandler Unblock_Click;
+        public event RoutedEventHandler AddAsRinger_Click;
+        public event RoutedEventHandler Kick_Click;
+        public event RoutedEventHandler SendWarning_Click;
+        public event RoutedEventHandler KickFromLobby_Click;
+        public event RoutedEventHandler Ban_Click;
+        public event RoutedEventHandler CreditPoints_Click;
+        public event RoutedEventHandler RemovePoints_Click;
+
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyChanged(string propertyName)
         {
@@ -46,6 +60,7 @@ namespace PointGaming.Lobby
             _autoScroller = new AutoScroller(flowDocumentLog);
             PropertyChangedEventManager.AddListener(UserDataManager.UserData.Settings, this, "PropertyChanged");
             WindowTreeManager = new WindowTreeManager(this, HomeWindow.Home.WindowTreeManager);
+            BuildContextMenu();
         }
 
         private string _MembershipCount = "Total (0)";
@@ -105,6 +120,8 @@ namespace PointGaming.Lobby
             _userData.LookupPendingBets(OnPendingBetsComplete);
 
             _lobbySession.ChatMessageReceived += ChatMessages_CollectionChanged;
+
+            BuildContextMenu();
         }
 
         void ChatMessages_CollectionChanged(ChatMessage item)
@@ -307,6 +324,60 @@ namespace PointGaming.Lobby
         private void lobbyTab_Closing(object sender, CancelEventArgs e)
         {
             _lobbySession.Leave();
+        }
+
+        //relates to the context menu, rights logic, etc.
+
+        private void BuildContextMenu()
+        {
+            listBoxMembership.ContextMenu = null;
+            MenuItemInfo[] menuItemsInfo = GetMenuItemsInfo();
+            ContextMenu newContextMenu = new System.Windows.Controls.ContextMenu();
+            foreach (var item in menuItemsInfo)
+                if (item.canDo == true)
+                {
+                    MenuItem menuItem = new MenuItem();
+                    menuItem.Header = item.header;
+                    //handler defining is turned off, turn on it when the methods are implemented
+                    //menuItem.Click += item.handler;
+                    newContextMenu.Items.Add(menuItem);
+                }
+            listBoxMembership.ContextMenu = newContextMenu;
+        }
+
+        private MenuItemInfo[] GetMenuItemsInfo()
+        {
+            PointGaming.ContextMenuRights rights = new ContextMenuRights(_userData.User);
+            int menuItemsCount = 13;
+            MenuItemInfo[] menuItemsInfo = new MenuItemInfo[menuItemsCount];
+            menuItemsInfo[0] = new MenuItemInfo("Message", rights.CanSendMessage, Message_Click);
+            menuItemsInfo[1] = new MenuItemInfo("Send Friend Request", rights.CanSendFriendRequest, SendFriendRequest_Click);
+            menuItemsInfo[2] = new MenuItemInfo("Invite to team", rights.CanInviteToTeam, InviteToTeam_Click);
+            menuItemsInfo[3] = new MenuItemInfo("View Profile", rights.CanViewProfile, ViewProfile_Click);
+            menuItemsInfo[4] = new MenuItemInfo("Block (Mute)", rights.CanBlock, Block_Click);
+            menuItemsInfo[5] = new MenuItemInfo("Unblock", rights.CanUnblock, Unblock_Click);
+            menuItemsInfo[6] = new MenuItemInfo("Add as Ringer", rights.CanAddAsRinger, AddAsRinger_Click);
+            menuItemsInfo[7] = new MenuItemInfo("Kick", rights.CanKickFromGameRoom, Kick_Click);
+            menuItemsInfo[8] = new MenuItemInfo("Send Warning", rights.CanSendWarning, SendWarning_Click);
+            menuItemsInfo[9] = new MenuItemInfo("Kick from Lobby", rights.CanKickFromLobby, KickFromLobby_Click);
+            menuItemsInfo[10] = new MenuItemInfo("Ban (30 Minutes)", rights.CanBanForTime(0.5), Ban_Click);
+            menuItemsInfo[11] = new MenuItemInfo("Credit Points", rights.CanCreditPoints, CreditPoints_Click);
+            menuItemsInfo[12] = new MenuItemInfo("Remove Points", rights.CanRemovePoints, RemovePoints_Click);
+            return menuItemsInfo;
+        }
+
+        class MenuItemInfo
+        {
+            public MenuItemInfo(string header, bool canDo, RoutedEventHandler handler)
+            {
+                this.header = header;
+                this.canDo = canDo;
+                this.handler = handler;
+            }
+
+            public string header;
+            public bool canDo;
+            public RoutedEventHandler handler;
         }
     }
 }

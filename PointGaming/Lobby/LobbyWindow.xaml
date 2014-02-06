@@ -119,23 +119,6 @@
                      Margin="0,4,0,0" Grid.RowSpan="2">
 
                 <ListView.Resources>
-                    <ContextMenu x:Key="UserMenu">
-                        <MenuItem Header="Message" Click="userContextMenuMessage_Click" CommandParameter="{Binding}" />
-                        <MenuItem Header="Send Friend Request" Click="userContextMenuFriendRequest_Click" CommandParameter="{Binding}" />
-                        <MenuItem Header="View Profile" Click="userContextMenuViewProfile_Click" CommandParameter="{Binding}" />
-                        <MenuItem Header="Block (mute)" Click="userContextMenuBlock_Click" />
-                        <MenuItem Header="Taunt (once a day)" Click="userContextMenuTaunt_Click" />
-                    </ContextMenu>
-                    <ContextMenu x:Key="AdminMenu">
-                        <MenuItem Header="Message" Click="userContextMenuMessage_Click" />
-                        <MenuItem Header="Send Friend Request" Click="userContextMenuFriendRequest_Click" />
-                        <MenuItem Header="View Profile" Click="userContextMenuViewProfile_Click" />
-                        <MenuItem Header="Send Warning"/>
-                        <MenuItem Header="Kick From Lobby"/>
-                        <MenuItem Header="Globally Mute (Main Chat)"/>
-                        <MenuItem Header="Ban From Lobby"/>
-                    </ContextMenu>
-
                     <DataTemplate DataType="{x:Type my:PgUser}" >
                         <Grid Width="Auto" HorizontalAlignment="Stretch">
 
@@ -152,14 +135,6 @@
 
                 <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}" x:Name="styleForListBox">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding ElementName=lobbyTab, Path=CanAdminUser}" Value="false">
-                                <Setter Property="ContextMenu" Value="{StaticResource UserMenu}" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding ElementName=lobbyTab, Path=CanAdminUser}" Value="true">
-                                <Setter Property="ContextMenu" Value="{StaticResource AdminMenu}" />
-                            </DataTrigger>
-                        </Style.Triggers>
                     </Style>
                 </ListView.ItemContainerStyle>
                 <ListView.GroupStyle>
