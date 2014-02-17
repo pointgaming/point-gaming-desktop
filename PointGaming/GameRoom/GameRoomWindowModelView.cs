@@ -300,7 +300,7 @@ namespace PointGaming.GameRoom
         public ICommand ShowAdmin { get { return new ActionCommand(ShowAdminDialog); } }
         public void ShowAdminDialog()
         {
-            if (IsGameRoomOwner)
+            if (IsGameRoomAdmin)
             {
                 _manager.AdminGameRoom(_session.ChatroomId);
                 CheckBots();
@@ -347,6 +347,19 @@ namespace PointGaming.GameRoom
         public bool IsGameRoomOwner
         {
             get { return _session.GameRoom.Owner.Equals(_userData.User); }
+        }
+
+        public bool IsGameRoomAdmin
+        {
+            get
+            {
+                if (IsGameRoomOwner == true)
+                    return true;
+                foreach (var admin in _session.GameRoom.Admins)
+                    if (_userData.User == admin)
+                        return true;
+                return false;
+            }
         }
 
         private bool _canAdmin = false;
@@ -439,6 +452,9 @@ namespace PointGaming.GameRoom
         public ICommand BanUser { get { return new ActionCommand(BanUserFromRoom); } }
         private void BanUserFromRoom(object sender)
         {
+            var member = sender as PgUser;
+            if (member.GameRoomGroupName == "TeamBot")
+                return;
         }
 
         public ICommand PromoteUser { get { return new ActionCommand(PromoteUserToRoomOwner); } }

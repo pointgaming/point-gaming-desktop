@@ -535,5 +535,48 @@ namespace PointGaming.Lobby
             };
             return fakeRoom;
         }
+
+        public void Ban(PgUser user, double hoursCount)
+        {
+            if (hoursCount > 0)
+            {
+                RestResponse response = null;
+                var url = _userData.PgSession.GetWebAppFunction("/api", "/games/" + this.GameInfo.Id + "/lobbies/ban", "user_id=" + user.Id, "period=" + hoursCount);
+                var client = new RestClient(url);
+                var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+                response = (RestResponse)client.Execute(request);
+                if (response.IsOk())
+                {
+                    _lastRequestTime.AddSeconds(100);
+                }
+            }
+        }
+
+        public void RequestRights()
+        {
+            System.TimeSpan difference = DateTime.Now.Subtract(_lastRequestTime);
+            if (difference.TotalSeconds < 10)
+                return;
+            var url = _userData.PgSession.GetWebAppFunction("/api", "/games/" + this.GameInfo.Id + "/lobbies/user_rights", "user_id=" + this._userData.User.Id);
+            var client = new RestClient(url);
+            var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+            RestResponse response = (RestResponse)client.Execute(request);
+            if (response.IsOk())
+            {
+                var result = Newtonsoft.Json.Linq.JObject.Parse(response.Content);
+                IsBanned = Convert.ToBoolean(((Newtonsoft.Json.Linq.JProperty)result.First).Value.ToString());
+                var canBan = Convert.ToBoolean(((Newtonsoft.Json.Linq.JProperty)result.First.Next).Value.ToString());
+                _lastRequestTime = DateTime.Now;
+            }
+        }
+
+        private bool _isBanned;
+        public bool IsBanned
+        {
+            get { return this._isBanned; }
+            set { this._isBanned = value; }
+        }
+
+        private DateTime _lastRequestTime;
     }
 }

@@ -23,21 +23,6 @@ namespace PointGaming.Lobby
     public partial class LobbyWindow : Window, IWeakEventListener, INotifyPropertyChanged
     {
         public WindowTreeManager WindowTreeManager;
-
-        public event RoutedEventHandler Message_Click;
-        public event RoutedEventHandler SendFriendRequest_Click;
-        public event RoutedEventHandler InviteToTeam_Click;
-        public event RoutedEventHandler ViewProfile_Click;
-        public event RoutedEventHandler Block_Click;
-        public event RoutedEventHandler Unblock_Click;
-        public event RoutedEventHandler AddAsRinger_Click;
-        public event RoutedEventHandler Kick_Click;
-        public event RoutedEventHandler SendWarning_Click;
-        public event RoutedEventHandler KickFromLobby_Click;
-        public event RoutedEventHandler Ban_Click;
-        public event RoutedEventHandler CreditPoints_Click;
-        public event RoutedEventHandler RemovePoints_Click;
-
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyChanged(string propertyName)
         {
@@ -60,7 +45,7 @@ namespace PointGaming.Lobby
             _autoScroller = new AutoScroller(flowDocumentLog);
             PropertyChangedEventManager.AddListener(UserDataManager.UserData.Settings, this, "PropertyChanged");
             WindowTreeManager = new WindowTreeManager(this, HomeWindow.Home.WindowTreeManager);
-            BuildContextMenu();
+            //BuildContextMenu();
         }
 
         private string _MembershipCount = "Total (0)";
@@ -121,7 +106,7 @@ namespace PointGaming.Lobby
 
             _lobbySession.ChatMessageReceived += ChatMessages_CollectionChanged;
 
-            BuildContextMenu();
+            //BuildContextMenu();
         }
 
         void ChatMessages_CollectionChanged(ChatMessage item)
@@ -153,15 +138,20 @@ namespace PointGaming.Lobby
         {
             SendInput();
         }
-
+        /*
         private void userContextMenuTaunt_Click(object sender, RoutedEventArgs e)
         {
             MessageDialog.Show(this, "Taunt User", "TODO: show taunt selection UI");
         }
-
+        */
         private void userContextMenuBlock_Click(object sender, RoutedEventArgs e)
         {
             MessageDialog.Show(this, "Block User", "TODO: ???");
+        }
+
+        private void userContextMenuUnBlock_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         private void userContextMenuMessage_Click(object sender, RoutedEventArgs e)
@@ -204,6 +194,105 @@ namespace PointGaming.Lobby
             } 
         }
 
+        private void userContextMenuBan30Minutes_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem != null)
+            {
+                PgUser user = menuItem.CommandParameter as PgUser;
+                if (user != null)
+                {
+                    _lobbySession.Ban(user, 0.5);
+                }
+            }
+        }
+
+        private void userContextMenuBan24Hours_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem != null)
+            {
+                PgUser user = menuItem.CommandParameter as PgUser;
+                if (user != null)
+                {
+                    _lobbySession.Ban(user, 24.0);
+                }
+            }
+        }
+
+        private void userContextMenuBan48Hours_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem != null)
+            {
+                PgUser user = menuItem.CommandParameter as PgUser;
+                if (user != null)
+                {
+                    _lobbySession.Ban(user, 48.0);
+                }
+            }
+        }
+
+        private void userContextMenuBan1Week_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem != null)
+            {
+                PgUser user = menuItem.CommandParameter as PgUser;
+                if (user != null)
+                {
+                    _lobbySession.Ban(user, 24.0 * 7.0);
+                }
+            }
+        }
+
+        private void userContextMenuBanLifeTime_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem != null)
+            {
+                PgUser user = menuItem.CommandParameter as PgUser;
+                if (user != null)
+                {
+                    _lobbySession.Ban(user, 1.0 / 60.0);
+                }
+            }
+        }
+
+        private void userContextMenuInviteToTeam_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+
+        }
+
+        private void userContextMenuAddAsRinger_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+
+        }
+
+        private void userContextMenuSendWarning_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+
+        }
+
+        private void userContextMenuKickFromLobby_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+
+        }
+
+        private void userContextMenuCreditPoints_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+
+        }
+
+        private void userContextMenuRemovePoints_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+        }
         private void reportMatchWinnerButton_Click(object sender, RoutedEventArgs e)
         {
             _lobbySession.ShowUndecidedMatches(_lobbySession.ChatroomId);
@@ -327,19 +416,19 @@ namespace PointGaming.Lobby
         }
 
         //relates to the context menu, rights logic, etc.
-
+        /*
         private void BuildContextMenu()
         {
-            listBoxMembership.ContextMenu = null;
+            ContextMenu newContextMenu = new ContextMenu()/*listBoxMembership.ContextMenu;
             MenuItemInfo[] menuItemsInfo = GetMenuItemsInfo();
-            ContextMenu newContextMenu = new System.Windows.Controls.ContextMenu();
             foreach (var item in menuItemsInfo)
                 if (item.canDo == true)
                 {
                     MenuItem menuItem = new MenuItem();
                     menuItem.Header = item.header;
                     //handler defining is turned off, turn on it when the methods are implemented
-                    //menuItem.Click += item.handler;
+                    menuItem.Click += item.handler;
+                    menuItem.CommandParameter = new Binding();
                     newContextMenu.Items.Add(menuItem);
                 }
             listBoxMembership.ContextMenu = newContextMenu;
@@ -348,21 +437,21 @@ namespace PointGaming.Lobby
         private MenuItemInfo[] GetMenuItemsInfo()
         {
             PointGaming.ContextMenuRights rights = new ContextMenuRights(_userData.User);
-            int menuItemsCount = 13;
+            int menuItemsCount = 12;
             MenuItemInfo[] menuItemsInfo = new MenuItemInfo[menuItemsCount];
-            menuItemsInfo[0] = new MenuItemInfo("Message", rights.CanSendMessage, Message_Click);
-            menuItemsInfo[1] = new MenuItemInfo("Send Friend Request", rights.CanSendFriendRequest, SendFriendRequest_Click);
-            menuItemsInfo[2] = new MenuItemInfo("Invite to team", rights.CanInviteToTeam, InviteToTeam_Click);
-            menuItemsInfo[3] = new MenuItemInfo("View Profile", rights.CanViewProfile, ViewProfile_Click);
-            menuItemsInfo[4] = new MenuItemInfo("Block (Mute)", rights.CanBlock, Block_Click);
-            menuItemsInfo[5] = new MenuItemInfo("Unblock", rights.CanUnblock, Unblock_Click);
-            menuItemsInfo[6] = new MenuItemInfo("Add as Ringer", rights.CanAddAsRinger, AddAsRinger_Click);
-            menuItemsInfo[7] = new MenuItemInfo("Kick", rights.CanKickFromGameRoom, Kick_Click);
-            menuItemsInfo[8] = new MenuItemInfo("Send Warning", rights.CanSendWarning, SendWarning_Click);
-            menuItemsInfo[9] = new MenuItemInfo("Kick from Lobby", rights.CanKickFromLobby, KickFromLobby_Click);
-            menuItemsInfo[10] = new MenuItemInfo("Ban (30 Minutes)", rights.CanBanForTime(0.5), Ban_Click);
-            menuItemsInfo[11] = new MenuItemInfo("Credit Points", rights.CanCreditPoints, CreditPoints_Click);
-            menuItemsInfo[12] = new MenuItemInfo("Remove Points", rights.CanRemovePoints, RemovePoints_Click);
+            menuItemsInfo[0] = new MenuItemInfo("Message", rights.CanSendMessage, userContextMenuMessage_Click);
+            menuItemsInfo[1] = new MenuItemInfo("Send Friend Request", rights.CanSendFriendRequest, userContextMenuFriendRequest_Click);
+            menuItemsInfo[2] = new MenuItemInfo("Invite to team", rights.CanInviteToTeam, userContextMenuInviteToTeam_Click);
+            menuItemsInfo[3] = new MenuItemInfo("View Profile", rights.CanViewProfile, userContextMenuViewProfile_Click);
+            menuItemsInfo[4] = new MenuItemInfo("Block (Mute)", rights.CanBlock, userContextMenuBlock_Click);
+            menuItemsInfo[5] = new MenuItemInfo("Unblock", rights.CanUnblock, userContextMenuUnBlock_Click);
+            menuItemsInfo[6] = new MenuItemInfo("Add as Ringer", rights.CanAddAsRinger, userContextMenuAddAsRinger_Click);
+            //menuItemsInfo[7] = new MenuItemInfo("Kick", rights.CanKickFromGameRoom, userContextMenuKick_Click);
+            menuItemsInfo[7] = new MenuItemInfo("Send Warning", rights.CanSendWarning, userContextMenuSendWarning_Click);
+            menuItemsInfo[8] = new MenuItemInfo("Kick from Lobby", rights.CanKickFromLobby, userContextMenuKickFromLobby_Click);
+            menuItemsInfo[9] = new MenuItemInfo("Ban (30 Minutes)", rights.CanBanForTime(0.5), userContextMenuBan30_Click);
+            menuItemsInfo[10] = new MenuItemInfo("Credit Points", rights.CanCreditPoints, userContextMenuCreditPoints_Click);
+            menuItemsInfo[11] = new MenuItemInfo("Remove Points", rights.CanRemovePoints, userContextMenuRemovePoints_Click);
             return menuItemsInfo;
         }
 
@@ -378,6 +467,15 @@ namespace PointGaming.Lobby
             public string header;
             public bool canDo;
             public RoutedEventHandler handler;
+        }
+         */
+
+        private void userContextMenu_Opened(object sender, RoutedEventArgs e)
+        {
+            _lobbySession.RequestRights();
+            var contextMenu = sender as ContextMenu;
+            foreach (var item in contextMenu.Items)
+                ((Control)item).IsEnabled = !_lobbySession.IsBanned;
         }
     }
 }

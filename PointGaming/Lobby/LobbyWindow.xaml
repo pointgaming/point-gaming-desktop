@@ -117,8 +117,19 @@
             
             <ListView Grid.Row="2" Name="listBoxMembership" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding}"
                      Margin="0,4,0,0" Grid.RowSpan="2">
-
                 <ListView.Resources>
+                    <ContextMenu x:Key="UserMenu" Opened="userContextMenu_Opened">
+                        <MenuItem Header="Message" Click="userContextMenuMessage_Click" CommandParameter="{Binding}" />
+                        <MenuItem Header="Send Friend Request" Click="userContextMenuFriendRequest_Click" CommandParameter="{Binding}" />
+                        <MenuItem Header="View Profile" Click="userContextMenuViewProfile_Click" CommandParameter="{Binding}" />
+                        <MenuItem Header="Block (mute)" Click="userContextMenuBlock_Click" />
+                        <MenuItem Header="Ban (30 minutes)" Click="userContextMenuBan30Minutes_Click" CommandParameter="{Binding}" />
+                        <MenuItem Header="Ban (24 hours)" Click="userContextMenuBan24Hours_Click" CommandParameter="{Binding}" />
+                        <MenuItem Header="Ban (48 hours)" Click="userContextMenuBan48Hours_Click" CommandParameter="{Binding}" />
+                        <MenuItem Header="Ban (1 week)" Click="userContextMenuBan1Week_Click" CommandParameter="{Binding}" />
+                        <MenuItem Header="Ban (1 minute)" Click="userContextMenuBanLifeTime_Click" CommandParameter="{Binding}" />
+                        <!--<MenuItem Header="Taunt (once a day)" Click="userContextMenuTaunt_Click" />-->
+                    </ContextMenu>
                     <DataTemplate DataType="{x:Type my:PgUser}" >
                         <Grid Width="Auto" HorizontalAlignment="Stretch">
 
@@ -135,6 +146,7 @@
 
                 <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}" x:Name="styleForListBox">
+                        <Setter Property="ContextMenu" Value="{StaticResource UserMenu}" />
                     </Style>
                 </ListView.ItemContainerStyle>
                 <ListView.GroupStyle>
