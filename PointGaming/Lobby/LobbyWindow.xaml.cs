@@ -374,7 +374,14 @@ namespace PointGaming.Lobby
                 }
                 else
                 {
-                    _userData.JoinChat(SessionManager.PrefixGameRoom + item.Id);
+                    _lobbySession.RequestRights();
+                    if (_lobbySession.IsBanned != true)
+                        _userData.JoinChat(SessionManager.PrefixGameRoom + item.Id);
+                    else
+                    {
+                        MessageBox.Show(this, "User is banned.");
+                        this.Close();
+                    }
                 }
             }
         }

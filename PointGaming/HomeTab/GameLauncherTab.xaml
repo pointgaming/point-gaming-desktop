@@ -51,7 +51,7 @@
 
 
             <DataGrid.Resources>
-                <ContextMenu x:Key="OfficialGame">
+                <ContextMenu x:Key="OfficialGame" Opened="officialGameContextMenu_Opened">
                     <MenuItem Header="Join Lobby" Click="JoinLobbyClick" />
                     <MenuItem Header="Launch Game" Click="LaunchExecutableClick" />
                     <Separator />

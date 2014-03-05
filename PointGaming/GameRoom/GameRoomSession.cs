@@ -132,7 +132,8 @@ namespace PointGaming.GameRoom
                 }
                 else
                 {
-                    MessageDialog.Show(_window, "Failed to set Settings", "Sorry, failed to set settings.\r\nDetails: " + response.ErrorMessage);
+                    var errorMessage = String.IsNullOrEmpty(response.Content) ? response.ErrorMessage : response.Content;
+                    MessageDialog.Show(_window, "Failed to set Settings", "Sorry, failed to set settings.\r\nDetails: " + errorMessage);
                 }
             });
         }

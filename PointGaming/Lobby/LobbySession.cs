@@ -263,8 +263,16 @@ namespace PointGaming.Lobby
                 {
                     string reason = String.IsNullOrEmpty(response.ErrorMessage) ? response.Content : response.ErrorMessage;
                     MessageDialog.Show(_window, "Join Failed", reason);
+                    ProcessResponse(reason);
                 }
             });
+        }
+
+        public void ProcessResponse(string reason)
+        {
+            var reasonJson = Newtonsoft.Json.Linq.JObject.Parse(reason);
+            var errorMessage = ((Newtonsoft.Json.Linq.JProperty)reasonJson.First).Value.ToString();
+            IsBanned = errorMessage.IndexOf("User is banned") >= 0 ? true : false;
         }
 
         public void TakeOverRoomAt(GameRoomItem item, Action<string> onCreated)
@@ -574,7 +582,12 @@ namespace PointGaming.Lobby
         public bool IsBanned
         {
             get { return this._isBanned; }
-            set { this._isBanned = value; }
+            set
+            {
+                this._isBanned = value;
+                if (value == true)
+                    this.Window.Close();
+            }
         }
 
         private DateTime _lastRequestTime;
