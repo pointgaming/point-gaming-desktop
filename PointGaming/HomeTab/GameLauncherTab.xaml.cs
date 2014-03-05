@@ -163,6 +163,30 @@ namespace PointGaming.HomeTab
             var launcher = ((FrameworkElement)sender).DataContext as LauncherInfo;
             launcher.Launch();
         }
+
+        private void officialGameContextMenu_Opened(object sender, RoutedEventArgs e)
+        {
+            var launcher = ((FrameworkElement)sender).DataContext as LauncherInfo;
+            var isBanned = RequestBanning(launcher.Id);
+            var contextMenu = sender as ContextMenu;
+            ((Control)contextMenu.Items[0]).IsEnabled = !isBanned;
+        }
+
+        private bool RequestBanning(string gameId)
+        {
+            var isBanned = false;
+            var url = _userData.PgSession.GetWebAppFunction("/api", "/games/" + gameId + "/lobbies/user_rights", "user_id=" + this._userData.User.Id);
+            var client = new RestClient(url);
+            var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+            RestResponse response = (RestResponse)client.Execute(request);
+            if (response.IsOk())
+            {
+                var result = Newtonsoft.Json.Linq.JObject.Parse(response.Content);
+                isBanned= Convert.ToBoolean(((Newtonsoft.Json.Linq.JProperty)result.First).Value.ToString());
+                var canBan = Convert.ToBoolean(((Newtonsoft.Json.Linq.JProperty)result.First.Next).Value.ToString());
+            }
+            return isBanned;
+        }
     }
 
 }

@@ -263,8 +263,16 @@ namespace PointGaming.Lobby
                 {
                     string reason = String.IsNullOrEmpty(response.ErrorMessage) ? response.Content : response.ErrorMessage;
                     MessageDialog.Show(_window, "Join Failed", reason);
+                    ProcessResponse(reason);
                 }
             });
+        }
+
+        public void ProcessResponse(string reason)
+        {
+            var reasonJson = Newtonsoft.Json.Linq.JObject.Parse(reason);
+            var errorMessage = ((Newtonsoft.Json.Linq.JProperty)reasonJson.First).Value.ToString();
+            IsBanned = errorMessage.IndexOf("User is banned") >= 0 ? true : false;
         }
 
         public void TakeOverRoomAt(GameRoomItem item, Action<string> onCreated)
@@ -535,5 +543,53 @@ namespace PointGaming.Lobby
             };
             return fakeRoom;
         }
+
+        public void Ban(PgUser user, double hoursCount)
+        {
+            if (hoursCount > 0)
+            {
+                RestResponse response = null;
+                var url = _userData.PgSession.GetWebAppFunction("/api", "/games/" + this.GameInfo.Id + "/lobbies/ban", "user_id=" + user.Id, "period=" + hoursCount);
+                var client = new RestClient(url);
+                var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+                response = (RestResponse)client.Execute(request);
+                if (response.IsOk())
+                {
+                    _lastRequestTime.AddSeconds(100);
+                }
+            }
+        }
+
+        public void RequestRights()
+        {
+            System.TimeSpan difference = DateTime.Now.Subtract(_lastRequestTime);
+            if (difference.TotalSeconds < 10)
+                return;
+            var url = _userData.PgSession.GetWebAppFunction("/api", "/games/" + this.GameInfo.Id + "/lobbies/user_rights", "user_id=" + this._userData.User.Id);
+            var client = new RestClient(url);
+            var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+            RestResponse response = (RestResponse)client.Execute(request);
+            if (response.IsOk())
+            {
+                var result = Newtonsoft.Json.Linq.JObject.Parse(response.Content);
+                IsBanned = Convert.ToBoolean(((Newtonsoft.Json.Linq.JProperty)result.First).Value.ToString());
+                var canBan = Convert.ToBoolean(((Newtonsoft.Json.Linq.JProperty)result.First.Next).Value.ToString());
+                _lastRequestTime = DateTime.Now;
+            }
+        }
+
+        private bool _isBanned;
+        public bool IsBanned
+        {
+            get { return this._isBanned; }
+            set
+            {
+                this._isBanned = value;
+                if (value == true)
+                    this.Window.Close();
+            }
+        }
+
+        private DateTime _lastRequestTime;
     }
 }

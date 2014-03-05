@@ -24,6 +24,7 @@ namespace PointGaming.GameRoom
             InitializeComponent();
             WindowTreeManager = new WindowTreeManager(this, null);
             Activated += GameRoomWindow_Activated;
+            //BuildContextMenu();
         }
 
         void GameRoomWindow_Activated(object sender, EventArgs e)
@@ -60,5 +61,62 @@ namespace PointGaming.GameRoom
         {
             Settings.SettingsWindow.ShowDialog(WindowTreeManager, typeof(Settings.VoiceTab));
         }
+        /*
+        private void BuildContextMenu()
+        {
+            listBoxMembership.ContextMenu = null;
+            MenuItemInfo[] menuItemsInfo = GetMenuItemsInfo();
+            ContextMenu newContextMenu = new System.Windows.Controls.ContextMenu();
+            foreach (var item in menuItemsInfo)
+                if (item.canDo == true)
+                {
+                    MenuItem menuItem = new MenuItem();
+                    menuItem.Header = item.header;
+                    //handler defining is turned off, turn on it when the methods are implemented
+                    menuItem.Click += item.handler;
+                    newContextMenu.Items.Add(menuItem);
+                }
+            listBoxMembership.ContextMenu = newContextMenu;
+        }
+
+        private MenuItemInfo[] GetMenuItemsInfo()
+        {
+            PointGaming.ContextMenuRights rights = new ContextMenuRights(UserDataManager.UserData.User);
+            int menuItemsCount = 1;
+            MenuItemInfo[] menuItemsInfo = new MenuItemInfo[menuItemsCount];
+            //menuItemsInfo[0] = new MenuItemInfo("Message", rights.CanSendMessage, userContextMenuMessage_Click);
+            //menuItemsInfo[1] = new MenuItemInfo("Send Friend Request", rights.CanSendFriendRequest, userContextMenuFriendRequest_Click);
+            //menuItemsInfo[2] = new MenuItemInfo("Invite to team", rights.CanInviteToTeam, userContextMenuInviteToTeam_Click);
+            //menuItemsInfo[3] = new MenuItemInfo("View Profile", rights.CanViewProfile, userContextMenuViewProfile_Click);
+            //menuItemsInfo[4] = new MenuItemInfo("Block (Mute)", rights.CanBlock, userContextMenuBlock_Click);
+            //menuItemsInfo[5] = new MenuItemInfo("Unblock", rights.CanUnblock, userContextMenuUnBlock_Click);
+            //menuItemsInfo[6] = new MenuItemInfo("Add as Ringer", rights.CanAddAsRinger, userContextMenuAddAsRinger_Click);
+            //menuItemsInfo[7] = new MenuItemInfo("Kick", rights.CanKickFromGameRoom, userContextMenuKick_Click);
+            //menuItemsInfo[8] = new MenuItemInfo("Send Warning", rights.CanSendWarning, userContextMenuSendWarning_Click);
+            menuItemsInfo[0] = new MenuItemInfo("Ban (30 Minutes)", rights.CanBanForTime(0.5), userContextMenuBan30_Click);
+            //menuItemsInfo[10] = new MenuItemInfo("Credit Points", rights.CanCreditPoints, userContextMenuCreditPoints_Click);
+            //menuItemsInfo[11] = new MenuItemInfo("Remove Points", rights.CanRemovePoints, userContextMenuRemovePoints_Click);
+            return menuItemsInfo;
+        }
+
+        private void userContextMenuBan30_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+        }
+
+        class MenuItemInfo
+        {
+            public MenuItemInfo(string header, bool canDo, RoutedEventHandler handler)
+            {
+                this.header = header;
+                this.canDo = canDo;
+                this.handler = handler;
+            }
+
+            public string header;
+            public bool canDo;
+            public RoutedEventHandler handler;
+        }
+         */
     }
 }

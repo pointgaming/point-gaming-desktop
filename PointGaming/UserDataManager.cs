@@ -277,4 +277,42 @@ namespace PointGaming
             return Convert.ToBoolean(((Newtonsoft.Json.Linq.JProperty)result.First).Value.ToString());
         }
     }
+
+    public class ContextMenuRights
+    {
+        private PgUser User;
+        public ContextMenuRights(PgUser user)
+        {
+            User = user;
+        }
+
+        public bool CanSendMessage { get { return true; } }
+
+        public bool CanSendFriendRequest { get { return true; } }
+
+        public bool CanInviteToTeam { get { return User.HasTeam; } }
+
+        public bool CanViewProfile { get { return true; } }
+
+        public bool CanBlock { get { return true; } }
+
+        public bool CanUnblock { get { return true; } }
+
+        public bool CanAddAsRinger { get { return true; } }
+
+        public bool CanKickFromGameRoom { get { return true; } }
+
+        public bool CanSendWarning { get { return true; } }
+
+        public bool CanKickFromLobby { get { return true; } }
+
+        public bool CanBanForTime(double hoursCount)
+        {
+            return true;
+        }
+
+        public bool CanCreditPoints { get { return true; } }
+
+        public bool CanRemovePoints { get { return true; } }
+    }
 }
