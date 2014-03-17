@@ -155,6 +155,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ActiveGroupingCollectionView.cs" />
+    <Compile Include="HomeTab\NotificationsBox.xaml.cs">
+      <DependentUpon>NotificationsBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HomeTab\Notifier.cs" />
     <Compile Include="Settings\AboutTab.xaml.cs">
       <DependentUpon>AboutTab.xaml</DependentUpon>
     </Compile>
@@ -336,6 +340,10 @@
     <Page Include="HomeTab\KeySelectDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="HomeTab\NotificationsBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Lobby\GameRoomInfoDialog.xaml">
       <SubType>Designer</SubType>

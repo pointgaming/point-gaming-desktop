@@ -379,7 +379,7 @@ namespace PointGaming.Lobby
                         _userData.JoinChat(SessionManager.PrefixGameRoom + item.Id);
                     else
                     {
-                        MessageBox.Show(this, "User is banned.");
+                        Notifier.NotifyBannedUser(_userData.User, item.GameId);
                         this.Close();
                     }
                 }

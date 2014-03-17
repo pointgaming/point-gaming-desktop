@@ -262,8 +262,14 @@ namespace PointGaming.Lobby
                 else
                 {
                     string reason = String.IsNullOrEmpty(response.ErrorMessage) ? response.Content : response.ErrorMessage;
-                    MessageDialog.Show(_window, "Join Failed", reason);
                     ProcessResponse(reason);
+                    if (IsBanned == true)
+                    {
+                        Window.Close();
+                        HomeTab.Notifier.NotifyBannedUser(_userData.User, GameInfo.Id);
+                    }
+                    else
+                        MessageDialog.Show(_window, "Join Failed", reason);
                 }
             });
         }
@@ -575,6 +581,11 @@ namespace PointGaming.Lobby
                 IsBanned = Convert.ToBoolean(((Newtonsoft.Json.Linq.JProperty)result.First).Value.ToString());
                 var canBan = Convert.ToBoolean(((Newtonsoft.Json.Linq.JProperty)result.First.Next).Value.ToString());
                 _lastRequestTime = DateTime.Now;
+            }
+            if (IsBanned == true)
+            {
+                PointGaming.HomeTab.Notifier.NotifyBannedUser(this._userData.User, this.GameInfo.Id);
+                Window.Close();
             }
         }
 

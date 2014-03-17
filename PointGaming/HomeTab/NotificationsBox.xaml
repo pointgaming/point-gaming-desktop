@@ -1,0 +1,18 @@
+﻿<Window x:Class="PointGaming.HomeTab.NotificationsBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="NotificationsBox" Height="180" Width="500"
+        Name="NotificationsWndow">
+    <Grid>
+        <FlowDocumentScrollViewer Background="White" VerticalScrollBarVisibility="Auto" Name="NotificationsContentBox">
+            <FlowDocumentScrollViewer.Resources>
+                <Style TargetType="{x:Type Paragraph}">
+                    <Setter Property="Margin" Value="0"/>
+                </Style>
+            </FlowDocumentScrollViewer.Resources>
+            <FlowDocument>
+                <Paragraph> Hello world!</Paragraph>
+            </FlowDocument>
+        </FlowDocumentScrollViewer>
+    </Grid>
+</Window>
