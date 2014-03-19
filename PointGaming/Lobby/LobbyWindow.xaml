@@ -128,6 +128,8 @@
                         <MenuItem Header="Ban (48 hours)" Click="userContextMenuBan48Hours_Click" CommandParameter="{Binding}" />
                         <MenuItem Header="Ban (1 week)" Click="userContextMenuBan1Week_Click" CommandParameter="{Binding}" />
                         <MenuItem Header="Ban (1 minute)" Click="userContextMenuBanLifeTime_Click" CommandParameter="{Binding}" />
+                        <MenuItem Header="CreditPoints" Click="userContextMenuCreditPoints_Click" CommandParameter="{Binding}" />
+                        <MenuItem Header="RemovePoints" Click="userContextMenuRemovePoints_Click" CommandParameter="{Binding}" />
                         <!--<MenuItem Header="Taunt (once a day)" Click="userContextMenuTaunt_Click" />-->
                     </ContextMenu>
                     <DataTemplate DataType="{x:Type my:PgUser}" >

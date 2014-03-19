@@ -280,18 +280,37 @@ namespace PointGaming.Lobby
         private void userContextMenuKickFromLobby_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
-
         }
 
         private void userContextMenuCreditPoints_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
-
+            if (menuItem != null)
+            {
+                PgUser user = menuItem.CommandParameter as PgUser;
+                if (user != null)
+                {
+                    var pointsCount = 1000;
+                    _lobbySession.CreditPoints(user, pointsCount);
+                }
+                listBoxMembership.Items.Refresh();
+            }
         }
 
         private void userContextMenuRemovePoints_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
+            if (menuItem != null)
+            {
+                PgUser user = menuItem.CommandParameter as PgUser;
+                if (user != null)
+                {
+                    var pointsCount = 1000;
+                    _lobbySession.RemovePoints(user, pointsCount);
+                }
+                listBoxMembership.Items.Refresh();
+            }
+
         }
         private void reportMatchWinnerButton_Click(object sender, RoutedEventArgs e)
         {

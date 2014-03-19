@@ -602,5 +602,34 @@ namespace PointGaming.Lobby
         }
 
         private DateTime _lastRequestTime;
+
+        public void CreditPoints(PgUser user, int pointsCount)
+        {
+            var url = _userData.PgSession.GetWebAppFunction("/api", "/games/" + this.GameInfo.Id + "/lobbies/change_points", "user_id=" + this._userData.User.Id, "points_count=" + pointsCount);
+            var client = new RestClient(url);
+            var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+            RestResponse response = (RestResponse)client.Execute(request);
+            if (response.IsOk() == true)
+            {
+                foreach (var member in this.Membership)
+                    if (member.Id == user.Id)
+                        member.Points += pointsCount;
+            }
+        }
+
+        public void RemovePoints(PgUser user, int pointsCount)
+        {
+            pointsCount = Math.Abs(pointsCount) * -1;
+            var url = _userData.PgSession.GetWebAppFunction("/api", "/games/" + this.GameInfo.Id + "/lobbies/change_points", "user_id=" + this._userData.User.Id, "points_count=" + pointsCount);
+            var client = new RestClient(url);
+            var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+            RestResponse response = (RestResponse)client.Execute(request);
+            if (response.IsOk() == true)
+            {
+                foreach (var member in this.Membership)
+                    if (member.Id == user.Id)
+                        member.Points += pointsCount;
+            }
+        }
     }
 }
