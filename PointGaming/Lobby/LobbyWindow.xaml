@@ -121,15 +121,17 @@
                     <ContextMenu x:Key="UserMenu" Opened="userContextMenu_Opened">
                         <MenuItem Header="Message" Click="userContextMenuMessage_Click" CommandParameter="{Binding}" />
                         <MenuItem Header="Send Friend Request" Click="userContextMenuFriendRequest_Click" CommandParameter="{Binding}" />
-                        <MenuItem Header="View Profile" Click="userContextMenuViewProfile_Click" CommandParameter="{Binding}" />
+                        <MenuItem Header="View Profile" Click="userContextMenuViewProfile_Click" CommandParameter="{Binding}" Name="menuItemViewProfile"/>
                         <MenuItem Header="Block (mute)" Click="userContextMenuBlock_Click" />
-                        <MenuItem Header="Ban (30 minutes)" Click="userContextMenuBan30Minutes_Click" CommandParameter="{Binding}" />
-                        <MenuItem Header="Ban (24 hours)" Click="userContextMenuBan24Hours_Click" CommandParameter="{Binding}" />
-                        <MenuItem Header="Ban (48 hours)" Click="userContextMenuBan48Hours_Click" CommandParameter="{Binding}" />
-                        <MenuItem Header="Ban (1 week)" Click="userContextMenuBan1Week_Click" CommandParameter="{Binding}" />
-                        <MenuItem Header="Ban (1 minute)" Click="userContextMenuBanLifeTime_Click" CommandParameter="{Binding}" />
-                        <MenuItem Header="CreditPoints" Click="userContextMenuCreditPoints_Click" CommandParameter="{Binding}" />
-                        <MenuItem Header="RemovePoints" Click="userContextMenuRemovePoints_Click" CommandParameter="{Binding}" />
+                        <MenuItem Header="Ban">
+                            <MenuItem Header="Ban (30 minutes)" Click="userContextMenuBan30Minutes_Click" CommandParameter="{Binding}" />
+                            <MenuItem Header="Ban (24 hours)" Click="userContextMenuBan24Hours_Click" CommandParameter="{Binding}" />
+                            <MenuItem Header="Ban (48 hours)" Click="userContextMenuBan48Hours_Click" CommandParameter="{Binding}" />
+                            <MenuItem Header="Ban (1 week)" Click="userContextMenuBan1Week_Click" CommandParameter="{Binding}" />
+                            <MenuItem Header="Ban (1 minute)" Click="userContextMenuBanLifeTime_Click" CommandParameter="{Binding}" />
+                        </MenuItem>
+                        <MenuItem Header="CreditPoints" Click="userContextMenuCreditPoints_Click" CommandParameter="{Binding}" Name="menuItemCreditPoints"/>
+                        <MenuItem Header="RemovePoints" Click="userContextMenuRemovePoints_Click" CommandParameter="{Binding}" Name="menuItemRemovePoints"/>
                         <!--<MenuItem Header="Taunt (once a day)" Click="userContextMenuTaunt_Click" />-->
                     </ContextMenu>
                     <DataTemplate DataType="{x:Type my:PgUser}" >

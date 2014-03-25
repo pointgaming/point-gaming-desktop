@@ -290,7 +290,20 @@ namespace PointGaming.Lobby
                 PgUser user = menuItem.CommandParameter as PgUser;
                 if (user != null)
                 {
-                    var pointsCount = 1000;
+                    HomeTab.InputValueDialog inputDialog = new InputValueDialog();
+                    var result = inputDialog.ShowDialog();
+                    if (result == false)
+                        return;
+                    var pointsCount = 0;
+                    try
+                    {
+                        pointsCount = Convert.ToInt32(inputDialog.Value);
+                    }
+                    catch
+                    {
+                        MessageBox.Show(this, "The operation ss not completed. Bad data format.");
+                        return;
+                    }
                     _lobbySession.CreditPoints(user, pointsCount);
                 }
                 listBoxMembership.Items.Refresh();
@@ -305,7 +318,11 @@ namespace PointGaming.Lobby
                 PgUser user = menuItem.CommandParameter as PgUser;
                 if (user != null)
                 {
-                    var pointsCount = 1000;
+                    HomeTab.InputValueDialog inputDialog = new InputValueDialog();
+                    var result = inputDialog.ShowDialog();
+                    if (result == false)
+                        return;
+                    var pointsCount = Convert.ToInt32(inputDialog.Value);
                     _lobbySession.RemovePoints(user, pointsCount);
                 }
                 listBoxMembership.Items.Refresh();
@@ -500,8 +517,29 @@ namespace PointGaming.Lobby
         {
             _lobbySession.RequestRights();
             var contextMenu = sender as ContextMenu;
-            foreach (var item in contextMenu.Items)
-                ((Control)item).IsEnabled = !_lobbySession.IsBanned;
+            if (_lobbySession.IsBanned)
+            {
+                foreach (var item in contextMenu.Items)
+                    ((Control)item).IsEnabled = !_lobbySession.IsBanned;
+                return;
+            }
+
+            string[] myItemsNames = new string[3] {"menuItemViewProfile", "menuItemCreditPoints", "menuItemRemovePoints"};
+            ListViewItem element = contextMenu.PlacementTarget as ListViewItem;
+            var user = (PgUser)element.Content;
+            if (user.Id == _userData.User.Id)
+                foreach (var item in contextMenu.Items)
+                {
+                    string menuItemName = ((Control)item).Name;
+                    if (menuItemName != null && myItemsNames.Contains<string>(menuItemName) == true)
+                        ((Control)item).Visibility = System.Windows.Visibility.Visible;
+                    else
+                        ((Control)item).Visibility = System.Windows.Visibility.Collapsed;
+                }
+            else
+                foreach (var item in contextMenu.Items)
+                    ((Control)item).Visibility = System.Windows.Visibility.Visible;
+
         }
     }
 }

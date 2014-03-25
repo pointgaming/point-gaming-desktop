@@ -155,6 +155,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ActiveGroupingCollectionView.cs" />
+    <Compile Include="HomeTab\InputValueDialog.xaml.cs">
+      <DependentUpon>InputValueDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HomeTab\NotificationsBox.xaml.cs">
       <DependentUpon>NotificationsBox.xaml</DependentUpon>
     </Compile>
@@ -336,6 +339,10 @@
     <Page Include="GameRoom\PasswordDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="HomeTab\InputValueDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="HomeTab\KeySelectDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
