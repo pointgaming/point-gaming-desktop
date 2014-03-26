@@ -254,7 +254,7 @@ namespace PointGaming.Lobby
                 PgUser user = menuItem.CommandParameter as PgUser;
                 if (user != null)
                 {
-                    _lobbySession.Ban(user, 1.0 / 60.0);
+                    _lobbySession.Ban(user, -1.0);
                 }
             }
         }

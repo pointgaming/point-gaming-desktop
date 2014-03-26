@@ -124,11 +124,11 @@
                         <MenuItem Header="View Profile" Click="userContextMenuViewProfile_Click" CommandParameter="{Binding}" Name="menuItemViewProfile"/>
                         <MenuItem Header="Block (mute)" Click="userContextMenuBlock_Click" />
                         <MenuItem Header="Ban">
-                            <MenuItem Header="Ban (30 minutes)" Click="userContextMenuBan30Minutes_Click" CommandParameter="{Binding}" />
-                            <MenuItem Header="Ban (24 hours)" Click="userContextMenuBan24Hours_Click" CommandParameter="{Binding}" />
-                            <MenuItem Header="Ban (48 hours)" Click="userContextMenuBan48Hours_Click" CommandParameter="{Binding}" />
-                            <MenuItem Header="Ban (1 week)" Click="userContextMenuBan1Week_Click" CommandParameter="{Binding}" />
-                            <MenuItem Header="Ban (1 minute)" Click="userContextMenuBanLifeTime_Click" CommandParameter="{Binding}" />
+                            <MenuItem Header="30 minutes" Click="userContextMenuBan30Minutes_Click" CommandParameter="{Binding}" />
+                            <MenuItem Header="24 hours" Click="userContextMenuBan24Hours_Click" CommandParameter="{Binding}" />
+                            <MenuItem Header="48 hours" Click="userContextMenuBan48Hours_Click" CommandParameter="{Binding}" />
+                            <MenuItem Header="1 week" Click="userContextMenuBan1Week_Click" CommandParameter="{Binding}" />
+                            <MenuItem Header="Lifetime" Click="userContextMenuBanLifeTime_Click" CommandParameter="{Binding}" />
                         </MenuItem>
                         <MenuItem Header="CreditPoints" Click="userContextMenuCreditPoints_Click" CommandParameter="{Binding}" Name="menuItemCreditPoints"/>
                         <MenuItem Header="RemovePoints" Click="userContextMenuRemovePoints_Click" CommandParameter="{Binding}" Name="menuItemRemovePoints"/>

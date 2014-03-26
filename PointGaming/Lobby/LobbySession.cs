@@ -552,17 +552,14 @@ namespace PointGaming.Lobby
 
         public void Ban(PgUser user, double hoursCount)
         {
-            if (hoursCount > 0)
+            RestResponse response = null;
+            var url = _userData.PgSession.GetWebAppFunction("/api", "/games/" + this.GameInfo.Id + "/lobbies/ban", "user_id=" + user.Id, "period=" + hoursCount);
+            var client = new RestClient(url);
+            var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+            response = (RestResponse)client.Execute(request);
+            if (response.IsOk())
             {
-                RestResponse response = null;
-                var url = _userData.PgSession.GetWebAppFunction("/api", "/games/" + this.GameInfo.Id + "/lobbies/ban", "user_id=" + user.Id, "period=" + hoursCount);
-                var client = new RestClient(url);
-                var request = new RestRequest(Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
-                response = (RestResponse)client.Execute(request);
-                if (response.IsOk())
-                {
-                    _lastRequestTime.AddSeconds(100);
-                }
+                _lastRequestTime.AddSeconds(100);
             }
         }
 

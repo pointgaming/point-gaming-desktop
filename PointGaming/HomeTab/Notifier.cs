@@ -42,7 +42,7 @@ namespace PointGaming.HomeTab
                     result = "1 week";
                     break;
                 default:
-                    result = "6 hours";
+                    result = "lifetime";
                     break;
             }
             return result;
