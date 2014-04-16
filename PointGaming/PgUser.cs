@@ -64,6 +64,14 @@ namespace PointGaming
                 OnPropertyChanged("Points");
             }
         }
+
+        private bool _temporarily;
+
+        public bool Temporarily
+        {
+            get { return this._temporarily; }
+            set { this._temporarily = value; }
+        }
     }
 
     public class PgUser : ViewModelBase, IBetOperand

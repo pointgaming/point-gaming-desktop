@@ -208,8 +208,25 @@ namespace PointGaming.GameRoom
             int i = 0;
             foreach (var item in Membership)
                 if (((PgUser)item).GameRoomGroupName != "Team Bot")
-                    newList[i++] = (PgUser)item;
+                {
+                    PgUser member = (PgUser)item;
+                    member = UpdateMemberInfo(member);
+                    newList[i++] = member;
+                }
             this._session.GameRoom.Members = newList;
+        }
+
+        private PgUser UpdateMemberInfo(PgUser member)
+        {
+            var url = _userData.PgSession.GetWebAppFunction("/api", "/users/" + member.Id + ".json");
+            var client = new RestSharp.RestClient(url);
+            var request = new RestSharp.RestRequest(RestSharp.Method.GET);
+            RestSharp.RestResponse<UserFullResponse> response = (RestSharp.RestResponse<UserFullResponse>)client.Execute<UserFullResponse>(request);
+
+            var member_info = response.Data.user;
+            member.Team = PointGaming.UserDataManager.UserData.GetPgTeam(member_info.team);
+
+            return member;
         }
 
         private void CheckBots()
@@ -474,6 +491,53 @@ namespace PointGaming.GameRoom
         {
             PgUser user = sender as PgUser;
             user.IsMuted = !user.IsMuted;
+        }
+
+        public ICommand AddAsRinger { get { return new ActionCommand(AddUserAsRinger); } }
+        private void AddUserAsRinger(object sender)
+        {
+            PgUser user = sender as PgUser;
+            var team = this._userData.User.Team;
+            if (team != null)
+                this.AddUserToTeam(user, team);
+        }
+
+        public void AddUserToTeam(PgUser user, PgTeam team)
+        {
+            if (((user.Team != null) && (user.Team.Temporarily == true)) || (team == null))
+                return;
+            var url = _userData.PgSession.GetWebAppFunction("/api", "/users/" + user.Id + "/add_to_team", "team_id=" + team.Id);
+            var client = new RestSharp.RestClient(url);
+            var request = new RestSharp.RestRequest(RestSharp.Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+            RestSharp.RestResponse<PgTeam> response = (RestSharp.RestResponse<PgTeam>)client.Execute<PgTeam>(request);
+            if (response.IsOk() == true)
+            {
+                user.Team = response.Data;
+            }
+        }
+
+        public ICommand RemoveFromTeam { get { return new ActionCommand(RemoveUserTeam); } }
+
+        private void RemoveUserTeam(object sender)
+        {
+            PgUser user = sender as PgUser;
+            var team = user.Team;
+            if ((team != null) && (team.Temporarily == true))
+                this.RemoveUserFromTeam(user, team);
+        }
+
+        public void RemoveUserFromTeam(PgUser user, PgTeam team)
+        {
+            if ((user.Team == null) || (team == null) || (team.Temporarily == false))
+                return;
+            var url = _userData.PgSession.GetWebAppFunction("/api", "/users/" + user.Id + "/remove_from_team", "team_id=" + team.Id);
+            var client = new RestSharp.RestClient(url);
+            var request = new RestSharp.RestRequest(RestSharp.Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+            RestSharp.RestResponse<PgTeam> response = (RestSharp.RestResponse<PgTeam>)client.Execute<PgTeam>(request);
+            if (response.IsOk() == true)
+            {
+                user.Team = response.Data;
+            }
         }
     }
 

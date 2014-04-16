@@ -62,6 +62,7 @@ namespace PointGaming.POCO
         public string slug { get; set; }
         public string tag { get; set; }
         public DateTime updated_at { get; set; }
+        public bool temporarily { get; set; }
     }
 
 

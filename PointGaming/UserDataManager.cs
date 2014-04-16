@@ -178,6 +178,7 @@ namespace PointGaming
             if (teamFull != null)
             {
                 team.Name = teamFull.name;
+                team.Temporarily = teamFull.temporarily;
                 // todo copy the rest of the details
             }
 

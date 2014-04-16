@@ -248,7 +248,7 @@
 
                     <pg:DataBindingProxy x:Key="dataContextProxy" Data="{Binding}" />
 
-                    <ContextMenu Name="adminUserContextMenu" x:Key="adminUserContextMenu">
+                    <ContextMenu Name="adminUserContextMenu" x:Key="adminUserContextMenu" Opened="userContextMenu_Opened">
                         <MenuItem Header="Kick" 
                               Command="{Binding Source={StaticResource dataContextProxy}, Path=Data.KickUser}" 
                               CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
@@ -260,6 +260,12 @@
                               CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
                         <MenuItem Header="Mute" 
                               Command="{Binding Source={StaticResource dataContextProxy}, Path=Data.MuteUser}" 
+                              CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
+                        <MenuItem Header="Add as Ringer" Name="AddAsRinger"
+                              Command="{Binding Source={StaticResource dataContextProxy}, Path=Data.AddAsRinger}"
+                              CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
+                        <MenuItem Header="Remove from Team" Name="RemoveFromTeam"
+                              Command="{Binding Source={StaticResource dataContextProxy}, Path=Data.RemoveFromTeam}"
                               CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
                     </ContextMenu>
 

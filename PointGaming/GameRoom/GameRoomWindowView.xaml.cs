@@ -61,6 +61,24 @@ namespace PointGaming.GameRoom
         {
             Settings.SettingsWindow.ShowDialog(WindowTreeManager, typeof(Settings.VoiceTab));
         }
+
+        private void userContextMenu_Opened(object sender, RoutedEventArgs e)
+        {
+            var contextMenu = sender as ContextMenu;
+            ListViewItem element = contextMenu.PlacementTarget as ListViewItem;
+            var user = (PgUser)element.Content;
+            var addAsRinger = contextMenu.Items[4]; var removeFromTeam = contextMenu.Items[5];
+            if ((user.Team != null) && (user.Team.Temporarily == true))
+            {
+                ((Control)(addAsRinger)).Visibility = Visibility.Collapsed;
+                ((Control)(removeFromTeam)).Visibility = System.Windows.Visibility.Visible;
+            }
+            else
+            {
+                ((Control)(addAsRinger)).Visibility = Visibility.Visible;
+                ((Control)(removeFromTeam)).Visibility = System.Windows.Visibility.Collapsed;
+            }
+        }
         /*
         private void BuildContextMenu()
         {
