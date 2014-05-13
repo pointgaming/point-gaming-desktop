@@ -261,17 +261,14 @@
                         <MenuItem Header="Mute" 
                               Command="{Binding Source={StaticResource dataContextProxy}, Path=Data.MuteUser}" 
                               CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
+                        <MenuItem Header="UnMute"
+                              Command="{Binding Source={StaticResource dataContextProxy}, Path=Data.UnMuteUser}"
+                              CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
                         <MenuItem Header="Add as Ringer" Name="AddAsRinger"
                               Command="{Binding Source={StaticResource dataContextProxy}, Path=Data.AddAsRinger}"
                               CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
-                        <MenuItem Header="Remove from Team" Name="RemoveFromTeam"
+                        <MenuItem Header="Remove as Ringer" Name="RemoveFromTeam"
                               Command="{Binding Source={StaticResource dataContextProxy}, Path=Data.RemoveFromTeam}"
-                              CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
-                    </ContextMenu>
-
-                    <ContextMenu Name="userContextMenu" x:Key="userContextMenu">
-                        <MenuItem Header="Mute" 
-                              Command="{Binding Source={StaticResource dataContextProxy}, Path=Data.MuteUser}" 
                               CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
                     </ContextMenu>
                 </ListView.Resources>

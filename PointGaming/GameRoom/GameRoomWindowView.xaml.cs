@@ -64,19 +64,31 @@ namespace PointGaming.GameRoom
 
         private void userContextMenu_Opened(object sender, RoutedEventArgs e)
         {
+            var viewModel = (GameRoomWindowModelView)DataContext;
             var contextMenu = sender as ContextMenu;
             ListViewItem element = contextMenu.PlacementTarget as ListViewItem;
             var user = (PgUser)element.Content;
-            var addAsRinger = contextMenu.Items[4]; var removeFromTeam = contextMenu.Items[5];
+            var mute = contextMenu.Items[3] as Control; var unmute = contextMenu.Items[4] as Control;
+            if ( viewModel.IsMutedInThisGameRoom(user) == false)
+            {
+                mute.Visibility = Visibility.Visible;
+                unmute.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                mute.Visibility = Visibility.Collapsed;
+                unmute.Visibility = Visibility.Visible;
+            }
+            var addAsRinger = contextMenu.Items[5] as Control; var removeAsRinger = contextMenu.Items[6] as Control;
             if ((user.Team != null) && (user.Team.Temporarily == true))
             {
-                ((Control)(addAsRinger)).Visibility = Visibility.Collapsed;
-                ((Control)(removeFromTeam)).Visibility = System.Windows.Visibility.Visible;
+                addAsRinger.Visibility = Visibility.Collapsed;
+                removeAsRinger.Visibility = Visibility.Visible;
             }
             else
             {
                 ((Control)(addAsRinger)).Visibility = Visibility.Visible;
-                ((Control)(removeFromTeam)).Visibility = System.Windows.Visibility.Collapsed;
+                ((Control)(removeAsRinger)).Visibility = System.Windows.Visibility.Collapsed;
             }
         }
         /*

@@ -62,9 +62,9 @@ namespace PointGaming.GameRoom
             _session.RoomBets.CollectionChanged += RoomBets_CollectionChanged;
             _session.MyMatch.PropertyChanged += MyMatch_PropertyChanged;
             _session.ChatMessageReceived += ChatMessages_CollectionChanged;
-            
+
+            _mutedMembers = new List<PgUser>();
             InitMembership();
-            _userData.Voip.JoinRoom(this);
         }
 
         private void InitMembership()
@@ -209,22 +209,25 @@ namespace PointGaming.GameRoom
             foreach (var item in Membership)
                 if (((PgUser)item).GameRoomGroupName != "Team Bot")
                 {
-                    PgUser member = (PgUser)item;
-                    member = UpdateMemberInfo(member);
-                    newList[i++] = member;
+                    PgUser user = (PgUser)item;
+                    user = UpdateMemberInfo(user);
+                    newList[i++] = user;
                 }
             this._session.GameRoom.Members = newList;
         }
 
         private PgUser UpdateMemberInfo(PgUser member)
         {
-            var url = _userData.PgSession.GetWebAppFunction("/api", "/users/" + member.Id + ".json");
+            var url = _userData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + this._session.GameRoomId  + "/get_member_info", "user_id=" + member.Id);
             var client = new RestSharp.RestClient(url);
             var request = new RestSharp.RestRequest(RestSharp.Method.GET);
-            RestSharp.RestResponse<UserFullResponse> response = (RestSharp.RestResponse<UserFullResponse>)client.Execute<UserFullResponse>(request);
+            RestSharp.RestResponse<PgUser> response = (RestSharp.RestResponse<PgUser>)client.Execute<PgUser>(request);
 
-            var member_info = response.Data.user;
-            member.Team = PointGaming.UserDataManager.UserData.GetPgTeam(member_info.team);
+            member = response.Data;
+            if (response.Data.IsMuted == true)
+                MarkAsMuted(member);
+            else
+                MarkAsUnmuted(member);
 
             return member;
         }
@@ -490,7 +493,83 @@ namespace PointGaming.GameRoom
         private void MuteUserF(object sender)
         {
             PgUser user = sender as PgUser;
-            user.IsMuted = !user.IsMuted;
+
+            var url = _userData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + this._session.GameRoomId + "/mute_member", "user_id=" + user.Id);
+            var client = new RestSharp.RestClient(url);
+            var request = new RestSharp.RestRequest(RestSharp.Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+            RestSharp.RestResponse<PgUser> response = (RestSharp.RestResponse<PgUser>)client.Execute<PgUser>(request);
+            if (response.IsOk() == true)
+            {
+                var isMuted = response.Data.IsMuted;
+                if (isMuted == true)
+                    MarkAsMuted(user);
+                else
+                    MarkAsUnmuted(user);
+            }
+        }
+
+        public ICommand UnMuteUser { get { return new ActionCommand(UnMuteUserF); } }
+        private void UnMuteUserF(object sender)
+        {
+            PgUser user = sender as PgUser;
+
+            var url = _userData.PgSession.GetWebAppFunction("/api", "/game_rooms/" + this._session.GameRoomId + "/unmute_member", "user_id=" + user.Id);
+            var client = new RestSharp.RestClient(url);
+            var request = new RestSharp.RestRequest(RestSharp.Method.GET) { RequestFormat = RestSharp.DataFormat.Json };
+            RestSharp.RestResponse<PgUser> response = (RestSharp.RestResponse<PgUser>)client.Execute<PgUser>(request);
+            if (response.IsOk() == true)
+            {
+                var isMuted = response.Data.IsMuted;
+                if (isMuted == true)
+                    MarkAsMuted(user);
+                else
+                    MarkAsUnmuted(user);
+            }
+        }
+
+        private List<PgUser> _mutedMembers;
+
+        private List<PgUser> MutedMembers
+        {
+            get { return this._mutedMembers; }
+        }
+
+       private void MarkAsMuted(PgUser user)
+       {
+           if (IsMutedInThisGameRoom(user) == false)
+               MutedMembers.Add(user);
+           if (user.Id == _userData.User.Id)
+               IsMuted = true;
+       }
+
+       private void MarkAsUnmuted(PgUser user)
+       {
+           if (IsMutedInThisGameRoom(user) == true)
+               MutedMembers.Remove(user);
+           if (user.Id == _userData.User.Id)
+               IsMuted = false;
+       }
+
+       public bool IsMutedInThisGameRoom(PgUser user)
+       {
+           foreach (var item in MutedMembers)
+               if (item.Id == user.Id)
+                   return true;
+           return false;
+       }
+
+        private bool _isMuted;
+        public bool IsMuted
+        {
+            get { return _isMuted; }
+            set
+            {
+                _isMuted = value;
+                if (value == true)
+                    _userData.Voip.LeaveRoom(this);
+                else
+                    _userData.Voip.JoinRoom(this);
+            }
         }
 
         public ICommand AddAsRinger { get { return new ActionCommand(AddUserAsRinger); } }
