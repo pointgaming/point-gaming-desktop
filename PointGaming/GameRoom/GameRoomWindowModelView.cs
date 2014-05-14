@@ -63,7 +63,7 @@ namespace PointGaming.GameRoom
             _session.MyMatch.PropertyChanged += MyMatch_PropertyChanged;
             _session.ChatMessageReceived += ChatMessages_CollectionChanged;
 
-            _mutedMembers = new List<PgUser>();
+            _mutedMembersIds = new List<string>();
             InitMembership();
         }
 
@@ -527,17 +527,17 @@ namespace PointGaming.GameRoom
             }
         }
 
-        private List<PgUser> _mutedMembers;
+        private List<string> _mutedMembersIds;
 
-        private List<PgUser> MutedMembers
+        private List<string> MutedMembersIds
         {
-            get { return this._mutedMembers; }
+            get { return this._mutedMembersIds; }
         }
 
        private void MarkAsMuted(PgUser user)
        {
            if (IsMutedInThisGameRoom(user) == false)
-               MutedMembers.Add(user);
+               MutedMembersIds.Add(user.Id);
            if (user.Id == _userData.User.Id)
                IsMuted = true;
        }
@@ -545,15 +545,15 @@ namespace PointGaming.GameRoom
        private void MarkAsUnmuted(PgUser user)
        {
            if (IsMutedInThisGameRoom(user) == true)
-               MutedMembers.Remove(user);
+               MutedMembersIds.Remove(user.Id);
            if (user.Id == _userData.User.Id)
                IsMuted = false;
        }
 
        public bool IsMutedInThisGameRoom(PgUser user)
        {
-           foreach (var item in MutedMembers)
-               if (item.Id == user.Id)
+           foreach (var item in MutedMembersIds)
+               if (item == user.Id)
                    return true;
            return false;
        }
