@@ -15,7 +15,7 @@
     <Name>Installer</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <OutputPath>..\..\output\Install\$(Configuration)\</OutputPath>
+    <OutputPath>..\..\output\Installer\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>Debug</DefineConstants>
   </PropertyGroup>
@@ -56,7 +56,9 @@
   <ItemGroup>
     <Content Include="CreatePatch.txt" />
     <Content Include="Resources\banner.bmp" />
+    <Content Include="Resources\banner2.bmp" />
     <Content Include="Resources\dialog.bmp" />
+    <Content Include="Resources\dialog2.bmp" />
     <Content Include="Resources\License.rtf" />
   </ItemGroup>
   <ItemGroup>

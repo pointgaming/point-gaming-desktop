@@ -6,9 +6,9 @@
 
     <WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\Resources\License.rtf"/>
     <!--493 by 58 pixels, this bitmap will appear at the top of all but the first page of the installer.-->
-    <WixVariable Id="WixUIBannerBmp" Value="$(var.ProjectDir)\Resources\banner.bmp" />
+    <WixVariable Id="WixUIBannerBmp" Value="$(var.ProjectDir)\Resources\banner2.bmp" />
     <!--493 by 312 pixels, this bitmap will appear on the first page of the installer.-->
-    <WixVariable Id="WixUIDialogBmp" Value="$(var.ProjectDir)\Resources\dialog.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="$(var.ProjectDir)\Resources\dialog2.bmp" />
     <!--32 by 32 pixels, exclamation mark icon.-->
     <!--<WixVariable Id="WixUIExclamationIco" Value="path\exclamation.ico" />-->
     <!--32 by 32 pixels, information sign icon.-->
