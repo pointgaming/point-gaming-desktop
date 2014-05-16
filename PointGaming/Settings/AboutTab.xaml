@@ -6,9 +6,13 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              Name="aboutTabControl" Padding="10">
-    <StackPanel>
-        <Label Content="{Binding ElementName=aboutTabControl, Path=ProgramVersion, FallbackValue='Version 0.0.0'}" Height="28" HorizontalAlignment="Left" Name="labelVersion" VerticalContentAlignment="Center" />
-        <TextBox TextWrapping="Wrap" IsReadOnly="True"
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Content="{Binding ElementName=aboutTabControl, Path=ProgramVersion, FallbackValue='Version 0.0.0'}" Height="28" HorizontalAlignment="Left" Name="labelVersion" VerticalContentAlignment="Center" />
+        <TextBox Grid.Row="1" TextWrapping="Wrap" IsReadOnly="True"
                  Text="Copyright 2013 Point Gaming, LLC." />
-    </StackPanel>
+    </Grid>
 </UserControl>

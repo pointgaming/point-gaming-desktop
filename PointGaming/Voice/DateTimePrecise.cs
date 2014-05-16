@@ -30,7 +30,7 @@ namespace PointGaming.Voice
         {
             get
             {
-                return new DateTime(_startTick + _stopWatch.ElapsedTicks);
+                return new DateTime(_startTick + _stopWatch.ElapsedTicks, DateTimeKind.Utc);
             }
         }
     }

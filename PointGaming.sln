@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PointGaming", "PointGaming\PointGaming.csproj", "{7AA39D24-65B8-4315-8CA0-C8F37D7E7352}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Installer", "Installer\Installer.wixproj", "{0EFF9983-FB0F-4FB8-8EB1-68149978BE6C}"
@@ -8,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PointGaming.Update", "PointGaming.Update\PointGaming.Update.csproj", "{922ECC01-D03A-4F06-8B2D-0C1404AE274D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PointGaming.ClientWebService", "PointGaming.ClientWebService\PointGaming.ClientWebService.csproj", "{473F8102-491D-4137-BB9A-CB8D34F66982}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "VsInstaller", "VsInstaller\VsInstaller.vdproj", "{DAD5B8D7-6C41-4C99-A322-3BAE139CE99C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +35,8 @@ Global
 		{473F8102-491D-4137-BB9A-CB8D34F66982}.Debug|x86.Build.0 = Debug|x86
 		{473F8102-491D-4137-BB9A-CB8D34F66982}.Release|x86.ActiveCfg = Release|x86
 		{473F8102-491D-4137-BB9A-CB8D34F66982}.Release|x86.Build.0 = Release|x86
+		{DAD5B8D7-6C41-4C99-A322-3BAE139CE99C}.Debug|x86.ActiveCfg = Debug
+		{DAD5B8D7-6C41-4C99-A322-3BAE139CE99C}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product Id="E2604983-14AB-4ef4-BA5E-300D4A0B0ACB" Name="Point Gaming" Language="1033"
-           Version="1.0.1" Manufacturer="Point Gaming, LLC" UpgradeCode="82A7F7EA-94AF-46dd-AC99-909AE1464EA0">
+           Version="1.0.2" Manufacturer="Point Gaming, LLC" UpgradeCode="08965D1B-AF38-B24C-512B-98E94828C4F0">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
     <WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\Resources\License.rtf"/>
@@ -23,20 +23,21 @@
     <Feature Id="ProductFeature" Title="Point Gaming" Level="1">
       <ComponentRef Id="ProductComponent" />
       <ComponentRef Id="ProgramMenuDir" />
-      <ComponentRef Id="PoclbmComponent" />
       <ComponentRef Id="TaskbarComponent" />
+      <ComponentRef Id="MicrosoftComponent" />
+      <ComponentRef Id="AudioComponent" />
       <ComponentRef Id="NewtonsoftJsonComponent" />
       <ComponentRef Id="RestSharpComponent" />
       <ComponentRef Id="SocketIOComponent" />
-      <ComponentRef Id="AviadWPFControlsComponent"/>
+      <ComponentRef Id="OpenCLComponent" />
     </Feature>
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of Point Gaming is already installed." />
-    <Upgrade Id="6150EC14-A99C-4bb8-8331-BA7EE1056CEB">
-      <UpgradeVersion OnlyDetect='yes'  Property='SELFFOUND' Minimum='1.0.1' IncludeMinimum='yes' Maximum='1.0.1' IncludeMaximum='yes' />
-      <UpgradeVersion OnlyDetect='yes' Property='NEWERFOUND' Minimum='1.0.1' IncludeMinimum='no' />
+    <Upgrade Id="880F06FC-F266-A22B-847A-F02327FA9A17">
+      <UpgradeVersion OnlyDetect='yes'  Property='SELFFOUND' Minimum='1.0.2' IncludeMinimum='yes' Maximum='1.0.2' IncludeMaximum='yes' />
+      <UpgradeVersion OnlyDetect='yes' Property='NEWERFOUND' Minimum='1.0.2' IncludeMinimum='no' />
     </Upgrade>
-    <CustomAction Id='AlreadyUpdated' Error='Point Gaming has already been updated to 1.0.1 or newer.' />
+    <CustomAction Id='AlreadyUpdated' Error='Point Gaming has already been updated to 1.0.2 or newer.' />
     <CustomAction Id='NoDowngrade' Error='A later version of Point Gaming is already installed.' />
     <InstallExecuteSequence>
       <Custom Action='AlreadyUpdated' After='FindRelatedProducts'>SELFFOUND</Custom>
@@ -84,32 +85,42 @@
             </File>
             <File Name="$(var.PointGaming.TargetFileName).config"/>
             <File Name="$(var.PointGaming.Update.TargetFileName)" />
+            <File Name="$(var.PointGaming.ClientWebService.TargetFileName)" />
+            <File Name="$(var.PointGaming.ClientWebService.TargetFileName).config" />
           </Component>
+
           <Component Id="TaskbarComponent" Guid="8D877046-3C88-4788-8C30-07DFB12499AD" >
             <File Name="Hardcodet.Wpf.TaskbarNotification.dll"/>
           </Component>
+
+          <Component Id="MicrosoftComponent" Guid="742563BD-9DEA-5554-F50A-A21EF568399B" >
+            <File Name="Microsoft.Expression.Interactions.dll"/>
+            <File Name="System.Windows.Interactivity.dll"/>
+          </Component>
+
+          <Component Id="AudioComponent" Guid="9A31EB44-A8EF-226B-6B28-8DAC2DE420E9" >
+            <File Name="NAudio.dll"/>
+            <File Name="NSpeex.dll"/>
+            <File Name="opus.dll"/>
+          </Component>
+          
           <Component Id="NewtonsoftJsonComponent" Guid="BD03BAF7-7C88-4c29-B2EA-63906FA08FB4" >
             <File Name="Newtonsoft.Json.dll"/>
           </Component>
+          
           <Component Id="RestSharpComponent" Guid="309CAFF5-2816-49e0-B051-7DE7A1D68D57" >
             <File Name="RestSharp.dll"/>
           </Component>
+          
           <Component Id="SocketIOComponent" Guid="204A3BBB-8A34-4dce-8E33-4BCAFB3DDCA8" >
             <File Name="SocketIOClient.dll"/>
             <File Name="WebSocket4Net.dll"/>
           </Component>
-          <Component Id="AviadWPFControlsComponent" Guid="40848A33-559A-4ff7-85EF-5047D9E8C037">
-            <File Name="Aviad.WPF.Controls.dll" />
+
+          <Component Id="OpenCLComponent" Guid="6AEF460F-07C5-8749-1096-0C4F5A8BB472" >
+            <File Name="OpenCLNet.dll"/>
           </Component>
-          <Directory Id="PoclbmFolder" Name="poclbm" FileSource="$(var.PointGaming.TargetDir)\poclbm">
-            <Component Id="PoclbmComponent" Guid="1E3383C6-4E11-41fb-A177-FAE4580A6407" >
-              <File Name="msvcp90.dll"/>
-              <File Name="phatk.cl"/>
-              <File Name="poclbm.exe"/>
-              <File Name="python26.dll"/>
-              <File Name="w9xpopen.exe"/>
-            </Component>
-          </Directory>
+
         </Directory>
       </Directory>
 

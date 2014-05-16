@@ -800,7 +800,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\offline.png" />
+    <Resource Include="Resources\offline.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\online.png" />
   </ItemGroup>
   <ItemGroup>
