@@ -505,7 +505,9 @@ namespace PointGaming.GameRoom
                     MarkAsMuted(user);
                 else
                     MarkAsUnmuted(user);
+                user.IsMuted = isMuted;
             }
+            Membership.Refresh();
         }
 
         public ICommand UnMuteUser { get { return new ActionCommand(UnMuteUserF); } }
@@ -524,7 +526,9 @@ namespace PointGaming.GameRoom
                     MarkAsMuted(user);
                 else
                     MarkAsUnmuted(user);
+                user.IsMuted = isMuted;
             }
+            Membership.Refresh();
         }
 
         private List<string> _mutedMembersIds;
@@ -628,7 +632,7 @@ namespace PointGaming.GameRoom
             string speakingRoomId = (string)values[0];
             bool isMuted = (bool)values[1];
             string audioRoomId = (string)values[2];
-            bool isConnected = (bool)values[3];
+            bool isConnected = true;// (bool)values[3]; // changed to true, cause being a connected user has this parameter as false, later when disabling is done return correct initialization
 
             var isSpeaking = speakingRoomId == audioRoomId;
             var assembly = typeof(GameRoomSpeakingConverter).Assembly;

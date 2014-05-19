@@ -336,7 +336,6 @@ namespace PointGaming
             set
             {
                 SetProperty(ref _IsMuted, value, () => IsMuted);
-                    
             }
         }
         private string _SpeakingRoomId;
